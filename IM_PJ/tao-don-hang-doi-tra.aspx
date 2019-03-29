@@ -270,6 +270,7 @@
                             , QuantityRefund
                             , ChangeType
                             , FeeRefund
+                            , FeeRefundDefault
                             , TotalFeeRefund) {
                     this.RowIndex = RowIndex;
                     this.ProductID = ProductID;
@@ -285,6 +286,7 @@
                     this.QuantityRefund = QuantityRefund;
                     this.ChangeType = ChangeType;
                     this.FeeRefund = FeeRefund;
+                    this.FeeRefundDefault = FeeRefundDefault;
                     this.TotalFeeRefund = TotalFeeRefund;
                 }
 
@@ -417,16 +419,44 @@
                 let productQuantity = 0;
                 let totalRefund = 0;
 
-                productRefunds.forEach(function(item){
-                    totalPrice += item.TotalFeeRefund;
-                    productQuantity += item.QuantityRefund;
+                let isDiscount = parseInt($("#<%=hdfIsDiscount.ClientID%>").val());
+                let discount = parseFloat($("#<%=hdfDiscountAmount.ClientID%>").val());
+                let feerefund = parseFloat($("#<%=hdfCustomerFeeChange.ClientID%>").val());
 
+                productRefunds.forEach(function(item){
+                    let row = $("tr[data-parentsku='" + item.ParentSKU + "']");
+                    
+                    if (isDiscount == 1)
+                    {
+                        item.ReducedPrice = item.Price - discount;
+                        item.FeeRefund = feerefund;
+                    }
+                    else
+                    {
+                        item.ReducedPrice = item.Price;
+                        item.FeeRefund = item.FeeRefundDefault;
+                    }
+                    
                     if (item.ChangeType == 2){
+                        item.TotalFeeRefund = (item.ReducedPrice - item.FeeRefund) * item.QuantityRefund;
+                        totalPrice += item.TotalFeeRefund;
+                        productQuantity += item.QuantityRefund;
                         totalRefund += item.FeeRefund * item.QuantityRefund;
                     }
                     else{
+                        item.TotalFeeRefund = item.ReducedPrice * item.QuantityRefund;
+                        totalPrice += item.TotalFeeRefund;
+                        productQuantity += item.QuantityRefund;
                         totalRefund += 0;
                     }
+
+                    // Update price on browser
+                    reducedDom = row.children("td").children("input.form-control.reducedPrice")
+                    reducedDom.val(formatThousands(item.ReducedPrice))
+                    feeDom = row.children("td").children("input.form-control.feeRefund")
+                    feeDom.val(formatThousands(item.FeeRefund))
+                    totalDom = row.children("td.totalFeeRefund")
+                    totalDom.html(formatThousands(item.TotalFeeRefund))
                 });
 
                 $(".totalPriceOrder").html(formatThousands(totalPrice, ","));
@@ -757,8 +787,6 @@
                             dataType: "json",
                             success: function (msg) {
                                 let data = JSON.parse(msg.d);
-                                var discount = $("#<%=hdfDiscountAmount.ClientID%>").val();
-                                var feerefund = $("#<%=hdfCustomerFeeChange.ClientID%>").val();
 
                                 if (data != null && data.length > 0) {
                                     if (data.length > 1) {
@@ -776,11 +804,12 @@
                                                 , ChildSKU = item.ChildSKU
                                                 , VariableValue = item.VariableValue
                                                 , Price = item.Price
-                                                , ReducedPrice = item.ReducedPrice - ((discount != "") ? discount : 0 )
+                                                , ReducedPrice = item.ReducedPrice
                                                 , QuantityRefund = item.QuantityRefund
                                                 , ChangeType = item.ChangeType
-                                                , FeeRefund = (feerefund != "") ? feerefund : item.FeeRefund
-                                                , TotalFeeRefund = item.TotalFeeRefund - ((discount != "") ? discount : 0) - ((feerefund != "") ? feerefund : item.FeeRefund)
+                                                , FeeRefund = item.FeeRefund
+                                                , FeeRefundDefault =  item.FeeRefund
+                                                , TotalFeeRefund = item.TotalFeeRefund
                                             );
 
                                             productVariableSearch.push(productVariable);
@@ -802,11 +831,12 @@
                                             , ChildSKU = data[0].ChildSKU
                                             , VariableValue = data[0].VariableValue
                                             , Price = data[0].Price
-                                            , ReducedPrice = data[0].ReducedPrice - ((discount != "") ? discount : 0)
+                                            , ReducedPrice = data[0].ReducedPrice
                                             , QuantityRefund = data[0].QuantityRefund
                                             , ChangeType = data[0].ChangeType
-                                            , FeeRefund = (feerefund != "") ? feerefund : data[0].FeeRefund
-                                            , TotalFeeRefund = data[0].TotalFeeRefund - ((discount != "") ? discount : 0) - ((feerefund != "") ? feerefund : data[0].FeeRefund)
+                                            , FeeRefund = data[0].FeeRefund
+                                            , FeeRefundDefault = data[0].FeeRefund
+                                            , TotalFeeRefund = data[0].TotalFeeRefund
                                         );
 
                                         productRefunds.push(product);

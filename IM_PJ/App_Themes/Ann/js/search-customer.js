@@ -16,7 +16,7 @@ function getCustomerDiscount(custID) {
                     $(".refund-info").html("<strong>* Miễn phí đổi hàng</strong>").show();
                 }
                 else {
-                    $(".refund-info").html("<strong>* Phí đổi hàng của khách: " + formatThousands(data.Discount, ",") + "đ/cái.</strong>").show();
+                    $(".refund-info").html("<strong>* Phí đổi hàng của khách: " + formatThousands(data.FeeRefund, ",") + "đ/cái.</strong>").show();
                 }
                 
                 $("input[id$='_hdfIsDiscount']").val("1");
@@ -501,6 +501,7 @@ function clearCustomerDetail() {
     $("input[id$='_txtFacebook']").val("").prop('readonly', false).prop('disabled', false);
     $(".view-detail").html("").hide();
     $(".discount-info").html("").hide();
+    $(".refund-info").html("").hide();
     $(".link-facebook").html("").hide();
     $("input[id$='_txtFacebook']").parent().addClass("width-100");
     $("input[id$='_txtFullname']").focus();
