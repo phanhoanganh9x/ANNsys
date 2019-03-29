@@ -111,6 +111,7 @@ namespace IM_PJ
                     int AgentID = Convert.ToInt32(order.AgentID);
                     txtPhone.Text = order.CustomerPhone;
                     txtFullname.Text = order.CustomerName;
+                    this.Title = String.Format("{0} - Thông tin đơn hàng", txtFullname.Text.ToTitleCase());
                     txtAddress.Text = order.CustomerAddress;
                     var cus = CustomerController.GetByID(order.CustomerID.Value);
                     if (cus != null)
