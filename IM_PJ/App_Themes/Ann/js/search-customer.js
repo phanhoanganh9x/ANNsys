@@ -25,6 +25,12 @@ function getCustomerDiscount(custID) {
 
                 getAllPrice();
             }
+            else
+            {
+                $("input[id$='_hdfIsDiscount']").val(0);
+                $("input[id$='_hdfDiscountAmount']").val(0);
+                $("input[id$='_hdfCustomerFeeChange']").val(0);
+            }
         },
         error: function (xmlhttprequest, textstatus, errorthrow) {
             alert('lỗi');
@@ -499,6 +505,10 @@ function clearCustomerDetail() {
     $("input[id$='_txtFacebook']").parent().addClass("width-100");
     $("input[id$='_txtFullname']").focus();
     $("input[id$='_hdfUsernameCurrent']").val($("input[id$='_hdfUsername']").val());
+    // Fix bug when clearing in pos
+    $("input[id$='_hdfIsDiscount']").val(0);
+    $("input[id$='_hdfDiscountAmount']").val(0);
+    $("input[id$='_hdfCustomerFeeChange']").val(0);
     getAllPrice();
 }
 

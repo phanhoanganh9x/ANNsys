@@ -46,7 +46,7 @@ namespace IM_PJ
                             Response.Redirect("/trang-chu");
                         }
 
-                        Response.Cookies["refund"].Value = "1";
+                        hdSession.Value = "1";
 
                         var dc = DiscountController.GetAll();
                         if (dc != null)
@@ -130,7 +130,6 @@ namespace IM_PJ
                 var or = RefundGoodController.GetOrderByID(order.ToInt());
                 if (or != null)
                 {
-                    HttpContext.Current.Response.Cookies["refund"].Value = or.ID + "|" + or.TotalPrice;
                     return serializer.Serialize(or);
                 }
                 else
@@ -140,7 +139,6 @@ namespace IM_PJ
             }
             else
             {
-                HttpContext.Current.Response.Cookies["refund"].Value = "1";
                 return serializer.Serialize(null);
             }
         }
@@ -356,16 +354,13 @@ namespace IM_PJ
                         OrderDetailController.Insert(orderDetails);
                         StockManagerController.Insert(stockManager);
 
-                        string refund = Request.Cookies["refund"].Value;
+                        string refund = hdSession.Value;
                         if (refund != "1")
                         {
                             string[] RefundID = refund.Split('|');
                             var update = RefundGoodController.UpdateStatus(RefundID[0].ToInt(), username, 2, OrderID);
                             var updateor = OrderController.UpdateRefund(OrderID, RefundID[0].ToInt(), username);
                         }
-
-                        Response.Cookies["refund"].Expires = DateTime.Now.AddDays(-1d);
-                        Response.Cookies.Add(Response.Cookies["refund"]);
 
                         ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "script", "$(function () { printInvoice(" + OrderID + ") });", true);
                     }

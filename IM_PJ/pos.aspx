@@ -186,6 +186,7 @@
             <asp:HiddenField ID="hdfListUser" runat="server" />
             <asp:HiddenField ID="hdfDonHangTra" runat="server" />
             <asp:HiddenField ID="hdfTongTienConLai" runat="server" />
+            <asp:HiddenField ID="hdSession" runat="server" />
         </main>
     </asp:Panel>
     <style>
@@ -396,6 +397,7 @@
                         success: function(msg) {
                             if (msg.d != "null") {
                                 var data = JSON.parse(msg.d);
+                                $("#<%=hdSession.ClientID%>").val(data.ID + "|" + data.TotalPrice);
                                 if (data.CustomerName == name && data.CustomerPhone == phone) {
                                     $(".subtotal").removeClass("hide");
                                     $(".returnorder").removeClass("hide");
@@ -420,6 +422,7 @@
                                     swal("Thông báo", "Đơn hàng đổi trả không thuộc khách hàng này!", "error");
                                 }
                             } else {
+                                $("#<%=hdSession.ClientID%>").val(1);
                                 swal("Thông báo", "Đơn hàng đổi trả không thuộc khách hàng này!", "error");
                             }
                         },
@@ -454,6 +457,7 @@
                         $(".find2").removeAttr("onclick");
                         $(".totalpricedetail").html("0");
                         $("#<%=hdfDonHangTra.ClientID%>").val(0);
+                        $("#<%=hdSession.ClientID%>").val(1);
                         $(".refund").addClass("hide");
                         $(".totalpriceorderrefund").html("0");
                         $("#txtOrderRefund").val(0);
@@ -744,15 +748,11 @@
                     $("#<%=hdfTotalPriceNotDiscountNotFee.ClientID%>").val(totalprice);
                     $(".totalpriceorder").html(formatThousands(totalprice, ','));
                     $("#<%=hdfTotalQuantity.ClientID%>").val(productquantity);
-                    var isDiscount = $("#<%=hdfIsDiscount.ClientID%>").val();
                     var totalDiscount = 0;
                     var totalleft = 0;
                     var totalck = 0;
                     var amount = 0;
-                    var amountdiscount = 0;
-                    if (isDiscount == 1) {
-                        amountdiscount = parseFloat($("#<%=hdfDiscountAmount.ClientID%>").val());
-                    }
+                    var amountdiscount = parseFloat($("#<%=hdfDiscountAmount.ClientID%>").val());
 
                     var ChietKhau = document.getElementById('<%= hdfChietKhau.ClientID%>').defaultValue;
 
