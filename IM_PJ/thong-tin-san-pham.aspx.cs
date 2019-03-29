@@ -279,7 +279,7 @@ namespace IM_PJ
             int ProductID = ViewState["ID"].ToString().ToInt(0);
             if (cateID > 0)
             {
-                string ProductTitle = txtProductTitle.Text;
+                string ProductTitle = Regex.Replace(txtProductTitle.Text, @"\s*\,\s*|\s*\;\s*", " - ");
                 string ProductContent = pContent.Content;
                 string ProductSKU = ViewState["SKU"].ToString();
                 double ProductStock = 0;
