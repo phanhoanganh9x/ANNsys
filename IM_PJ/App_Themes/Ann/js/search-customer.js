@@ -7,6 +7,8 @@ function getCustomerDiscount(custID) {
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (msg) {
+            $(".discount-info").html("").hide();
+            $(".refund-info").html("").hide();
             if (msg.d !== "null") {
                 var data = JSON.parse(msg.d);
 
@@ -33,6 +35,8 @@ function getCustomerDiscount(custID) {
             }
         },
         error: function (xmlhttprequest, textstatus, errorthrow) {
+            $(".discount-info").html("").hide();
+            $(".refund-info").html("").hide();
             alert('lỗi');
         }
     });

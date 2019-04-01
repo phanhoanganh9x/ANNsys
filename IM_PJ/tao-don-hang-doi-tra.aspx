@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=2110"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=2111"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:Panel ID="parent" runat="server">
@@ -256,8 +256,7 @@
 
             // Create model entity
             class RefundDetailModel{
-                constructor(RowIndex
-                            , ProductID
+                constructor(ProductID
                             , ProductVariableID
                             , ProductStyle
                             , ProductImage
@@ -272,7 +271,7 @@
                             , FeeRefund
                             , FeeRefundDefault
                             , TotalFeeRefund) {
-                    this.RowIndex = RowIndex;
+                    this.RowIndex = uuid.v4();
                     this.ProductID = ProductID;
                     this.ProductVariableID = ProductVariableID;
                     this.ProductStyle = ProductStyle;
@@ -298,9 +297,6 @@
                     return JSON.stringify(this);
                 }
             }
-
-            // Key for row in table product refund
-            var rowIndexMax = Number(0);
 
             // Create model
             var productRefunds = [];
@@ -424,8 +420,7 @@
                 let feerefund = parseFloat($("#<%=hdfCustomerFeeChange.ClientID%>").val());
 
                 productRefunds.forEach(function(item){
-                    let row = $("tr[data-parentsku='" + item.ParentSKU + "']");
-                    
+                    let row = $("tr[data-rowIndex='" + item.RowIndex + "']");
                     if (isDiscount == 1)
                     {
                         item.ReducedPrice = item.Price - discount;
@@ -791,11 +786,8 @@
                                 if (data != null && data.length > 0) {
                                     if (data.length > 1) {
                                         data.forEach(function (item) {
-                                            rowIndexMax = rowIndexMax + 1;
-
                                             let productVariable = new RefundDetailModel(
-                                                RowIndex = rowIndexMax
-                                                , ProductID = item.ProductID
+                                                ProductID = item.ProductID
                                                 , ProductVariableID = item.ProductVariableID
                                                 , ProductStyle = item.ProductStyle
                                                 , ProductImage = item.ProductImage
@@ -818,11 +810,8 @@
                                         showProductVariable(productVariableSearch);
                                     }
                                     else {
-                                        rowIndexMax = rowIndexMax + 1;
-
                                         product = new RefundDetailModel(
-                                            RowIndex = rowIndexMax
-                                            , ProductID = data[0].ProductID
+                                            ProductID = data[0].ProductID
                                             , ProductVariableID = data[0].ProductVariableID
                                             , ProductStyle = data[0].ProductStyle
                                             , ProductImage = data[0].ProductImage
@@ -987,6 +976,11 @@
                 if (!isBlank(dataJSON)) {
                     let refundGoodModel = jQuery.parseJSON(dataJSON);
 
+                    // Init discount for customer
+                    if (refundGoodModel.CustomerID)
+                    {
+                        getCustomerDiscount(refundGoodModel.CustomerID);
+                    }
                     // Init header search Customer
                     $("#<%=txtFullname.ClientID%>").val(refundGoodModel.CustomerName);
                     $("#<%=txtPhone.ClientID%>").val(refundGoodModel.CustomerPhone);
@@ -996,13 +990,9 @@
                     $("#<%=txtFacebook.ClientID%>").val(refundGoodModel.CustomerFacebook);
 
                     // Init detail refund product
-                    let rowIndexMax = 0
                     refundGoodModel.RefundDetails.reverse().forEach(function (item) {
-                        rowIndexMax = rowIndexMax + 1;
-
                         let product = new RefundDetailModel(
-                                        RowIndex = rowIndexMax
-                                        , ProductID = item.ProductID
+                                        ProductID = item.ProductID
                                         , ProductVariableID = item.ProductVariableID
                                         , ProductStyle = item.ProductStyle
                                         , ProductImage = item.ProductImage
@@ -1015,11 +1005,12 @@
                                         , QuantityRefund = item.QuantityRefund
                                         , ChangeType = item.ChangeType
                                         , FeeRefund = item.FeeRefund
+                                        , FeeRefundDefault = item.FeeRefund
                                         , TotalFeeRefund = item.TotalFeeRefund
                                     );
 
                         productRefunds.push(product);
-
+                        console.log(product);
                         addHtmlProductResult(product);
 
                         getAllPrice();

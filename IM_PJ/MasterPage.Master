@@ -17,6 +17,7 @@
     <script type="text/javascript" src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
     <script type="text/javascript" src="/App_Themes/Ann/js/jquery.cookie.js"></script>
     <script type="text/javascript" src="/App_Themes/Ann/js/popup.js?v=0110"></script>
+    <script type="text/javascript" src="/Scripts/uuid.js"></script>
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
 </head>

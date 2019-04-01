@@ -8,6 +8,7 @@ namespace IM_PJ.Models
     public class RefundGoodModel
     {
         public int RefundGoodsID { get; set; }
+        public int CustomerID { get; set; }
         public string CustomerName { get; set; }
         public string CustomerPhone { get; set; }
         public string CustomerNick { get; set; }

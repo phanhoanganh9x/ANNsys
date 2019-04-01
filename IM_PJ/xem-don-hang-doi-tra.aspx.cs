@@ -148,6 +148,7 @@ namespace IM_PJ
 
                         // get info tranfor page tao-don-hang-doi-tra.aspx
                         _refundGood.RefundGoodsID = ID;
+                        _refundGood.CustomerID = r.CustomerID.Value;
                         _refundGood.CustomerName = r.CustomerName;
                         _refundGood.CustomerPhone = r.CustomerPhone;
                         _refundGood.CustomerNick = cus != null? cus.Nick : String.Empty;
