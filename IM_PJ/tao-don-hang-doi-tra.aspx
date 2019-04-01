@@ -438,7 +438,8 @@
                         productQuantity += item.QuantityRefund;
                         totalRefund += item.FeeRefund * item.QuantityRefund;
                     }
-                    else{
+                    else {
+                        item.FeeRefund = 0 // Trường hợp đổi trả lỗi
                         item.TotalFeeRefund = item.ReducedPrice * item.QuantityRefund;
                         totalPrice += item.TotalFeeRefund;
                         productQuantity += item.QuantityRefund;
@@ -471,7 +472,7 @@
             function changeRow(obj)
             {
                 let row = obj.parent().parent();
-                let RowIndex = parseInt(row.attr("data-rowIndex"));
+                let RowIndex = row.attr("data-rowIndex");
                 let ProductID = parseInt(row.attr("data-productID"));
                 let ProductVariableID = parseInt(row.attr("data-productVariableID"));
                 let Price = parseFloat(row.find(".Price").html().replace(/,/g, ""));
@@ -496,6 +497,7 @@
                     row.find(".totalFeeRefund").html(formatThousands(TotalFeeRefund, ","));
                 }
                 else {
+                    FeeRefund = 0;
                     TotalFeeRefund = ReducedPrice * Quantity;
 
                     row.find(".feeRefund").val(0);
@@ -863,7 +865,7 @@
 
                 if (c) {
                     let row = obj.parent().parent();
-                    let RowIndex = parseFloat(row.attr("data-rowIndex"));
+                    let RowIndex = row.attr("data-rowIndex");
                     let ProductID = parseFloat(row.attr("data-productID"));
                     let ProductVariableID = parseFloat(row.attr("data-productVariableID"));
 
