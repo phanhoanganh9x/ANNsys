@@ -188,7 +188,13 @@ namespace IM_PJ
 
         protected void btnSave_Click(object sender, EventArgs e)
         {
-           
+            // Làm lại đơn hàng đổi trả
+            if (!String.IsNullOrEmpty(hdRefundGoodsID.Value))
+            {
+                RefundGoodDetailController.DeleteByRefundGoodsID(hdRefundGoodsID.Value.ToInt());
+                RefundGoodController.DeleteByID(hdRefundGoodsID.Value.ToInt());
+                OrderController.DeleteOrderRefund(hdRefundGoodsID.Value.ToInt());
+            }
             DateTime currentDate = DateTime.Now;
             int agentID = 0;
             string username = Request.Cookies["userLoginSystem"].Value;
