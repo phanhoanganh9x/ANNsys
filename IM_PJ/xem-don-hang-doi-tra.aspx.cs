@@ -135,11 +135,28 @@ namespace IM_PJ
                             ltrInfo.Text += "</div>";
                             ltrInfo.Text += "</div>";
                             ltrInfo.Text += "</div>";
-                            ltrInfo.Text += "<div class=\"row\">";
-                            ltrInfo.Text += "    <div class=\"col-md-12 view-detail\">";
-                            ltrInfo.Text += "    	<a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth\" onclick=\"viewCustomerDetail('" + cus.ID + "')\"><i class=\"fa fa-address-card-o\" aria-hidden=\"true\"></i> Xem chi tiết</a>";
-                            ltrInfo.Text += "    </div>";
+                            ltrInfo.Text += "<div class=\"form-row view-detail\">";
+                            ltrInfo.Text += "    <a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth\" onclick=\"viewCustomerDetail('" + cus.ID + "')\"><i class=\"fa fa-address-card-o\" aria-hidden=\"true\"></i> Xem chi tiết</a>";
                             ltrInfo.Text += "</div>";
+
+                            var discount = DiscountCustomerController.getbyCustID(cus.ID).FirstOrDefault();
+                            if (discount != null)
+                            {
+
+                                ltrInfo.Text += "<div class='form-row discount-info'>";
+                                ltrInfo.Text += String.Format("<strong>* Chiết khấu của khách: {0:0,0}đ/cái.</strong>", discount.DiscountAmount);
+                                ltrInfo.Text += "</div>";
+                                ltrInfo.Text += "<div class='form-row refund-info'>";
+                                if (discount.FeeRefund == 0)
+                                {
+                                    ltrInfo.Text += "<strong>* Miễn phí đổi hàng</strong>";
+                                }
+                                else
+                                {
+                                    ltrInfo.Text += String.Format("<strong>* Phí đổi hàng của khách: {0:0,0}đ/cái.</strong>", discount.FeeRefund);
+                                }
+                                ltrInfo.Text += "</div>";
+                            }
                         }
 
                         ltrTotal.Text = string.Format("{0:N0}", Convert.ToDouble(r.TotalPrice));

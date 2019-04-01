@@ -25,7 +25,6 @@ function getCustomerDiscount(custID) {
                 $("input[id$='_hdfDiscountAmount']").val(data.Discount);
                 $("input[id$='_hdfCustomerFeeChange']").val(data.FeeRefund);
 
-                getAllPrice();
             }
             else
             {
@@ -33,6 +32,7 @@ function getCustomerDiscount(custID) {
                 $("input[id$='_hdfDiscountAmount']").val(0);
                 $("input[id$='_hdfCustomerFeeChange']").val(0);
             }
+            getAllPrice();
         },
         error: function (xmlhttprequest, textstatus, errorthrow) {
             $(".discount-info").html("").hide();
