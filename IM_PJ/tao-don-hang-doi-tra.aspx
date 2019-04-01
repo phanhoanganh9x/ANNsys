@@ -193,6 +193,7 @@
                 </div>
             </div>
             <asp:Button ID="btnSave" runat="server" OnClick="btnSave_Click" Style="display: none" />
+            <asp:HiddenField ID="hdRefundGoodsID" runat="server" />
             <asp:HiddenField ID="hdfUsername" runat="server" />
             <asp:HiddenField ID="hdfUsernameCurrent" runat="server" />
             <asp:HiddenField ID="hdfOrderSaleID" runat="server" />
@@ -978,6 +979,8 @@
                 if (!isBlank(dataJSON)) {
                     let refundGoodModel = jQuery.parseJSON(dataJSON);
 
+                    // Làm lại đơn hàng đổi trả
+                    $("#<%=hdRefundGoodsID.ClientID%>").val(refundGoodModel.RefundGoodsID)
                     // Init discount for customer
                     if (refundGoodModel.CustomerID)
                     {

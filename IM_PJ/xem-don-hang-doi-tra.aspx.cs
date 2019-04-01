@@ -296,14 +296,6 @@ namespace IM_PJ
         {
             try
             {
-                RefundGoodDetailController.DeleteByRefundGoodsID(_refundGood.RefundGoodsID);
-                RefundGoodController.DeleteByID(_refundGood.RefundGoodsID);
-                int OrderSaleID = OrderController.DeleteOrderRefund(_refundGood.RefundGoodsID);
-                if(OrderSaleID > 0)
-                {
-                    _refundGood.OrderSaleID = OrderSaleID;
-                }
-
                 foreach (var product in _refundGood.RefundDetails)
                 {
                     if (!string.IsNullOrEmpty(product.ChildSKU))
