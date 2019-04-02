@@ -520,6 +520,7 @@ function deleteReturnOrder() {
     var address = $("#<%= txtAddress.ClientID%>").val();
     if (phone != "" && name != "" && nick != "" && address != "") {
         if ($(".product-result").length > 0) {
+            getAllPrice();
             var list = "";
             var count = 0;
             var ordertype = $(".customer-type").val();

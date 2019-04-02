@@ -918,6 +918,7 @@
                     
                     // Nếu có sản phẩm trong đơn hàng
                     if ($(".product-result").length > 0) {
+                        getAllPrice();
                         var list = "";
                         var ordertype = $(".customer-type").val();
                         var checkoutin = false;
