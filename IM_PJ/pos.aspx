@@ -556,8 +556,16 @@
 
                 if (totalquantity == inputquantity) {
                     closePopup();
-                    HoldOn.open();
-                    $("#<%=btnOrder.ClientID%>").click();
+                    try{
+                        HoldOn.open();
+                        $("#<%=btnOrder.ClientID%>").click();
+                    }
+                    catch (e) {
+                        console.log(e);
+                    }
+                    finally {
+                        HoldOn.close();
+                    }
                 }
                 else {
                     $("#SoldQuantity").focus();
