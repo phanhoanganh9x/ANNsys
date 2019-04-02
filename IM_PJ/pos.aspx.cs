@@ -28,6 +28,7 @@ namespace IM_PJ
 
                 if (Request.Cookies["userLoginSystem"] != null)
                 {
+                    hdStatusPage.Value = "Create";
                     string username = Request.Cookies["userLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
@@ -362,6 +363,8 @@ namespace IM_PJ
                             var updateor = OrderController.UpdateRefund(OrderID, RefundID[0].ToInt(), username);
                         }
 
+                        // Hoàn thành khởi tạo đơn hàng nên gán lại giá trị trang lúc ban đầu
+                        hdStatusPage.Value = "Create";
                         ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "script", "$(function () { printInvoice(" + OrderID + ") });", true);
                     }
                 }

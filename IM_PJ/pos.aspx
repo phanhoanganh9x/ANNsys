@@ -187,6 +187,7 @@
             <asp:HiddenField ID="hdfDonHangTra" runat="server" />
             <asp:HiddenField ID="hdfTongTienConLai" runat="server" />
             <asp:HiddenField ID="hdSession" runat="server" />
+            <asp:HiddenField ID="hdStatusPage" runat="server" />
         </main>
     </asp:Panel>
     <style>
@@ -558,13 +559,25 @@
                     closePopup();
                     try{
                         HoldOn.open();
+                        $("#<%=hdStatusPage.ClientID%>").val("Submit");
                         $("#<%=btnOrder.ClientID%>").click();
-                    }
-                    catch (e) {
-                        console.log(e);
                     }
                     finally {
                         HoldOn.close();
+                        if ($("#<%=hdStatusPage.ClientID%>").val() === "Submit")
+                        {
+                            swal({
+                                title: "Lỗi trong qua trình thánh toán",
+                                text: "Xảy ra lỗi khi xác nhận đơn hàng.\nHãy nhấn lại nút thanh toán",
+                                type: "error",
+                                showCancelButton: false,
+                                confirmButtonText: "OK Sếp!!",
+                                closeOnConfirm: true,
+                                html: false
+                            }, function () {
+                                $("#<%=btnOrder.ClientID%>").focus();
+                            });
+                        }
                     }
                 }
                 else {
