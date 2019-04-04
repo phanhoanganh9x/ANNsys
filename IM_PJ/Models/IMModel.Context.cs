@@ -65,5 +65,8 @@ namespace IM_PJ.Models
         public virtual DbSet<tbl_PostCategory> tbl_PostCategory { get; set; }
         public virtual DbSet<tbl_PostImage> tbl_PostImage { get; set; }
         public virtual DbSet<tbl_Account> tbl_Account { get; set; }
+        public virtual DbSet<Bank> Banks { get; set; }
+        public virtual DbSet<BankAccount> BankAccounts { get; set; }
+        public virtual DbSet<BankTransfer> BankTransfers { get; set; }
     }
 }
