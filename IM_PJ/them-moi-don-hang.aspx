@@ -520,7 +520,7 @@ function deleteReturnOrder() {
     var address = $("#<%= txtAddress.ClientID%>").val();
     if (phone != "" && name != "" && nick != "" && address != "") {
         if ($(".product-result").length > 0) {
-            getAllPrice();
+            getAllPrice(true);
             var list = "";
             var count = 0;
             var ordertype = $(".customer-type").val();
@@ -736,7 +736,7 @@ function checkQuantiy(obj) {
 }
 
 // get all price
-function getAllPrice() {
+function getAllPrice(is_payAll_call=false) {
     if ($(".product-result").length > 0) {
         let totalprice = 0;
         let productquantity = 0;
@@ -816,7 +816,10 @@ function getAllPrice() {
         
 
         var totalmoney = totalleft + feeship + otherfee;
-        $("#<%=pDiscount.ClientID%>").val(formatThousands(totalDiscount, ','));
+        if (is_payAll_call !== true)
+        {
+            $("#<%=pDiscount.ClientID%>").val(formatThousands(totalDiscount, ','));
+        }
         $(".totalpriceorderall").html(formatThousands(totalmoney, ','));
         $(".priceafterchietkhau").html(formatThousands(priceafterchietkhau, ','));
         $("#<%=hdfTotalPrice.ClientID%>").val(totalmoney);

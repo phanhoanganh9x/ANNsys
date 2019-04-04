@@ -918,7 +918,7 @@
                     
                     // Nếu có sản phẩm trong đơn hàng
                     if ($(".product-result").length > 0) {
-                        getAllPrice();
+                        getAllPrice(true);
                         var list = "";
                         var ordertype = $(".customer-type").val();
                         var checkoutin = false;
@@ -1283,7 +1283,7 @@
             }
 
             // get all price
-            function getAllPrice() {
+            function getAllPrice(is_payAll_call=false) {
                 if ($(".product-result").length > 0) {
                     var totalprice = 0;
                     var productquantity = 0;
@@ -1371,7 +1371,10 @@
 
                     var totalmoney = totalleft + feeship + otherfee;
 
-                    $("#<%=pDiscount.ClientID%>").val(formatThousands(totalDiscount, ','));
+                    if (is_payAll_call !== true)
+                    {
+                        $("#<%=pDiscount.ClientID%>").val(formatThousands(totalDiscount, ','));
+                    }
 
                     $(".totalpriceorderall").html(formatThousands(totalmoney, ','));
                     $(".priceafterchietkhau").html(formatThousands(priceafterchietkhau, ','));
