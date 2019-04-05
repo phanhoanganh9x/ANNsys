@@ -385,16 +385,15 @@ namespace IM_PJ.Controllers
             sql.AppendLine(",   Ord.TransportCompanySubID");
             sql.AppendLine(",   Ord.OrderNote");
             sql.AppendLine(",   Ord.PostalDeliveryType");
-            if (PaymentStatus == 2) // Chuyển khoản
+            if (PaymentType == 2) // Chuyển khoản
             {
                 sql.AppendLine(",   Transfer.CusBankID");
-                sql.AppendLine(",   CusBank.Name AS CusBankName");
+                sql.AppendLine(",   CusBank.BankName AS CusBankName");
                 sql.AppendLine(",   Transfer.AccBankID");
                 sql.AppendLine(",   AccBank.BankName AS AccBankName");
                 sql.AppendLine(",   ISNULL(Transfer.Money, 0) AS MoneyReceive");
-                sql.AppendLine(",   AccBank.Name AS AccBankName");
-                sql.AppendLine(",   CASE ISNULL(Transfer.Status, 2) AS StatusID");
-                sql.AppendLine(",   CASE ISNULL(Transfer.Status, 2) WHEN 1 THEN N'Đã nhận tiền' ELSE N'Chưa nhận tiền' END AS StatusName");
+                sql.AppendLine(",   ISNULL(Transfer.Status, 2) AS StatusID");
+                sql.AppendLine(",   (CASE ISNULL(Transfer.Status, 2) WHEN 2 THEN N'Đã nhận tiền' ELSE N'Chưa nhận tiền' END) AS StatusName");
                 sql.AppendLine(",   Transfer.DoneAt");
             }
             sql.AppendLine(String.Format("FROM tbl_Order AS Ord"));
@@ -402,7 +401,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine(String.Format("ON    Ord.ID = OrdDetail.OrderID"));
             sql.AppendLine(String.Format("INNER JOIN tbl_Customer AS Customer"));
             sql.AppendLine(String.Format("ON    Ord.CustomerID = Customer.ID"));
-            if (PaymentStatus == 2) // Chuyển khoản
+            if (PaymentType == 2) // Chuyển khoản
             {
                 sql.AppendLine(String.Format("LEFT JOIN BankTransfer AS Transfer"));
                 sql.AppendLine(String.Format("ON    Ord.ID = Transfer.OrderID"));
@@ -528,9 +527,43 @@ namespace IM_PJ.Controllers
                 sql.AppendLine(String.Format("	AND	CONVERT(datetime, Ord." + column + ", 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromdate.ToString(), todate.ToString()));
             }
 
-
-            sql.AppendLine(String.Format("GROUP BY Ord.ID, Ord.CustomerName, Ord.CustomerPhone, Customer.Nick, Ord.CustomerID, Ord.OrderType, Ord.ExcuteStatus, Ord.PaymentStatus, Ord.PaymentType, Ord.ShippingType, Ord.TotalPrice, Ord.TotalDiscount, Ord.FeeShipping, Ord.OtherFeeName, Ord.OtherFeeValue, Ord.CreatedBy, Ord.CreatedDate, Ord.DateDone, Ord.OrderNote, Ord.RefundsGoodsID , Ord.ShippingCode, Ord.TransportCompanyID, Ord.TransportCompanySubID, Ord.OrderNote, Ord.PostalDeliveryType"));
-            sql.AppendLine(String.Format("ORDER BY Ord.ID DESC"));
+            sql.AppendLine("GROUP BY");
+            sql.AppendLine("     Ord.ID");
+            sql.AppendLine(",    Ord.CustomerName");
+            sql.AppendLine(",    Ord.CustomerPhone");
+            sql.AppendLine(",    Customer.Nick");
+            sql.AppendLine(",    Ord.CustomerID");
+            sql.AppendLine(",    Ord.OrderType");
+            sql.AppendLine(",    Ord.ExcuteStatus");
+            sql.AppendLine(",    Ord.PaymentStatus");
+            sql.AppendLine(",    Ord.PaymentType");
+            sql.AppendLine(",    Ord.ShippingType");
+            sql.AppendLine(",    Ord.TotalPrice");
+            sql.AppendLine(",    Ord.TotalDiscount");
+            sql.AppendLine(",    Ord.FeeShipping");
+            sql.AppendLine(",    Ord.OtherFeeName");
+            sql.AppendLine(",    Ord.OtherFeeValue");
+            sql.AppendLine(",    Ord.CreatedBy");
+            sql.AppendLine(",    Ord.CreatedDate");
+            sql.AppendLine(",    Ord.DateDone");
+            sql.AppendLine(",    Ord.OrderNote");
+            sql.AppendLine(",    Ord.RefundsGoodsID");
+            sql.AppendLine(",    Ord.ShippingCode");
+            sql.AppendLine(",    Ord.TransportCompanyID");
+            sql.AppendLine(",    Ord.TransportCompanySubID");
+            sql.AppendLine(",    Ord.OrderNote");
+            sql.AppendLine(",    Ord.PostalDeliveryType");
+            if (PaymentType == 2) // Chuyển khoản
+            {
+                sql.AppendLine(",    Transfer.CusBankID");
+                sql.AppendLine(",    CusBank.BankName");
+                sql.AppendLine(",    Transfer.AccBankID");
+                sql.AppendLine(",    AccBank.BankName");
+                sql.AppendLine(",    Transfer.Money");
+                sql.AppendLine(",    Transfer.Status");
+                sql.AppendLine(",    Transfer.DoneAt");
+            }
+            sql.AppendLine("ORDER BY Ord.ID DESC");
 
             var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
             while (reader.Read())
@@ -572,7 +605,7 @@ namespace IM_PJ.Controllers
                     entity.PostalDeliveryType = Convert.ToInt32(reader["PostalDeliveryType"]);
 
                 // Chuyển khoản
-                if (PaymentStatus == 2 )
+                if (PaymentType == 2 )
                 { 
                     if (reader["CusBankID"] != DBNull.Value)
                     {
