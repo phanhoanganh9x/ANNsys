@@ -1634,6 +1634,7 @@
     <Compile Include="thong-tin-thuoc-tinh-san-pham.aspx.designer.cs">
       <DependentUpon>thong-tin-thuoc-tinh-san-pham.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Utils\Slug.cs" />
     <Compile Include="xem-don-hang-doi-tra.aspx.cs">
       <DependentUpon>xem-don-hang-doi-tra.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

@@ -267,12 +267,7 @@ namespace IM_PJ
                 }
             }
         }
-        public static string convertToSlug(string s)
-        {
-            Regex regex = new Regex("\\p{IsCombiningDiacriticalMarks}+");
-            string temp = s.Normalize(System.Text.NormalizationForm.FormD);
-            return regex.Replace(temp, String.Empty).Replace('\u0111', 'd').Replace('\u0110', 'D').Replace(' ', '-').ToLower();
-        }
+
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
             string username = Request.Cookies["userLoginSystem"].Value;
@@ -312,7 +307,7 @@ namespace IM_PJ
                 {
                     foreach (UploadedFile f in ProductThumbnailImage.UploadedFiles)
                     {
-                        var o = path + ProductID + '-' + convertToSlug(Path.GetFileName(f.FileName));
+                        var o = path + ProductID + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
                         try
                         {
                             f.SaveAs(Server.MapPath(o));
@@ -369,7 +364,7 @@ namespace IM_PJ
                 {
                     foreach (HttpPostedFile uploadedFile in UploadImages.PostedFiles)
                     {
-                        var o = path + ProductID + '-' + convertToSlug(Path.GetFileName(uploadedFile.FileName));
+                        var o = path + ProductID + '-' + Slug.ConvertToSlug(Path.GetFileName(uploadedFile.FileName));
                         uploadedFile.SaveAs(Server.MapPath(o));
                         ProductImageController.Insert(ProductID, o, false, DateTime.Now, username);
                     }
@@ -433,7 +428,7 @@ namespace IM_PJ
                                             if (postedFile != null && postedFile.ContentLength > 0)
                                             {
                                                 // Upload image
-                                                var o = path + ProductID + '-' + convertToSlug(Path.GetFileName(postedFile.FileName));
+                                                var o = path + ProductID + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName));
                                                 postedFile.SaveAs(Server.MapPath(o));
                                                 image = o;
 
@@ -473,7 +468,7 @@ namespace IM_PJ
                                     if (postedFile != null && postedFile.ContentLength > 0)
                                     {
                                         // Upload image
-                                        var o = path + ProductID + '-' + convertToSlug(Path.GetFileName(postedFile.FileName));
+                                        var o = path + ProductID + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName));
                                         postedFile.SaveAs(Server.MapPath(o));
                                         image = o;
                                     }

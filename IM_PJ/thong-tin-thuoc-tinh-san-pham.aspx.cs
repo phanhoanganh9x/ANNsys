@@ -87,12 +87,6 @@ namespace IM_PJ
             }
         }
 
-        public static string convertToSlug(string s)
-        {
-            Regex regex = new Regex("\\p{IsCombiningDiacriticalMarks}+");
-            string temp = s.Normalize(System.Text.NormalizationForm.FormD);
-            return regex.Replace(temp, String.Empty).Replace('\u0111', 'd').Replace('\u0110', 'D').Replace(' ', '-').ToLower();
-        }
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
             DateTime currentDate = DateTime.Now;
@@ -120,7 +114,7 @@ namespace IM_PJ
                 {
                     foreach (UploadedFile f in ProductThumbnailImage.UploadedFiles)
                     {
-                        var o = path + productID + '-' + convertToSlug(Path.GetFileName(f.FileName));
+                        var o = path + productID + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
                         try
                         {
                             f.SaveAs(Server.MapPath(o));
