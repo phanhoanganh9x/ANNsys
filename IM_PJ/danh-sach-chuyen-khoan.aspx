@@ -119,18 +119,7 @@
                                 <p>Chuyển từ</p>
                             </div>
                             <div class="col-xs-9">
-                                <asp:DropDownList ID="ddlCustomerBank" runat="server" CssClass="form-control">
-                                    <asp:ListItem Value="" Text="Tất cả thời gian"></asp:ListItem>
-                                    <asp:ListItem Value="today" Text="Hôm nay"></asp:ListItem>
-                                    <asp:ListItem Value="yesterday" Text="Hôm qua"></asp:ListItem>
-                                    <asp:ListItem Value="beforeyesterday" Text="Hôm kia"></asp:ListItem>
-                                    <asp:ListItem Value="week" Text="Tuần này"></asp:ListItem>
-                                    <asp:ListItem Value="7days" Text="7 ngày"></asp:ListItem>
-                                    <asp:ListItem Value="thismonth" Text="Tháng này"></asp:ListItem>
-                                    <asp:ListItem Value="lastmonth" Text="Tháng trước"></asp:ListItem>
-                                    <asp:ListItem Value="beforelastmonth" Text="Tháng trước nữa"></asp:ListItem>
-                                    <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
-                                </asp:DropDownList>
+                                <asp:DropDownList ID="ddlCustomerBank" runat="server" CssClass="form-control"></asp:DropDownList>
                             </div>
                         </div>
                         <div class="row">
@@ -138,18 +127,7 @@
                                 <p>Tài khoản nhận</p>
                             </div>
                             <div class="col-xs-9">
-                                <asp:DropDownList ID="ddlAccoutBank" runat="server" CssClass="form-control">
-                                    <asp:ListItem Value="" Text="Tất cả thời gian"></asp:ListItem>
-                                    <asp:ListItem Value="today" Text="Hôm nay"></asp:ListItem>
-                                    <asp:ListItem Value="yesterday" Text="Hôm qua"></asp:ListItem>
-                                    <asp:ListItem Value="beforeyesterday" Text="Hôm kia"></asp:ListItem>
-                                    <asp:ListItem Value="week" Text="Tuần này"></asp:ListItem>
-                                    <asp:ListItem Value="7days" Text="7 ngày"></asp:ListItem>
-                                    <asp:ListItem Value="thismonth" Text="Tháng này"></asp:ListItem>
-                                    <asp:ListItem Value="lastmonth" Text="Tháng trước"></asp:ListItem>
-                                    <asp:ListItem Value="beforelastmonth" Text="Tháng trước nữa"></asp:ListItem>
-                                    <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
-                                </asp:DropDownList>
+                                <asp:DropDownList ID="ddlAccoutBank" runat="server" CssClass="form-control"></asp:DropDownList>
                             </div>
                         </div>
                         <div class="row">
@@ -157,18 +135,7 @@
                                 <p>Trạng Thái</p>
                             </div>
                             <div class="col-xs-9">
-                                <asp:DropDownList ID="ddlStatus" runat="server" CssClass="form-control">
-                                    <asp:ListItem Value="" Text="Tất cả thời gian"></asp:ListItem>
-                                    <asp:ListItem Value="today" Text="Hôm nay"></asp:ListItem>
-                                    <asp:ListItem Value="yesterday" Text="Hôm qua"></asp:ListItem>
-                                    <asp:ListItem Value="beforeyesterday" Text="Hôm kia"></asp:ListItem>
-                                    <asp:ListItem Value="week" Text="Tuần này"></asp:ListItem>
-                                    <asp:ListItem Value="7days" Text="7 ngày"></asp:ListItem>
-                                    <asp:ListItem Value="thismonth" Text="Tháng này"></asp:ListItem>
-                                    <asp:ListItem Value="lastmonth" Text="Tháng trước"></asp:ListItem>
-                                    <asp:ListItem Value="beforelastmonth" Text="Tháng trước nữa"></asp:ListItem>
-                                    <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
-                                </asp:DropDownList>
+                                <asp:DropDownList ID="ddlStatus" runat="server" CssClass="form-control"></asp:DropDownList>
                             </div>
                         </div>
                         <div class="row">
@@ -176,7 +143,7 @@
                                 <p>Tổng đơn</p>
                             </div>
                             <div class="col-xs-9 text-right">
-                                <asp:TextBox ID="txtPrice" runat="server" CssClass="form-control text-align-right" value="10,000,000" ReadOnly="True"></asp:TextBox>
+                                <asp:TextBox ID="txtPrice" runat="server" CssClass="form-control text-align-right" ReadOnly="True"></asp:TextBox>
                             </div>
                         </div>
                         <div class="row">
@@ -184,7 +151,7 @@
                                 <p>Đã nhận</p>
                             </div>
                             <div class="col-xs-9">
-                                <asp:TextBox ID="txtNumber" runat="server" CssClass="form-control text-right" placeholder="Số tiền khách đã chuyển"></asp:TextBox>
+                                <asp:TextBox ID="txtMoneyReceived" runat="server" CssClass="form-control text-right" placeholder="Số tiền khách đã chuyển" data-type="currency"></asp:TextBox>
                             </div>
                         </div>
                         <div class="row">
@@ -193,7 +160,7 @@
                             </div>
                             <div class="col-xs-9">
                                 <div class="form-group">
-                                    <div class="input-group date" id="datetimepicker">
+                                    <div class="input-group date" id="doneAt">
                                         <input type="text" class="form-control" />
                                         <span class="input-group-addon">
                                             <span class="glyphicon glyphicon-calendar"></span>
@@ -215,15 +182,33 @@
         <script type="text/javascript">
             $(document).ready(() => {
                 $("button[data-toggle='modal']").click(e => {
-                    let picker = $('#datetimepicker');
-                    picker.datetimepicker({
+                    let row = e.currentTarget.parentNode.parentNode;
+                    let modal = $("#TransferBankModal");
+                    let cusBankDOM = modal.find("#<%=ddlCustomerBank.ClientID%>");
+                    let accBankDOM = modal.find("#<%=ddlAccoutBank.ClientID%>");
+                    let priceDOM = modal.find("#<%=txtPrice.ClientID%>");
+                    let moneyReceivedDOM = modal.find("#<%=txtMoneyReceived.ClientID%>");
+                    let statusDOM = modal.find("#<%=ddlStatus.ClientID%>");
+                    let pickerDOM = modal.find('#doneAt');
+                    pickerDOM.datetimepicker({
                         format: 'DD/MM/YYYY hh:mm:ss',
-                        setDate: new Date(),
-                        autoclose: true
+                        date: new Date()
                     });
                     
-                    //picker.children('input').val(now.format('dd/mm/yyyy'));
-                    console.log($(this).parent());
+                    let status = row.dataset["statusid"];
+                    // Đã nhận tiền
+                    if (status && status == 2)
+                    {
+                        cusBankDOM.val(row.dataset["cusbankid"]);
+                        accBankDOM.val(row.dataset["accbankid"]);
+                        if (row.dataset["moneyreceived"]) {
+                            moneyReceivedDOM.val(formatThousands(row.dataset["moneyreceived"]));
+                        }
+                        pickerDOM.val(row.dataset["doneat"]);
+                    }
+
+                    statusDOM.val(status)
+                    priceDOM.val(formatThousands(row.dataset["price"]))
                     console.log(e);
                 })
             })
@@ -262,6 +247,94 @@
                 return s.substr(0, i + 3) + r +
                     (d ? '.' + Math.round(d * Math.pow(10, dp || 2)) : '');
             };
+
+            function isNumber(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                    return false;
+                }
+                return true;
+            }
+
+            // Jquery Dependency
+            $("input[data-type='currency']").on({
+                keyup: function () {
+                    formatCurrency($(this));
+                },
+                blur: function () {
+                    formatCurrency($(this), "blur");
+                }
+            });
+
+
+            function formatNumber(n) {
+                // format number 1000000 to 1,234,567
+                return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            }
+
+
+            function formatCurrency(input, blur) {
+                // appends $ to value, validates decimal side
+                // and puts cursor back in right position.
+
+                // get input value
+                var input_val = input.val();
+
+                // don't validate empty input
+                if (input_val === "") { return; }
+
+                // original length
+                var original_len = input_val.length;
+
+                // initial caret position 
+                var caret_pos = input.prop("selectionStart");
+
+                // check for decimal
+                if (input_val.indexOf(".") >= 0) {
+
+                    // get position of first decimal
+                    // this prevents multiple decimals from
+                    // being entered
+                    var decimal_pos = input_val.indexOf(".");
+
+                    // split number by decimal point
+                    var left_side = input_val.substring(0, decimal_pos);
+                    var right_side = input_val.substring(decimal_pos);
+
+                    // add commas to left side of number
+                    left_side = formatNumber(left_side);
+
+                    // validate right side
+                    right_side = formatNumber(right_side);
+
+                    // On blur make sure 2 numbers after decimal
+                    if (blur === "blur") {
+                        right_side += "00";
+                    }
+
+                    // Limit decimal to only 2 digits
+                    right_side = right_side.substring(0, 2);
+
+                    // join number by .
+                    input_val = left_side;
+
+                } else {
+                    // no decimal entered
+                    // add commas to number
+                    // remove all non-digits
+                    input_val = formatNumber(input_val);
+                    input_val = input_val;
+                }
+
+                // send updated string to input
+                input.val(input_val);
+
+                // put caret back in the right position
+                var updated_len = input_val.length;
+                caret_pos = updated_len - original_len + caret_pos;
+                input[0].setSelectionRange(caret_pos, caret_pos);
+            }
         </script>
     </main>
 </asp:Content>

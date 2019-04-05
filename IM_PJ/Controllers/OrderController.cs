@@ -111,12 +111,12 @@ namespace IM_PJ.Controllers
             using (var dbe = new inventorymanagementEntities())
             {
                 var ui = dbe.tbl_Order.Where(x => x.ID == ID).FirstOrDefault();
-                if(ui != null)
+                if (ui != null)
                 {
                     ui.RefundsGoodsID = RefundsGoodsID;
                     ui.ModifiedDate = DateTime.Now;
                     ui.ModifiedBy = created;
-                    int i =dbe.SaveChanges();
+                    int i = dbe.SaveChanges();
                     return i;
                 }
                 return 0;
@@ -244,7 +244,7 @@ namespace IM_PJ.Controllers
             using (var db = new inventorymanagementEntities())
             {
                 var ui = db.tbl_Order.Where(x => x.ID == ID).FirstOrDefault();
-                if(ui != null)
+                if (ui != null)
                 {
                     ui.ExcuteStatus = 3;
                     ui.TotalPrice = "0";
@@ -253,7 +253,7 @@ namespace IM_PJ.Controllers
                     ui.GuestChange = 0;
                     ui.ModifiedDate = DateTime.Now;
                     ui.ModifiedBy = CreatedBy;
-                   int i = db.SaveChanges();
+                    int i = db.SaveChanges();
                     return i;
                 }
                 return 0;
@@ -358,41 +358,88 @@ namespace IM_PJ.Controllers
             var list = new List<OrderList>();
             var sql = new StringBuilder();
 
-            sql.AppendLine(String.Format("SELECT Ord.ID, Ord.CustomerName, Ord.CustomerPhone, Customer.Nick, Ord.CustomerID, Ord.OrderType, Ord.ExcuteStatus, Ord.PaymentStatus, Ord.PaymentType, Ord.ShippingType, Ord.TotalPrice, Ord.TotalDiscount, Ord.FeeShipping, Ord.OtherFeeName, Ord.OtherFeeValue, Ord.CreatedBy, Ord.CreatedDate, Ord.DateDone, Ord.OrderNote, Ord.RefundsGoodsID,  SUM(ISNULL(OrdDetail.Quantity, 0)) AS Quantity, Ord.ShippingCode, Ord.TransportCompanyID, Ord.TransportCompanySubID, Ord.OrderNote, Ord.PostalDeliveryType "));
+            sql.AppendLine("SELECT");
+            sql.AppendLine("    Ord.ID");
+            sql.AppendLine(",   Ord.CustomerName");
+            sql.AppendLine(",   Ord.CustomerPhone");
+            sql.AppendLine(",   Customer.Nick");
+            sql.AppendLine(",   Ord.CustomerID");
+            sql.AppendLine(",   Ord.OrderType");
+            sql.AppendLine(",   Ord.ExcuteStatus");
+            sql.AppendLine(",   Ord.PaymentStatus");
+            sql.AppendLine(",   Ord.PaymentType");
+            sql.AppendLine(",   Ord.ShippingType");
+            sql.AppendLine(",   Ord.TotalPrice");
+            sql.AppendLine(",   Ord.TotalDiscount");
+            sql.AppendLine(",   Ord.FeeShipping");
+            sql.AppendLine(",   Ord.OtherFeeName");
+            sql.AppendLine(",   Ord.OtherFeeValue");
+            sql.AppendLine(",   Ord.CreatedBy");
+            sql.AppendLine(",   Ord.CreatedDate");
+            sql.AppendLine(",   Ord.DateDone");
+            sql.AppendLine(",   Ord.OrderNote");
+            sql.AppendLine(",   Ord.RefundsGoodsID");
+            sql.AppendLine(",   SUM(ISNULL(OrdDetail.Quantity,0)) AS Quantity");
+            sql.AppendLine(",   Ord.ShippingCode");
+            sql.AppendLine(",   Ord.TransportCompanyID");
+            sql.AppendLine(",   Ord.TransportCompanySubID");
+            sql.AppendLine(",   Ord.OrderNote");
+            sql.AppendLine(",   Ord.PostalDeliveryType");
+            if (PaymentStatus == 2) // Chuyển khoản
+            {
+                sql.AppendLine(",   Transfer.CusBankID");
+                sql.AppendLine(",   CusBank.Name AS CusBankName");
+                sql.AppendLine(",   Transfer.AccBankID");
+                sql.AppendLine(",   AccBank.BankName AS AccBankName");
+                sql.AppendLine(",   ISNULL(Transfer.Money, 0) AS MoneyReceive");
+                sql.AppendLine(",   AccBank.Name AS AccBankName");
+                sql.AppendLine(",   CASE ISNULL(Transfer.Status, 2) AS StatusID");
+                sql.AppendLine(",   CASE ISNULL(Transfer.Status, 2) WHEN 1 THEN N'Đã nhận tiền' ELSE N'Chưa nhận tiền' END AS StatusName");
+                sql.AppendLine(",   Transfer.DoneAt");
+            }
             sql.AppendLine(String.Format("FROM tbl_Order AS Ord"));
             sql.AppendLine(String.Format("INNER JOIN tbl_OrderDetail AS OrdDetail"));
-            sql.AppendLine(String.Format("ON 	Ord.ID = OrdDetail.OrderID"));
+            sql.AppendLine(String.Format("ON    Ord.ID = OrdDetail.OrderID"));
             sql.AppendLine(String.Format("INNER JOIN tbl_Customer AS Customer"));
-            sql.AppendLine(String.Format("ON 	Ord.CustomerID = Customer.ID"));
+            sql.AppendLine(String.Format("ON    Ord.CustomerID = Customer.ID"));
+            if (PaymentStatus == 2) // Chuyển khoản
+            {
+                sql.AppendLine(String.Format("LEFT JOIN BankTransfer AS Transfer"));
+                sql.AppendLine(String.Format("ON    Ord.ID = Transfer.OrderID"));
+                sql.AppendLine(String.Format("LEFT JOIN Bank AS CusBank"));
+                sql.AppendLine(String.Format("ON    Transfer.CusBankID = CusBank.ID"));
+                sql.AppendLine(String.Format("LEFT JOIN BankAccount AS AccBank"));
+                sql.AppendLine(String.Format("ON    Transfer.AccBankID = AccBank.ID"));
+            }
             sql.AppendLine(String.Format("WHERE 1 = 1"));
 
-            if(ExcuteStatus > 0)
+            if (ExcuteStatus > 0)
             {
                 sql.AppendLine(String.Format("	AND Ord.ExcuteStatus = {0}", ExcuteStatus));
             }
 
-            if(TextSearch != "")
+            if (TextSearch != "")
             {
                 string TextSearchName = '"' + TextSearch + '"';
                 sql.AppendLine(String.Format("	AND ( (convert(nvarchar, Ord.ID) LIKE '{0}') OR CONTAINS(Ord.CustomerName, '{1}') OR CONTAINS(Customer.Nick, '{1}') OR (Ord.CustomerPhone = '{0}') OR (Ord.CustomerNewPhone = '{0}') OR (Ord.ShippingCode = '{0}') OR (OrdDetail.SKU LIKE '{0}%') OR (Ord.OrderNote LIKE '%{0}%'))", TextSearch, TextSearchName));
             }
-            
-            if(OrderType > 0)
+
+            if (OrderType > 0)
             {
                 sql.AppendLine(String.Format("	AND Ord.OrderType = {0}", OrderType));
             }
 
-            if(PaymentStatus > 0)
+            if (PaymentStatus > 0)
             {
                 sql.AppendLine(String.Format("	AND Ord.PaymentStatus = {0}", PaymentStatus));
             }
 
-            if(PaymentType > 0)
+            if (PaymentType > 0)
             {
                 sql.AppendLine(String.Format("	AND Ord.PaymentType = {0}", PaymentType));
             }
-            
-            if(ShippingType > 0)
+
+            if (ShippingType > 0)
             {
                 sql.AppendLine(String.Format("	AND Ord.ShippingType = {0}", ShippingType));
             }
@@ -420,7 +467,7 @@ namespace IM_PJ.Controllers
                     sql.AppendLine(String.Format("	AND Ord.TotalDiscount = 0", OtherFee));
                 }
             }
-                
+
 
             if (CreatedBy != "")
             {
@@ -502,7 +549,7 @@ namespace IM_PJ.Controllers
                 entity.ShippingType = Convert.ToInt32(reader["ShippingType"]);
                 entity.FeeShipping = Convert.ToInt32(reader["FeeShipping"]);
                 entity.OtherFeeName = reader["OtherFeeName"].ToString();
-                if(reader["OtherFeeValue"] != DBNull.Value)
+                if (reader["OtherFeeValue"] != DBNull.Value)
                     entity.OtherFeeValue = Convert.ToInt32(reader["OtherFeeValue"]);
                 else
                     entity.OtherFeeValue = 0;
@@ -523,6 +570,43 @@ namespace IM_PJ.Controllers
                 entity.OrderNote = reader["OrderNote"].ToString();
                 if (reader["PostalDeliveryType"] != DBNull.Value)
                     entity.PostalDeliveryType = Convert.ToInt32(reader["PostalDeliveryType"]);
+
+                // Chuyển khoản
+                if (PaymentStatus == 2 )
+                { 
+                    if (reader["CusBankID"] != DBNull.Value)
+                    {
+                        entity.CusBankID = Convert.ToInt32(reader["CusBankID"]);
+                    }
+                    if (reader["CusBankName"] != DBNull.Value)
+                    {
+                        entity.CusBankName = reader["CusBankName"].ToString();
+                    }
+                    if (reader["AccBankID"] != DBNull.Value)
+                    {
+                        entity.AccBankID = Convert.ToInt32(reader["AccBankID"]);
+                    }
+                    if (reader["AccBankName"] != DBNull.Value)
+                    {
+                        entity.AccBankName = reader["AccBankName"].ToString();
+                    }
+                    if (reader["MoneyReceive"] != DBNull.Value)
+                    {
+                        entity.MoneyReceive = Convert.ToDecimal(reader["MoneyReceive"]);
+                    }
+                    if (reader["StatusID"] != DBNull.Value)
+                    {
+                        entity.StatusID = Convert.ToInt32(reader["StatusID"]);
+                    }
+                    if (reader["StatusName"] != DBNull.Value)
+                    {
+                        entity.StatusName = reader["StatusName"].ToString();
+                    }
+                    if (reader["DoneAt"] != DBNull.Value)
+                    {
+                        entity.DoneAt = Convert.ToDateTime(reader["DoneAt"]);
+                    }
+                }
                 list.Add(entity);
             }
             reader.Close();
@@ -1334,6 +1418,16 @@ namespace IM_PJ.Controllers
             public Nullable<int> TransportCompanySubID { get; set; }
             public string OrderNote { get; set; }
             public int PostalDeliveryType { get; set; }
+
+            // Custom Transfer Bank
+            public int? CusBankID { get; set; }
+            public string CusBankName { get; set; }
+            public int? AccBankID { get; set; }
+            public string AccBankName { get; set; }
+            public Decimal? MoneyReceive { get; set; }
+            public int? StatusID { get; set; }
+            public string StatusName { get; set; }
+            public DateTime? DoneAt { get; set; }
         }
 
         public class OrderSQL
@@ -1368,7 +1462,7 @@ namespace IM_PJ.Controllers
                 double TotalRefundPrice = 0;
                 double TotalRefundFee = 0;
                 double TotalRefundCost = 0;
-                
+
                 // Get all infor product
                 var productTarget = con.tbl_Product
                     .GroupJoin(
@@ -1499,7 +1593,7 @@ namespace IM_PJ.Controllers
                 TotalNumberOfOrder = inforOrder.GroupBy(x => x.OrderID).Count();
 
                 TotalSalePrice = inforOrder
-                    .Select(x => new { TotalSalePrice = x.Quantity * Convert.ToDouble(x.Price)  })
+                    .Select(x => new { TotalSalePrice = x.Quantity * Convert.ToDouble(x.Price) })
                     .Sum(x => x.TotalSalePrice);
 
                 TotalSaleCost = inforOrder
@@ -1586,7 +1680,7 @@ namespace IM_PJ.Controllers
             {
                 totalSold = list.Sum(x => x.Quantity),
                 totalRevenue = list.Sum(x => x.TotalRevenue),
-                totalCost = list.Sum(x=> x.TotalCost)
+                totalCost = list.Sum(x => x.TotalCost)
             };
         }
 

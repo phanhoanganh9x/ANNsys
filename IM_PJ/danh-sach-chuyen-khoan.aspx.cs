@@ -73,6 +73,24 @@ namespace IM_PJ
                     }
                     ddlCreatedBy.DataBind();
                 }
+                // Add Customer Bank drop down list
+                var cusBanks = BankController.getDropDownList();
+                ddlCustomerBank.Items.Clear();
+                ddlCustomerBank.Items.AddRange(cusBanks.ToArray());
+                ddlCustomerBank.DataBind();
+
+                // Add Account Bank drop down list
+                var accBanks = BankAccountController.getDropDownList();
+                ddlAccoutBank.Items.Clear();
+                ddlAccoutBank.Items.AddRange(accBanks.ToArray());
+                ddlAccoutBank.DataBind();
+
+                // Add Order status
+                ddlStatus.Items.Clear();
+                ddlStatus.Items.Add(new ListItem(String.Empty, "0"));
+                ddlStatus.Items.Add(new ListItem("Đã nhận tiền", "1"));
+                ddlStatus.Items.Add(new ListItem("Chưa nhận tiền", "2"));
+                ddlStatus.SelectedIndex = 1;
             }
         }
         public void LoadData()
@@ -223,15 +241,16 @@ namespace IM_PJ
                     var TrTag = new StringBuilder();
                     TrTag.AppendLine("<tr ");
                     TrTag.AppendLine(String.Format("data-orderid='{0}' ", item.ID));
-                    TrTag.AppendLine(String.Format("data-cusbankid='{0}' ", 1));
-                    TrTag.AppendLine(String.Format("data-cusbankname='{0}' ", "Ngan hang A"));
-                    TrTag.AppendLine(String.Format("data-accbankid='{0}' ", 1));
-                    TrTag.AppendLine(String.Format("data-accbankname='{0}' ", "Ngan hang B"));
-                    TrTag.AppendLine(String.Format("data-status='{0}' ", 1));
-                    TrTag.AppendLine(String.Format("data-price='{0}' ", Convert.ToDouble(item.TotalPrice - TotalRefund)));
-                    TrTag.AppendLine(String.Format("data-moneyreceived='{0}' ", Convert.ToDouble(item.TotalPrice - TotalRefund)));
-                    TrTag.AppendLine(String.Format("data-doneat='{0}' ", item.CreatedDate.ToString("yyyy-MM-dd HH:mm:ss")));
-                    TrTag.AppendLine(String.Format("data-createby='{0}' ", item.CreatedBy));
+                    TrTag.AppendLine(String.Format("data-cusID='{0}' ", item.CustomerID));
+                    TrTag.AppendLine(String.Format("data-cusbankid='{0:#}' ", item.CusBankID));
+                    TrTag.AppendLine(String.Format("data-cusbankname='{0}' ", item.CusBankName));
+                    TrTag.AppendLine(String.Format("data-accbankid='{0:#}' ", item.AccBankID));
+                    TrTag.AppendLine(String.Format("data-accbankname='{0}' ", item.AccBankName));
+                    TrTag.AppendLine(String.Format("data-statusid='{0:#}' ", item.StatusID));
+                    TrTag.AppendLine(String.Format("data-statusname='{0}' ", item.StatusName));
+                    TrTag.AppendLine(String.Format("data-price='{0:#}' ", Convert.ToDouble(item.TotalPrice - TotalRefund)));
+                    TrTag.AppendLine(String.Format("data-moneyreceived='{0:#}' ", item.MoneyReceive));
+                    TrTag.AppendLine(String.Format("data-doneat='{0:yyyy-MM-dd HH:mm:ss}' ", item.DoneAt));
                     TrTag.AppendLine("/>");
 
                     html.Append(TrTag.ToString());
@@ -246,12 +265,12 @@ namespace IM_PJ
                         html.Append("   <td><a class=\"col-customer-name-link\" href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.CustomerName.ToTitleCase() + "</a></td>");
                     }
                     html.Append("   <td>" + item.Quantity + "</td>");
-                    html.Append("   <td>" + "Ngan hang A" + "</td>");
-                    html.Append("   <td>" + "Ngan hang B" + "</td>");
-                    html.Append("   <td>" + "Đã nhận tiền" + "</td>");
-                    html.Append("   <td><strong>" + string.Format("{0:N0}", Convert.ToDouble(item.TotalPrice - TotalRefund)) + "</strong></td>");
-                    html.Append("   <td><strong>" + string.Format("{0:N0}", Convert.ToDouble(item.TotalPrice - TotalRefund)) + "</strong></td>");
-                    html.Append("   <td>" + item.CreatedDate.ToString("yyyy-MM-dd HH:mm:ss") + "</td>");
+                    html.Append("   <td>" + item.CusBankName + "</td>");
+                    html.Append("   <td>" + item.AccBankName + "</td>");
+                    html.Append("   <td>" + item.StatusName + "</td>");
+                    html.Append("   <td><strong>" + String.Format("{0:#,###}", Convert.ToDouble(item.TotalPrice - TotalRefund)) + "</strong></td>");
+                    html.Append("   <td><strong>" + String.Format("{0:#,###}", item.MoneyReceive) + "</strong></td>");
+                    html.Append("   <td>" + String.Format("{0:yyyy-MM-dd HH:mm:ss}", item.CreatedDate) + "</td>");
                     if (acc.RoleID == 0)
                     {
                         html.Append("   <td>" + item.CreatedBy + "</td>");
@@ -493,6 +512,12 @@ namespace IM_PJ
                 request += "&createddate=" + ddlCreatedDate.SelectedValue;
             }
             Response.Redirect(request);
+        }
+
+        public static string GetTransferLast(int orderID, int cusID)
+        {
+            var last = BankTransferController.getTransferLast(orderID, cusID);
+            return new JavaScriptSerializer().Serialize(last);
         }
     }
 }
