@@ -411,7 +411,7 @@
                 }
             });
 
-            function getAllPrice() {
+            function getAllPrice(update_by_hand = false) {
                 let totalPrice = 0;
                 let productQuantity = 0;
                 let totalRefund = 0;
@@ -422,17 +422,30 @@
 
                 productRefunds.forEach(function(item){
                     let row = $("tr[data-rowIndex='" + item.RowIndex + "']");
-                    if (isDiscount == 1)
+                    if (update_by_hand == false)
                     {
-                        item.ReducedPrice = item.Price - discount;
-                        item.FeeRefund = feerefund;
+                        if (isDiscount == 1)
+                        {
+                            item.ReducedPrice = item.Price - discount;
+                            item.FeeRefund = feerefund;
+                        }
+                        else
+                        {
+                            item.ReducedPrice = item.Price;
+                            item.FeeRefund = item.FeeRefundDefault;
+                        }
+                        row.data("sold-price", item.ReducedPrice);
+                        row.data("feerefund", item.FeeRefund);
                     }
-                    else
-                    {
-                        item.ReducedPrice = item.Price;
-                        item.FeeRefund = item.FeeRefundDefault;
+
+                    // Ruler Price - ReducedPrice >= 10,000 VND
+                    if ((item.Price - item.ReducedPrice) > 11000) {
+                        alert("Giá đã bán không thể giảm hơn 11.000đ.");
+                        let sold_price = row.data("sold-price");
+                        row.find(".reducedPrice").val(formatThousands(sold_price, ","));
+                        item.ReducedPrice = sold_price;
                     }
-                    
+
                     if (item.ChangeType == 2){
                         item.TotalFeeRefund = (item.ReducedPrice - item.FeeRefund) * item.QuantityRefund;
                         totalPrice += item.TotalFeeRefund;
@@ -440,7 +453,6 @@
                         totalRefund += item.FeeRefund * item.QuantityRefund;
                     }
                     else {
-                        item.FeeRefund = 0 // Trường hợp đổi trả lỗi
                         item.TotalFeeRefund = item.ReducedPrice * item.QuantityRefund;
                         totalPrice += item.TotalFeeRefund;
                         productQuantity += item.QuantityRefund;
@@ -465,6 +477,22 @@
                 $("#<%=hdfTotalRefund.ClientID%>").val(totalRefund);
             }
 
+            function changeRefundType(obj){
+                let row = obj.parent().parent();
+                let RefundType = obj.val();
+                let feeRefundDom = row.find(".feeRefund");
+                if (RefundType == 2){
+                    row.find(".feeRefund").val(formatThousands(row.data("feerefund"), ","))
+                    feeRefundDom.prop('disabled', false);
+                }
+                else
+                {
+                    feeRefundDom.val(0);
+                    feeRefundDom.prop('disabled', true);
+                }
+                changeRow(obj);
+            }
+
             function changeRowFeeRefund(obj) {
                 obj.parent().parent().attr("data-feerefund", obj.val().replace(/,/g, ""));
                 changeRow(obj);
@@ -476,47 +504,21 @@
                 let RowIndex = row.attr("data-rowIndex");
                 let ProductID = parseInt(row.attr("data-productID"));
                 let ProductVariableID = parseInt(row.attr("data-productVariableID"));
-                let Price = parseFloat(row.find(".Price").html().replace(/,/g, ""));
-                let SoldPrice = parseInt(row.attr("data-sold-price"));
                 let ReducedPrice = parseFloat(row.find(".reducedPrice").val().replace(/,/g, ""));
                 let Quantity = parseFloat(row.find(".quantityRefund").val().replace(/,/g, ""));
                 let ChangeType = row.find(".changeType").val();
-                let FeeRefund = parseFloat(row.attr("data-feeRefund"));
-                let TotalFeeRefund = 0;
-
-                // Ruler Price - ReducedPrice >= 10,000 VND
-                if ((Price - ReducedPrice) > 11000) {
-                    alert("Giá đã bán không thể giảm hơn 11.000đ.");
-                    row.find(".reducedPrice").val(formatThousands(SoldPrice, ","));
-                    ReducedPrice = SoldPrice;
-                }
-
-                if (ChangeType == 2) {
-                    TotalFeeRefund = (ReducedPrice - FeeRefund) * Quantity;
-
-                    row.find(".feeRefund").val(formatThousands(FeeRefund, ","));
-                    row.find(".totalFeeRefund").html(formatThousands(TotalFeeRefund, ","));
-                }
-                else {
-                    FeeRefund = 0;
-                    TotalFeeRefund = ReducedPrice * Quantity;
-
-                    row.find(".feeRefund").val(0);
-                    row.find(".totalFeeRefund").html(formatThousands(TotalFeeRefund, ","));
-                }
+                let FeeRefund = parseFloat(row.find(".feeRefund").val().replace(/,/g, ""));
 
                 productRefunds.forEach(function(item){
                     if (item.isTarget(RowIndex, ProductID, ProductVariableID)) {
+                        item.ReducedPrice = ReducedPrice;
                         item.QuantityRefund = Quantity;
                         item.ChangeType = ChangeType;
-                        item.TotalFeeRefund = TotalFeeRefund;
-                        item.ReducedPrice = ReducedPrice;
                         item.FeeRefund = FeeRefund;
-                        item.DiscountPricePerProduct = Price - ReducedPrice;
                     }
                 });
 
-                getAllPrice();
+                getAllPrice(update_by_hand=true);
             }
 
             function clickrow(obj) {
@@ -563,7 +565,7 @@
                 html += "           <input type='text' class='form-control quantityRefund' min='1' value='" + formatThousands(item.QuantityRefund, ",") + "' onblur='changeRow($(this))' onkeypress='return event.charCode >= 48 && event.charCode <= 57'/>\n";
                 html += "    </td>\n";
                 html += "    <td>\n";
-                html += "           <select class='form-control changeType' onchange='changeRow($(this))'>\n";
+                html += "           <select class='form-control changeType' onchange='changeRefundType($(this))'>\n";
                 if (item.ProductStyle == 1) {
                     if (item.ChangeType == 1) {
                         html += "               <option value='2'>Đổi sản phẩm khác</option>\n";
@@ -766,7 +768,7 @@
                     if (product != null) {
                         // remove product by SKU 
                         productDeleteRefunds = productDeleteRefunds.filter(function (item) {
-                            return !(item.ParentSKU = product.ParentSKU && item.ChildSKU == product.ChildSKU)
+                            return !(item.ParentSKU == product.ParentSKU && item.ChildSKU == product.ChildSKU)
                         });
 
                         productRefunds.push(product);
@@ -884,7 +886,7 @@
                     });
 
                     row.remove();
-                    getAllPrice();
+                    getAllPrice(update_by_hand=true);
                 }
             }
 
@@ -897,7 +899,7 @@
 
                     $(".product-result").remove();
 
-                    getAllPrice();
+                    getAllPrice(update_by_hand=true);
                 }
             }
 
