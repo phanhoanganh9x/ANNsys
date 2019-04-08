@@ -212,12 +212,16 @@
                     let status = row.dataset["statusid"];
                     // Đã nhận tiền
                     if (status && status == 1) {
+                        moneyReceivedDOM.removeAttr("disabled");
                         cusBankDOM.val(row.dataset["cusbankid"]);
                         accBankDOM.val(row.dataset["accbankid"]);
                         if (row.dataset["moneyreceived"]) {
                             moneyReceivedDOM.val(formatThousands(row.dataset["moneyreceived"]));
                         }
                         pickerDOM.val(row.dataset["doneat"]);
+                    }
+                    else {
+                        moneyReceivedDOM.attr("disabled", true);
                     }
 
                     statusDOM.val(status)
@@ -226,8 +230,8 @@
 
                 // Change status tien reset = 0
                 $("#<%=ddlStatus.ClientID%>").change(e => {
-                    let status = $(this).val();
-                    let moneyReceivedDOM = modal.find("#<%=txtMoneyReceived.ClientID%>");
+                    let status = e.currentTarget.value;
+                    let moneyReceivedDOM = $("#<%=txtMoneyReceived.ClientID%>");
 
                     if (status != 1)
                     {
@@ -236,7 +240,12 @@
                     }
                     else
                     {
-                        moneyReceivedDOM.attr("disabled", false);
+                        let orderID = $("#<%=hdOrderID.ClientID%>").val();
+                        let row = $("tr[data-orderid='" + orderID + "'")
+                        if (row.data("moneyreceived")) {
+                            moneyReceivedDOM.val(formatThousands(row.data("moneyreceived")));
+                        }
+                        moneyReceivedDOM.removeAttr("disabled");
                     }
                 });
 
