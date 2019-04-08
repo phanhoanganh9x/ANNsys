@@ -393,8 +393,9 @@ namespace IM_PJ.Controllers
                 sql.AppendLine(",   AccBank.BankName AS AccBankName");
                 sql.AppendLine(",   ISNULL(Transfer.Money, 0) AS MoneyReceive");
                 sql.AppendLine(",   ISNULL(Transfer.Status, 2) AS StatusID");
-                sql.AppendLine(",   (CASE ISNULL(Transfer.Status, 2) WHEN 2 THEN N'Chưa nhận tiền' ELSE N'Đã nhận tiền' END) AS StatusName");
+                sql.AppendLine(",   (CASE ISNULL(Transfer.Status, 2) WHEN 1 THEN N'Đã nhận tiền' ELSE N'Chưa nhận tiền' END) AS StatusName");
                 sql.AppendLine(",   Transfer.DoneAt");
+                sql.AppendLine(",   Transfer.Note AS TransferNote");
             }
             sql.AppendLine(String.Format("FROM tbl_Order AS Ord"));
             sql.AppendLine(String.Format("INNER JOIN tbl_OrderDetail AS OrdDetail"));
@@ -562,6 +563,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine(",    Transfer.Money");
                 sql.AppendLine(",    Transfer.Status");
                 sql.AppendLine(",    Transfer.DoneAt");
+                sql.AppendLine(",    Transfer.Note");
             }
             sql.AppendLine("ORDER BY Ord.ID DESC");
 
@@ -605,8 +607,8 @@ namespace IM_PJ.Controllers
                     entity.PostalDeliveryType = Convert.ToInt32(reader["PostalDeliveryType"]);
 
                 // Chuyển khoản
-                if (PaymentType == 2 )
-                { 
+                if (PaymentType == 2)
+                {
                     if (reader["CusBankID"] != DBNull.Value)
                     {
                         entity.CusBankID = Convert.ToInt32(reader["CusBankID"]);
@@ -638,6 +640,10 @@ namespace IM_PJ.Controllers
                     if (reader["DoneAt"] != DBNull.Value)
                     {
                         entity.DoneAt = Convert.ToDateTime(reader["DoneAt"]);
+                    }
+                    if (reader["TransferNote"] != DBNull.Value)
+                    {
+                        entity.TransferNote = reader["TransferNote"].ToString();
                     }
                 }
                 list.Add(entity);
@@ -1461,6 +1467,7 @@ namespace IM_PJ.Controllers
             public int? StatusID { get; set; }
             public string StatusName { get; set; }
             public DateTime? DoneAt { get; set; }
+            public string TransferNote { get; set; }
         }
 
         public class OrderSQL

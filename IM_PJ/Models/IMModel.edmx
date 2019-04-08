@@ -16,17 +16,28 @@
           <Property Name="ModifiedBy" Type="int" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'inventorymanagement.dbo.BankAccount' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="BankAccount">
           <Key>
             <PropertyRef Name="ID" />
+            <PropertyRef Name="BankName" />
+            <PropertyRef Name="AccountName" />
+            <PropertyRef Name="AccountNumber" />
+            <PropertyRef Name="BranchName" />
+            <PropertyRef Name="Status" />
+            <PropertyRef Name="CreatedBy" />
+            <PropertyRef Name="CreatedDate" />
+            <PropertyRef Name="ModifiedBy" />
+            <PropertyRef Name="ModifiedDate" />
           </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="BankName" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="AccountName" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="AccountNumber" Type="varchar" MaxLength="30" Nullable="false" />
-          <Property Name="BranchName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="BankName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="AccountName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="AccountNumber" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="BranchName" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="Status" Type="int" Nullable="false" />
-          <Property Name="Note" Type="text" />
+          <Property Name="Note" Type="nvarchar" MaxLength="150" />
           <Property Name="CreatedBy" Type="int" Nullable="false" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="int" Nullable="false" />
@@ -43,7 +54,7 @@
           <Property Name="Money" Type="money" Nullable="false" />
           <Property Name="DoneAt" Type="datetime" Nullable="false" />
           <Property Name="Status" Type="int" Nullable="false" />
-          <Property Name="Note" Type="text" />
+          <Property Name="Note" Type="nvarchar" MaxLength="150" />
           <Property Name="CreatedBy" Type="int" Nullable="false" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="int" Nullable="false" />
@@ -757,7 +768,6 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
         </EntityType>
         <EntityContainer Name="inventorymanagementModelStoreContainer">
           <EntitySet Name="Bank" EntityType="Self.Bank" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="BankAccount" EntityType="Self.BankAccount" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BankTransfer" EntityType="Self.BankTransfer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Account" EntityType="Self.tbl_Account" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_AccountInfo" EntityType="Self.tbl_AccountInfo" Schema="dbo" store:Type="Tables" />
@@ -798,6 +808,21 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
           <EntitySet Name="tbl_Variable" EntityType="Self.tbl_Variable" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_VariableValue" EntityType="Self.tbl_VariableValue" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_WhiteDomain" EntityType="Self.tbl_WhiteDomain" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BankAccount" EntityType="Self.BankAccount" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [BankAccount].[ID] AS [ID], 
+    [BankAccount].[BankName] AS [BankName], 
+    [BankAccount].[AccountName] AS [AccountName], 
+    [BankAccount].[AccountNumber] AS [AccountNumber], 
+    [BankAccount].[BranchName] AS [BranchName], 
+    [BankAccount].[Status] AS [Status], 
+    [BankAccount].[Note] AS [Note], 
+    [BankAccount].[CreatedBy] AS [CreatedBy], 
+    [BankAccount].[CreatedDate] AS [CreatedDate], 
+    [BankAccount].[ModifiedBy] AS [ModifiedBy], 
+    [BankAccount].[ModifiedDate] AS [ModifiedDate]
+    FROM [dbo].[BankAccount] AS [BankAccount]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="View_ProductList" EntityType="Self.View_ProductList" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [View_ProductList].[ID] AS [ID], 
@@ -864,8 +889,8 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
           <EntitySet Name="tbl_PostImage" EntityType="inventorymanagementModel.tbl_PostImage" />
           <EntitySet Name="tbl_Account" EntityType="inventorymanagementModel.tbl_Account" />
           <EntitySet Name="Banks" EntityType="inventorymanagementModel.Bank" />
-          <EntitySet Name="BankAccounts" EntityType="inventorymanagementModel.BankAccount" />
           <EntitySet Name="BankTransfers" EntityType="inventorymanagementModel.BankTransfer" />
+          <EntitySet Name="BankAccounts" EntityType="inventorymanagementModel.BankAccount" />
         </EntityContainer>
         <EntityType Name="tbl_AccountInfo">
           <Key>
@@ -1582,22 +1607,6 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
           <Property Name="ModifiedBy" Type="Int32" Nullable="false" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
-        <EntityType Name="BankAccount">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="BankName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="AccountName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="AccountNumber" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="BranchName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Status" Type="Int32" Nullable="false" />
-          <Property Name="Note" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedBy" Type="Int32" Nullable="false" />
-          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
-        </EntityType>
         <EntityType Name="BankTransfer">
           <Key>
             <PropertyRef Name="UUID" />
@@ -1609,7 +1618,32 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
           <Property Name="Money" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
           <Property Name="DoneAt" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Status" Type="Int32" Nullable="false" />
-          <Property Name="Note" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Note" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="BankAccount">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="BankName" />
+            <PropertyRef Name="AccountName" />
+            <PropertyRef Name="AccountNumber" />
+            <PropertyRef Name="BranchName" />
+            <PropertyRef Name="Status" />
+            <PropertyRef Name="CreatedBy" />
+            <PropertyRef Name="CreatedDate" />
+            <PropertyRef Name="ModifiedBy" />
+            <PropertyRef Name="ModifiedDate" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="BankName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="AccountName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="AccountNumber" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="BranchName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+          <Property Name="Note" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="CreatedBy" Type="Int32" Nullable="false" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="Int32" Nullable="false" />
@@ -2376,23 +2410,6 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="BankAccounts">
-            <EntityTypeMapping TypeName="inventorymanagementModel.BankAccount">
-              <MappingFragment StoreEntitySet="BankAccount">
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="Note" ColumnName="Note" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="BranchName" ColumnName="BranchName" />
-                <ScalarProperty Name="AccountNumber" ColumnName="AccountNumber" />
-                <ScalarProperty Name="AccountName" ColumnName="AccountName" />
-                <ScalarProperty Name="BankName" ColumnName="BankName" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="BankTransfers">
             <EntityTypeMapping TypeName="inventorymanagementModel.BankTransfer">
               <MappingFragment StoreEntitySet="BankTransfer">
@@ -2411,7 +2428,24 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-        </EntityContainerMapping>
+          <EntitySetMapping Name="BankAccounts">
+            <EntityTypeMapping TypeName="inventorymanagementModel.BankAccount">
+              <MappingFragment StoreEntitySet="BankAccount">
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="BranchName" ColumnName="BranchName" />
+                <ScalarProperty Name="AccountNumber" ColumnName="AccountNumber" />
+                <ScalarProperty Name="AccountName" ColumnName="AccountName" />
+                <ScalarProperty Name="BankName" ColumnName="BankName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>

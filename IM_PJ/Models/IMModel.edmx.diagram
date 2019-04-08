@@ -46,9 +46,9 @@
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_PostImage" Width="1.5" PointX="17.375" PointY="20.75" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_Account" Width="1.5" PointX="0.625" PointY="0.75" />
         <EntityTypeShape EntityType="inventorymanagementModel.Bank" Width="1.5" PointX="19.375" PointY="20.75" />
-        <EntityTypeShape EntityType="inventorymanagementModel.BankAccount" Width="1.5" PointX="21.375" PointY="0.75" />
-        <EntityTypeShape EntityType="inventorymanagementModel.BankTransfer" Width="1.5" PointX="21.375" PointY="4.75" />
-      </Diagram>
+        <EntityTypeShape EntityType="inventorymanagementModel.BankTransfer" Width="1.5" PointX="21.375" PointY="0.75" />
+        <EntityTypeShape EntityType="inventorymanagementModel.BankAccount" Width="1.5" PointX="21.375" PointY="5.75" />
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

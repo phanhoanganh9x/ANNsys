@@ -20,7 +20,7 @@ namespace IM_PJ.Controllers
                         con.BankTransfers,
                         order => order.ID,
                         tran => tran.OrderID,
-                        (order, tran) => new { tran.CusBankID, tran.AccBankID, order.CreatedDate }
+                        (order, tran) => new { tran.CusBankID, tran.AccBankID, order.CreatedDate, tran.Note }
                     ).Join(
                         con.Banks,
                         tran => tran.CusBankID,
@@ -30,7 +30,8 @@ namespace IM_PJ.Controllers
                             CusBankID = tran.CusBankID,
                             CusBankName = cusBank.BankName,
                             AccBankID = tran.AccBankID,
-                            OrderCreateDate = tran.CreatedDate
+                            OrderCreateDate = tran.CreatedDate,
+                            Note = tran.Note
                         }
                     ).Join(
                         con.BankAccounts,
@@ -42,7 +43,8 @@ namespace IM_PJ.Controllers
                             CusBankName = tran.CusBankName,
                             AccBankID = tran.AccBankID,
                             AccBankName = accBank.BankName,
-                            OrderCreateDate = tran.OrderCreateDate
+                            OrderCreateDate = tran.OrderCreateDate,
+                            Note = tran.Note
                         }
                     ).OrderByDescending(
                         o => o.OrderCreateDate
@@ -51,7 +53,8 @@ namespace IM_PJ.Controllers
                         CusBankID = x.CusBankID,
                         CusBankName = x.CusBankName,
                         AccBankID = x.AccBankID,
-                        AccBankName = x.AccBankName
+                        AccBankName = x.AccBankName,
+                        Note = x.Note
                     }).FirstOrDefault();
                 return last;
             }
@@ -91,5 +94,6 @@ namespace IM_PJ.Controllers
         public string CusBankName { get; set; }
         public int AccBankID { get; set; }
         public string AccBankName { get; set; }
+        public string Note { get; set; }
     }
 }

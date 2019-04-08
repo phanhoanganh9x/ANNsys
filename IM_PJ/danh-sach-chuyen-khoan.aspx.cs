@@ -251,6 +251,7 @@ namespace IM_PJ
                     TrTag.AppendLine(String.Format("data-price='{0:#}' ", Convert.ToDouble(item.TotalPrice - TotalRefund)));
                     TrTag.AppendLine(String.Format("data-moneyreceived='{0:#}' ", item.MoneyReceive));
                     TrTag.AppendLine(String.Format("data-doneat='{0:yyyy-MM-dd HH:mm:ss}' ", item.DoneAt));
+                    TrTag.AppendLine(String.Format("data-transfernote='{0}' ", item.TransferNote));
                     TrTag.AppendLine("/>");
 
                     html.Append(TrTag.ToString());
@@ -267,10 +268,19 @@ namespace IM_PJ
                     html.Append("   <td>" + item.Quantity + "</td>");
                     html.Append("   <td id='cusBankName'>" + item.CusBankName + "</td>");
                     html.Append("   <td id='accBankName'>" + item.AccBankName + "</td>");
-                    html.Append("   <td id='statusName'>" + item.StatusName + "</td>");
+                    if (item.StatusID == 1)
+                    {
+                        html.Append("   <td id='statusName'><span class='bg-blue'>" + item.StatusName + "</span></td>");
+                        html.Append("   <td id='moneyReceive'><strong>" + String.Format("{0:#,###}", item.MoneyReceive) + "</strong></td>");
+                        html.Append("   <td id='doneAt'>" + String.Format("{0:yyyy-MM-dd HH:mm:ss}", item.CreatedDate) + "</td>");
+                    }
+                    else
+                    {
+                        html.Append("   <td id='statusName'><span class='bg-red'>" + item.StatusName + "</span></td>");
+                        html.Append("   <td id='moneyReceive'></td>");
+                        html.Append("   <td id='doneAt'></td>");
+                    }
                     html.Append("   <td><strong>" + String.Format("{0:#,###}", Convert.ToDouble(item.TotalPrice - TotalRefund)) + "</strong></td>");
-                    html.Append("   <td id='moneyReceive'><strong>" + String.Format("{0:#,###}", item.MoneyReceive) + "</strong></td>");
-                    html.Append("   <td id='doneAt'>" + String.Format("{0:yyyy-MM-dd HH:mm:ss}", item.CreatedDate) + "</td>");
                     if (acc.RoleID == 0)
                     {
                         html.Append("   <td>" + item.CreatedBy + "</td>");
@@ -515,7 +525,7 @@ namespace IM_PJ
         }
 
         [WebMethod]
-        public static string GetTransferLast(int orderID, int cusID)
+        public static string getTransferLast(int orderID, int cusID)
         {
             var last = BankTransferController.getTransferLast(orderID, cusID);
             return new JavaScriptSerializer().Serialize(last);

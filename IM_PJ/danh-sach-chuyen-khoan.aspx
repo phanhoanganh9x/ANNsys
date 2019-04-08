@@ -170,6 +170,14 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <p>Note</p>
+                            </div>
+                            <div class="col-xs-9">
+                                <asp:TextBox ID="txtNote" runat="server" CssClass="form-control text-left" placeholder="Chú thích" Rows="3" TextMode="MultiLine"></asp:TextBox>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button id="closeTransfer" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -192,6 +200,7 @@
                     let moneyReceivedDOM = modal.find("#<%=txtMoneyReceived.ClientID%>");
                     let statusDOM = modal.find("#<%=ddlStatus.ClientID%>");
                     let pickerDOM = modal.find('#dtDoneAt');
+                    let noteDOM = modal.find("#<%=txtNote.ClientID%>");
 
                     orderIDDOM.val(row.dataset["orderid"]);
                     pickerDOM.datetimepicker({
@@ -199,6 +208,7 @@
                         date: new Date()
                     });
 
+                    // Money receive
                     let moneyReceive = row.dataset["moneyreceived"]
                     if (moneyReceive)
                     {
@@ -215,6 +225,7 @@
                         moneyReceivedDOM.removeAttr("disabled");
                         cusBankDOM.val(row.dataset["cusbankid"]);
                         accBankDOM.val(row.dataset["accbankid"]);
+                        // Money receive
                         if (row.dataset["moneyreceived"]) {
                             moneyReceivedDOM.val(formatThousands(row.dataset["moneyreceived"]));
                         }
@@ -223,9 +234,41 @@
                     else {
                         moneyReceivedDOM.attr("disabled", true);
                     }
-
                     statusDOM.val(status)
                     priceDOM.val(formatThousands(row.dataset["price"]))
+
+                    // Note
+                    noteDOM.val(row.dataset["transfernote"]);
+
+                    if (!cusBankDOM.val() || !accBankDOM.val() || !noteDOM.val())
+                    {
+                        let data = {
+                            'orderID': row.dataset["orderid"],
+                            'cusID': row.dataset["cusid"]
+                        }
+                        $.ajax({
+                            type: "POST",
+                            url: "/danh-sach-chuyen-khoan.aspx/getTransferLast",
+                            data: JSON.stringify(data),
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (msg) {
+                                var data = JSON.parse(msg.d);
+                                if (data)
+                                {
+                                    // Customer Bank
+                                    cusBankDOM.val(data.CusBankID);
+                                    // Account Bank
+                                    accBankDOM.val(data.AccBankID);
+                                    // Note
+                                    noteDOM.val(data.Note);
+                                }
+                            },
+                            error: function (xmlhttprequest, textstatus, errorthrow) {
+                                swal("Thông báo", "Đã có vấn đề lấy thông tin chuyển hoàn", "error");
+                            }
+                        });
+                    }
                 })
 
                 // Change status tien reset = 0
@@ -256,6 +299,7 @@
                     let status = $("#<%=ddlStatus.ClientID%>").val();
                     let money = $("#<%=txtMoneyReceived.ClientID%>").val().replace(/\,/g, '');
                     let doneAt = $("#dtDoneAt").data('date');
+                    let note = $("#<%=txtNote.ClientID%>").val();
 
                     let data = {
                         'OrderID': orderID,
@@ -264,6 +308,7 @@
                         'Money': money ? money : 0,
                         'DoneAt': doneAt,
                         'Status': 1,
+                        'Note': note
                     };
                     $.ajax({
                         type: "POST",
@@ -273,6 +318,7 @@
                         dataType: "json",
                         success: function (msg) {
                             let row = $("tr[data-orderid='" + orderID + "'");
+                            let statusNameDOM = row.find('#statusName');
                             let cusBankName = $("#<%=ddlCustomerBank.ClientID%> :selected").text();
                             let accBankName = $("#<%=ddlAccoutBank.ClientID%> :selected").text();
                             let statusName = $("#<%=ddlStatus.ClientID%> :selected").text();
@@ -286,12 +332,33 @@
                             row.attr("data-statusname", statusName);
                             row.attr("data-moneyreceived", money);
                             row.attr("data-doneat", doneAt);
+                            row.attr("data-transfernote", note);
 
                             row.find('#cusBankName').html(cusBankName);
                             row.find('#accBankName').html(accBankName);
-                            row.find('#statusName').html(statusName);
-                            row.find('#moneyReceive').html(formatThousands(money));
-                            row.find('#doneAt').html(doneAt);
+                            statusNameDOM.children("span").html(statusName);
+                            // Đã nhận tiền
+                            if (status == 1)
+                            {
+                                statusNameDOM.children("span").removeClass();
+                                statusNameDOM.children("span").addClass("bg-blue");
+                                if (money)
+                                {
+                                    row.find('#moneyReceive').html(formatThousands(money));
+                                }
+                                else
+                                {
+                                    row.find('#moneyReceive').html("");
+                                }
+                                row.find('#doneAt').html(doneAt);
+                            }
+                            else
+                            {
+                                statusNameDOM.children("span").removeClass();
+                                statusNameDOM.children("span").addClass("bg-red");
+                                row.find('#moneyReceive').html("");
+                                row.find('#doneAt').html("");
+                            }
 
                             $("#closeTransfer").click();
                         },
