@@ -56,6 +56,32 @@ namespace IM_PJ.Controllers
                 return last;
             }
         }
+
+        public static bool Update(BankTransfer transfer)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var old = con.BankTransfers.Where(x => x.OrderID == transfer.OrderID).SingleOrDefault();
+                if (old != null)
+                {
+                    old.CusBankID = transfer.CusBankID;
+                    old.AccBankID = transfer.AccBankID;
+                    old.Money = transfer.Money;
+                    old.DoneAt = transfer.DoneAt;
+                    old.Status = transfer.Status;
+                    old.ModifiedBy = transfer.ModifiedBy;
+                    old.ModifiedDate = transfer.ModifiedDate;
+                    con.SaveChanges();
+                }
+                else
+                {
+                    con.BankTransfers.Add(transfer);
+                    con.SaveChanges();
+                }
+            }
+
+            return true;
+        }
     }
 
     [Serializable]

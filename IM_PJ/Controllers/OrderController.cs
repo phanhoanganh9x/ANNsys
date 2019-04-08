@@ -393,7 +393,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine(",   AccBank.BankName AS AccBankName");
                 sql.AppendLine(",   ISNULL(Transfer.Money, 0) AS MoneyReceive");
                 sql.AppendLine(",   ISNULL(Transfer.Status, 2) AS StatusID");
-                sql.AppendLine(",   (CASE ISNULL(Transfer.Status, 2) WHEN 2 THEN N'Đã nhận tiền' ELSE N'Chưa nhận tiền' END) AS StatusName");
+                sql.AppendLine(",   (CASE ISNULL(Transfer.Status, 2) WHEN 2 THEN N'Chưa nhận tiền' ELSE N'Đã nhận tiền' END) AS StatusName");
                 sql.AppendLine(",   Transfer.DoneAt");
             }
             sql.AppendLine(String.Format("FROM tbl_Order AS Ord"));

@@ -114,6 +114,7 @@
                         <h4 class="modal-title">Cập nhật thông tin chuyển khoản</h4>
                     </div>
                     <div class="modal-body">
+                        <asp:HiddenField ID="hdOrderID" runat="server" />
                         <div class="row">
                             <div class="col-xs-3">
                                 <p>Chuyển từ</p>
@@ -151,7 +152,7 @@
                                 <p>Đã nhận</p>
                             </div>
                             <div class="col-xs-9">
-                                <asp:TextBox ID="txtMoneyReceived" runat="server" CssClass="form-control text-right" placeholder="Số tiền khách đã chuyển" data-type="currency"></asp:TextBox>
+                                <asp:TextBox ID="txtMoneyReceived" runat="server" CssClass="form-control text-right" placeholder="Số tiền khách đã chuyển" data-type="currency" onkeypress='return event.charCode >= 48 && event.charCode <= 57'></asp:TextBox>
                             </div>
                         </div>
                         <div class="row">
@@ -160,7 +161,7 @@
                             </div>
                             <div class="col-xs-9">
                                 <div class="form-group">
-                                    <div class="input-group date" id="doneAt">
+                                    <div class="input-group date" id="dtDoneAt">
                                         <input type="text" class="form-control" />
                                         <span class="input-group-addon">
                                             <span class="glyphicon glyphicon-calendar"></span>
@@ -171,8 +172,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button id="closeTransfer" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button id="updateTransfer" type="button" class="btn btn-primary">Save changes</button>
                     </div>
                 </div>
             </div>
@@ -184,21 +185,33 @@
                 $("button[data-toggle='modal']").click(e => {
                     let row = e.currentTarget.parentNode.parentNode;
                     let modal = $("#TransferBankModal");
+                    let orderIDDOM = modal.find("#<%=hdOrderID.ClientID%>");
                     let cusBankDOM = modal.find("#<%=ddlCustomerBank.ClientID%>");
                     let accBankDOM = modal.find("#<%=ddlAccoutBank.ClientID%>");
                     let priceDOM = modal.find("#<%=txtPrice.ClientID%>");
                     let moneyReceivedDOM = modal.find("#<%=txtMoneyReceived.ClientID%>");
                     let statusDOM = modal.find("#<%=ddlStatus.ClientID%>");
-                    let pickerDOM = modal.find('#doneAt');
+                    let pickerDOM = modal.find('#dtDoneAt');
+
+                    orderIDDOM.val(row.dataset["orderid"]);
                     pickerDOM.datetimepicker({
-                        format: 'DD/MM/YYYY hh:mm:ss',
+                        format: 'YYYY-MM-DD hh:mm:ss',
                         date: new Date()
                     });
-                    
+
+                    let moneyReceive = row.dataset["moneyreceived"]
+                    if (moneyReceive)
+                    {
+                        moneyReceivedDOM.val(formatThousands(row.dataset["moneyreceived"]));
+                    }
+                    else
+                    {
+                        moneyReceivedDOM.val("")
+                    }
+
                     let status = row.dataset["statusid"];
                     // Đã nhận tiền
-                    if (status && status == 2)
-                    {
+                    if (status && status == 1) {
                         cusBankDOM.val(row.dataset["cusbankid"]);
                         accBankDOM.val(row.dataset["accbankid"]);
                         if (row.dataset["moneyreceived"]) {
@@ -209,9 +222,77 @@
 
                     statusDOM.val(status)
                     priceDOM.val(formatThousands(row.dataset["price"]))
-                    console.log(e);
                 })
-            })
+
+                // Change status tien reset = 0
+                $("#<%=ddlStatus.ClientID%>").change(e => {
+                    let status = $(this).val();
+                    let moneyReceivedDOM = modal.find("#<%=txtMoneyReceived.ClientID%>");
+
+                    if (status != 1)
+                    {
+                        moneyReceivedDOM.val("");
+                        moneyReceivedDOM.attr("disabled", true);
+                    }
+                    else
+                    {
+                        moneyReceivedDOM.attr("disabled", false);
+                    }
+                });
+
+                $("#updateTransfer").click(e => {
+                    let orderID = $("#<%=hdOrderID.ClientID%>").val();
+                    let cusBankID = $("#<%=ddlCustomerBank.ClientID%>").val();
+                    let accBankID = $("#<%=ddlAccoutBank.ClientID%>").val();
+                    let status = $("#<%=ddlStatus.ClientID%>").val();
+                    let money = $("#<%=txtMoneyReceived.ClientID%>").val().replace(/\,/g, '');
+                    let doneAt = $("#dtDoneAt").data('date');
+
+                    let data = {
+                        'OrderID': orderID,
+                        'CusBankID': cusBankID,
+                        'AccBankID': accBankID,
+                        'Money': money ? money : 0,
+                        'DoneAt': doneAt,
+                        'Status': 1,
+                    };
+                    $.ajax({
+                        type: "POST",
+                        url: "/danh-sach-chuyen-khoan.aspx/updateTransfer",
+                        data: JSON.stringify({'transfer': data}),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (msg) {
+                            let row = $("tr[data-orderid='" + orderID + "'");
+                            let cusBankName = $("#<%=ddlCustomerBank.ClientID%> :selected").text();
+                            let accBankName = $("#<%=ddlAccoutBank.ClientID%> :selected").text();
+                            let statusName = $("#<%=ddlStatus.ClientID%> :selected").text();
+
+                            // Update screen
+                            row.attr("data-cusbankid", cusBankID);
+                            row.attr("data-cusbankname", cusBankName);
+                            row.attr("data-accbankid", accBankID);
+                            row.attr("data-accbankname", accBankName);
+                            row.attr("data-statusid", status);
+                            row.attr("data-statusname", statusName);
+                            row.attr("data-moneyreceived", money);
+                            row.attr("data-doneat", doneAt);
+
+                            row.find('#cusBankName').html(cusBankName);
+                            row.find('#accBankName').html(accBankName);
+                            row.find('#statusName').html(statusName);
+                            row.find('#moneyReceive').html(formatThousands(money));
+                            row.find('#doneAt').html(doneAt);
+
+                            $("#closeTransfer").click();
+                        },
+                        error: function (xmlhttprequest, textstatus, errorthrow) {
+                            swal("Thông báo", "Đã có vấn đề trong việc cập nhật thông tin chuyển khoản", "error");
+                        }
+                    });
+                });
+            });
+
             // Parse URL Queries
             function url_query(query) {
                 query = query.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");

@@ -265,12 +265,12 @@ namespace IM_PJ
                         html.Append("   <td><a class=\"col-customer-name-link\" href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.CustomerName.ToTitleCase() + "</a></td>");
                     }
                     html.Append("   <td>" + item.Quantity + "</td>");
-                    html.Append("   <td>" + item.CusBankName + "</td>");
-                    html.Append("   <td>" + item.AccBankName + "</td>");
-                    html.Append("   <td>" + item.StatusName + "</td>");
+                    html.Append("   <td id='cusBankName'>" + item.CusBankName + "</td>");
+                    html.Append("   <td id='accBankName'>" + item.AccBankName + "</td>");
+                    html.Append("   <td id='statusName'>" + item.StatusName + "</td>");
                     html.Append("   <td><strong>" + String.Format("{0:#,###}", Convert.ToDouble(item.TotalPrice - TotalRefund)) + "</strong></td>");
-                    html.Append("   <td><strong>" + String.Format("{0:#,###}", item.MoneyReceive) + "</strong></td>");
-                    html.Append("   <td>" + String.Format("{0:yyyy-MM-dd HH:mm:ss}", item.CreatedDate) + "</td>");
+                    html.Append("   <td id='moneyReceive'><strong>" + String.Format("{0:#,###}", item.MoneyReceive) + "</strong></td>");
+                    html.Append("   <td id='doneAt'>" + String.Format("{0:yyyy-MM-dd HH:mm:ss}", item.CreatedDate) + "</td>");
                     if (acc.RoleID == 0)
                     {
                         html.Append("   <td>" + item.CreatedBy + "</td>");
@@ -514,10 +514,27 @@ namespace IM_PJ
             Response.Redirect(request);
         }
 
+        [WebMethod]
         public static string GetTransferLast(int orderID, int cusID)
         {
             var last = BankTransferController.getTransferLast(orderID, cusID);
             return new JavaScriptSerializer().Serialize(last);
+        }
+
+        [WebMethod]
+        public static void updateTransfer(BankTransfer transfer)
+        {
+            string username = HttpContext.Current.Request.Cookies["userLoginSystem"].Value;
+            var acc = AccountController.GetByUsername(username);
+
+            // Update transfer infor
+            transfer.UUID = Guid.NewGuid();
+            transfer.CreatedBy = acc.ID;
+            transfer.CreatedDate = DateTime.Now;
+            transfer.ModifiedBy = acc.ID;
+            transfer.ModifiedDate = DateTime.Now;
+
+            BankTransferController.Update(transfer);
         }
     }
 }
