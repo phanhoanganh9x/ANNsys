@@ -767,7 +767,6 @@ function getAllPrice(is_payAll_call=false) {
         }
 
         var ChietKhau = document.getElementById('<%= hdfChietKhau.ClientID%>').defaultValue;
-
         var listck = ChietKhau.split('|');
         for (var i = 0; i < listck.length - 1; i++) {
             var item = listck[i].split('-');
@@ -783,12 +782,23 @@ function getAllPrice(is_payAll_call=false) {
             }
         }
 
-        if (amountdiscount > 0) {
-            if (amount < amountdiscount) {
-                amount = amountdiscount;
+        // Nếu dùng bằng tay để chỉnh chiết khấu
+        if (is_payAll_call === true)
+        {
+            amount = parseInt($("#<%=pDiscount.ClientID%>").val().replace(/\,/g,''));
+        }
+        else
+        {
+            // Nếu chiết khấu của khách hàng lớn hơn 0
+            if (amountdiscount > 0) {
+                // Nếu <chiết khấu nhóm> của khách hàng lớn hơn mức được <chiết khấu của đơn hàng> thì lấy <chiết khấu nhóm> để tính
+                if (amount < amountdiscount) {
+                    amount = amountdiscount;
+                }
             }
         }
 
+        // Nếu đơn hàng được chiết khấu sau khi tính toán
         if (amount > 0) {
             totalDiscount = amount;
             var totalck = amount * productquantity;
@@ -813,13 +823,8 @@ function getAllPrice(is_payAll_call=false) {
 
         var priceafterchietkhau = totalleft;
 
-        
-
         var totalmoney = totalleft + feeship + otherfee;
-        if (is_payAll_call !== true)
-        {
-            $("#<%=pDiscount.ClientID%>").val(formatThousands(totalDiscount, ','));
-        }
+        $("#<%=pDiscount.ClientID%>").val(formatThousands(totalDiscount, ','));
         $(".totalpriceorderall").html(formatThousands(totalmoney, ','));
         $(".priceafterchietkhau").html(formatThousands(priceafterchietkhau, ','));
         $("#<%=hdfTotalPrice.ClientID%>").val(totalmoney);
