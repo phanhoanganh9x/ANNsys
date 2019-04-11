@@ -71,9 +71,17 @@ namespace IM_PJ
                 {
                     Response.Redirect("/dang-nhap");
                 }
-                //LoadData();
+                LoadData();
             }
         }
+
+        public void LoadData()
+        {
+            // Fix bug, case setting value for pDiscount on HTML but don't change value
+            pDiscount.Value = 1;
+            pFeeShip.Value = 1;
+        }
+
         [WebMethod]
         public static string checkPrepayTransport(int ID, int SubID)
         {

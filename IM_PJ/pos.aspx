@@ -251,6 +251,10 @@
 
             // focus to searchProduct input when page on ready
             $(document).ready(function () {
+                // Init Page
+                $("#<%=pDiscount.ClientID%>").val(0)
+                $("#<%=pFeeShip.ClientID%>").val(0)
+
                 // hide header in template
                 $("#header").html("");
 

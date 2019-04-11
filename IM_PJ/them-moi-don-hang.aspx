@@ -269,6 +269,11 @@
     <telerik:RadScriptBlock ID="sc" runat="server">
 <script type="text/javascript">
     "use strict";
+    $(document).ready(() => {
+        // Init Page
+        $("#<%=pDiscount.ClientID%>").val(0)
+        $("#<%=pFeeShip.ClientID%>").val(0)
+    });
 
 // order of item list
 var orderItem = 0;
