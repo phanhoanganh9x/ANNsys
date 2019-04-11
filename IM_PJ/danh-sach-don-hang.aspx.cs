@@ -439,7 +439,14 @@ namespace IM_PJ
                     html.Append("   <td>" + item.Quantity + "</td>");
                     html.Append("   <td>" + PJUtils.OrderExcuteStatus(Convert.ToInt32(item.ExcuteStatus)) + "</td>");
                     html.Append("   <td>" + PJUtils.OrderPaymentStatus(Convert.ToInt32(item.PaymentStatus)) + "</td>");
-                    html.Append("   <td>" + PJUtils.PaymentType(Convert.ToInt32(item.PaymentType)) + "</td>");
+                    #region Phương thức thanh toán
+                    html.Append("   <td>");
+                    html.Append(PJUtils.PaymentType(Convert.ToInt32(item.PaymentType)));
+                    // Đã nhận tiền
+                    if (item.TransferStatus.HasValue && item.TransferStatus.Value == 1)
+                        html.Append("       <br/><span class='bg-blue'>Đã nhận tiền</span>");
+                    html.Append("   </td>");
+                    #endregion
                     html.Append("   <td>" + PJUtils.ShippingType(Convert.ToInt32(item.ShippingType)) + "</td>");
                     html.Append("   <td><strong>" + string.Format("{0:N0}", Convert.ToDouble(item.TotalPrice - TotalRefund)) + "</strong></td>");
 
@@ -470,7 +477,7 @@ namespace IM_PJ
                     html.Append("<tr class='tr-more-info'>");
                     html.Append("   <td colspan='2'>");
                     html.Append("   </td>");
-                    html.Append("   <td colspan='11'>");
+                    html.Append("   <td colspan='4'>");
 
                     if(RefundsGoodsID != 0)
                     {
@@ -515,6 +522,9 @@ namespace IM_PJ
                     {
                         html.Append("<span class='order-info'><strong>Ghi chú:</strong> " + item.OrderNote + "</span>");
                     }
+                    html.Append("   </td>");
+                    html.Append("   <td colspan='7'>");
+                    
                     html.Append("   </td>");
                     html.Append("</tr>");
                 }

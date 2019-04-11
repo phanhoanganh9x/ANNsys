@@ -385,33 +385,27 @@ namespace IM_PJ.Controllers
             sql.AppendLine(",   Ord.TransportCompanySubID");
             sql.AppendLine(",   Ord.OrderNote");
             sql.AppendLine(",   Ord.PostalDeliveryType");
-            if (PaymentType == 2) // Chuyển khoản
-            {
-                sql.AppendLine(",   Transfer.CusBankID");
-                sql.AppendLine(",   CusBank.BankName AS CusBankName");
-                sql.AppendLine(",   Transfer.AccBankID");
-                sql.AppendLine(",   AccBank.BankName AS AccBankName");
-                sql.AppendLine(",   ISNULL(Transfer.Money, 0) AS MoneyReceive");
-                sql.AppendLine(",   ISNULL(Transfer.Status, 2) AS StatusID");
-                sql.AppendLine(",   (CASE ISNULL(Transfer.Status, 2) WHEN 1 THEN N'Đã nhận tiền' ELSE N'Chưa nhận tiền' END) AS StatusName");
-                sql.AppendLine(",   Transfer.DoneAt");
-                sql.AppendLine(",   Transfer.Note AS TransferNote");
-            }
-            sql.AppendLine(String.Format("FROM tbl_Order AS Ord"));
-            sql.AppendLine(String.Format("INNER JOIN tbl_OrderDetail AS OrdDetail"));
-            sql.AppendLine(String.Format("ON    Ord.ID = OrdDetail.OrderID"));
-            sql.AppendLine(String.Format("INNER JOIN tbl_Customer AS Customer"));
-            sql.AppendLine(String.Format("ON    Ord.CustomerID = Customer.ID"));
-            if (PaymentType == 2) // Chuyển khoản
-            {
-                sql.AppendLine(String.Format("LEFT JOIN BankTransfer AS Transfer"));
-                sql.AppendLine(String.Format("ON    Ord.ID = Transfer.OrderID"));
-                sql.AppendLine(String.Format("LEFT JOIN Bank AS CusBank"));
-                sql.AppendLine(String.Format("ON    Transfer.CusBankID = CusBank.ID"));
-                sql.AppendLine(String.Format("LEFT JOIN BankAccount AS AccBank"));
-                sql.AppendLine(String.Format("ON    Transfer.AccBankID = AccBank.ID"));
-            }
-            sql.AppendLine(String.Format("WHERE 1 = 1"));
+            sql.AppendLine(",   Transfer.CusBankID");
+            sql.AppendLine(",   CusBank.BankName AS CusBankName");
+            sql.AppendLine(",   Transfer.AccBankID");
+            sql.AppendLine(",   AccBank.BankName AS AccBankName");
+            sql.AppendLine(",   ISNULL(Transfer.Money, 0) AS MoneyReceive");
+            sql.AppendLine(",   ISNULL(Transfer.Status, 2) AS TransferStatus");
+            sql.AppendLine(",   (CASE ISNULL(Transfer.Status, 2) WHEN 1 THEN N'Đã nhận tiền' ELSE N'Chưa nhận tiền' END) AS StatusName");
+            sql.AppendLine(",   Transfer.DoneAt");
+            sql.AppendLine(",   Transfer.Note AS TransferNote");
+            sql.AppendLine("FROM tbl_Order AS Ord");
+            sql.AppendLine("INNER JOIN tbl_OrderDetail AS OrdDetail");
+            sql.AppendLine("ON    Ord.ID = OrdDetail.OrderID");
+            sql.AppendLine("INNER JOIN tbl_Customer AS Customer");
+            sql.AppendLine("ON    Ord.CustomerID = Customer.ID");
+            sql.AppendLine("LEFT JOIN BankTransfer AS Transfer");
+            sql.AppendLine("ON    Ord.ID = Transfer.OrderID");
+            sql.AppendLine("LEFT JOIN Bank AS CusBank");
+            sql.AppendLine("ON    Transfer.CusBankID = CusBank.ID");
+            sql.AppendLine("LEFT JOIN BankAccount AS AccBank");
+            sql.AppendLine("ON    Transfer.AccBankID = AccBank.ID");
+            sql.AppendLine("WHERE 1 = 1");
 
             if (ExcuteStatus > 0)
             {
@@ -554,17 +548,14 @@ namespace IM_PJ.Controllers
             sql.AppendLine(",    Ord.TransportCompanySubID");
             sql.AppendLine(",    Ord.OrderNote");
             sql.AppendLine(",    Ord.PostalDeliveryType");
-            if (PaymentType == 2) // Chuyển khoản
-            {
-                sql.AppendLine(",    Transfer.CusBankID");
-                sql.AppendLine(",    CusBank.BankName");
-                sql.AppendLine(",    Transfer.AccBankID");
-                sql.AppendLine(",    AccBank.BankName");
-                sql.AppendLine(",    Transfer.Money");
-                sql.AppendLine(",    Transfer.Status");
-                sql.AppendLine(",    Transfer.DoneAt");
-                sql.AppendLine(",    Transfer.Note");
-            }
+            sql.AppendLine(",    Transfer.CusBankID");
+            sql.AppendLine(",    CusBank.BankName");
+            sql.AppendLine(",    Transfer.AccBankID");
+            sql.AppendLine(",    AccBank.BankName");
+            sql.AppendLine(",    Transfer.Money");
+            sql.AppendLine(",    Transfer.Status");
+            sql.AppendLine(",    Transfer.DoneAt");
+            sql.AppendLine(",    Transfer.Note");
             sql.AppendLine("ORDER BY Ord.ID DESC");
 
             var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
@@ -606,46 +597,24 @@ namespace IM_PJ.Controllers
                 if (reader["PostalDeliveryType"] != DBNull.Value)
                     entity.PostalDeliveryType = Convert.ToInt32(reader["PostalDeliveryType"]);
 
-                // Chuyển khoản
-                if (PaymentType == 2)
-                {
-                    if (reader["CusBankID"] != DBNull.Value)
-                    {
-                        entity.CusBankID = Convert.ToInt32(reader["CusBankID"]);
-                    }
-                    if (reader["CusBankName"] != DBNull.Value)
-                    {
-                        entity.CusBankName = reader["CusBankName"].ToString();
-                    }
-                    if (reader["AccBankID"] != DBNull.Value)
-                    {
-                        entity.AccBankID = Convert.ToInt32(reader["AccBankID"]);
-                    }
-                    if (reader["AccBankName"] != DBNull.Value)
-                    {
-                        entity.AccBankName = reader["AccBankName"].ToString();
-                    }
-                    if (reader["MoneyReceive"] != DBNull.Value)
-                    {
-                        entity.MoneyReceive = Convert.ToDecimal(reader["MoneyReceive"]);
-                    }
-                    if (reader["StatusID"] != DBNull.Value)
-                    {
-                        entity.StatusID = Convert.ToInt32(reader["StatusID"]);
-                    }
-                    if (reader["StatusName"] != DBNull.Value)
-                    {
-                        entity.StatusName = reader["StatusName"].ToString();
-                    }
-                    if (reader["DoneAt"] != DBNull.Value)
-                    {
-                        entity.DoneAt = Convert.ToDateTime(reader["DoneAt"]);
-                    }
-                    if (reader["TransferNote"] != DBNull.Value)
-                    {
-                        entity.TransferNote = reader["TransferNote"].ToString();
-                    }
-                }
+                if (reader["CusBankID"] != DBNull.Value)
+                    entity.CusBankID = Convert.ToInt32(reader["CusBankID"]);
+                if (reader["CusBankName"] != DBNull.Value)
+                    entity.CusBankName = reader["CusBankName"].ToString();
+                if (reader["AccBankID"] != DBNull.Value)
+                    entity.AccBankID = Convert.ToInt32(reader["AccBankID"]);
+                if (reader["AccBankName"] != DBNull.Value)
+                    entity.AccBankName = reader["AccBankName"].ToString();
+                if (reader["MoneyReceive"] != DBNull.Value)
+                    entity.MoneyReceive = Convert.ToDecimal(reader["MoneyReceive"]);
+                if (reader["TransferStatus"] != DBNull.Value)
+                    entity.TransferStatus = Convert.ToInt32(reader["TransferStatus"]);
+                if (reader["StatusName"] != DBNull.Value)
+                    entity.StatusName = reader["StatusName"].ToString();
+                if (reader["DoneAt"] != DBNull.Value)
+                    entity.DoneAt = Convert.ToDateTime(reader["DoneAt"]);
+                if (reader["TransferNote"] != DBNull.Value)
+                    entity.TransferNote = reader["TransferNote"].ToString();
                 list.Add(entity);
             }
             reader.Close();
@@ -1464,7 +1433,7 @@ namespace IM_PJ.Controllers
             public int? AccBankID { get; set; }
             public string AccBankName { get; set; }
             public Decimal? MoneyReceive { get; set; }
-            public int? StatusID { get; set; }
+            public int? TransferStatus { get; set; }
             public string StatusName { get; set; }
             public DateTime? DoneAt { get; set; }
             public string TransferNote { get; set; }

@@ -75,12 +75,14 @@ namespace IM_PJ
                 }
                 // Add Customer Bank drop down list
                 var cusBanks = BankController.getDropDownList();
+                cusBanks[0].Text = "Ngân hàng chuyển khoản";
                 ddlCustomerBank.Items.Clear();
                 ddlCustomerBank.Items.AddRange(cusBanks.ToArray());
                 ddlCustomerBank.DataBind();
 
                 // Add Account Bank drop down list
                 var accBanks = BankAccountController.getDropDownList();
+                accBanks[0].Text = "Ngân hàng thụ hưởng";
                 ddlBankReceive.Items.Clear();
                 ddlBankReceive.Items.AddRange(accBanks.ToArray());
                 ddlBankReceive.DataBind();
@@ -91,7 +93,7 @@ namespace IM_PJ
 
                 // Add Order status
                 ddlStatus.Items.Clear();
-                ddlStatus.Items.Add(new ListItem(String.Empty, "0"));
+                ddlStatus.Items.Add(new ListItem("Trạng thái giao dịch", "0"));
                 ddlStatus.Items.Add(new ListItem("Đã nhận tiền", "1"));
                 ddlStatus.Items.Add(new ListItem("Chưa nhận tiền", "2"));
                 ddlStatus.SelectedIndex = 1;
@@ -260,7 +262,7 @@ namespace IM_PJ
                     TrTag.AppendLine(String.Format("data-cusbankname='{0}' ", item.CusBankName));
                     TrTag.AppendLine(String.Format("data-accbankid='{0:#}' ", item.AccBankID));
                     TrTag.AppendLine(String.Format("data-accbankname='{0}' ", item.AccBankName));
-                    TrTag.AppendLine(String.Format("data-statusid='{0:#}' ", item.StatusID));
+                    TrTag.AppendLine(String.Format("data-statusid='{0:#}' ", item.TransferStatus));
                     TrTag.AppendLine(String.Format("data-statusname='{0}' ", item.StatusName));
                     TrTag.AppendLine(String.Format("data-price='{0:#}' ", Convert.ToDouble(item.TotalPrice - TotalRefund)));
                     TrTag.AppendLine(String.Format("data-moneyreceived='{0:#}' ", item.MoneyReceive));
@@ -282,7 +284,7 @@ namespace IM_PJ
                     html.Append("   <td>" + item.Quantity + "</td>");
                     html.Append("   <td id='cusBankName'>" + item.CusBankName + "</td>");
                     html.Append("   <td id='accBankName'>" + item.AccBankName + "</td>");
-                    if (item.StatusID == 1)
+                    if (item.TransferStatus == 1)
                     {
                         html.Append("   <td id='statusName'><span class='bg-blue'>" + item.StatusName + "</span></td>");
                     }
@@ -291,7 +293,7 @@ namespace IM_PJ
                         html.Append("   <td id='statusName'><span class='bg-red'>" + item.StatusName + "</span></td>");
                     }
                     html.Append("   <td><strong>" + String.Format("{0:#,###}", Convert.ToDouble(item.TotalPrice - TotalRefund)) + "</strong></td>");
-                    if (item.StatusID == 1)
+                    if (item.TransferStatus == 1)
                     {
                         html.Append("   <td id='moneyReceive'><strong>" + String.Format("{0:#,###}", item.MoneyReceive) + "</strong></td>");
                         html.Append("   <td id='doneAt'>" + String.Format("{0:yyyy-MM-dd HH:mm:ss}", item.CreatedDate) + "</td>");
