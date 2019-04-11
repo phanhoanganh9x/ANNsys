@@ -57,7 +57,7 @@
                         <div class="filter-control">
                             <div class="row">
                                 <div class="col-md-5">
-                                    <asp:DropDownList ID="ddlBank" runat="server" CssClass="form-control"></asp:DropDownList>
+                                    <asp:DropDownList ID="ddlBankReceive" runat="server" CssClass="form-control"></asp:DropDownList>
                                 </div>
                                 <div class="col-md-2">
                                     <asp:DropDownList ID="ddlOrderType" runat="server" CssClass="form-control">

@@ -81,6 +81,10 @@ namespace IM_PJ
 
                 // Add Account Bank drop down list
                 var accBanks = BankAccountController.getDropDownList();
+                ddlBankReceive.Items.Clear();
+                ddlBankReceive.Items.AddRange(accBanks.ToArray());
+                ddlBankReceive.DataBind();
+
                 ddlAccoutBank.Items.Clear();
                 ddlAccoutBank.Items.AddRange(accBanks.ToArray());
                 ddlAccoutBank.DataBind();
@@ -102,6 +106,7 @@ namespace IM_PJ
                 int OrderType = 0;
                 int PaymentStatus = 0;
                 int ExcuteStatus = 0;
+                int BankReceive = 0;
                 string TextSearch = "";
                 string CreatedBy = "";
                 string CreatedDate = "";
@@ -133,6 +138,10 @@ namespace IM_PJ
                 if (Request.QueryString["createddate"] != null)
                 {
                     CreatedDate = Request.QueryString["createddate"];
+                }
+                if (Request.QueryString["bankreceive"] != null)
+                {
+                    BankReceive = Request.QueryString["bankreceive"].ToInt(0);
                 }
 
                 txtSearchOrder.Text = TextSearch;
@@ -169,6 +178,11 @@ namespace IM_PJ
                 else
                 {
                     rs = rs.Where(x => x.CreatedBy == acc.Username && x.ExcuteStatus != 4).ToList();
+                }
+
+                if (BankReceive != 0)
+                {
+                    rs = rs.Where(x => x.AccBankID == BankReceive).ToList();
                 }
 
                 pagingall(rs);
@@ -526,6 +540,11 @@ namespace IM_PJ
             if (ddlCreatedDate.SelectedValue != "")
             {
                 request += "&createddate=" + ddlCreatedDate.SelectedValue;
+            }
+
+            if (ddlBankReceive.SelectedValue != "0")
+            {
+                request += "&bankreceive=" + ddlBankReceive.SelectedValue;
             }
             Response.Redirect(request);
         }
