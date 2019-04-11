@@ -428,6 +428,7 @@ namespace IM_PJ
                     string[] value = hdfBarcode.Value.Split(';');
                     if (value.Count() > 1)
                     {
+                        var temps = new List<String>();
                         productPrint += "<div class=\"qcode\">";
                         for (int i = 0; i < value.Length - 1; i++)
                         {
@@ -438,7 +439,8 @@ namespace IM_PJ
                             for (int j = 0; j < quantity; j++)
                             {
                                 barcodeValue = list2[0];
-                                barcodeImage = "/uploads/barcodes/" + barcodeValue + ".png";
+                                var imageName = String.Format("{0}{1}.png", DateTime.UtcNow.ToString("yyyyMMddHHmmss"), Guid.NewGuid());
+                                barcodeImage = "/uploads/barcodes/" + imageName;
                                 System.Drawing.Image barCode = PJUtils.MakeBarcodeImage(barcodeValue, 2, true);
 
                                 barCode.Save(HttpContext.Current.Server.MapPath("" + barcodeImage + ""), ImageFormat.Png);
@@ -447,6 +449,8 @@ namespace IM_PJ
                                 productPrint += "<div class=\"img\"><img src=\"data:image/png;base64, " + Convert.ToBase64String(File.ReadAllBytes(Server.MapPath("" + barcodeImage + ""))) + "\"></div>";
                                 productPrint += "<div><h1>" + barcodeValue + "</h1></div>";
                                 productPrint += "</div>";
+
+                                temps.Add(imageName);
                             }
                         }
                         productPrint += "</div>";
@@ -458,7 +462,13 @@ namespace IM_PJ
                         string[] filePaths = Directory.GetFiles(Server.MapPath("/uploads/barcodes/"));
                         foreach (string filePath in filePaths)
                         {
-                            File.Delete(filePath);
+                            foreach (var item in temps)
+                            {
+                                if (filePath.EndsWith(item))
+                                {
+                                    File.Delete(filePath);
+                                }
+                            }
                         }
 
                         ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "script", "$(function () { printBarcode() });", true);
