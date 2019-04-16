@@ -60,6 +60,38 @@ warning 6002: The table/view 'inventorymanagement.dbo.BankAccount' does not have
           <Property Name="ModifiedBy" Type="int" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
         </EntityType>
+        <EntityType Name="Delivery">
+          <Key>
+            <PropertyRef Name="UUID" />
+          </Key>
+          <Property Name="UUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="OrderID" Type="int" Nullable="false" />
+          <Property Name="ShipperID" Type="int" Nullable="false" />
+          <Property Name="Status" Type="int" Nullable="false" />
+          <Property Name="Image" Type="nvarchar" MaxLength="255" />
+          <Property Name="COD" Type="money" Nullable="false" />
+          <Property Name="COO" Type="money" Nullable="false" />
+          <Property Name="ShipNote" Type="nvarchar" MaxLength="150" />
+          <Property Name="StartAt" Type="datetime" Nullable="false" />
+          <Property Name="Note" Type="nvarchar" MaxLength="150" />
+          <Property Name="CreatedBy" Type="int" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="int" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Shipper">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Mobile" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Note" Type="nvarchar" MaxLength="150" />
+          <Property Name="CreatedBy" Type="int" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="int" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+        </EntityType>
         <EntityType Name="tbl_Account">
           <Key>
             <PropertyRef Name="ID" />
@@ -770,6 +802,8 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
         <EntityContainer Name="inventorymanagementModelStoreContainer">
           <EntitySet Name="Bank" EntityType="Self.Bank" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BankTransfer" EntityType="Self.BankTransfer" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Delivery" EntityType="Self.Delivery" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Shipper" EntityType="Self.Shipper" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Account" EntityType="Self.tbl_Account" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_AccountInfo" EntityType="Self.tbl_AccountInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Agent" EntityType="Self.tbl_Agent" Schema="dbo" store:Type="Tables" />
@@ -884,7 +918,6 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
           <EntitySet Name="tbl_Order" EntityType="inventorymanagementModel.tbl_Order" />
           <EntitySet Name="tbl_RefundGoods" EntityType="inventorymanagementModel.tbl_RefundGoods" />
           <EntitySet Name="tbl_Config" EntityType="inventorymanagementModel.tbl_Config" />
-          <EntitySet Name="tbl_Product" EntityType="inventorymanagementModel.tbl_Product" />
           <EntitySet Name="tbl_Post" EntityType="inventorymanagementModel.tbl_Post" />
           <EntitySet Name="tbl_PostCategory" EntityType="inventorymanagementModel.tbl_PostCategory" />
           <EntitySet Name="tbl_PostImage" EntityType="inventorymanagementModel.tbl_PostImage" />
@@ -892,6 +925,9 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
           <EntitySet Name="Banks" EntityType="inventorymanagementModel.Bank" />
           <EntitySet Name="BankTransfers" EntityType="inventorymanagementModel.BankTransfer" />
           <EntitySet Name="BankAccounts" EntityType="inventorymanagementModel.BankAccount" />
+          <EntitySet Name="Deliveries" EntityType="inventorymanagementModel.Delivery" />
+          <EntitySet Name="Shippers" EntityType="inventorymanagementModel.Shipper" />
+          <EntitySet Name="tbl_Product" EntityType="inventorymanagementModel.tbl_Product" />
         </EntityContainer>
         <EntityType Name="tbl_AccountInfo">
           <Key>
@@ -1514,38 +1550,6 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
           <Property Name="CSSPrintBarcode" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="HideProduct" Type="Int32" />
         </EntityType>
-        <EntityType Name="tbl_Product">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CategoryID" Type="Int32" />
-          <Property Name="ProductOldID" Type="Int32" />
-          <Property Name="ProductTitle" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ProductContent" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ProductSKU" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ProductStock" Type="Double" />
-          <Property Name="StockStatus" Type="Int32" />
-          <Property Name="ManageStock" Type="Boolean" />
-          <Property Name="Regular_Price" Type="Double" />
-          <Property Name="CostOfGood" Type="Double" />
-          <Property Name="Retail_Price" Type="Double" />
-          <Property Name="ProductImage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ProductType" Type="Int32" />
-          <Property Name="IsHidden" Type="Boolean" />
-          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
-          <Property Name="CreatedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Materials" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="MinimumInventoryLevel" Type="Double" />
-          <Property Name="MaximumInventoryLevel" Type="Double" />
-          <Property Name="SupplierID" Type="Int32" />
-          <Property Name="SupplierName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ProductStyle" Type="Int32" />
-          <Property Name="ShowHomePage" Type="Int32" />
-          <Property Name="ProductImageClean" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-        </EntityType>
         <EntityType Name="tbl_Post">
           <Key>
             <PropertyRef Name="ID" />
@@ -1650,6 +1654,70 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="Int32" Nullable="false" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="Delivery">
+          <Key>
+            <PropertyRef Name="UUID" />
+          </Key>
+          <Property Name="UUID" Type="Guid" Nullable="false" />
+          <Property Name="OrderID" Type="Int32" Nullable="false" />
+          <Property Name="ShipperID" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+          <Property Name="Image" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="COD" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="COO" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="ShipNote" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="StartAt" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Note" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="Shipper">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Mobile" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Note" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="tbl_Product">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryID" Type="Int32" />
+          <Property Name="ProductOldID" Type="Int32" />
+          <Property Name="ProductTitle" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ProductContent" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ProductSKU" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ProductStock" Type="Double" />
+          <Property Name="StockStatus" Type="Int32" />
+          <Property Name="ManageStock" Type="Boolean" />
+          <Property Name="Regular_Price" Type="Double" />
+          <Property Name="CostOfGood" Type="Double" />
+          <Property Name="Retail_Price" Type="Double" />
+          <Property Name="ProductImage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ProductType" Type="Int32" />
+          <Property Name="IsHidden" Type="Boolean" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Materials" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MinimumInventoryLevel" Type="Double" />
+          <Property Name="MaximumInventoryLevel" Type="Double" />
+          <Property Name="SupplierID" Type="Int32" />
+          <Property Name="SupplierName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ProductStyle" Type="Int32" />
+          <Property Name="ShowHomePage" Type="Int32" />
+          <Property Name="ProductImageClean" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -2312,39 +2380,6 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="tbl_Product">
-            <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Product">
-              <MappingFragment StoreEntitySet="tbl_Product">
-                <ScalarProperty Name="ProductImageClean" ColumnName="ProductImageClean" />
-                <ScalarProperty Name="ShowHomePage" ColumnName="ShowHomePage" />
-                <ScalarProperty Name="ProductStyle" ColumnName="ProductStyle" />
-                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
-                <ScalarProperty Name="SupplierID" ColumnName="SupplierID" />
-                <ScalarProperty Name="MaximumInventoryLevel" ColumnName="MaximumInventoryLevel" />
-                <ScalarProperty Name="MinimumInventoryLevel" ColumnName="MinimumInventoryLevel" />
-                <ScalarProperty Name="Materials" ColumnName="Materials" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="IsHidden" ColumnName="IsHidden" />
-                <ScalarProperty Name="ProductType" ColumnName="ProductType" />
-                <ScalarProperty Name="ProductImage" ColumnName="ProductImage" />
-                <ScalarProperty Name="Retail_Price" ColumnName="Retail_Price" />
-                <ScalarProperty Name="CostOfGood" ColumnName="CostOfGood" />
-                <ScalarProperty Name="Regular_Price" ColumnName="Regular_Price" />
-                <ScalarProperty Name="ManageStock" ColumnName="ManageStock" />
-                <ScalarProperty Name="StockStatus" ColumnName="StockStatus" />
-                <ScalarProperty Name="ProductStock" ColumnName="ProductStock" />
-                <ScalarProperty Name="ProductSKU" ColumnName="ProductSKU" />
-                <ScalarProperty Name="ProductContent" ColumnName="ProductContent" />
-                <ScalarProperty Name="ProductTitle" ColumnName="ProductTitle" />
-                <ScalarProperty Name="ProductOldID" ColumnName="ProductOldID" />
-                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="tbl_Post">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Post">
               <MappingFragment StoreEntitySet="tbl_Post">
@@ -2444,6 +2479,73 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
                 <ScalarProperty Name="AccountNumber" ColumnName="AccountNumber" />
                 <ScalarProperty Name="AccountName" ColumnName="AccountName" />
                 <ScalarProperty Name="BankName" ColumnName="BankName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Deliveries">
+            <EntityTypeMapping TypeName="inventorymanagementModel.Delivery">
+              <MappingFragment StoreEntitySet="Delivery">
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="StartAt" ColumnName="StartAt" />
+                <ScalarProperty Name="ShipNote" ColumnName="ShipNote" />
+                <ScalarProperty Name="COO" ColumnName="COO" />
+                <ScalarProperty Name="COD" ColumnName="COD" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ShipperID" ColumnName="ShipperID" />
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="UUID" ColumnName="UUID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Shippers">
+            <EntityTypeMapping TypeName="inventorymanagementModel.Shipper">
+              <MappingFragment StoreEntitySet="Shipper">
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Product">
+            <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Product">
+              <MappingFragment StoreEntitySet="tbl_Product">
+                <ScalarProperty Name="ProductImageClean" ColumnName="ProductImageClean" />
+                <ScalarProperty Name="ShowHomePage" ColumnName="ShowHomePage" />
+                <ScalarProperty Name="ProductStyle" ColumnName="ProductStyle" />
+                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
+                <ScalarProperty Name="SupplierID" ColumnName="SupplierID" />
+                <ScalarProperty Name="MaximumInventoryLevel" ColumnName="MaximumInventoryLevel" />
+                <ScalarProperty Name="MinimumInventoryLevel" ColumnName="MinimumInventoryLevel" />
+                <ScalarProperty Name="Materials" ColumnName="Materials" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="IsHidden" ColumnName="IsHidden" />
+                <ScalarProperty Name="ProductType" ColumnName="ProductType" />
+                <ScalarProperty Name="ProductImage" ColumnName="ProductImage" />
+                <ScalarProperty Name="Retail_Price" ColumnName="Retail_Price" />
+                <ScalarProperty Name="CostOfGood" ColumnName="CostOfGood" />
+                <ScalarProperty Name="Regular_Price" ColumnName="Regular_Price" />
+                <ScalarProperty Name="ManageStock" ColumnName="ManageStock" />
+                <ScalarProperty Name="StockStatus" ColumnName="StockStatus" />
+                <ScalarProperty Name="ProductStock" ColumnName="ProductStock" />
+                <ScalarProperty Name="ProductSKU" ColumnName="ProductSKU" />
+                <ScalarProperty Name="ProductContent" ColumnName="ProductContent" />
+                <ScalarProperty Name="ProductTitle" ColumnName="ProductTitle" />
+                <ScalarProperty Name="ProductOldID" ColumnName="ProductOldID" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

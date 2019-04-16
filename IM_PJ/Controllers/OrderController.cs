@@ -394,6 +394,14 @@ namespace IM_PJ.Controllers
             sql.AppendLine(",   (CASE ISNULL(Transfer.Status, 2) WHEN 1 THEN N'Đã nhận tiền' ELSE N'Chưa nhận tiền' END) AS StatusName");
             sql.AppendLine(",   Transfer.DoneAt");
             sql.AppendLine(",   Transfer.Note AS TransferNote");
+            sql.AppendLine(",   Delivery.StartAt AS DeliveryDate");
+            sql.AppendLine(",   ISNULL(Delivery.Status, 2) AS DeliveryStatus"); // Case 2: Chưa giao
+            sql.AppendLine(",   Delivery.ShipperID");
+            sql.AppendLine(",   Delivery.COD AS CostOfDelivery");
+            sql.AppendLine(",   Delivery.COO AS CollectionOfOrder");
+            sql.AppendLine(",   Delivery.ShipNote");
+            sql.AppendLine(",   Delivery.Image AS InvoiceImage");
+            sql.AppendLine(",   Delivery.ShipperName");
             sql.AppendLine("FROM tbl_Order AS Ord");
             sql.AppendLine("INNER JOIN tbl_OrderDetail AS OrdDetail");
             sql.AppendLine("ON    Ord.ID = OrdDetail.OrderID");
@@ -405,6 +413,22 @@ namespace IM_PJ.Controllers
             sql.AppendLine("ON    Transfer.CusBankID = CusBank.ID");
             sql.AppendLine("LEFT JOIN BankAccount AS AccBank");
             sql.AppendLine("ON    Transfer.AccBankID = AccBank.ID");
+            sql.AppendLine("LEFT JOIN (");
+            sql.AppendLine("    SELECT");
+            sql.AppendLine("        DEL.OrderID");
+            sql.AppendLine("    ,   DEL.StartAt");
+            sql.AppendLine("    ,   DEL.Status");
+            sql.AppendLine("    ,   DEL.ShipperID");
+            sql.AppendLine("    ,   DEL.COD");
+            sql.AppendLine("    ,   DEL.COO");
+            sql.AppendLine("    ,   DEL.ShipNote");
+            sql.AppendLine("    ,   DEL.Image");
+            sql.AppendLine("    ,   SHI.Name AS ShipperName");
+            sql.AppendLine("    FROM Delivery AS DEL");
+            sql.AppendLine("    INNER JOIN Shipper AS SHI");
+            sql.AppendLine("    ON DEL.ShipperID = SHI.ID");
+            sql.AppendLine(") AS Delivery");
+            sql.AppendLine("ON    Ord.ID = Delivery.OrderID");
             sql.AppendLine("WHERE 1 = 1");
 
             if (ExcuteStatus > 0)
@@ -563,6 +587,14 @@ namespace IM_PJ.Controllers
             sql.AppendLine(",    Transfer.Status");
             sql.AppendLine(",    Transfer.DoneAt");
             sql.AppendLine(",    Transfer.Note");
+            sql.AppendLine(",    Delivery.StartAt");
+            sql.AppendLine(",    Delivery.Status");
+            sql.AppendLine(",    Delivery.ShipperID");
+            sql.AppendLine(",    Delivery.COD");
+            sql.AppendLine(",    Delivery.COO");
+            sql.AppendLine(",    Delivery.ShipNote");
+            sql.AppendLine(",    Delivery.Image");
+            sql.AppendLine(",    Delivery.ShipperName");
             sql.AppendLine("ORDER BY Ord.ID DESC");
 
             var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
@@ -604,6 +636,7 @@ namespace IM_PJ.Controllers
                 if (reader["PostalDeliveryType"] != DBNull.Value)
                     entity.PostalDeliveryType = Convert.ToInt32(reader["PostalDeliveryType"]);
 
+                // Custom Transfer Bank
                 if (reader["CusBankID"] != DBNull.Value)
                     entity.CusBankID = Convert.ToInt32(reader["CusBankID"]);
                 if (reader["CusBankName"] != DBNull.Value)
@@ -622,6 +655,24 @@ namespace IM_PJ.Controllers
                     entity.DoneAt = Convert.ToDateTime(reader["DoneAt"]);
                 if (reader["TransferNote"] != DBNull.Value)
                     entity.TransferNote = reader["TransferNote"].ToString();
+
+                // Custom Delivery
+                if (reader["DeliveryDate"] != DBNull.Value)
+                    entity.DeliveryDate = Convert.ToDateTime(reader["DeliveryDate"]);
+                if (reader["DeliveryStatus"] != DBNull.Value)
+                    entity.DeliveryStatus = Convert.ToInt32(reader["DeliveryStatus"]);
+                if (reader["ShipperID"] != DBNull.Value)
+                    entity.ShipperID = Convert.ToInt32(reader["ShipperID"]);
+                if (reader["CostOfDelivery"] != DBNull.Value)
+                    entity.CostOfDelivery = Convert.ToDecimal(reader["CostOfDelivery"]);
+                if (reader["CollectionOfOrder"] != DBNull.Value)
+                    entity.CollectionOfOrder = Convert.ToDecimal(reader["CollectionOfOrder"]);
+                if (reader["ShipNote"] != DBNull.Value)
+                    entity.ShipNote = reader["ShipNote"].ToString();
+                if (reader["ShipperName"] != DBNull.Value)
+                    entity.ShipperName = reader["ShipperName"].ToString();
+                if (reader["InvoiceImage"] != DBNull.Value)
+                    entity.InvoiceImage = reader["InvoiceImage"].ToString();
                 list.Add(entity);
             }
             reader.Close();
@@ -1444,6 +1495,16 @@ namespace IM_PJ.Controllers
             public string StatusName { get; set; }
             public DateTime? DoneAt { get; set; }
             public string TransferNote { get; set; }
+
+            // Custom Delivery
+            public DateTime? DeliveryDate { get; set; }
+            public int? DeliveryStatus { get; set; }
+            public int? ShipperID { get; set; }
+            public Decimal? CostOfDelivery { get; set; }
+            public Decimal? CollectionOfOrder { get; set; }
+            public string ShipNote { get; set; }
+            public string ShipperName { get; set; }
+            public string InvoiceImage { get; set; }
         }
 
         public class OrderSQL

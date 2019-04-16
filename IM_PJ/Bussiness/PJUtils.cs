@@ -1582,6 +1582,21 @@ namespace NHST.Bussiness
             }
             return currentQuantity;
         }
+
+        public static string DeliveryStatus(int status)
+        {
+            switch (status)
+            {
+                case 1:
+                    return String.Format("<span class='bg-green'>Đã giao</span>");
+                case 2:
+                    return String.Format("<span class='bg-red'>Chưa giao</span>");
+                case 3:
+                    return String.Format("<span class='bg-blue'>Đang giao</span>");
+                default:
+                    return String.Empty;
+            }
+        }
     }
 
 }

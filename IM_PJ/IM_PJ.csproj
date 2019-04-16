@@ -439,6 +439,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="danh-sach-van-chuyen.aspx" />
     <Content Include="danh-sach-chuyen-khoan.aspx" />
     <Content Include="FilesResources\ToolContentAccount.xml" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -691,6 +692,7 @@
     </Content>
     <Content Include="Site.Mobile.Master" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
+    <Content Include="DeliveryHandler.ashx" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -822,10 +824,19 @@
     </Compile>
     <Compile Include="Controllers\BankAccountController.cs" />
     <Compile Include="Controllers\BankController.cs" />
+    <Compile Include="Controllers\DeliveryController.cs" />
     <Compile Include="Controllers\BankTransferController.cs" />
     <Compile Include="Controllers\PostCategoryController.cs" />
     <Compile Include="Controllers\PostController.cs" />
     <Compile Include="Controllers\PostImageController.cs" />
+    <Compile Include="Controllers\ShipperController.cs" />
+    <Compile Include="danh-sach-van-chuyen.aspx.cs">
+      <DependentUpon>danh-sach-van-chuyen.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="danh-sach-van-chuyen.aspx.designer.cs">
+      <DependentUpon>danh-sach-van-chuyen.aspx</DependentUpon>
+    </Compile>
     <Compile Include="danh-sach-chuyen-khoan.aspx.cs">
       <DependentUpon>danh-sach-chuyen-khoan.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -847,6 +858,12 @@
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\BankTransfer.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Delivery.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Shipper.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_Post.cs">
@@ -1703,6 +1720,9 @@
     <Compile Include="thong-tin-thuoc-tinh-san-pham.aspx.designer.cs">
       <DependentUpon>thong-tin-thuoc-tinh-san-pham.aspx</DependentUpon>
     </Compile>
+    <Compile Include="DeliveryHandler.ashx.cs">
+      <DependentUpon>DeliveryHandler.ashx</DependentUpon>
+    </Compile>
     <Compile Include="Utils\Slug.cs" />
     <Compile Include="xem-don-hang-doi-tra.aspx.cs">
       <DependentUpon>xem-don-hang-doi-tra.aspx</DependentUpon>
@@ -1771,6 +1791,9 @@
   <ItemGroup>
     <Folder Include="App_Themes\NewUI\js\sweet\.sass-cache\" />
     <Folder Include="App_Themes\NewUI\plugins\" />
+    <Folder Include="uploads\barcodes\" />
+    <Folder Include="uploads\deliveries\" />
+    <Folder Include="uploads\images\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

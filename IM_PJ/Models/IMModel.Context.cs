@@ -68,5 +68,7 @@ namespace IM_PJ.Models
         public virtual DbSet<Bank> Banks { get; set; }
         public virtual DbSet<BankTransfer> BankTransfers { get; set; }
         public virtual DbSet<BankAccount> BankAccounts { get; set; }
+        public virtual DbSet<Delivery> Deliveries { get; set; }
+        public virtual DbSet<Shipper> Shippers { get; set; }
     }
 }
