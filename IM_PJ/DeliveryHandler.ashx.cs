@@ -3,6 +3,7 @@ using System.Web;
 using IM_PJ.Models;
 using IM_PJ.Controllers;
 using Newtonsoft.Json;
+using System.IO;
 
 namespace IM_PJ
 {
@@ -18,17 +19,31 @@ namespace IM_PJ
             {
                 var files = context.Request.Files;
                 var delivery = JsonConvert.DeserializeObject<Delivery>(context.Request.Form["Delivery"]);
+                var uploadPath = "/uploads/deliveries/";
+
+                if (!String.IsNullOrEmpty(delivery.Image))
+                {
+                    // Delete invoice image after upload image new
+                    File.Delete(context.Server.MapPath(delivery.Image));
+                }
 
                 if (files.Count > 0)
                 {
-                    var filePath = String.Format(
-                        "/uploads/deliveries/{0}-{1:yyyyMMddHHmmss}{2}",
+                    // Trường hợp upload image new
+                    var filePathNew = String.Format(
+                        "{0}{1}-{2:yyyyMMddHHmmss}{3}",
+                        uploadPath,
                         delivery.OrderID,
                         DateTime.UtcNow,
                         System.IO.Path.GetExtension(files["ImageNew"].FileName)
                     );
-                    files["ImageNew"].SaveAs(context.Server.MapPath(filePath));
-                    delivery.Image = filePath;
+                    files["ImageNew"].SaveAs(context.Server.MapPath(filePathNew));
+                    delivery.Image = filePathNew;
+                }
+                else
+                {
+                    // Trường hợp là remove image củ
+                    delivery.Image = String.Empty;
                 }
 
                 string username = context.Request.Cookies["userLoginSystem"].Value;

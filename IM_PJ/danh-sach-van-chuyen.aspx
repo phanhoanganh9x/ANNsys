@@ -343,12 +343,18 @@
                                         row.children("#delDate").html(formatDate(startAt));
                                         row.children("#colOfOrd").children("strong").html(formatThousands(colOfOrd));
                                         row.children("#cosOfDel").children("strong").html(formatThousands(cosOfDel));
-                                        if (row.children("#updateButton").find('#downloadInvoiceImage').length) {
-                                            row.find("#downloadInvoiceImage").show();
-                                            row.find("#downloadInvoiceImage").attr("href", result);
+                                        if (result)
+                                        {
+                                            if (row.children("#updateButton").find('#downloadInvoiceImage').length) {
+                                                row.find("#downloadInvoiceImage").show();
+                                                row.find("#downloadInvoiceImage").attr("href", result);
+                                            }
+                                            else {
+                                                row.children("#updateButton").append("<a id='downloadInvoiceImage' href='" + result + "' title='Biên nhận gửi hàng' target='_blank' class='btn primary-btn btn-blue h45-btn'><i class=\"fa fa-file-text-o\" aria-hidden=\"true\"></i></a>");
+                                            }
                                         }
                                         else {
-                                            row.children("#updateButton").append("<a id='downloadInvoiceImage' href='" + result + "' title='Biên nhận gửi hàng' target='_blank' class='btn primary-btn btn-blue h45-btn'><i class=\"fa fa-file-text-o\" aria-hidden=\"true\"></i></a>");
+                                            row.find("#downloadInvoiceImage").hide();
                                         }
                                         break;
                                     case "2":
@@ -532,7 +538,6 @@
                         let FR = new FileReader();
                         FR.addEventListener("load", function (e) {
                             addInvoiceImage(e.target.result);
-                            $("#<%=hdfImageOld.ClientID%>").val(e.target.result);
                         });
                         FR.readAsDataURL(input.files[0]);
                     }
