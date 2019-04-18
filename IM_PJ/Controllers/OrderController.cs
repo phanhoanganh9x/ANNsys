@@ -369,6 +369,8 @@ namespace IM_PJ.Controllers
             sqlSub.AppendLine("FROM tbl_Order AS Ord");
             sqlSub.AppendLine("INNER JOIN tbl_OrderDetail AS OrdDetail");
             sqlSub.AppendLine("ON    Ord.ID = OrdDetail.OrderID");
+            sqlSub.AppendLine("INNER JOIN tbl_Customer AS Customer");
+            sqlSub.AppendLine("ON    Ord.CustomerID = Customer.ID");
             sqlSub.AppendLine("LEFT JOIN BankTransfer AS Transfer");
             sqlSub.AppendLine("ON    Ord.ID = Transfer.OrderID");
             #endregion
