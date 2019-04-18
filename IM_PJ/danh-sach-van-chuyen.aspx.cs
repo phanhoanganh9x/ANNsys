@@ -255,19 +255,6 @@ namespace IM_PJ
                 for (int i = FromRow; i < ToRow + 1; i++)
                 {
                     var item = acs[i];
-
-                    int RefundsGoodsID = 0;
-                    double TotalRefund = 0;
-                    if (item.RefundsGoodsID != null)
-                    {
-                        var refund = RefundGoodController.GetByID(Convert.ToInt32(item.RefundsGoodsID));
-                        if (refund != null)
-                        {
-                            RefundsGoodsID = refund.ID;
-                            TotalRefund = Convert.ToDouble(refund.TotalPrice);
-                        }
-                    }
-
                     // Insert transfer bank info for tr tag
                     var TrTag = new StringBuilder();
                     TrTag.AppendLine("<tr ");
@@ -276,7 +263,7 @@ namespace IM_PJ
                     TrTag.AppendLine(String.Format("data-shippingtype='{0}' ", item.ShippingType));
                     TrTag.AppendLine(String.Format("data-deliverystatus='{0}' ", item.DeliveryStatus));
                     TrTag.AppendLine(String.Format("data-invoiceimage='{0}' ", item.InvoiceImage));
-                    TrTag.AppendLine(String.Format("data-coloford='{0:#}' ", item.CollectionOfOrder != null ? item.CollectionOfOrder : Convert.ToDecimal(item.TotalPrice - TotalRefund) ));
+                    TrTag.AppendLine(String.Format("data-coloford='{0:#}' ", item.CollectionOfOrder != null ? item.CollectionOfOrder : Convert.ToDecimal(item.TotalPrice - item.TotalRefund) ));
                     TrTag.AppendLine(String.Format("data-shipperid='{0}' ", item.ShipperID));
                     TrTag.AppendLine(String.Format("data-cosofdev='{0:#}' ", item.CostOfDelivery != null ? item.CostOfDelivery :  Convert.ToDecimal(item.FeeShipping) ));
                     TrTag.AppendLine(String.Format("data-deliverydate='{0:yyyy-MM-dd HH:mm:ss}' ", item.DeliveryDate));
@@ -298,7 +285,7 @@ namespace IM_PJ
                     html.Append("   <td>" + PJUtils.PaymentType(Convert.ToInt32(item.PaymentType)) + "</td>");
                     html.Append("   <td id='shiperName'>" + item.ShipperName + "</td>");
                     html.Append("   <td id='deliveryStatus'>" + PJUtils.DeliveryStatus(Convert.ToInt32(item.DeliveryStatus)) + "</td>");
-                    html.Append("   <td><strong>" + String.Format("{0:#,###}", Convert.ToDouble(item.TotalPrice - TotalRefund)) + "</strong></td>");
+                    html.Append("   <td><strong>" + String.Format("{0:#,###}", Convert.ToDouble(item.TotalPrice - item.TotalRefund)) + "</strong></td>");
                     // Thu hộ
                     if (item.PaymentType == 3)
                         html.Append("   <td id='colOfOrd'><strong>" + String.Format("{0:#,###}", item.CollectionOfOrder) + "</strong></td>");
@@ -327,9 +314,9 @@ namespace IM_PJ
                     html.Append("   </td>");
                     html.Append("   <td colspan='12'>");
 
-                    if (RefundsGoodsID != 0)
+                    if (item.TotalRefund != 0)
                     {
-                        html.Append("<span class='order-info'><strong>Trừ hàng trả:</strong> " + string.Format("{0:N0}", TotalRefund) + " (<a href='xem-don-hang-doi-tra?id=" + RefundsGoodsID + "' target='_blank'>Xem đơn " + RefundsGoodsID + "</a>)</span>");
+                        html.Append("<span class='order-info'><strong>Trừ hàng trả:</strong> " + string.Format("{0:N0}", item.TotalRefund) + " (<a href='xem-don-hang-doi-tra?id=" + item.RefundsGoodsID + "' target='_blank'>Xem đơn " + item.RefundsGoodsID + "</a>)</span>");
                     }
 
                     if (item.TotalDiscount > 0)
