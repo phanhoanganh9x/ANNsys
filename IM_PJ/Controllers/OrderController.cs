@@ -356,153 +356,73 @@ namespace IM_PJ.Controllers
         public static List<OrderList> Filter(string TextSearch, int OrderType, int ExcuteStatus, int PaymentStatus, int TransferStatus, int PaymentType, int ShippingType, string Discount, string OtherFee, string CreatedBy, string CreatedDate, string TransferDoneAt, int TransportCompany)
         {
             var list = new List<OrderList>();
-            var sql = new StringBuilder();
+            var sqlMain = new StringBuilder();
+            var sqlSub = new StringBuilder();
 
-            sql.AppendLine("SELECT");
-            sql.AppendLine("    Ord.ID");
-            sql.AppendLine(",   Ord.CustomerName");
-            sql.AppendLine(",   Ord.CustomerPhone");
-            sql.AppendLine(",   Customer.Nick");
-            sql.AppendLine(",   Ord.CustomerID");
-            sql.AppendLine(",   Ord.OrderType");
-            sql.AppendLine(",   Ord.ExcuteStatus");
-            sql.AppendLine(",   Ord.PaymentStatus");
-            sql.AppendLine(",   Ord.PaymentType");
-            sql.AppendLine(",   Ord.ShippingType");
-            sql.AppendLine(",   Ord.TotalPrice");
-            sql.AppendLine(",   Ord.TotalDiscount");
-            sql.AppendLine(",   Ord.FeeShipping");
-            sql.AppendLine(",   Ord.OtherFeeName");
-            sql.AppendLine(",   Ord.OtherFeeValue");
-            sql.AppendLine(",   Ord.CreatedBy");
-            sql.AppendLine(",   Ord.CreatedDate");
-            sql.AppendLine(",   Ord.DateDone");
-            sql.AppendLine(",   Ord.OrderNote");
-            sql.AppendLine(",   Ord.RefundsGoodsID");
-            sql.AppendLine(",   SUM(ISNULL(OrdDetail.Quantity,0)) AS Quantity");
-            sql.AppendLine(",   Ord.ShippingCode");
-            sql.AppendLine(",   Ord.TransportCompanyID");
-            sql.AppendLine(",   Ord.TransportCompanySubID");
-            sql.AppendLine(",   Ord.OrderNote");
-            sql.AppendLine(",   Ord.PostalDeliveryType");
-            sql.AppendLine(",   Transfer.CusBankID");
-            sql.AppendLine(",   CusBank.BankName AS CusBankName");
-            sql.AppendLine(",   Transfer.AccBankID");
-            sql.AppendLine(",   AccBank.BankName AS AccBankName");
-            sql.AppendLine(",   ISNULL(Transfer.Money, 0) AS MoneyReceive");
-            sql.AppendLine(",   ISNULL(Transfer.Status, 2) AS TransferStatus");
-            sql.AppendLine(",   (CASE ISNULL(Transfer.Status, 2) WHEN 1 THEN N'Đã nhận tiền' ELSE N'Chưa nhận tiền' END) AS StatusName");
-            sql.AppendLine(",   Transfer.DoneAt");
-            sql.AppendLine(",   Transfer.Note AS TransferNote");
-            sql.AppendLine(",   Delivery.StartAt AS DeliveryDate");
-            sql.AppendLine(",   ISNULL(Delivery.Status, 2) AS DeliveryStatus"); // Case 2: Chưa giao
-            sql.AppendLine(",   Delivery.ShipperID");
-            sql.AppendLine(",   Delivery.COD AS CostOfDelivery");
-            sql.AppendLine(",   Delivery.COO AS CollectionOfOrder");
-            sql.AppendLine(",   Delivery.ShipNote");
-            sql.AppendLine(",   Delivery.Image AS InvoiceImage");
-            sql.AppendLine(",   Delivery.ShipperName");
-            sql.AppendLine("FROM tbl_Order AS Ord");
-            sql.AppendLine("INNER JOIN tbl_OrderDetail AS OrdDetail");
-            sql.AppendLine("ON    Ord.ID = OrdDetail.OrderID");
-            sql.AppendLine("INNER JOIN tbl_Customer AS Customer");
-            sql.AppendLine("ON    Ord.CustomerID = Customer.ID");
-            sql.AppendLine("LEFT JOIN BankTransfer AS Transfer");
-            sql.AppendLine("ON    Ord.ID = Transfer.OrderID");
-            sql.AppendLine("LEFT JOIN Bank AS CusBank");
-            sql.AppendLine("ON    Transfer.CusBankID = CusBank.ID");
-            sql.AppendLine("LEFT JOIN BankAccount AS AccBank");
-            sql.AppendLine("ON    Transfer.AccBankID = AccBank.ID");
-            sql.AppendLine("LEFT JOIN (");
-            sql.AppendLine("    SELECT");
-            sql.AppendLine("        DEL.OrderID");
-            sql.AppendLine("    ,   DEL.StartAt");
-            sql.AppendLine("    ,   DEL.Status");
-            sql.AppendLine("    ,   DEL.ShipperID");
-            sql.AppendLine("    ,   DEL.COD");
-            sql.AppendLine("    ,   DEL.COO");
-            sql.AppendLine("    ,   DEL.ShipNote");
-            sql.AppendLine("    ,   DEL.Image");
-            sql.AppendLine("    ,   SHI.Name AS ShipperName");
-            sql.AppendLine("    FROM Delivery AS DEL");
-            sql.AppendLine("    INNER JOIN Shipper AS SHI");
-            sql.AppendLine("    ON DEL.ShipperID = SHI.ID");
-            sql.AppendLine(") AS Delivery");
-            sql.AppendLine("ON    Ord.ID = Delivery.OrderID");
-            sql.AppendLine("WHERE 1 = 1");
-
-            if (ExcuteStatus > 0)
-            {
-                sql.AppendLine(String.Format("	AND Ord.ExcuteStatus = {0}", ExcuteStatus));
-            }
-
+            #region Get data after filtered
+            #region SELECT
+            sqlSub.AppendLine("SELECT");
+            sqlSub.AppendLine("    Ord.ID");
+            sqlSub.AppendLine(",   SUM(ISNULL(OrdDetail.Quantity,0)) AS Quantity");
+            #endregion
+            #region FROM
+            sqlSub.AppendLine("FROM tbl_Order AS Ord");
+            sqlSub.AppendLine("INNER JOIN tbl_OrderDetail AS OrdDetail");
+            sqlSub.AppendLine("ON    Ord.ID = OrdDetail.OrderID");
+            sqlSub.AppendLine("LEFT JOIN BankTransfer AS Transfer");
+            sqlSub.AppendLine("ON    Ord.ID = Transfer.OrderID");
+            #endregion
+            #region filter by condition
+            sqlSub.AppendLine("WHERE 1 = 1");
+            // Filter Customer name
             if (TextSearch != "")
             {
                 string TextSearchName = '"' + TextSearch + '"';
-                sql.AppendLine(String.Format("	AND ( (convert(nvarchar, Ord.ID) LIKE '{0}') OR CONTAINS(Ord.CustomerName, '{1}') OR CONTAINS(Customer.Nick, '{1}') OR (Ord.CustomerPhone = '{0}') OR (Ord.CustomerNewPhone = '{0}') OR (Ord.ShippingCode = '{0}') OR (OrdDetail.SKU LIKE '{0}%') OR (Ord.OrderNote LIKE '%{0}%'))", TextSearch, TextSearchName));
+                sqlSub.AppendLine(String.Format("    AND ( (convert(nvarchar, Ord.ID) LIKE '{0}') OR CONTAINS(Ord.CustomerName, '{1}') OR CONTAINS(Customer.Nick, '{1}') OR (Ord.CustomerPhone = '{0}') OR (Ord.CustomerNewPhone = '{0}') OR (Ord.ShippingCode = '{0}') OR (OrdDetail.SKU LIKE '{0}%') OR (Ord.OrderNote LIKE '%{0}%'))", TextSearch, TextSearchName));
             }
-
-            if (TransportCompany > 0)
-            {
-                sql.AppendLine(String.Format("	AND Ord.TransportCompanyID = {0}", TransportCompany));
-            }
-
+            // Filter Order Type
             if (OrderType > 0)
             {
-                sql.AppendLine(String.Format("	AND Ord.OrderType = {0}", OrderType));
+                sqlSub.AppendLine(String.Format("    AND Ord.OrderType = {0}", OrderType));
             }
-
-            if (PaymentStatus > 0)
-            {
-                sql.AppendLine(String.Format("	AND Ord.PaymentStatus = {0}", PaymentStatus));
-            }
-
-            if (TransferStatus > 0)
-            {
-                if(TransferStatus == 1)
-                {
-                    sql.AppendLine(String.Format("	AND Transfer.Status = 1"));
-                }
-                else if(TransferStatus == 2)
-                {
-                    sql.AppendLine(String.Format("	AND Transfer.Status IS NULL"));
-                }
-            }
-
+            // Filter Payment Type
             if (PaymentType > 0)
             {
-                sql.AppendLine(String.Format("	AND Ord.PaymentType = {0}", PaymentType));
+                sqlSub.AppendLine(String.Format("    AND Ord.PaymentType = {0}", PaymentType));
             }
-
+            // Filter Payment Status
+            if (PaymentStatus > 0)
+            {
+                sqlSub.AppendLine(String.Format("    AND Ord.PaymentStatus = {0}", PaymentStatus));
+            }
+            // Filter Excute Status
+            if (ExcuteStatus > 0)
+            {
+                sqlSub.AppendLine(String.Format("    AND Ord.ExcuteStatus = {0}", ExcuteStatus));
+            }
+            // Filter Shipping Type
             if (ShippingType > 0)
             {
-                sql.AppendLine(String.Format("	AND Ord.ShippingType = {0}", ShippingType));
+                sqlSub.AppendLine(String.Format("    AND Ord.ShippingType = {0}", ShippingType));
             }
-
-            if (OtherFee != "")
+            // Filter Transport Company
+            if (TransportCompany > 0)
             {
-                if (OtherFee == "yes")
-                {
-                    sql.AppendLine(String.Format("	AND Ord.OtherFeeValue != 0", OtherFee));
-                }
-                else
-                {
-                    sql.AppendLine(String.Format("	AND Ord.OtherFeeValue = 0", OtherFee));
-                }
+                sqlSub.AppendLine(String.Format("    AND Ord.TransportCompanyID = {0}", TransportCompany));
             }
-
-            if (Discount != "")
+            // Filter Transfer Status
+            if (TransferStatus > 0)
             {
-                if (Discount == "yes")
+                if (TransferStatus == 1)
                 {
-                    sql.AppendLine(String.Format("	AND Ord.TotalDiscount > 0", OtherFee));
+                    sqlSub.AppendLine(String.Format("    AND Transfer.Status = 1"));
                 }
-                else
+                else if (TransferStatus == 2)
                 {
-                    sql.AppendLine(String.Format("	AND Ord.TotalDiscount = 0", OtherFee));
+                    sqlSub.AppendLine(String.Format("    AND Transfer.Status IS NULL"));
                 }
             }
-
+            // Filter Transfer Done At
             if (TransferDoneAt != "")
             {
                 DateTime fromdate = DateTime.Today;
@@ -549,14 +469,38 @@ namespace IM_PJ.Controllers
                         todate = DateTime.Now;
                         break;
                 }
-                sql.AppendLine(String.Format("	AND	CONVERT(datetime, Transfer.DoneAt, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromdate.ToString(), todate.ToString()));
+                sqlSub.AppendLine(String.Format("    AND    CONVERT(datetime, Transfer.DoneAt, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromdate.ToString(), todate.ToString()));
             }
-
+            // Filter Other Fee
+            if (OtherFee != "")
+            {
+                if (OtherFee == "yes")
+                {
+                    sqlSub.AppendLine(String.Format("    AND Ord.OtherFeeValue != 0"));
+                }
+                else
+                {
+                    sqlSub.AppendLine(String.Format("    AND Ord.OtherFeeValue = 0"));
+                }
+            }
+            // Filter Discount
+            if (Discount != "")
+            {
+                if (Discount == "yes")
+                {
+                    sqlSub.AppendLine(String.Format("    AND Ord.TotalDiscount > 0"));
+                }
+                else
+                {
+                    sqlSub.AppendLine(String.Format("    AND Ord.TotalDiscount = 0"));
+                }
+            }
+            // Filter Created By
             if (CreatedBy != "")
             {
-                sql.AppendLine(String.Format("	AND Ord.CreatedBy = '{0}'", CreatedBy));
+                sqlSub.AppendLine(String.Format("    AND Ord.CreatedBy = '{0}'", CreatedBy));
             }
-
+            // Filter Created Date
             if (CreatedDate != "")
             {
                 string column = "CreatedDate";
@@ -608,54 +552,102 @@ namespace IM_PJ.Controllers
                         todate = DateTime.Now;
                         break;
                 }
-                sql.AppendLine(String.Format("	AND	CONVERT(datetime, Ord." + column + ", 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromdate.ToString(), todate.ToString()));
+                sqlSub.AppendLine(String.Format("    AND    CONVERT(datetime, Ord." + column + ", 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromdate.ToString(), todate.ToString()));
             }
+            #endregion
+            #region GROUP BY
+            sqlSub.AppendLine("GROUP BY");
+            sqlSub.AppendLine("    Ord.ID");
+            #endregion
+            #endregion
 
-            sql.AppendLine("GROUP BY");
-            sql.AppendLine("     Ord.ID");
-            sql.AppendLine(",    Ord.CustomerName");
-            sql.AppendLine(",    Ord.CustomerPhone");
-            sql.AppendLine(",    Customer.Nick");
-            sql.AppendLine(",    Ord.CustomerID");
-            sql.AppendLine(",    Ord.OrderType");
-            sql.AppendLine(",    Ord.ExcuteStatus");
-            sql.AppendLine(",    Ord.PaymentStatus");
-            sql.AppendLine(",    Ord.PaymentType");
-            sql.AppendLine(",    Ord.ShippingType");
-            sql.AppendLine(",    Ord.TotalPrice");
-            sql.AppendLine(",    Ord.TotalDiscount");
-            sql.AppendLine(",    Ord.FeeShipping");
-            sql.AppendLine(",    Ord.OtherFeeName");
-            sql.AppendLine(",    Ord.OtherFeeValue");
-            sql.AppendLine(",    Ord.CreatedBy");
-            sql.AppendLine(",    Ord.CreatedDate");
-            sql.AppendLine(",    Ord.DateDone");
-            sql.AppendLine(",    Ord.OrderNote");
-            sql.AppendLine(",    Ord.RefundsGoodsID");
-            sql.AppendLine(",    Ord.ShippingCode");
-            sql.AppendLine(",    Ord.TransportCompanyID");
-            sql.AppendLine(",    Ord.TransportCompanySubID");
-            sql.AppendLine(",    Ord.OrderNote");
-            sql.AppendLine(",    Ord.PostalDeliveryType");
-            sql.AppendLine(",    Transfer.CusBankID");
-            sql.AppendLine(",    CusBank.BankName");
-            sql.AppendLine(",    Transfer.AccBankID");
-            sql.AppendLine(",    AccBank.BankName");
-            sql.AppendLine(",    Transfer.Money");
-            sql.AppendLine(",    Transfer.Status");
-            sql.AppendLine(",    Transfer.DoneAt");
-            sql.AppendLine(",    Transfer.Note");
-            sql.AppendLine(",    Delivery.StartAt");
-            sql.AppendLine(",    Delivery.Status");
-            sql.AppendLine(",    Delivery.ShipperID");
-            sql.AppendLine(",    Delivery.COD");
-            sql.AppendLine(",    Delivery.COO");
-            sql.AppendLine(",    Delivery.ShipNote");
-            sql.AppendLine(",    Delivery.Image");
-            sql.AppendLine(",    Delivery.ShipperName");
-            sql.AppendLine("ORDER BY Ord.ID DESC");
+            #region SQL Main
+            #region SELECT
+            sqlMain.AppendLine("SELECT");
+            sqlMain.AppendLine("    Ord.ID");
+            sqlMain.AppendLine(",   Ord.CustomerName");
+            sqlMain.AppendLine(",   Ord.CustomerPhone");
+            sqlMain.AppendLine(",   Customer.Nick");
+            sqlMain.AppendLine(",   Ord.CustomerID");
+            sqlMain.AppendLine(",   Ord.OrderType");
+            sqlMain.AppendLine(",   Ord.ExcuteStatus");
+            sqlMain.AppendLine(",   Ord.PaymentStatus");
+            sqlMain.AppendLine(",   Ord.PaymentType");
+            sqlMain.AppendLine(",   Ord.ShippingType");
+            sqlMain.AppendLine(",   Ord.TotalPrice");
+            sqlMain.AppendLine(",   Ord.TotalDiscount");
+            sqlMain.AppendLine(",   ISNULL(Ref.TotalPrice, 0) AS TotalRefund");
+            sqlMain.AppendLine(",   Ord.FeeShipping");
+            sqlMain.AppendLine(",   Ord.OtherFeeName");
+            sqlMain.AppendLine(",   Ord.OtherFeeValue");
+            sqlMain.AppendLine(",   Ord.CreatedBy");
+            sqlMain.AppendLine(",   Ord.CreatedDate");
+            sqlMain.AppendLine(",   Ord.DateDone");
+            sqlMain.AppendLine(",   Ord.OrderNote");
+            sqlMain.AppendLine(",   Ord.RefundsGoodsID");
+            sqlMain.AppendLine(",   Fil.Quantity");
+            sqlMain.AppendLine(",   Ord.ShippingCode");
+            sqlMain.AppendLine(",   Ord.TransportCompanyID");
+            sqlMain.AppendLine(",   Ord.TransportCompanySubID");
+            sqlMain.AppendLine(",   Ord.OrderNote");
+            sqlMain.AppendLine(",   Ord.PostalDeliveryType");
+            sqlMain.AppendLine(",   Transfer.CusBankID");
+            sqlMain.AppendLine(",   CusBank.BankName AS CusBankName");
+            sqlMain.AppendLine(",   Transfer.AccBankID");
+            sqlMain.AppendLine(",   AccBank.BankName AS AccBankName");
+            sqlMain.AppendLine(",   ISNULL(Transfer.Money, 0) AS MoneyReceive");
+            sqlMain.AppendLine(",   ISNULL(Transfer.Status, 2) AS TransferStatus");
+            sqlMain.AppendLine(",   (CASE ISNULL(Transfer.Status, 2) WHEN 1 THEN N'Đã nhận tiền' ELSE N'Chưa nhận tiền' END) AS StatusName");
+            sqlMain.AppendLine(",   Transfer.DoneAt");
+            sqlMain.AppendLine(",   Transfer.Note AS TransferNote");
+            sqlMain.AppendLine(",   Delivery.StartAt AS DeliveryDate");
+            sqlMain.AppendLine(",   ISNULL(Delivery.Status, 2) AS DeliveryStatus"); // Case 2: Chưa giao
+            sqlMain.AppendLine(",   Delivery.ShipperID");
+            sqlMain.AppendLine(",   Delivery.COD AS CostOfDelivery");
+            sqlMain.AppendLine(",   Delivery.COO AS CollectionOfOrder");
+            sqlMain.AppendLine(",   Delivery.ShipNote");
+            sqlMain.AppendLine(",   Delivery.Image AS InvoiceImage");
+            sqlMain.AppendLine(",   Delivery.ShipperName");
+            #endregion
+            #region FROM
+            sqlMain.AppendLine("FROM tbl_Order AS Ord");
+            sqlMain.AppendLine("INNER JOIN (");
+            sqlMain.AppendLine(sqlSub.ToString());
+            sqlMain.AppendLine(") AS Fil");
+            sqlMain.AppendLine("ON    Ord.ID = Fil.ID");
+            sqlMain.AppendLine("LEFT JOIN tbl_RefundGoods AS Ref");
+            sqlMain.AppendLine("ON    Ord.RefundsGoodsID = Ref.ID");
+            sqlMain.AppendLine("INNER JOIN tbl_Customer AS Customer");
+            sqlMain.AppendLine("ON    Ord.CustomerID = Customer.ID");
+            sqlMain.AppendLine("LEFT JOIN BankTransfer AS Transfer");
+            sqlMain.AppendLine("ON    Ord.ID = Transfer.OrderID");
+            sqlMain.AppendLine("LEFT JOIN Bank AS CusBank");
+            sqlMain.AppendLine("ON    Transfer.CusBankID = CusBank.ID");
+            sqlMain.AppendLine("LEFT JOIN BankAccount AS AccBank");
+            sqlMain.AppendLine("ON    Transfer.AccBankID = AccBank.ID");
+            sqlMain.AppendLine("LEFT JOIN (");
+            sqlMain.AppendLine("    SELECT");
+            sqlMain.AppendLine("        DEL.OrderID");
+            sqlMain.AppendLine("    ,   DEL.StartAt");
+            sqlMain.AppendLine("    ,   DEL.Status");
+            sqlMain.AppendLine("    ,   DEL.ShipperID");
+            sqlMain.AppendLine("    ,   DEL.COD");
+            sqlMain.AppendLine("    ,   DEL.COO");
+            sqlMain.AppendLine("    ,   DEL.ShipNote");
+            sqlMain.AppendLine("    ,   DEL.Image");
+            sqlMain.AppendLine("    ,   SHI.Name AS ShipperName");
+            sqlMain.AppendLine("    FROM Delivery AS DEL");
+            sqlMain.AppendLine("    INNER JOIN Shipper AS SHI");
+            sqlMain.AppendLine("    ON DEL.ShipperID = SHI.ID");
+            sqlMain.AppendLine(") AS Delivery");
+            sqlMain.AppendLine("ON    Ord.ID = Delivery.OrderID");
+            #endregion
+            #region ORDER BY
+            sqlMain.AppendLine("ORDER BY Ord.ID DESC");
+            #endregion
+            #endregion
 
-            var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
+            var reader = (IDataReader)SqlHelper.ExecuteDataReader(sqlMain.ToString());
             while (reader.Read())
             {
                 var entity = new OrderList();
@@ -678,6 +670,7 @@ namespace IM_PJ.Controllers
                     entity.OtherFeeValue = 0;
                 entity.TotalPrice = Convert.ToInt32(reader["TotalPrice"]);
                 entity.TotalDiscount = Convert.ToInt32(reader["TotalDiscount"]);
+                entity.TotalRefund = Convert.ToInt32(reader["TotalRefund"]);
                 entity.CreatedBy = reader["CreatedBy"].ToString();
                 entity.CreatedDate = Convert.ToDateTime(reader["CreatedDate"]);
                 if (reader["DateDone"] != DBNull.Value)
@@ -1525,6 +1518,7 @@ namespace IM_PJ.Controllers
             public int CustomerID { get; set; }
             public double TotalPrice { get; set; }
             public double TotalDiscount { get; set; }
+            public double TotalRefund { get; set; }
             public double FeeShipping { get; set; }
             public string OtherFeeName { get; set; }
             public double OtherFeeValue { get; set; }
@@ -1786,16 +1780,16 @@ namespace IM_PJ.Controllers
             sql.AppendLine(String.Format("SELECT Ord.ID, SUM(ISNULL(OrdDetail.Quantity, 0)) AS Quantity, SUM(OrdDetail.Quantity * ISNULL(Product.CostOfGood, Variable.CostOfGood)) AS TotalCost, SUM(OrdDetail.Quantity * (OrdDetail.Price - Ord.DiscountPerProduct)) AS TotalRevenue"));
             sql.AppendLine(String.Format("FROM tbl_Order AS Ord"));
             sql.AppendLine(String.Format("INNER JOIN tbl_OrderDetail AS OrdDetail"));
-            sql.AppendLine(String.Format("ON 	Ord.ID = OrdDetail.OrderID"));
+            sql.AppendLine(String.Format("ON     Ord.ID = OrdDetail.OrderID"));
             sql.AppendLine(String.Format("LEFT JOIN tbl_ProductVariable AS Variable"));
-            sql.AppendLine(String.Format("ON 	OrdDetail.SKU = Variable.SKU"));
+            sql.AppendLine(String.Format("ON     OrdDetail.SKU = Variable.SKU"));
             sql.AppendLine(String.Format("LEFT JOIN tbl_Product AS Product"));
-            sql.AppendLine(String.Format("ON 	OrdDetail.SKU = Product.ProductSKU"));
+            sql.AppendLine(String.Format("ON     OrdDetail.SKU = Product.ProductSKU"));
             sql.AppendLine(String.Format("WHERE 1 = 1"));
-            sql.AppendLine(String.Format("	AND Ord.ExcuteStatus = 2"));
-            sql.AppendLine(String.Format("	AND Ord.PaymentStatus = 3"));
-            sql.AppendLine(String.Format("	AND OrdDetail.SKU LIKE '{0}%'", SKU));
-            sql.AppendLine(String.Format("	AND	CONVERT(datetime, Ord.DateDone, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromDate.ToString(), toDate.ToString()));
+            sql.AppendLine(String.Format("    AND Ord.ExcuteStatus = 2"));
+            sql.AppendLine(String.Format("    AND Ord.PaymentStatus = 3"));
+            sql.AppendLine(String.Format("    AND OrdDetail.SKU LIKE '{0}%'", SKU));
+            sql.AppendLine(String.Format("    AND    CONVERT(datetime, Ord.DateDone, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromDate.ToString(), toDate.ToString()));
             sql.AppendLine(String.Format("GROUP BY Ord.ID"));
 
             var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
