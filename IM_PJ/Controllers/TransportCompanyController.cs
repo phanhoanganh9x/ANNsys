@@ -210,42 +210,51 @@ namespace IM_PJ.Controllers
 
         public static List<tbl_TransportCompany> Filter(string TextSearch)
         {
-            var list = new List<tbl_TransportCompany>();
-            var sql = new StringBuilder();
-
-            sql.AppendLine(String.Format("SELECT * "));
-            sql.AppendLine(String.Format("FROM tbl_TransportCompany"));
-            sql.AppendLine(String.Format("WHERE SubID = 0"));
-
-            if (TextSearch != "")
+            using (var con = new inventorymanagementEntities())
             {
-                sql.AppendLine(String.Format("	AND ( (CompanyName LIKE N'%{0}%') OR (CompanyAddress LIKE N'%{0}%') OR (ShipTo LIKE N'%{0}%') OR (Address LIKE N'%{0}%') OR (CompanyPhone = '{0}') )", TextSearch));
+                
+
+                if (!String.IsNullOrEmpty(TextSearch))
+                {
+                    var unsignTextSearch = UnSign.convert(TextSearch);
+
+                    var tran = con.tbl_TransportCompany
+                        .Where(x => x.SubID == 0)
+                        .OrderBy(x => x.CompanyName)
+                        .ToList();
+
+                    var tranSub = con.tbl_TransportCompany
+                        .Where(x => x.SubID != 0)
+                        .OrderBy(x => x.CompanyName)
+                        .ToList();
+
+                    tranSub = tranSub
+                        .Where(x =>
+                            UnSign.convert(x.CompanyName).Contains(unsignTextSearch) ||
+                            UnSign.convert(x.CompanyAddress).Contains(unsignTextSearch) ||
+                            UnSign.convert(x.ShipTo).Contains(unsignTextSearch) ||
+                            x.CompanyPhone == unsignTextSearch
+                        )
+                        .ToList();
+
+                    return tran
+                        .Join(
+                            tranSub,
+                            t => t.ID,
+                            tb => tb.ID,
+                            (t, tb) => t
+                        )
+                        .OrderBy(x => x.CompanyName)
+                        .ToList();
+                }
+                else
+                {
+                    return con.tbl_TransportCompany
+                        .Where(x => x.SubID == 0)
+                        .OrderBy(x => x.CompanyName)
+                        .ToList();
+                }
             }
-
-            sql.AppendLine(String.Format("ORDER BY CompanyName"));
-
-            var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
-            while (reader.Read())
-            {
-                var entity = new tbl_TransportCompany();
-
-                entity.ID = Convert.ToInt32(reader["ID"]);
-                entity.SubID = Convert.ToInt32(reader["ID"]);
-                entity.CompanyName = reader["CompanyName"].ToString();
-                entity.CompanyPhone = reader["CompanyPhone"].ToString();
-                entity.CompanyAddress = reader["CompanyAddress"].ToString();
-                entity.ShipTo = reader["ShipTo"].ToString();
-                entity.Address = reader["Address"].ToString();
-                entity.Prepay = Convert.ToBoolean(reader["Prepay"]);
-                entity.COD = Convert.ToBoolean(reader["COD"]);
-                entity.Note = reader["Note"].ToString();
-                entity.CreatedBy = reader["CreatedBy"].ToString();
-                entity.CreatedDate = Convert.ToDateTime(reader["CreatedDate"]);
-
-                list.Add(entity);
-            }
-            reader.Close();
-            return list;
         }
 
         /// <summary>
