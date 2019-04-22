@@ -23,7 +23,7 @@ namespace IM_PJ.Controllers
                         fee => fee.FeeTypeID,
                         feetype => feetype.ID,
                         (fee, feetype) => new {
-                            UUI = Guid.NewGuid(),
+                            UUID = fee.UUID,
                             FeeTypeID = fee.FeeTypeID,
                             FeeTypeName = feetype.Name,
                             FeePrice = fee.FeePrice

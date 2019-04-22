@@ -841,7 +841,7 @@
                 {
                     obj.forEach((item) => {
                         let fee = new Fee(
-                            item.UUI,
+                            item.UUID,
                             item.FeeTypeID,
                             item.FeeTypeName,
                             item.FeePrice
