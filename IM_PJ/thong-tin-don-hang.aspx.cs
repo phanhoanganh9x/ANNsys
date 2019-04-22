@@ -79,6 +79,20 @@ namespace IM_PJ
                 }
                 else
                 {
+                    // Init drop down list ddlFeeType
+                    var feeTypes = FeeTypeController.getDropDownList();
+                    feeTypes[0].Text = "Loại Phí";
+                    ddlFeeType.Items.Clear();
+                    ddlFeeType.Items.AddRange(feeTypes.ToArray());
+                    ddlFeeType.DataBind();
+                    ddlFeeType.SelectedIndex = 0;
+
+                    // Init drop down list Price Type
+                    ddlPriceType.Items.Clear();
+                    ddlPriceType.Items.Add(new ListItem("Trừ", "0"));
+                    ddlPriceType.Items.Add(new ListItem("Cộng", "1"));
+                    ddlPriceType.DataBind();
+                    ddlPriceType.SelectedIndex = 1;
 
                     // chuyển sang giao diện xem đơn chuyển hoàn nếu trạng thái xử lý đã chuyển hoàn
                     if (order.ExcuteStatus == 4)
@@ -444,9 +458,8 @@ namespace IM_PJ
                     pDiscount.Value = order.DiscountPerProduct;
                     pFeeShip.Value = Convert.ToDouble(order.FeeShipping);
 
-                    ltrOtherFeeName.Text = order.OtherFeeName;
-                    txtOtherFeeName.Text = order.OtherFeeName;
-                    pOtherFee.Value = Convert.ToDouble(order.OtherFeeValue);
+                    // Get fee info
+                    hdfOtherFees.Value = FeeController.getFeesJSON(ID);
 
                     ltrTotalAfterCK.Text = string.Format("{0:N0}", (Convert.ToDouble(order.TotalPriceNotDiscount) - Convert.ToDouble(order.TotalDiscount)));
                     
@@ -791,13 +804,34 @@ namespace IM_PJ
                                 }
                             }
 
-                            string OtherFeeName = txtOtherFeeName.Text;
-                            double OtherFeeValue = Convert.ToDouble(pOtherFee.Value);
-
                             string ret = OrderController.UpdateOnSystem(OrderID, OrderType, AdditionFee, DisCount, CustomerID, CustomerName, CustomerPhone,
                                 CustomerAddress, "", totalPrice, totalPriceNotDiscount, PaymentStatus, ExcuteStatus, currentDate, username,
-                                Convert.ToDouble(pDiscount.Value), TotalDiscount, FeeShipping, Convert.ToDouble(order.GuestPaid), Convert.ToDouble(order.GuestChange), PaymentType, ShippingType, OrderNote, datedone, 0, ShippingCode, TransportCompanyID, TransportCompanySubID, OtherFeeName, OtherFeeValue, PostalDeliveryType);
+                                Convert.ToDouble(pDiscount.Value), TotalDiscount, FeeShipping, Convert.ToDouble(order.GuestPaid), Convert.ToDouble(order.GuestChange), PaymentType, ShippingType, OrderNote, datedone, 0, ShippingCode, TransportCompanyID, TransportCompanySubID, String.Empty, 0, PostalDeliveryType);
 
+                            // Insert Other Fee
+                            if (!String.IsNullOrEmpty(hdfOtherFees.Value))
+                            {
+                                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                                var fees = serializer.Deserialize<List<Fee>>(hdfOtherFees.Value);
+                                if (fees != null)
+                                {
+                                    foreach (var fee in fees)
+                                    {
+                                        fee.OrderID = OrderID;
+                                        fee.CreatedBy = acc.ID;
+                                        fee.CreatedDate = DateTime.Now;
+                                        fee.ModifiedBy = acc.ID;
+                                        fee.ModifiedDate = DateTime.Now;
+                                    }
+
+                                    FeeController.Update(OrderID, fees);
+                                }
+                            }
+                            else
+                            {
+                                // Remove all fee
+                                FeeController.deleteAll(OrderID);
+                            }
 
                             // Xử lý hủy đơn hàng
                             if (ExcuteStatus == 3)

@@ -77,16 +77,7 @@
                                     </telerik:RadNumericTextBox>
                                 </div>
                             </div>
-                            <div class="post-row clear otherfee hide">
-                                <div class="left"><span class="otherfee-name"></span><a href="javascript:;" style="text-decoration: underline; float: right; font-size: 12px; font-style: italic; padding-left: 10px;" onclick="removeOtherFee()">(Xóa)</a></div>
-                                <div class="right otherfee-value">
-                                    <asp:TextBox ID="txtOtherFeeName" CssClass="form-control" runat="server" Style="display: none" ></asp:TextBox>
-                                    <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull" Skin="MetroTouch"
-                                        ID="pOtherFee" NumberFormat-GroupSizes="3" Width="100%" Value="0" NumberFormat-DecimalDigits="0"
-                                        oninput="countTotal()" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
-                                    </telerik:RadNumericTextBox>
-                                </div>
-                            </div>
+                            <div id="fee-list"></div>
                             <div class="post-row clear">
                                 <div class="left">Tổng tiền</div>
                                 <div class="right totalpriceorderall price-red"></div>
@@ -121,7 +112,7 @@
                                 <a href="javascript:;" class="btn link-btn" style="background-color: #ffad00" onclick="searchReturnOrder()" title="Nhập đơn hàng đổi trả"><i class="fa fa-refresh"></i> Đổi trả</a>
                                 <a href="javascript:;" class="btn link-btn" style="background-color: #00a2b7" onclick="showShipping()" title="Nhập phí vận chuyển"><i class="fa fa-truck"></i> Vận chuyển</a>
                                 <a href="javascript:;" class="btn link-btn" style="background-color: #453288" onclick="showDiscount()" title="Nhập chiết khấu mỗi cái"><i class="fa fa-tag"></i> Chiết khấu</a>
-                                <a href="javascript:;" class="btn link-btn" style="background-color: #607D8B;" onclick="addOtherFee()" title="Thêm phí khác vào đơn hàng"><i class="fa fa-plus"></i> Thêm phí</a>
+                                <a id="feeNewStatic" href="#feeModal" class="btn link-btn" style="background-color: #607D8B;" data-toggle="modal" data-backdrop='static' title="Thêm phí khác vào đơn hàng"><i class="fa fa-plus"></i> Thêm phí</a>
                             </div>
                             <div class="post-table-links clear">
                                 <a href="javascript:;" class="btn link-btn btn-complete-order" onclick="payAll()" title="Hoàn tất đơn hàng"><i class="fa fa-floppy-o"></i> Thanh toán (F9)</a>
@@ -188,6 +179,38 @@
             <asp:HiddenField ID="hdfTongTienConLai" runat="server" />
             <asp:HiddenField ID="hdSession" runat="server" />
             <asp:HiddenField ID="hdStatusPage" runat="server" />
+            <asp:HiddenField ID="hdfOtherFees" runat="server" />
+
+            <!-- Modal -->
+            <div class="modal fade" id="feeModal" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Cập nhật phí</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row form-group">
+                                <asp:HiddenField ID="hdfUUID" runat="server" />
+                                <div class="col-xs-5">
+                                    <asp:DropDownList ID="ddlFeeType" runat="server" CssClass="form-control"></asp:DropDownList>
+                                </div>
+                                <div class="col-xs-3">
+                                    <asp:DropDownList ID="ddlPriceType" runat="server" CssClass="form-control"></asp:DropDownList>
+                                </div>
+                                <div class="col-xs-4">
+                                    <asp:TextBox ID="txtFeePrice" runat="server" CssClass="form-control text-right" placeholder="Số tiền phí" data-type="currency" onkeypress='return event.charCode >= 48 && event.charCode <= 57'></asp:TextBox>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="closeFee" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                            <button id="updateFee" type="button" class="btn btn-primary">Lưu</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
     </asp:Panel>
     <style>
@@ -249,6 +272,208 @@
         <script type="text/javascript">
             "use strict";
 
+            // FeeModel
+            class Fee {
+                constructor(UUID, FeeTypeID, FeeTypeName, FeePrice) {
+                    this.UUID = UUID;
+                    this.FeeTypeID = FeeTypeID;
+                    this.FeeTypeName = FeeTypeName;
+                    this.FeePrice = FeePrice;
+                }
+
+                stringJSON() {
+                    return JSON.stringify(this);
+                }
+            }
+
+            // fees list
+            var fees = [];
+
+            function formatNumber(n) {
+                // format number 1000000 to 1,234,567
+                return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            }
+
+            function formatCurrency(input, blur) {
+                // appends $ to value, validates decimal side
+                // and puts cursor back in right position.
+
+                // get input value
+                var input_val = input.val();
+
+                // don't validate empty input
+                if (input_val === "") { return; }
+
+                // original length
+                var original_len = input_val.length;
+
+                // initial caret position 
+                var caret_pos = input.prop("selectionStart");
+
+                // check for decimal
+                if (input_val.indexOf(".") >= 0) {
+
+                    // get position of first decimal
+                    // this prevents multiple decimals from
+                    // being entered
+                    var decimal_pos = input_val.indexOf(".");
+
+                    // split number by decimal point
+                    var left_side = input_val.substring(0, decimal_pos);
+                    var right_side = input_val.substring(decimal_pos);
+
+                    // add commas to left side of number
+                    left_side = formatNumber(left_side);
+
+                    // validate right side
+                    right_side = formatNumber(right_side);
+
+                    // On blur make sure 2 numbers after decimal
+                    if (blur === "blur") {
+                        right_side += "00";
+                    }
+
+                    // Limit decimal to only 2 digits
+                    right_side = right_side.substring(0, 2);
+
+                    // join number by .
+                    input_val = left_side;
+
+                } else {
+                    // no decimal entered
+                    // add commas to number
+                    // remove all non-digits
+                    input_val = formatNumber(input_val);
+                    input_val = input_val;
+                }
+
+                // send updated string to input
+                input.val(input_val);
+
+                // put caret back in the right position
+                var updated_len = input_val.length;
+                caret_pos = updated_len - original_len + caret_pos;
+                input[0].setSelectionRange(caret_pos, caret_pos);
+            }
+
+            // Load Fee Modal
+            function loadFeeModel(obj, is_new) {
+                if (is_new === undefined)
+                    is_new = false;
+
+                let idDOM = $("#<%=hdfUUID.ClientID%>");
+                let feeTypeDOM = $("#<%=ddlFeeType.ClientID%>");
+                let priceTypeDOM = $("#<%=ddlPriceType.ClientID%>");
+                let feePriceDOM = $("#<%=txtFeePrice.ClientID%>");
+
+                // Init
+                idDOM.val("");
+                feeTypeDOM.val(0);
+                priceTypeDOM.val(1);
+                feePriceDOM.val("");
+                if (!is_new)
+                {
+                    let parent = obj.parent();
+                    if (parent.attr("id") != undefined)
+                        idDOM.val(parent.attr("id"));
+                    if (parent.data("feeid") != "")
+                        feeTypeDOM.val(parent.data("feeid"));
+                    if (parent.data("pricetype") != "")
+                        priceTypeDOM.val(parent.data("pricetype"));
+                    if (parent.data("price") != "")
+                        feePriceDOM.val(formatNumber(parent.data("price").toString()));
+                }
+
+                if (feeTypeDOM.val() == "0")
+                {
+                    feePriceDOM.val("");
+                    feePriceDOM.attr("disabled", true);
+                }
+                else
+                {
+                    feePriceDOM.removeAttr("disabled");
+                }
+            }
+
+            function openFeeUpdateModal(obj)
+            {
+                loadFeeModel(obj);
+                $('#feeModal').modal({ show: 'true', backdrop: 'static' });
+            }
+
+            // Create Fee
+            function createFeeHTML(fee) {
+                let addHTML = "";
+
+                if (fee)
+                {
+                    let positiveNumber = fee.FeePrice > 0 ? "1" : "0";
+                    let negative = fee.FeePrice > 0 ? "" : "-";
+
+                    addHTML += "<div id='" + fee.UUID + "' class='post-row clear otherfee' data-feeid='" + fee.FeeTypeID + "' data-pricetype='" + positiveNumber + "' data-price='" + fee.FeePrice + "'>";
+                    addHTML += "    <div class='left'>";
+                    addHTML += "        <span class='otherfee-name'>" + fee.FeeTypeName + "</span>";
+                    addHTML += "        <a href='javascript:;' style='text-decoration: underline; float: right; font-size: 12px; font-style: italic; padding-left: 10px;' onclick='removeOtherFee(`" + fee.UUID + "`)'>";
+                    addHTML += "            (Xóa)";
+                    addHTML += "        </a>";
+                    addHTML += "    </div>";
+                    addHTML += "    <div class='right otherfee-value' onclick='openFeeUpdateModal($(this))'>";
+                    addHTML += "        <input id='feePrice' type='text' class='form-control text-right' placeholder='Số tiền phí' disabled='disabled' value='" + negative + formatNumber(fee.FeePrice.toString()) + "'/>";
+                    addHTML += "    </div>";
+                    addHTML += "</div>";
+                }
+
+                return addHTML;
+            }
+
+            function addFeeNew()
+            {
+                let id = $("#<%=hdfUUID.ClientID%>").val();
+                let feeid = $("#<%=ddlFeeType.ClientID%>").val();
+                let feename = $("#<%=ddlFeeType.ClientID%> :selected").text();
+                let pricetype = $("#<%=ddlPriceType.ClientID%>").val();
+                let isNegative = pricetype == "1" ? "" : "-";
+                let feeprice = $("#<%=txtFeePrice.ClientID%>").val().replace(/\,/g, '');
+                let fee = new Fee(id, feeid, feename, parseInt(isNegative + feeprice));
+
+                fees.push(fee);
+                $("#fee-list").append(createFeeHTML(fee));
+                $("#<%=hdfOtherFees.ClientID%>").val(JSON.stringify(fees));
+                getAllPrice();
+            }
+
+            // Update Fee
+            function updateFee()
+            {
+                let id = $("#<%=hdfUUID.ClientID%>").val();
+                if (!id) return;
+
+                let feeid = $("#<%=ddlFeeType.ClientID%>").val();
+                let feename = $("#<%=ddlFeeType.ClientID%> :selected").text();
+                let pricetype = $("#<%=ddlPriceType.ClientID%>").val();
+                let isNegative = pricetype == "1" ? "" : "-";
+                let feeprice = $("#<%=txtFeePrice.ClientID%>").val().replace(/\,/g, '');
+                let parent = $("#" + id);
+
+                parent.data("feeid", feeid);
+                parent.data("pricetype", pricetype);
+                parent.data("feeprice", feeprice);
+
+                parent.find("span.otherfee-name").html(feename);
+                parent.find("#feePrice").val(isNegative + formatNumber(feeprice));
+                
+                fees.forEach((fee) => {
+                    if(fee.UUID == id)
+                    {
+                        fee.FeeTypeID = feeid;
+                        fee.FeeTypeName = pricetype;
+                        fee.FeePrice = pricetype == 1 ? parseInt(feeprice) : parseInt(feeprice) * (-1);
+                    }
+                });
+                $("#<%=hdfOtherFees.ClientID%>").val(JSON.stringify(fees));
+                getAllPrice();
+            }
+
             // focus to searchProduct input when page on ready
             $(document).ready(function () {
                 // Init Page
@@ -276,6 +501,61 @@
                         // Filter non-digits from input value.
                         this.value = this.value.replace(/\D/g, '');
                     }
+                });
+
+                // Jquery Dependency
+                $("input[data-type='currency']").on({
+                    keyup: function () {
+                        formatCurrency($(this));
+                    },
+                    blur: function () {
+                        formatCurrency($(this), "blur");
+                    }
+                });
+                // event create fee new
+                $("[id^='feeNew']").click(e => { loadFeeModel(e.target, true); });
+                // event change drop down list
+                $("#<%=ddlFeeType.ClientID%>").change(e => {
+                    let feePriceDOM = $("#<%=txtFeePrice.ClientID%>");
+                    if (e.target.value == "0")
+                    {
+                        feePriceDOM.val("");
+                        feePriceDOM.attr("disabled", true);
+                    }
+                    else
+                    {
+                        feePriceDOM.removeAttr("disabled");
+                    }
+                });
+                // event updateFee click
+                $("#updateFee").click(e => {
+                    let id = $("#<%=hdfUUID.ClientID%>").val();
+                    let price = $("#<%=txtFeePrice.ClientID%>").val().replace(/\,/g, '');
+
+                    if (!(price && parseInt(price) >= 1000 && parseInt(price) % 1000 == 0))
+                    {
+                        swal({
+                            title: "Thông báo",
+                            text: "Có nhập sai số tiền không đó",
+                            type: "error",
+                            html: true,
+                        }, function() {
+                            $("#<%=txtFeePrice.ClientID%>").focus();
+                        });
+                        return;
+                    }
+
+                    if (!id)
+                    {
+                        $("#<%=hdfUUID.ClientID%>").val(uuid.v4());
+                        addFeeNew();
+                    }
+                    else
+                    {
+                        updateFee();
+                    }
+
+                    $("#closeFee").click();
                 });
             });
 
@@ -497,38 +777,10 @@
                 $("#<%=pDiscount.ClientID%>").focus();
             }
 
-            function addOtherFee() {
-                swal({
-                    title: "Thêm phí khác",
-                    text: 'Nhập tên loại phí:',
-                    type: 'input',
-                    showCancelButton: true,
-                    closeOnConfirm: false,
-                }, function (otherFeeName) {
-                    swal({
-                        title: "Thêm phí khác",
-                        text: 'Nhập số tiền:',
-                        type: 'input',
-                        showCancelButton: true,
-                        closeOnConfirm: true,
-                    }, function (otherFeeValue) {
-                        if (otherFeeValue != false) {
-                            $(".subtotal").removeClass("hide");
-                            $(".otherfee-name").html(otherFeeName);
-                            $("#<%=txtOtherFeeName.ClientID%>").val(otherFeeName);
-                            $("#<%=pOtherFee.ClientID%>").val(otherFeeValue).focus();
-                            $(".otherfee").removeClass("hide");
-                            getAllPrice();
-                        }
-                    });
-                });
-            }
-
             function removeOtherFee() {
-                $(".otherfee").addClass("hide");
-                $(".otherfee-name").html("");
-                $("#<%=txtOtherFeeName.ClientID%>").val("");
-                $("#<%=pOtherFee.ClientID%>").val(0).focus();
+                $("#" + uuid).remove();
+                fees = fees.filter((item) => { return item.UUID != uuid; });
+                $("#<%=hdfOtherFees.ClientID%>").val(JSON.stringify(fees));
                 getAllPrice();
             }
 
@@ -827,8 +1079,10 @@
                     var feeship = parseFloat(fs.replace(',', ''));
                     var feeship = parseFloat(fs.replace(/\,/g, ''));
 
-                    var of = $("#<%=pOtherFee.ClientID%>").val();
-                    var otherfee = parseFloat(of.replace(',', ''));
+                    let otherfee = 0;
+                    fees.forEach((item) => {
+                        otherfee += item.FeePrice;
+                    });
 
                     var priceafterchietkhau = totalleft;
                     var totalmoney = totalleft + feeship + otherfee;
@@ -869,10 +1123,13 @@
                     var pain = 0;
                     $("#<%=pGuestPaid.ClientID%>").val(formatThousands(pain, ','));
                 }
-                if ($("#<%=pOtherFee.ClientID%>").val() == '') {
-                    var fee = 0;
-                    $("#<%=pOtherFee.ClientID%>").val(formatThousands(fee, ','));
-                }
+                fees.forEach((item) => {
+                    if (item.price == "")
+                    {
+                        item.FeePrice = 0;
+                        $("#" + item.UUID).val(0);
+                    }
+                })
 
             }
 
@@ -888,8 +1145,10 @@
                 var discount = parseFloat(dis.replace(/\,/g, ''));
                 var feeship = parseFloat(fs.replace(/\,/g, ''));
 
-                var of = $("#<%=pOtherFee.ClientID%>").val();
-                var otherfee = parseFloat(of.replace(/\,/g, ''));
+                let otherfee = 0;
+                fees.forEach((item) => {
+                    otherfee += item.FeePrice;
+                });
 
                 $("#<%=hdfcheck.ClientID%>").val(discount);
 

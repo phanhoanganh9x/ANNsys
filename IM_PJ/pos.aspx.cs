@@ -89,6 +89,21 @@ namespace IM_PJ
             // Fix bug, case setting value for pDiscount on HTML but don't change value
             pDiscount.Value = 1;
             pFeeShip.Value = 1;
+
+            // Init drop down list ddlFeeType
+            var feeTypes = FeeTypeController.getDropDownList();
+            feeTypes[0].Text = "Loại Phí";
+            ddlFeeType.Items.Clear();
+            ddlFeeType.Items.AddRange(feeTypes.ToArray());
+            ddlFeeType.DataBind();
+            ddlFeeType.SelectedIndex = 0;
+
+            // Init drop down list Price Type
+            ddlPriceType.Items.Clear();
+            ddlPriceType.Items.Add(new ListItem("Trừ", "0"));
+            ddlPriceType.Items.Add(new ListItem("Cộng", "1"));
+            ddlPriceType.DataBind();
+            ddlPriceType.SelectedIndex = 1;
         }
         [WebMethod]
         public static string searchCustomerByPhone(string phone)
@@ -295,13 +310,31 @@ namespace IM_PJ
                     string FeeShipping = pFeeShip.Value.ToString();
                     double GuestPaid = Convert.ToDouble(pGuestPaid.Value);
                     double GuestChange = Convert.ToDouble(totalPrice) - GuestPaid;
-                    string OtherFeeName = txtOtherFeeName.Text;
-                    double OtherFeeValue = Convert.ToDouble(pOtherFee.Value);
 
                     var ret = OrderController.InsertOnSystem(AgentID, OrderType, AdditionFee, DisCount, CustomerID, CustomerName, CustomerPhone, CustomerAddress,
                         CustomerEmail, totalPrice, totalPriceNotDiscount, PaymentStatus, ExcuteStatus, IsHidden, WayIn, currentDate, username, DiscountPerProduct,
-                        TotalDiscount, FeeShipping, GuestPaid, GuestChange, PaymentType, ShippingType, OrderNote, DateTime.Now, OtherFeeName, OtherFeeValue, 1);
+                        TotalDiscount, FeeShipping, GuestPaid, GuestChange, PaymentType, ShippingType, OrderNote, DateTime.Now, String.Empty, 0, 1);
                     int OrderID = ret.ID;
+
+                    // Insert Other Fee
+                    if (!String.IsNullOrEmpty(hdfOtherFees.Value))
+                    {
+                        JavaScriptSerializer serializer = new JavaScriptSerializer();
+                        var fees = serializer.Deserialize<List<Fee>>(hdfOtherFees.Value);
+                        if (fees != null)
+                        {
+                            foreach (var fee in fees)
+                            {
+                                fee.OrderID = ret.ID;
+                                fee.CreatedBy = acc.ID;
+                                fee.CreatedDate = DateTime.Now;
+                                fee.ModifiedBy = acc.ID;
+                                fee.ModifiedDate = DateTime.Now;
+                            }
+
+                            FeeController.Update(ret.ID, fees);
+                        }
+                    }
 
                     if (OrderID > 0)
                     {

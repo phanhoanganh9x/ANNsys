@@ -80,6 +80,22 @@ namespace IM_PJ
             // Fix bug, case setting value for pDiscount on HTML but don't change value
             pDiscount.Value = 1;
             pFeeShip.Value = 1;
+
+            // Init drop down list ddlFeeType
+            var feeTypes = FeeTypeController.getDropDownList();
+            feeTypes[0].Text = "Loại Phí";
+            ddlFeeType.Items.Clear();
+            ddlFeeType.Items.AddRange(feeTypes.ToArray());
+            ddlFeeType.DataBind();
+            ddlFeeType.SelectedIndex = 0;
+
+            // Init drop down list Price Type
+            ddlPriceType.Items.Clear();
+            ddlPriceType.Items.Add(new ListItem("Trừ", "0"));
+            ddlPriceType.Items.Add(new ListItem("Cộng", "1"));
+            ddlPriceType.DataBind();
+            ddlPriceType.SelectedIndex = 1;
+
         }
 
         [WebMethod]
@@ -204,9 +220,6 @@ namespace IM_PJ
                     double TotalDiscount = Convert.ToDouble(pDiscount.Value) * Convert.ToDouble(hdfTotalQuantity.Value);
                     string FeeShipping = pFeeShip.Value.ToString();
 
-                    string OtherFeeName = txtOtherFeeName.Text;
-                    double OtherFeeValue = Convert.ToDouble(pOtherFee.Value);
-
                     bool IsHidden = false;
                     int WayIn = 1;
 
@@ -219,10 +232,29 @@ namespace IM_PJ
 
                     var ret = OrderController.Insert(AgentID, OrderType, AdditionFee, DisCount, CustomerID, CustomerName, CustomerPhone, CustomerAddress,
                         "", totalPrice, totalPriceNotDiscount, PaymentStatus, ExcuteStatus, IsHidden, WayIn, currentDate, username, Convert.ToDouble(pDiscount.Value),
-                        TotalDiscount, FeeShipping, PaymentType, ShippingType, datedone, 0, 0, TransportCompanyID, TransportCompanySubID, OtherFeeName, OtherFeeValue, 1);
+                        TotalDiscount, FeeShipping, PaymentType, ShippingType, datedone, 0, 0, TransportCompanyID, TransportCompanySubID, String.Empty, 0, 1);
+
+                    // Insert Other Fee
+                    if (!String.IsNullOrEmpty(hdfOtherFees.Value))
+                    {
+                        JavaScriptSerializer serializer = new JavaScriptSerializer();
+                        var fees = serializer.Deserialize<List<Fee>>(hdfOtherFees.Value);
+                        if (fees != null)
+                        {
+                            foreach (var fee in fees)
+                            {
+                                fee.OrderID = ret.ID;
+                                fee.CreatedBy = acc.ID;
+                                fee.CreatedDate = DateTime.Now;
+                                fee.ModifiedBy = acc.ID;
+                                fee.ModifiedDate = DateTime.Now;
+                            }
+
+                            FeeController.Update(ret.ID, fees);
+                        }
+                    }
 
                     int OrderID = ret.ID;
-
                     double totalQuantity = 0;
                     if (OrderID > 0)
                     {

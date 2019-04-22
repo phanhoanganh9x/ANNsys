@@ -451,13 +451,15 @@ namespace IM_PJ
                             productPrint += "</tr>";
                         }
 
-                        if (Convert.ToDouble(order.OtherFeeValue) != 0)
+                        // Check fee
+                        var fees = FeeController.getFeeInfo(ID);
+                        foreach (var fee in fees)
                         {
-                            TotalOrder = TotalOrder + Convert.ToDouble(order.OtherFeeValue);
-                            TotalPrice = TotalPrice + Convert.ToDouble(order.OtherFeeValue);
+                            TotalOrder = TotalOrder + Convert.ToDouble(fee.Price);
+                            TotalPrice = TotalPrice + Convert.ToDouble(fee.Price);
                             productPrint += "<tr>";
-                            productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">" + order.OtherFeeName + "</td>";
-                            productPrint += "<td>" + string.Format("{0:N0}", Convert.ToDouble(order.OtherFeeValue)) + "</td>";
+                            productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">" + fee.Name + "</td>";
+                            productPrint += "<td>" + string.Format("{0:N0}", Convert.ToDouble(fee.Price)) + "</td>";
                             productPrint += "</tr>";
                         }
 
