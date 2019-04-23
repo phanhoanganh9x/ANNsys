@@ -416,6 +416,7 @@
             <asp:HiddenField runat="server" ID="hdfcheckR" />
             <asp:HiddenField ID="hdOrderInfoID" runat="server" />
             <asp:HiddenField ID="hdSession" runat="server" />
+            <asp:HiddenField ID="hdfFeeType" runat="server" />
             <asp:HiddenField ID="hdfOtherFees" runat="server" />
 
             <!-- Modal -->
@@ -430,11 +431,8 @@
                         <div class="modal-body">
                             <div class="row form-group">
                                 <asp:HiddenField ID="hdfUUID" runat="server" />
-                                <div class="col-xs-5">
+                                <div class="col-xs-8">
                                     <asp:DropDownList ID="ddlFeeType" runat="server" CssClass="form-control"></asp:DropDownList>
-                                </div>
-                                <div class="col-xs-3">
-                                    <asp:DropDownList ID="ddlPriceType" runat="server" CssClass="form-control"></asp:DropDownList>
                                 </div>
                                 <div class="col-xs-4">
                                     <asp:TextBox ID="txtFeePrice" runat="server" CssClass="form-control text-right" placeholder="Số tiền phí" data-type="currency" onkeypress='return event.charCode >= 48 && event.charCode <= 57'></asp:TextBox>
@@ -519,6 +517,15 @@
                 }
             }
 
+            // Fee Type
+            class FeeType {
+                constructor(ID, Name, IsNegativeFee) {
+                    this.ID = ID;
+                    this.Name = Name;
+                    this.IsNegativeFee = IsNegativeFee;
+                }
+            }
+
             // FeeModel
             class Fee {
                 constructor(UUID, FeeTypeID, FeeTypeName, FeePrice) {
@@ -535,6 +542,9 @@
 
             // orders detail remove
             var listOrderDetail = [];
+
+            // fee type list
+            var feetype = [];
 
             // fees list
             var fees = [];
@@ -616,24 +626,20 @@
 
                 let idDOM = $("#<%=hdfUUID.ClientID%>");
                 let feeTypeDOM = $("#<%=ddlFeeType.ClientID%>");
-                let priceTypeDOM = $("#<%=ddlPriceType.ClientID%>");
                 let feePriceDOM = $("#<%=txtFeePrice.ClientID%>");
 
                 // Init
                 idDOM.val("");
                 feeTypeDOM.val(0);
-                priceTypeDOM.val(1);
                 feePriceDOM.val("");
                 if (!is_new)
                 {
                     let parent = obj.parent();
-                    if (parent.attr("id") != undefined)
+                    if (parent.attr("id"))
                         idDOM.val(parent.attr("id"));
-                    if (parent.data("feeid") != "")
+                    if (parent.data("feeid"))
                         feeTypeDOM.val(parent.data("feeid"));
-                    if (parent.data("pricetype") != "")
-                        priceTypeDOM.val(parent.data("pricetype"));
-                    if (parent.data("price") != "")
+                    if (parent.data("price"))
                         feePriceDOM.val(formatNumber(parent.data("price").toString()));
                 }
 
@@ -660,10 +666,9 @@
 
                 if (fee)
                 {
-                    let positiveNumber = fee.FeePrice > 0 ? "1" : "0";
                     let negative = fee.FeePrice > 0 ? "" : "-";
 
-                    addHTML += "<div id='" + fee.UUID + "' class='post-row clear otherfee' data-feeid='" + fee.FeeTypeID + "' data-pricetype='" + positiveNumber + "' data-price='" + fee.FeePrice + "'>";
+                    addHTML += "<div id='" + fee.UUID + "' class='post-row clear otherfee' data-feeid='" + fee.FeeTypeID + "' data-price='" + fee.FeePrice + "'>";
                     addHTML += "    <div class='left'>";
                     addHTML += "        <span class='otherfee-name'>" + fee.FeeTypeName + "</span>";
                     addHTML += "        <a href='javascript:;' style='text-decoration: underline; float: right; font-size: 12px; font-style: italic; padding-left: 10px;' onclick='removeOtherFee(`" + fee.UUID + "`)'>";
@@ -684,10 +689,16 @@
                 let id = $("#<%=hdfUUID.ClientID%>").val();
                 let feeid = $("#<%=ddlFeeType.ClientID%>").val();
                 let feename = $("#<%=ddlFeeType.ClientID%> :selected").text();
-                let pricetype = $("#<%=ddlPriceType.ClientID%>").val();
-                let isNegative = pricetype == "1" ? "" : "-";
-                let feeprice = $("#<%=txtFeePrice.ClientID%>").val().replace(/\,/g, '');
-                let fee = new Fee(id, feeid, feename, parseInt(isNegative + feeprice));
+                let feeprice = parseInt($("#<%=txtFeePrice.ClientID%>").val().replace(/\,/g, ''));
+                let isNegative = false;
+                feetype.forEach((item) => {
+                    if (item.ID == feeid) {
+                        isNegative = item.IsNegativeFee;
+                        return;
+                    }
+                });
+                if (isNegative) feeprice = feeprice * (-1);
+                let fee = new Fee(id, feeid, feename, feeprice);
 
                 fees.push(fee);
                 $("#fee-list").append(createFeeHTML(fee));
@@ -703,24 +714,35 @@
 
                 let feeid = $("#<%=ddlFeeType.ClientID%>").val();
                 let feename = $("#<%=ddlFeeType.ClientID%> :selected").text();
-                let pricetype = $("#<%=ddlPriceType.ClientID%>").val();
-                let isNegative = pricetype == "1" ? "" : "-";
+                let isNegative = false;
+                feetype.forEach((item) => {
+                    if (item.ID == feeid) {
+                        isNegative = item.IsNegativeFee;
+                        return;
+                    }
+                });
                 let feeprice = $("#<%=txtFeePrice.ClientID%>").val().replace(/\,/g, '');
                 let parent = $("#" + id);
 
                 parent.data("feeid", feeid);
-                parent.data("pricetype", pricetype);
                 parent.data("feeprice", feeprice);
 
                 parent.find("span.otherfee-name").html(feename);
-                parent.find("#feePrice").val(isNegative + formatNumber(feeprice));
+                if (isNegative) {
+                    parent.find("#feePrice").val("-" + formatNumber(feeprice));
+                    feeprice = parseInt(feeprice) * (-1);
+                }
+                else {
+                    parent.find("#feePrice").val(formatNumber(feeprice));
+                    feeprice = parseInt(feeprice);
+                }
                 
                 fees.forEach((fee) => {
                     if(fee.UUID == id)
                     {
                         fee.FeeTypeID = feeid;
                         fee.FeeTypeName = feename;
-                        fee.FeePrice = pricetype == 1 ? parseInt(feeprice) : parseInt(feeprice) * (-1);
+                        fee.FeePrice = feeprice;
                     }
                 });
                 $("#<%=hdfOtherFees.ClientID%>").val(JSON.stringify(fees));
@@ -835,6 +857,12 @@
             }
 
             function init() {
+                // Load Fee Type List
+                let data = JSON.parse($("#<%=hdfFeeType.ClientID%>").val());
+                data.forEach((item) => {
+                    feetype.push(new FeeType(item.ID, item.Name, item.IsNegativeFee));
+                });
+
                 // Load Fee List
                 let obj = JSON.parse($("#<%=hdfOtherFees.ClientID%>").val());
                 if ($.isArray(obj))

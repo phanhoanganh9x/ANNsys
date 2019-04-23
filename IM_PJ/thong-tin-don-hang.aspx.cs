@@ -87,12 +87,8 @@ namespace IM_PJ
                     ddlFeeType.DataBind();
                     ddlFeeType.SelectedIndex = 0;
 
-                    // Init drop down list Price Type
-                    ddlPriceType.Items.Clear();
-                    ddlPriceType.Items.Add(new ListItem("Trừ", "0"));
-                    ddlPriceType.Items.Add(new ListItem("Cộng", "1"));
-                    ddlPriceType.DataBind();
-                    ddlPriceType.SelectedIndex = 1;
+                    // Init Price Type List
+                    hdfFeeType.Value = FeeTypeController.getFeeTypeJSON();
 
                     // chuyển sang giao diện xem đơn chuyển hoàn nếu trạng thái xử lý đã chuyển hoàn
                     if (order.ExcuteStatus == 4)

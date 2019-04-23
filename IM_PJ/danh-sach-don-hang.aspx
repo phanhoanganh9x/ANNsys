@@ -183,6 +183,37 @@
         </div>
         
         <asp:HiddenField ID="hdfcreate" runat="server" />
+
+        <!-- Modal -->
+        <div class="modal fade" id="feeInfoModal" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Thông tin loại phí</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                    <th>Tên loại phí</th>
+                                    <th>Lastname</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="feeInfo">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script type="text/javascript">
             // Parse URL Queries
             function url_query(query) {
@@ -233,6 +264,54 @@
                 return s.substr(0, i + 3) + r +
                     (d ? '.' + Math.round(d * Math.pow(10, dp || 2)) : '');
             };
+
+            function createFeeInfoHTML(fee, is_total) {
+                if (!is_total) {
+                    is_total = false;
+                }
+                let addHTML = "";
+
+                if (is_total) {
+                    addHTML += "<tr class='info'>";
+                    addHTML += "    <td style='text-align: right'>" + fee.FeeTypeName + "</td>";
+                    addHTML += "    <td>" + formatThousands(fee.FeePrice) + "</td>";
+                    addHTML += "</tr>";
+                }
+                else {
+                    addHTML += "<tr>";
+                    addHTML += "    <td>" + fee.FeeTypeName + "</td>";
+                    addHTML += "    <td>" + formatThousands(fee.FeePrice) + "</td>";
+                    addHTML += "</tr>";
+                }
+
+                return addHTML;
+            }
+            function openFeeInfoModal(orderID) {
+                let tbodyDOM = $("tbody[id='feeInfo']");
+                // Clear body
+                tbodyDOM.html("");
+                $.ajax({
+                    type: "POST",
+                    url: "/danh-sach-don-hang.aspx/getFeeInfo",
+                    data: JSON.stringify({ 'orderID': orderID }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: (response) => {
+                        if (response.d) {
+                            let data = JSON.parse(response.d);
+                            let feeTotal = 0;
+                            data.forEach((item) => {
+                                feeTotal += item.FeePrice;
+                                tbodyDOM.append(createFeeInfoHTML(item));
+                            });
+                            tbodyDOM.append(createFeeInfoHTML({ "FeeTypeName": "Tổng", "FeePrice": feeTotal }, true));
+                        }
+                    },
+                    error: (xmlhttprequest, textstatus, errorthrow) => {
+                        swal("Thông báo", "Có lỗi trong quá trình lấy thông tin phí", "error");
+                    }
+                })
+            }
         </script>
     </main>
 </asp:Content>

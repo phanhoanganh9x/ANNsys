@@ -89,13 +89,8 @@ namespace IM_PJ
             ddlFeeType.DataBind();
             ddlFeeType.SelectedIndex = 0;
 
-            // Init drop down list Price Type
-            ddlPriceType.Items.Clear();
-            ddlPriceType.Items.Add(new ListItem("Trừ", "0"));
-            ddlPriceType.Items.Add(new ListItem("Cộng", "1"));
-            ddlPriceType.DataBind();
-            ddlPriceType.SelectedIndex = 1;
-
+            // Init Price Type List
+            hdfFeeType.Value = FeeTypeController.getFeeTypeJSON();
         }
 
         [WebMethod]

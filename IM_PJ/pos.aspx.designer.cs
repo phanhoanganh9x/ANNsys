@@ -283,6 +283,15 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.HiddenField hdStatusPage;
         
         /// <summary>
+        /// hdfFeeType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdfFeeType;
+        
+        /// <summary>
         /// hdfOtherFees control.
         /// </summary>
         /// <remarks>
@@ -308,15 +317,6 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlFeeType;
-        
-        /// <summary>
-        /// ddlPriceType control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlPriceType;
         
         /// <summary>
         /// txtFeePrice control.

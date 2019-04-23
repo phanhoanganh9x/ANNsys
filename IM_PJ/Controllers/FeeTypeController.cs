@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using IM_PJ.Models;
 using System.Web.UI.WebControls;
+using System.Web.Script.Serialization;
 
 namespace IM_PJ.Controllers
 {
@@ -22,6 +23,21 @@ namespace IM_PJ.Controllers
             }
 
             return data;
+        }
+
+        public static string getFeeTypeJSON()
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var typeList = con.FeeTypes.ToArray();
+                foreach(var item in typeList)
+                {
+                    if (!item.IsNegativeFee.HasValue)
+                        item.IsNegativeFee = false;
+                }
+                var json = new JavaScriptSerializer();
+                return json.Serialize(typeList);
+            }
         }
     }
 }

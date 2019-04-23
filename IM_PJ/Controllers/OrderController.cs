@@ -363,7 +363,7 @@ namespace IM_PJ.Controllers
             #region SELECT
             sqlSub.AppendLine("SELECT");
             sqlSub.AppendLine("    Ord.ID");
-            sqlSub.AppendLine(",   SUM(ISNULL(OrdDetail.Quantity,0)) AS Quantity");
+            sqlSub.AppendLine(",   SUM(ISNULL(OrdDetail.Quantity, 0)) AS Quantity");
             #endregion
             #region FROM
             sqlSub.AppendLine("FROM tbl_Order AS Ord");
@@ -524,18 +524,6 @@ namespace IM_PJ.Controllers
                 }
                 sqlSub.AppendLine(String.Format("    AND    CONVERT(datetime, Transfer.DoneAt, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromdate.ToString(), todate.ToString()));
             }
-            // Filter Other Fee
-            if (OtherFee != "")
-            {
-                if (OtherFee == "yes")
-                {
-                    sqlSub.AppendLine(String.Format("    AND Ord.OtherFeeValue != 0"));
-                }
-                else
-                {
-                    sqlSub.AppendLine(String.Format("    AND Ord.OtherFeeValue = 0"));
-                }
-            }
             // Filter Discount
             if (Discount != "")
             {
@@ -631,8 +619,8 @@ namespace IM_PJ.Controllers
             sqlMain.AppendLine(",   Ord.TotalDiscount");
             sqlMain.AppendLine(",   ISNULL(Ref.TotalPrice, 0) AS TotalRefund");
             sqlMain.AppendLine(",   Ord.FeeShipping");
-            sqlMain.AppendLine(",   Ord.OtherFeeName");
-            sqlMain.AppendLine(",   Ord.OtherFeeValue");
+            sqlMain.AppendLine(",   FeeSub.OtherFeeName");
+            sqlMain.AppendLine(",   FeeSub.OtherFeeValue");
             sqlMain.AppendLine(",   Ord.CreatedBy");
             sqlMain.AppendLine(",   Ord.CreatedDate");
             sqlMain.AppendLine(",   Ord.DateDone");
@@ -694,6 +682,30 @@ namespace IM_PJ.Controllers
             sqlMain.AppendLine("    ON DEL.ShipperID = SHI.ID");
             sqlMain.AppendLine(") AS Delivery");
             sqlMain.AppendLine("ON    Ord.ID = Delivery.OrderID");
+            sqlMain.AppendLine("LEFT JOIN (");
+            sqlMain.AppendLine("    SELECT");
+            sqlMain.AppendLine("        Fee.OrderID");
+            sqlMain.AppendLine("    ,   N'Phí khác' AS OtherFeeName");
+            sqlMain.AppendLine("    ,   SUM(ISNULL(Fee.FeePrice, 0)) AS OtherFeeValue");
+            sqlMain.AppendLine("    FROM Fee");
+            sqlMain.AppendLine("    GROUP BY Fee.OrderID");
+            sqlMain.AppendLine(") AS FeeSub");
+            sqlMain.AppendLine("ON    Ord.ID = FeeSub.OrderID");
+            #endregion
+            sqlMain.AppendLine("    WHERE 1 = 1");
+            #region WHERE
+            // Filter Other Fee
+            if (OtherFee != "")
+            {
+                if (OtherFee == "yes")
+                {
+                    sqlMain.AppendLine(String.Format("    AND ISNULL(FeeSub.OtherFeeValue, 0) != 0"));
+                }
+                else
+                {
+                    sqlMain.AppendLine(String.Format("    AND ISNULL(FeeSub.OtherFeeValue, 0) = 0"));
+                }
+            }
             #endregion
             #region ORDER BY
             sqlMain.AppendLine("ORDER BY Ord.ID DESC");

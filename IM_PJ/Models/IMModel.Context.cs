@@ -70,7 +70,7 @@ namespace IM_PJ.Models
         public virtual DbSet<Delivery> Deliveries { get; set; }
         public virtual DbSet<Shipper> Shippers { get; set; }
         public virtual DbSet<tbl_Product> tbl_Product { get; set; }
-        public virtual DbSet<FeeType> FeeTypes { get; set; }
         public virtual DbSet<Fee> Fees { get; set; }
+        public virtual DbSet<FeeType> FeeTypes { get; set; }
     }
 }

@@ -526,7 +526,7 @@ namespace IM_PJ
                     }
                     if (item.OtherFeeValue != 0)
                     {
-                        html.Append("<span class='order-info'><strong>Phí khác:</strong> " + string.Format("{0:N0}", Convert.ToDouble(item.OtherFeeValue)) + " (" + item.OtherFeeName.Trim() + ")</span>");
+                        html.Append("<span class='order-info'><strong>Phí:</strong> " + string.Format("{0:N0}", Convert.ToDouble(item.OtherFeeValue)) + " (<a href='#feeInfoModal' data-toggle='modal' data-backdrop='static' onclick='openFeeInfoModal(" + item.ID + ")'>" + item.OtherFeeName.Trim() + "</a>)</span>");
                     }
                     if (item.ShippingType == 4)
                     {
@@ -800,5 +800,10 @@ namespace IM_PJ
             Response.Redirect(request);
         }
 
+        [WebMethod]
+        public static string getFeeInfo(int orderID)
+        {
+            return FeeController.getFeesJSON(orderID);
+        }
     }
 }
