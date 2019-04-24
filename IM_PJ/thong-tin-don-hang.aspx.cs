@@ -425,7 +425,8 @@ namespace IM_PJ
                     }
                     #endregion
                     #region HiddenField
-                    
+
+                    hdfCustomerID.Value = order.CustomerID.ToString();
                     hdfOrderType.Value = customerType.ToString();
                     hdfTotalPrice.Value = totalPrice.ToString();
                     hdfTotalPriceNotDiscount.Value = totalPriceNotDiscount.ToString();
@@ -564,25 +565,9 @@ namespace IM_PJ
         }
 
         [WebMethod]
-        public static string findReturnOrder(string order, string remove)
+        public static string getOrderReturn(int customerID)
         {
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-            if (remove.ToInt() == 0)
-            {
-                var or = RefundGoodController.GetOrderByID(order.ToInt());
-                if (or != null)
-                {
-                    return serializer.Serialize(or);
-                }
-                else
-                {
-                    return serializer.Serialize(null);
-                }
-            }
-            else
-            {
-                return serializer.Serialize(null);
-            }
+            return RefundGoodController.getOrderReturnJSON(customerID);
         }
 
         [WebMethod]
