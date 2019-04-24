@@ -141,26 +141,11 @@ namespace IM_PJ
         }
 
         [WebMethod]
-        public static string getReturnOrder(string order, string remove)
+        public static string getOrderReturn(int customerID)
         {
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-            if(remove.ToInt() == 0)
-            {
-                var or = RefundGoodController.GetOrderByID(order.ToInt());
-                if (or != null)
-                {
-                    return serializer.Serialize(or);
-                }
-                else
-                {
-                    return serializer.Serialize(null);
-                }
-            }
-            else
-            {
-                return serializer.Serialize(null);
-            }
+            return RefundGoodController.getOrderReturnJSON(customerID);
         }
+
         [WebMethod]
         public static string getCustomerDetail(int ID)
         {

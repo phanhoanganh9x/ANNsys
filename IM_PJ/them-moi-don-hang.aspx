@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=2115"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=2117"></script>
     <script src="/App_Themes/Ann/js/search-product.js?v=07122018"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -218,8 +218,9 @@
             <asp:HiddenField ID="hdSession" runat="server" />
             <asp:HiddenField ID="hdfFeeType" runat="server" />
             <asp:HiddenField ID="hdfOtherFees" runat="server" />
+            <asp:HiddenField ID="hdfCustomerID" runat="server" />
 
-            <!-- Modal -->
+            <!-- Fee Modal -->
             <div class="modal fade" id="feeModal" role="dialog">
                 <div class="modal-dialog">
                     <!-- Modal content-->
@@ -242,6 +243,40 @@
                         <div class="modal-footer">
                             <button id="closeFee" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
                             <button id="updateFee" type="button" class="btn btn-primary">Lưu</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Return Modal -->
+            <div class="modal fade" id="orderReturnModal" role="dialog">
+                <div class="modal-dialog modal-lg">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Danh sách đổi trả hàng</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row form-group">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Mã</th>
+                                            <th>Số lượng</th>
+                                            <th>Phí đổi hàng</th>
+                                            <th>Tổng tiền</th>
+                                            <th>Nhân viên</th>
+                                            <th>Ngày tạo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="orderReturn">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="closeOrderReturn" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
                         </div>
                     </div>
                 </div>
@@ -669,93 +704,113 @@
             }
 
             // search return order
+            function createOrderReturnHTML(refundGood) {
+                let createdDate = "";
+                let addHTML = "";
+
+                // Format CreateDate
+                var matchs = refundGood.CreatedDate.match(/\d+/g);
+                if (matchs)
+                {
+                    let date = new Date(parseInt(matchs[0]));
+                    if (date)
+                    {
+                        createdDate = date.format("yyyy-MM-dd");
+                    }
+                }
+                addHTML += "<tr onclick='getReturnOrder(" + JSON.stringify(refundGood) + ")' style='cursor: pointer'>";
+                addHTML += "    <td>" + refundGood.ID + "</td>";
+                addHTML += "    <td>" + formatNumber(refundGood.TotalQuantity.toString()) + "</td>";
+                addHTML += "    <td>" + formatNumber(refundGood.TotalRefundFee.toString()) + "</td>";
+                addHTML += "    <td>" + formatNumber(refundGood.TotalPrice.toString()) + "</td>";
+                addHTML += "    <td>" + refundGood.CreatedBy + "</td>";
+                addHTML += "    <td>" + createdDate + "</td>";
+                addHTML += "</tr>";
+
+                return addHTML
+            }
             function searchReturnOrder() {
-                var phone = $("#<%=txtPhone.ClientID%>").val();
-                var name = $("#<%=txtFullname.ClientID%>").val();
-                if (isBlank(phone) || isBlank(name))
+                let customerID = $("#<%=hdfCustomerID.ClientID%>").val();
+
+                if (isBlank(customerID))
                 {
                     swal("Thông báo", "Hãy nhập thông tin khách hàng trước!", "info");
                 }
                 else
                 {
-                    var html = "";
-                    html += "<div class=\"form-row\">";
-                    html += "<label>Mã đơn hàng đổi trả: </label>";
-                    html += "<input ID=\"txtOrderRefund\" class=\"form-control fjx\"></input>";
-                    html += "<a href=\"javascript:;\" class=\"btn primary-btn float-right-btn link-btn\" onclick=\"getReturnOrder()\"><i class=\"fa fa-search\" aria-hidden=\"true\"></i> Tìm</a>";
-                    html += "</div>";
-                    showPopup(html);
-                    $("#txtOrderRefund").focus();
-                    $('#txtOrderRefund').keydown(function(event) {
-                        if (event.which === 13)
-                        {
-                            getReturnOrder();
-                            event.preventDefault();
-                            return false;
+                    let modalDOM = $("#orderReturnModal");
+                    let customerName = $("#<%=txtFullname.ClientID%>").val();
+
+                    // Setting title modal
+                    modalDOM.find(".modal-title").html("Danh sách đổi trả hàng (" + customerName + ")");
+                    // Clear body modal
+                    modalDOM.find("tbody[id='orderReturn']").html("");
+                    $.ajax({
+                        type: 'POST',
+                        url: '/them-moi-don-hang.aspx/getOrderReturn',
+                        data: JSON.stringify({ 'customerID': customerID }),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: (response) => {
+                            if (response.d) {
+                                let data = JSON.parse(response.d);
+                                if (data.length == 0)
+                                {
+                                    swal("Thông báo", "Khách hàng này không có đơn đổi trả hoặc đã được trừ tiền!", "error");
+                                }
+                                else
+                                {
+                                    data.forEach((item) => {
+                                        modalDOM.find("tbody[id='orderReturn']").append(createOrderReturnHTML(item))
+                                    });
+
+                                    modalDOM.modal({ show: 'true', backdrop: 'static' });
+                                }
+                            }
+                        },
+                        error: (xmlhttprequest, textstatus, errorthrow) => {
+                            swal("Thông báo", "Đã xảy ra lỗi trong quá trình lấy danh sách đơn hàng đổi trả", "error");
                         }
                     });
                 }
             }
 
             // get return order
-            function getReturnOrder() {
-                var order = $("#txtOrderRefund").val();
-                var name = $("#<%=txtFullname.ClientID%>").val();
-                var phone = $("#<%=txtPhone.ClientID%>").val();
-                if (!isBlank(order))
+            function getReturnOrder(refundGood) {
+                if (refundGood)
                 {
-                    $.ajax({
-                        type: "POST",
-                        url: "/them-moi-don-hang.aspx/getReturnOrder",
-                        data: "{order:'" + order + "', remove:'0'}",
-                        contentType: "application/json; charset=utf-8",
-                        dataType: "json",
-                        success: function(msg) {
-                            if (msg.d != "null")
-                            {
-                                var data = JSON.parse(msg.d);
-                                $("#<%=hdSession.ClientID%>").val(data.ID + "|" + data.TotalPrice);
-                            
-                                if (data.CustomerName == name && data.CustomerPhone == phone)
-                                {
-                                    $(".returnorder").removeClass("hide");
-                                    $(".totalpriceorderall").removeClass("price-red");
-                                    $(".totalpricedetail").addClass("price-red");
-                                    $(".find3").removeClass("hide");
-                                    $(".find1").addClass("hide");
-                                    $(".find2").html("(Xem đơn hàng " + data.ID + ")");
-                                    $(".find2").attr("onclick", "viewReturnOrder(" + data.ID + ")");
-                                    $(".find2").removeClass("hide");
-                                    var refundprice = 0;
-                                    if (parseFloat($("#<%=hdfTotalPrice.ClientID%>").val() > 0)) {
-                                        refundprice = parseFloat($("#<%=hdfTotalPrice.ClientID%>").val());
-                                    }
-                                    $(".totalpricedetail").html(formatThousands((refundprice - data.TotalPrice), ","));
-                                    $("#<%=hdfDonHangTra.ClientID%>").val(data.TotalPrice);
-                                    $(".refund").removeClass("hide");
-                                    $(".totalpriceorderrefund").html(formatThousands(data.TotalPrice, ","));
-                                    closePopup();
-                                    getAllPrice();
-                                }
-                                else
-                                {
-                                    swal("Thông báo", "Đơn hàng đổi trả không thuộc khách hàng này!", "error");
-                                }
-                            }
-                            else
-                            {
-                                $("#<%=hdSession.ClientID%>").val(1)
-                                swal("Thông báo", "Đơn hàng đổi trả không tồn tại hoặc đã được trừ tiền!", "error");
-                            }
-                        },
-                        error: function(xmlhttprequest, textstatus, errorthrow) {
-                            alert('lỗi');
+                    let totalPrice = $("#<%=hdfTotalPrice.ClientID%>").val();
+                    if (totalPrice)
+                    {
+                        totalPrice = parseFloat(totalPrice) - refundGood.TotalPrice;
+                        if (totalPrice < 0) {
+                            totalPrice = "-" + formatNumber(totalPrice.toString());
                         }
-                    });
-                }
-                else
-                {
-                    swal("Thông báo", "Hãy nhập thông tin khách hàng trước!", "prompt");
+                        else {
+                            totalPrice = formatNumber(totalPrice.toString());
+                        }
+                    }
+                    else
+                    {
+                        totalPrice = "-" + formatNumber(refundGood.TotalPrice.toString());
+                    }
+
+                    $("#<%=hdSession.ClientID%>").val(refundGood.ID + "|" + refundGood.TotalPrice);
+                    $(".returnorder").removeClass("hide");
+                    $(".totalpriceorderall").removeClass("price-red");
+                    $(".totalpricedetail").addClass("price-red");
+                    $(".find3").removeClass("hide");
+                    $(".find1").addClass("hide");
+                    $(".find2").html("(Xem đơn hàng " + refundGood.ID + ")");
+                    $(".find2").attr("onclick", "viewReturnOrder(" + refundGood.ID + ")");
+                    $(".find2").removeClass("hide");
+                    $(".totalpricedetail").html(totalPrice);
+                    $("#<%=hdfDonHangTra.ClientID%>").val(refundGood.TotalPrice);
+                    $(".refund").removeClass("hide");
+                    $(".totalpriceorderrefund").html(formatThousands(refundGood.TotalPrice, ","));
+
+                    $("#closeOrderReturn").click();
+                    getAllPrice();
                 }
             }
 
@@ -767,35 +822,23 @@
 
             // delete return order
             function deleteReturnOrder() {
-                $.ajax({
-                    type: "POST",
-                    url: "/them-moi-don-hang.aspx/getReturnOrder",
-                    data: "{order:'1', remove:'1'}",
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    success: function(msg) {
-                        $(".find3").addClass("hide");
-                        $(".find1").removeClass("hide");
-                        $(".find2").addClass("hide");
-                        $(".find2").html("");
-                        $(".find2").removeAttr("onclick");
-                        $(".totalpricedetail").html("0");
-                        $("#<%=hdfDonHangTra.ClientID%>").val(0);
-                        $("#<%=hdSession.ClientID%>").val(1);
-                        $(".refund").addClass("hide");
-                        $(".totalpriceorderrefund").html("0");
-                        $("#txtOrderRefund").val(0);
-                        $(".returnorder").addClass("hide");
-                        $(".totalpriceorderall").addClass("price-red");
-                        $(".totalpricedetail").removeClass("price-red");
+                $(".find3").addClass("hide");
+                $(".find1").removeClass("hide");
+                $(".find2").addClass("hide");
+                $(".find2").html("");
+                $(".find2").removeAttr("onclick");
+                $(".totalpricedetail").html("0");
+                $("#<%=hdfDonHangTra.ClientID%>").val(0);
+                $("#<%=hdSession.ClientID%>").val(1);
+                $(".refund").addClass("hide");
+                $(".totalpriceorderrefund").html("0");
+                $("#txtOrderRefund").val(0);
+                $(".returnorder").addClass("hide");
+                $(".totalpriceorderall").addClass("price-red");
+                $(".totalpricedetail").removeClass("price-red");
 
-                        swal("Thông báo", "Đã bỏ qua đơn hàng đổi trả này!", "info");
-                        getAllPrice();
-                    },
-                    error: function(xmlhttprequest, textstatus, errorthrow) {
-                        alert('lỗi');
-                    }
-                });
+                swal("Thông báo", "Đã bỏ qua đơn hàng đổi trả này!", "info");
+                getAllPrice();
             }
 
             // pay order on click button

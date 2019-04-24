@@ -7,6 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Web;
+using System.Web.Script.Serialization;
 using WebUI.Business;
 
 namespace IM_PJ.Controllers
@@ -557,6 +558,22 @@ namespace IM_PJ.Controllers
                 return tongdoitra;
             }
         }
+
+        public static string getOrderReturnJSON(int customerID)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var orders = con.tbl_RefundGoods
+                    .Where(x => x.CustomerID == customerID)
+                    .Where(x => x.Status == 1)
+                    .OrderByDescending(o => o.CreatedDate)
+                    .ToArray();
+
+                var serializer = new JavaScriptSerializer();
+                return serializer.Serialize(orders);
+            }
+        }
+
         #endregion
         public class RefundReport
         {

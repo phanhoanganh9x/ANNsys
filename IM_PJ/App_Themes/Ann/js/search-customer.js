@@ -430,6 +430,7 @@ function selectCustomer(username) {
                     if (typeof checkCustomer === 'function') {
                         checkCustomer();
                     }
+                    $("input[id$='_hdfCustomerID']").val(id);
                     $("input[id$='_hdfUsernameCurrent']").val(createdby);
                     swal.close();
                 }
@@ -490,6 +491,7 @@ function selectCustomer(username) {
                 checkCustomer();
             }
 
+            $("input[id$='_hdfCustomerID']").val(id);
             $("input[id$='_hdfUsernameCurrent']").val(createdby);
             swal.close();
         }
