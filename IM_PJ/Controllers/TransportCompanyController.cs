@@ -7,6 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Web;
+using System.Web.UI.WebControls;
 using WebUI.Business;
 
 namespace IM_PJ.Controllers
@@ -283,5 +284,20 @@ namespace IM_PJ.Controllers
             }
         }
         #endregion
+
+        public static List<ListItem> getDropDownListTrans()
+        {
+            var data = new List<ListItem>();
+            data.Add(new ListItem(String.Empty, "0"));
+            using (var con = new inventorymanagementEntities())
+            {
+                foreach (var tran in con.tbl_TransportCompany.Where(x => x.SubID == 0).ToList())
+                {
+                    data.Add(new ListItem(tran.CompanyName, tran.ID.ToString()));
+                }
+            }
+
+            return data;
+        }
     }
 }

@@ -42,6 +42,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.BankAccount' does not have
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="int" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+          <Property Name="BankID" Type="int" />
         </EntityType>
         <EntityType Name="BankTransfer">
           <Key>
@@ -884,7 +885,8 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
     [BankAccount].[CreatedBy] AS [CreatedBy], 
     [BankAccount].[CreatedDate] AS [CreatedDate], 
     [BankAccount].[ModifiedBy] AS [ModifiedBy], 
-    [BankAccount].[ModifiedDate] AS [ModifiedDate]
+    [BankAccount].[ModifiedDate] AS [ModifiedDate], 
+    [BankAccount].[BankID] AS [BankID]
     FROM [dbo].[BankAccount] AS [BankAccount]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="View_ProductList" EntityType="Self.View_ProductList" store:Type="Views" store:Schema="dbo">
@@ -1685,6 +1687,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="Int32" Nullable="false" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="BankID" Type="Int32" />
         </EntityType>
         <EntityType Name="Delivery">
           <Key>
@@ -2527,6 +2530,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
           <EntitySetMapping Name="BankAccounts">
             <EntityTypeMapping TypeName="inventorymanagementModel.BankAccount">
               <MappingFragment StoreEntitySet="BankAccount">
+                <ScalarProperty Name="BankID" ColumnName="BankID" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />

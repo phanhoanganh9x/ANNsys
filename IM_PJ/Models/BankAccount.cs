@@ -25,5 +25,6 @@ namespace IM_PJ.Models
         public System.DateTime CreatedDate { get; set; }
         public int ModifiedBy { get; set; }
         public System.DateTime ModifiedDate { get; set; }
+        public Nullable<int> BankID { get; set; }
     }
 }

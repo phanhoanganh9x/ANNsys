@@ -91,6 +91,75 @@ namespace IM_PJ
 
             // Init Price Type List
             hdfFeeType.Value = FeeTypeController.getFeeTypeJSON();
+
+            // Init drop down list Excute Status
+            var excuteStatus = new List<ListItem>();
+            excuteStatus.Add(new ListItem("Đang xử lý", "1"));
+            excuteStatus.Add(new ListItem("Đã hoàn tất", "2"));
+
+            ddlExcuteStatus.Items.Clear();
+            ddlExcuteStatus.Items.AddRange(excuteStatus.ToArray());
+            ddlExcuteStatus.DataBind();
+            ddlExcuteStatus.SelectedIndex = 0;
+
+            // Init drop down list Payment Status
+            var payStatus = new List<ListItem>();
+            payStatus.Add(new ListItem("Chưa thanh toán", "1"));
+            payStatus.Add(new ListItem("Thanh toán thiếu", "2"));
+            payStatus.Add(new ListItem("Đã thanh toán", "3"));
+
+            ddlPaymentStatus.Items.Clear();
+            ddlPaymentStatus.Items.AddRange(payStatus.ToArray());
+            ddlPaymentStatus.DataBind();
+            ddlPaymentStatus.SelectedIndex = 0;
+
+            // Init drop down list Payment Type
+            var payType = new List<ListItem>();
+            payType.Add(new ListItem("Tiền mặt", "1"));
+            payType.Add(new ListItem("Chuyển khoản", "2"));
+            payType.Add(new ListItem("Thu hộ", "3"));
+            payType.Add(new ListItem("Công nợ", "4"));
+
+            ddlPaymentType.Items.Clear();
+            ddlPaymentType.Items.AddRange(payType.ToArray());
+            ddlPaymentType.DataBind();
+            ddlPaymentType.SelectedIndex = 1;
+
+            // Init drop down list Bank
+            var banks = BankController.getDropDownList();
+            banks[0].Text = "Chọn ngân hàng";
+
+            ddlBank.Items.Clear();
+            ddlBank.Items.AddRange(banks.ToArray());
+            ddlBank.DataBind();
+
+            // Init drop down list Shipping Type
+            var shipType = new List<ListItem>();
+            shipType.Add(new ListItem("Lấy trực tiếp", "1"));
+            shipType.Add(new ListItem("Chuyển bưu điện", "2"));
+            shipType.Add(new ListItem("Dịch vụ ship", "3"));
+            shipType.Add(new ListItem("Chuyển xe", "4"));
+            shipType.Add(new ListItem("Nhân viên giao hàng", "5"));
+
+            ddlShippingType.Items.Clear();
+            ddlShippingType.Items.AddRange(shipType.ToArray());
+            ddlShippingType.DataBind();
+            ddlShippingType.SelectedIndex = 3;
+
+            // Init drop down list Bank
+            var trans = TransportCompanyController.getDropDownListTrans();
+            trans[0].Text = "Chọn chành xe";
+
+            ddlTransportCompanyID.Items.Clear();
+            
+            ddlTransportCompanyID.Items.AddRange(trans.ToArray());
+            ddlTransportCompanyID.DataBind();
+            ddlTransportCompanyID.SelectedIndex = 0;
+
+            ddlTransportCompanySubID.Items.Clear();
+            ddlTransportCompanySubID.Items.Add(new ListItem("Chọn nơi nhận", "0"));
+            ddlTransportCompanySubID.DataBind();
+            ddlTransportCompanySubID.SelectedIndex = 0;
         }
 
         [WebMethod]
@@ -159,10 +228,10 @@ namespace IM_PJ
                     string CustomerAddress = txtAddress.Text.Trim();
                     string Zalo = txtZalo.Text.Trim();
                     string Facebook = txtFacebook.Text.Trim();
-                    int PaymentStatus = hdfPaymentStatus.Value.ToInt(1);
-                    int ExcuteStatus = hdfExcuteStatus.Value.ToInt(1);
-                    int PaymentType = hdfPaymentType.Value.ToInt(1);
-                    int ShippingType = hdfShippingType.Value.ToInt(1);
+                    int PaymentStatus = ddlPaymentStatus.SelectedValue.ToInt();
+                    int ExcuteStatus = ddlExcuteStatus.SelectedValue.ToInt();
+                    int PaymentType = ddlPaymentType.SelectedValue.ToInt();
+                    int ShippingType = ddlShippingType.SelectedValue.ToInt();
 
                     var checkCustomer = CustomerController.GetByPhone(CustomerPhone);
 
@@ -180,15 +249,9 @@ namespace IM_PJ
                         }
                     }
 
-                    var Customer = CustomerController.GetByID(CustomerID);
-
-                    int TransportCompanyID = 0;
-                    int TransportCompanySubID = 0;
-                    if (Customer.ShippingType == ShippingType)
-                    {
-                        TransportCompanyID = Convert.ToInt32(Customer.TransportCompanyID);
-                        TransportCompanySubID = Convert.ToInt32(Customer.TransportCompanySubID);
-                    }
+                    int TransportCompanyID = ddlTransportCompanyID.SelectedValue.ToInt(0);
+                    int TransportCompanySubID = ddlTransportCompanySubID.SelectedValue.ToInt(0);
+                    
 
                     string totalPrice = hdfTotalPrice.Value.ToString();
                     string totalPriceNotDiscount = hdfTotalPriceNotDiscount.Value;
@@ -231,6 +294,12 @@ namespace IM_PJ
 
                             FeeController.Update(ret.ID, fees);
                         }
+                    }
+                    // Insert Transfer Bank
+                    var bankID = ddlBank.SelectedValue.ToInt(0);
+                    if (bankID != 0)
+                    {
+                        BankTransferController.Create(ret, bankID, acc);
                     }
 
                     int OrderID = ret.ID;
@@ -306,6 +375,49 @@ namespace IM_PJ
                     }
                 }
             }
+        }
+
+        [WebMethod]
+        public static string getTransferLast(int customerID)
+        {
+            return BankTransferController.getTransferLastJSON(customerID);
+        }
+
+        [WebMethod]
+        public static string getDeliveryLast(int customerID)
+        {
+            return DeliveryController.getDeliveryLast(customerID);
+        }
+
+        [WebMethod]
+        public static string getTransportSub(int transComID)
+        {
+            if (transComID > 0)
+            {
+                var data = new List<object>();
+                data.Add(new
+                {
+                    key = "0",
+                    value = "Chọn nơi nhận"
+                });
+
+                var ShipTo = TransportCompanyController.GetReceivePlace(transComID);
+
+                foreach (var p in ShipTo)
+                {
+                    data.Add(new
+                    {
+                        key = p.SubID.ToString(),
+                        value = p.ShipTo.ToTitleCase()
+                    });
+                }
+
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+
+                return serializer.Serialize(data);
+            }
+
+            return String.Empty;
         }
     }
 }

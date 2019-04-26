@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Script.Serialization;
 
 namespace IM_PJ.Controllers
 {
@@ -60,6 +61,40 @@ namespace IM_PJ.Controllers
             }
         }
 
+        public static bool Create(tbl_Order order, int bankID, tbl_Account user)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var cusBankID = con.Banks.Where(x => x.ID == bankID).FirstOrDefault();
+                var accBankID = con.BankAccounts.Where(x => x.BankID == bankID).FirstOrDefault();
+
+                if (cusBankID != null && accBankID != null)
+                {
+                    var now = DateTime.Now;
+                    var transfer = new BankTransfer();
+                    transfer.UUID = Guid.NewGuid();
+                    transfer.OrderID = order.ID;
+                    transfer.CusBankID = cusBankID.ID;
+                    transfer.AccBankID = accBankID.ID;
+                    transfer.DoneAt = now;
+                    transfer.Money = Convert.ToDecimal(order.TotalPrice);
+                    transfer.Status = 2; // Chưa nhận tiền
+                    transfer.CreatedBy = user.ID;
+                    transfer.CreatedDate = now;
+                    transfer.ModifiedBy = user.ID;
+                    transfer.ModifiedDate = now;
+
+                    con.BankTransfers.Add(transfer);
+                    con.SaveChanges();
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
         public static bool Update(BankTransfer transfer)
         {
             using (var con = new inventorymanagementEntities())
@@ -84,6 +119,47 @@ namespace IM_PJ.Controllers
             }
 
             return true;
+        }
+
+        public static string getTransferLastJSON(int customerID)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var last = con.BankTransfers
+                    .Join(
+                        con.tbl_Order.Where(x => x.CustomerID == customerID),
+                        trans => trans.OrderID,
+                        ord => ord.ID,
+                        (trans, ord) => trans
+                    )
+                    .Join(
+                        con.Banks,
+                        tran => tran.CusBankID,
+                        bank => bank.ID,
+                        (tran, bank) => new { tran, bank }
+                     )
+                     .OrderByDescending(o => o.tran.DoneAt)
+                     .Select(x => new
+                     {
+                         value = x.bank.ID,
+                         text = x.bank.BankName
+                     })
+                     .FirstOrDefault();
+
+                if (last == null)
+                {
+                    last = con.Banks
+                        .Select(x => new
+                        {
+                            value = x.ID,
+                            text = x.BankName
+                        })
+                        .FirstOrDefault();
+                }
+
+                var serializer = new JavaScriptSerializer();
+                return serializer.Serialize(last);
+            }
         }
     }
 

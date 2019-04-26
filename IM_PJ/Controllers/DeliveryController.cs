@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Script.Serialization;
 
 namespace IM_PJ.Controllers
 {
@@ -140,6 +141,54 @@ namespace IM_PJ.Controllers
                         con.SaveChanges();
                     }
                 }
+            }
+        }
+
+        public static string getDeliveryLast(int customerID)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var last = con.tbl_Customer
+                    .Where(x => x.ID == customerID)
+                    .Where(x => x.ShippingType == 4) // Hình thức nhà xe
+                    .Join(
+                        con.tbl_TransportCompany,
+                        cus => new { tranID = cus.TransportCompanyID.Value, tranSubID = cus.TransportCompanySubID.Value },
+                        tran => new { tranID = tran.ID, tranSubID = tran.SubID },
+                        (cus, tran) => new
+                        {
+                            tranID = tran.ID,
+                            tranName = tran.CompanyName,
+                            tranSubID = tran.SubID,
+                            tranSubName = tran.ShipTo
+                        }
+                    )
+                    .SingleOrDefault();
+
+                var serializer = new JavaScriptSerializer();
+
+                if (last == null)
+                {
+                    last = con.tbl_Order
+                        .Where(x => x.CustomerID == customerID)
+                        .Where(x => x.ShippingType == 4) // Hình thức nhà xe
+                        .OrderByDescending(o => o.DateDone)
+                        .Join(
+                            con.tbl_TransportCompany,
+                            cus => new { tranID = cus.TransportCompanyID.Value, tranSubID = cus.TransportCompanySubID.Value },
+                            tran => new { tranID = tran.ID, tranSubID = tran.SubID },
+                            (cus, tran) => new
+                            {
+                                tranID = tran.ID,
+                                tranName = tran.CompanyName,
+                                tranSubID = tran.SubID,
+                                tranSubName = tran.ShipTo
+                            }
+                        )
+                        .FirstOrDefault();
+                }
+
+                return serializer.Serialize(last);
             }
         }
 

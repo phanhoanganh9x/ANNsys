@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Thêm mới đơn hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="them-moi-don-hang.aspx.cs" Inherits="IM_PJ.them_moi_don_hang" EnableSessionState="ReadOnly" %>
+﻿<%@ Page Title="Thêm mới đơn hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="them-moi-don-hang.aspx.cs" Inherits="IM_PJ.them_moi_don_hang" EnableSessionState="ReadOnly" enableEventValidation="false"%>
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -200,10 +200,6 @@
             <asp:HiddenField ID="hdfTotalPrice" runat="server" />
             <asp:HiddenField ID="hdfTotalPriceNotDiscount" runat="server" />
             <asp:HiddenField ID="hdfListProduct" runat="server" />
-            <asp:HiddenField ID="hdfPaymentStatus" runat="server" />
-            <asp:HiddenField ID="hdfExcuteStatus" runat="server" />
-            <asp:HiddenField ID="hdfPaymentType" runat="server" />
-            <asp:HiddenField ID="hdfShippingType" runat="server" />
             <asp:HiddenField ID="hdfOrderNote" runat="server" />
             <asp:HiddenField ID="hdfIsDiscount" runat="server" />
             <asp:HiddenField ID="hdfDiscountAmount" runat="server" />
@@ -281,6 +277,81 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Order Return Modal -->
+            <div class="modal fade" id="orderInfoModal" role="dialog" data-backdrop="false">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Hoàn tất đơn hàng</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row form-group">
+                                <div class="col-md-4 text-align-left">
+                                    Trạng thái xử lý:
+                                </div>
+                                <div class="col-md-8">
+                                    <asp:DropDownList ID="ddlExcuteStatus" runat="server" CssClass="form-control"></asp:DropDownList>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-4 text-align-left">
+                                    Trạng thái thanh toán:
+                                </div>
+                                <div class="col-md-8">
+                                    <asp:DropDownList ID="ddlPaymentStatus" runat="server" CssClass="form-control"></asp:DropDownList>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-4 text-align-left">
+                                    Phương thức thanh toán:
+                                </div>
+                                <div class="col-md-8">
+                                    <asp:DropDownList ID="ddlPaymentType" runat="server" CssClass="form-control" onchange="onchangePaymentType($(this))"></asp:DropDownList>
+                                </div>
+                            </div>
+                            <div id="bankModal" class="row form-group">
+                                <div class="col-md-4 text-align-left">
+                                    Ngân hàng:
+                                </div>
+                                <div class="col-md-8">
+                                    <asp:DropDownList ID="ddlBank" runat="server" CssClass="form-control"></asp:DropDownList>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-4 text-align-left">
+                                    Phương thức giao hàng:
+                                </div>
+                                <div class="col-md-8">
+                                    <asp:DropDownList ID="ddlShippingType" runat="server" CssClass="form-control" onchange="onchangeShippingType($(this))"></asp:DropDownList>
+                                </div>
+                            </div>
+                            <div id="transportModal" class="row form-group">
+                                <div class="col-md-4 text-align-left">
+                                    Chành xe:
+                                </div>
+                                <div class="col-md-8" >
+                                    <asp:DropDownList ID="ddlTransportCompanyID" runat="server" CssClass="form-control customerlist select2" Height="40px" Width="100%" onchange="onChangeTransportCompany($(this))"></asp:DropDownList>
+                                </div>
+                            </div>
+                            <div id="transportSubModal" class="row form-group">
+                                <div class="col-md-4 text-align-left">
+                                    Nơi nhận:
+                                </div>
+                                <div class="col-md-8">
+                                    <asp:DropDownList ID="ddlTransportCompanySubID" runat="server" CssClass="form-control customerlist select2" Height="40px" Width="100%"></asp:DropDownList>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="closeOrderInfo" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                            <button id="updateOrderInfo" type="button" class="btn btn-primary" onclick="insertOrder()">Tạo đơn hàng</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
     </asp:Panel>
     <style>
@@ -310,6 +381,9 @@
             padding: 20px 20px;
             right: 0%;
             margin: 0 auto;
+        }
+        .select2-container.select2-container--default.select2-container--open{
+            z-index: 99991;
         }
     </style>
     <telerik:RadAjaxManager ID="rAjax" runat="server">
@@ -649,6 +723,25 @@
 
                     $("#closeFee").click();
                 });
+
+                $("#orderInfoModal").on("show.bs.modal", (e) => {
+                    let customerID = $("#<%=hdfCustomerID.ClientID%>").val();
+                    let payTypeDOM = $("#<%=ddlPaymentType.ClientID%>");
+                    let shipTypeDOM = $("#<%=ddlShippingType.ClientID%>");
+
+                    onchangePaymentType(payTypeDOM);
+                    onchangeShippingType(shipTypeDOM);
+
+                    if (customerID) {
+                        if (payTypeDOM.val() == 2) {
+                            suggestBank(customerID);
+                        }
+
+                        if (shipTypeDOM.val() == 4) {
+                            suggestDelivery(customerID);
+                        }
+                    }
+                })
             });
 
             // order of item list
@@ -929,7 +1022,7 @@
                             $("#<%=hdfOrderType.ClientID %>").val(ordertype);
                             $("#<%=hdfListProduct.ClientID%>").val(list);
 
-                            showOrderStatus();
+                            $("#orderInfoModal").modal({ show: 'true', backdrop: 'static' });
                         }
                         else
                         {
@@ -947,27 +1040,24 @@
 
             // insert order
             function insertOrder() {
-                
-                var paymentStatus = $(".payment-status").val();
+                let payType = $("#<%=ddlPaymentType.ClientID%>").val();
+                let bank = $("#<%=ddlBank.ClientID%>").val();
+                let shippingtype = $("#<%=ddlShippingType.ClientID%>").val();
+                let trans = $("#<%=ddlTransportCompanyID.ClientID%>").val();
+                let transSub = $("#<%=ddlTransportCompanySubID.ClientID%>").val();
 
-                var excuteStatus = 1;
-                if ($(".excute-status").length > 0)
-                    excuteStatus = $(".excute-status").val();
-
-                var paymenttype = 2;
-                if ($(".payment-type").length > 0)
-                    paymenttype = $(".payment-type").val();
-
-                var shippingtype = 4;
-                if ($(".shipping-type").length > 0)
-                    shippingtype = $(".shipping-type").val();
-
-                $("#<%=hdfPaymentStatus.ClientID%>").val(paymentStatus);
-                $("#<%=hdfExcuteStatus.ClientID%>").val(excuteStatus);
-                $("#<%=hdfPaymentType.ClientID%>").val(paymenttype);
-                $("#<%=hdfShippingType.ClientID%>").val(shippingtype);
 
                 $("#payall").addClass("payall-clicked");
+
+                if (payType == 2 && bank == "0") {
+                    swal("Thông báo", "Ngân hàng chưa được chọn", "error");
+                    return false;
+                }
+
+                if (shippingtype == 4 && (trans == "0" || (trans != "0" && transSub == "0"))) {
+                    swal("Thông báo", "Thông tin về nhà xe chưa đủ.\nVui lòng nhập đủ thông tin", "error");
+                    return false;
+                }
 
                 if (shippingtype == 2 || shippingtype == 3)
                 {
@@ -989,68 +1079,17 @@
                     }
                     else
                     {
+                        $("#closeOrderInfo").click();
                         HoldOn.open();
                         $("#<%=btnOrder.ClientID%>").click();
                     }
                 }
                 else
                 {
+                    $("#closeOrderInfo").click();
                     HoldOn.open();
                     $("#<%=btnOrder.ClientID%>").click();
                 }
-            }
-
-            // show popup Order status
-            function showOrderStatus() {
-                var fr = "         <div class=\"form-row\">";
-                fr += "             <h2>Hoàn tất đơn hàng</h2>";
-                fr += "         </div>";
-                fr += "         <div class=\"form-row\">";
-                fr += "             <div class=\"row-left\">Trạng thái xử lý:</div>";
-                fr += "             <div class=\"row-right\">"
-                fr += "                 <select class=\"form-control excute-status\">";
-                fr += "                     <option value=\"1\">Đang xử lý</option>";
-                fr += "                     <option value=\"2\">Đã hoàn tất</option>";
-                fr += "                 </select>";
-                fr += "             </div>";
-                fr += "         </div>";
-                fr += "         <div class=\"form-row\">";
-                fr += "             <div class=\"row-left\">Trạng thái thanh toán:</div>";
-                fr += "             <div class=\"row-right\">"
-                fr += "                 <select class=\"form-control payment-status\">";
-                fr += "                     <option value=\"1\">Chưa thanh toán</option>";
-                fr += "                     <option value=\"2\">Thanh toán thiếu</option>";
-                fr += "                     <option value=\"3\">Đã thanh toán</option>";
-                fr += "                 </select>";
-                fr += "             </div>";
-                fr += "         </div>";
-                fr += "         <div class=\"form-row\">";
-                fr += "             <div class=\"row-left\">Phương thức thanh toán:</div>";
-                fr += "             <div class=\"row-right\">"
-                fr += "                 <select class=\"form-control payment-type\">";
-                fr += "                     <option value=\"1\">Tiền mặt</option>";
-                fr += "                     <option value=\"2\" selected>Chuyển khoản</option>";
-                fr += "                     <option value=\"3\">Thu hộ</option>";
-                fr += "                     <option value=\"4\">Công nợ</option>";
-                fr += "                 </select>";
-                fr += "             </div>";
-                fr += "         </div>";
-                fr += "         <div class=\"form-row\">";
-                fr += "             <div class=\"row-left\">Phương thức giao hàng:</div>";
-                fr += "             <div class=\"row-right\">"
-                fr += "                 <select class=\"form-control shipping-type\">";
-                fr += "                     <option value=\"1\">Lấy trực tiếp</option>";
-                fr += "                     <option value=\"2\">Chuyển bưu điện</option>";
-                fr += "                     <option value=\"3\">Dịch vụ ship</option>";
-                fr += "                     <option value=\"4\" selected>Chuyển xe</option>";
-                fr += "                     <option value=\"5\">Nhân viên giao hàng</option>";
-                fr += "                 </select>";
-                fr += "             </div>";
-                fr += "         </div>";
-                fr += "         <div class=\"btn-content\">";
-                fr += "             <a class=\"btn primary-btn fw-btn not-fullwidth\" href=\"javascript:;\" onclick=\"insertOrder()\">Tạo đơn hàng</a>";
-                fr += "         </div>";
-                showPopup(fr);
             }
 
             // search product by SKU
@@ -1320,6 +1359,158 @@
                 return s.substr(0, i + 3) + r +
                     (d ? '.' + Math.round(d * Math.pow(10, dp || 2)) : '');
             };
+
+            function onchangePaymentType(payType)
+            {
+                $("#<%=ddlBank.ClientID%>").val(0);
+
+                // Khác hình thức chuyển khoản
+                if (payType.val() != 2)
+                {
+                    $("#bankModal").attr("hidden", true);
+                }
+                else
+                {
+                    $("#bankModal").removeAttr("hidden");
+                }
+            }
+
+            function onchangeShippingType(shipType) {
+                let tranContainerDOM = $("[id$=ddlTransportCompanyID-container]");
+                let tranSubContainerDOM = $("[id$=ddlTransportCompanySubID-container]");
+
+                tranContainerDOM.val(0);
+                tranSubContainerDOM.attr("title", "Nhà chành xe");
+                tranSubContainerDOM.html("Nhà chành xe");
+                tranSubContainerDOM.val(0);
+                tranSubContainerDOM.attr("title", "Chọn nơi nhận");
+                tranSubContainerDOM.html("Chọn nơi nhận");
+
+                // Khác hình thức chuyển xe
+                if (shipType.val() != 4)
+                {
+                    $("#transportModal").attr("hidden", true);
+                    $("#transportSubModal").attr("hidden", true);
+                }
+                else {
+                    $("#transportModal").removeAttr("hidden");
+                    $("#transportSubModal").removeAttr("hidden");
+                }
+
+            }
+
+            function onChangeTransportCompany(transport, selected)
+            {
+                if (selected == undefined)
+                {
+                    selected = "0";
+                }
+
+                let transComID = transport.val();
+                $.ajax({
+                    url: "/them-moi-don-hang.aspx/getTransportSub",
+                    type: "POST",
+                    data: JSON.stringify({'transComID': transComID}),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (msg) {
+                        let data = JSON.parse(msg.d);
+                        if (data)
+                        {
+                            let tranSubName = "Chọn nơi nhận";
+                            let tranSubDOM = $("#<%=ddlTransportCompanySubID.ClientID%>");
+                            tranSubDOM.html("")
+                            data.forEach((item) => {
+                                if (selected = item.key)
+                                {
+                                    tranSubName = item.value;
+                                }
+                                tranSubDOM.append("<option value='" + item.key + "'>" + item.value + "</option>")
+                            });
+
+                            tranSubDOM.val(selected);
+                            let tranSubContainerDOM = $("[id$=ddlTransportCompanySubID-container]");
+                            tranSubContainerDOM.attr("title", tranSubName);
+                            tranSubContainerDOM.html(tranSubName);
+
+                            if (selected == "0")
+                            {
+                                setTimeout(function() {
+                                    $("#<%=ddlTransportCompanySubID.ClientID%>").select2("open");
+                                }, 200);  
+                            }
+                        }
+                    },
+                    error: function (err) {
+                        swal("Thông báo", "Đã có vấn đề trong việc cập nhật thông tin vận chuyển", "error");
+                    }
+                });
+            }
+
+            function suggestBank(customerID)
+            {
+                $.ajax({
+                    url: "/them-moi-don-hang.aspx/getTransferLast",
+                    type: "POST",
+                    data: JSON.stringify({ 'customerID': customerID }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        let data = JSON.parse(response.d);
+                        let banksDOM = $("#<%=ddlBank.ClientID%>");
+                        if (data)
+                        {
+                            banksDOM.val(data.value);
+                        }
+                        else
+                        {
+                            banksDOM.val(0);
+                        }
+                    },
+                    error: function (err) {
+                        swal("Thông báo", "Đã có vần đề trong việc lấy thông tin gợi ý bank", "error");
+                    }
+                });
+            }
+
+            function suggestDelivery(customerID)
+            {
+                $.ajax({
+                    url: "/them-moi-don-hang.aspx/getDeliveryLast",
+                    type: "POST",
+                    data: JSON.stringify({ 'customerID': customerID }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        let data = JSON.parse(response.d);
+                        let transDOM = $("#<%=ddlTransportCompanyID.ClientID%>");
+                        let transSubDOM = $("#<%=ddlTransportCompanySubID.ClientID%>");
+                        let tranContainerDOM = $("[id$=ddlTransportCompanyID-container]");
+                        let tranSubContainerDOM = $("[id$=ddlTransportCompanySubID-container]");
+
+                        
+                        if (data)
+                        {
+                            transDOM.val(data.tranID);
+                            tranSubContainerDOM.attr("title", data.tranName);
+                            tranSubContainerDOM.html(data.tranName);
+                            onChangeTransportCompany(transDOM, data.tranSubID);
+                        }
+                        else
+                        {
+                            tranContainerDOM.val(0);
+                            tranSubContainerDOM.attr("title", "Nhà chành xe");
+                            tranSubContainerDOM.html("Nhà chành xe");
+                            tranSubContainerDOM.val(0);
+                            tranSubContainerDOM.attr("title", "Chọn nơi nhận");
+                            tranSubContainerDOM.html("Chọn nơi nhận");
+                        }
+                    },
+                    error: function (err) {
+                        swal("Thông báo", "Đã có vần đề trong việc lấy thông tin gợi ý bank", "error");
+                    }
+                });
+            }
         </script>
     </telerik:RadScriptBlock>
 
