@@ -250,8 +250,7 @@ namespace IM_PJ
                     }
 
                     int TransportCompanyID = ddlTransportCompanyID.SelectedValue.ToInt(0);
-                    int TransportCompanySubID = ddlTransportCompanySubID.SelectedValue.ToInt(0);
-                    
+                    int TransportCompanySubID = hdfTransSub.Value.ToInt(0);
 
                     string totalPrice = hdfTotalPrice.Value.ToString();
                     string totalPriceNotDiscount = hdfTotalPriceNotDiscount.Value;

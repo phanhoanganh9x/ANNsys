@@ -215,6 +215,7 @@
             <asp:HiddenField ID="hdfFeeType" runat="server" />
             <asp:HiddenField ID="hdfOtherFees" runat="server" />
             <asp:HiddenField ID="hdfCustomerID" runat="server" />
+            <asp:HiddenField ID="hdfTransSub" runat="server" />
 
             <!-- Fee Modal -->
             <div class="modal fade" id="feeModal" role="dialog">
@@ -1048,6 +1049,7 @@
 
 
                 $("#payall").addClass("payall-clicked");
+                $("#<%=hdfTransSub.ClientID%>").val(transSub);
 
                 if (payType == 2 && bank == "0") {
                     swal("Thông báo", "Ngân hàng chưa được chọn", "error");
@@ -1421,7 +1423,7 @@
                             let tranSubDOM = $("#<%=ddlTransportCompanySubID.ClientID%>");
                             tranSubDOM.html("")
                             data.forEach((item) => {
-                                if (selected = item.key)
+                                if (selected == item.key)
                                 {
                                     tranSubName = item.value;
                                 }
@@ -1492,15 +1494,15 @@
                         if (data)
                         {
                             transDOM.val(data.tranID);
-                            tranSubContainerDOM.attr("title", data.tranName);
-                            tranSubContainerDOM.html(data.tranName);
+                            tranContainerDOM.attr("title", data.tranName);
+                            tranContainerDOM.html(data.tranName);
                             onChangeTransportCompany(transDOM, data.tranSubID);
                         }
                         else
                         {
                             tranContainerDOM.val(0);
-                            tranSubContainerDOM.attr("title", "Nhà chành xe");
-                            tranSubContainerDOM.html("Nhà chành xe");
+                            tranContainerDOM.attr("title", "Nhà chành xe");
+                            tranContainerDOM.html("Nhà chành xe");
                             tranSubContainerDOM.val(0);
                             tranSubContainerDOM.attr("title", "Chọn nơi nhận");
                             tranSubContainerDOM.html("Chọn nơi nhận");
