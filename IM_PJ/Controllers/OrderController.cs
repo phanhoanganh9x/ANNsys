@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Web;
+using System.Web.Script.Serialization;
 using WebUI.Business;
 
 namespace IM_PJ.Controllers
@@ -1885,6 +1886,101 @@ namespace IM_PJ.Controllers
             public int totalSold { get; set; }
             public double totalRevenue { get; set; }
             public double totalCost { get; set; }
+        }
+
+        public static string getLastJSON(int customerID)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var serializer = new JavaScriptSerializer();
+                var orderLast = con.tbl_Order
+                    .Where(x => x.CustomerID == customerID)
+                    .OrderByDescending(o => o.ID)
+                    .FirstOrDefault();
+
+                if (orderLast != null)
+                {
+                    var result = new OrderLast()
+                    {
+                        payType = orderLast.PaymentType.HasValue ? orderLast.PaymentType.Value : 0,
+                        bankID = 0,
+                        bankName = String.Empty,
+                        shipType = orderLast.ShippingType.HasValue ? orderLast.ShippingType.Value : 0,
+                        tranID = 0,
+                        tranName = String.Empty,
+                        tranSubID = 0,
+                        tranSubName = String.Empty
+                    };
+
+                    // Lấy thông tin ngân hàng
+                    if (orderLast.PaymentType == 2)
+                    {
+                        var bankLast = con.BankTransfers
+                        .Join(
+                            con.tbl_Order.Where(x => x.CustomerID == customerID),
+                            trans => trans.OrderID,
+                            ord => ord.ID,
+                            (trans, ord) => trans
+                        )
+                        .Join(
+                            con.Banks,
+                            tran => tran.CusBankID,
+                            bank => bank.ID,
+                            (tran, bank) => new { tran, bank }
+                         )
+                         .OrderByDescending(o => o.tran.DoneAt)
+                         .Select(x => x.bank)
+                         .FirstOrDefault();
+
+                        if (bankLast != null)
+                        {
+                            result.bankID = bankLast.ID;
+                            result.bankName = bankLast.BankName;
+                        }
+                    }
+
+                    // Lấy thông tin chành xe và nơi tới
+                    if (orderLast.ShippingType == 4)
+                    {
+                        var tranLast = con.tbl_Order
+                           .Where(x => x.ShippingType == 4) // Hình thức nhà xe
+                           .Where(x => x.CustomerID == customerID)
+                           .Join(
+                               con.tbl_TransportCompany,
+                               ord => new { tranID = ord.TransportCompanyID.Value, tranSubID = ord.TransportCompanySubID.Value },
+                               tran => new { tranID = tran.ID, tranSubID = tran.SubID },
+                               (ord, tran) => new { ord, tran }
+                           )
+                           .OrderByDescending(o => o.ord.ID)
+                           .Select(x => x.tran)
+                           .FirstOrDefault();
+
+                        if (tranLast != null)
+                        {
+                            result.tranID = tranLast.ID;
+                            result.tranName = tranLast.CompanyName;
+                            result.tranSubID = tranLast.SubID;
+                            result.tranSubName = tranLast.ShipTo;
+                        }
+                    }
+
+                    return serializer.Serialize(result);
+                }
+
+                return serializer.Serialize(null);
+            }
+        }
+
+        public class OrderLast
+        {
+            public int payType { get; set; }
+            public int bankID { get; set; }
+            public string bankName { get; set; }
+            public int shipType { get; set; }
+            public int tranID { get; set; }
+            public string tranName { get; set; }
+            public int tranSubID { get; set; }
+            public string tranSubName { get; set; }
         }
     }
 }

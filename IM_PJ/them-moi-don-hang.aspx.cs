@@ -418,5 +418,11 @@ namespace IM_PJ
 
             return String.Empty;
         }
+
+        [WebMethod]
+        public static string getOrderLast(int customerID)
+        {
+            return OrderController.getLastJSON(customerID);
+        }
     }
 }

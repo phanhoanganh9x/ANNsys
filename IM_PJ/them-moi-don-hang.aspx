@@ -734,13 +734,7 @@
                     onchangeShippingType(shipTypeDOM);
 
                     if (customerID) {
-                        if (payTypeDOM.val() == 2) {
-                            suggestBank(customerID);
-                        }
-
-                        if (shipTypeDOM.val() == 4) {
-                            suggestDelivery(customerID);
-                        }
+                        suggestOrderLast(customerID);
                     }
                 })
             });
@@ -1500,6 +1494,74 @@
                         }
                         else
                         {
+                            tranContainerDOM.val(0);
+                            tranContainerDOM.attr("title", "Nhà chành xe");
+                            tranContainerDOM.html("Nhà chành xe");
+                            tranSubContainerDOM.val(0);
+                            tranSubContainerDOM.attr("title", "Chọn nơi nhận");
+                            tranSubContainerDOM.html("Chọn nơi nhận");
+                        }
+                    },
+                    error: function (err) {
+                        swal("Thông báo", "Đã có vần đề trong việc lấy thông tin gợi ý bank", "error");
+                    }
+                });
+            }
+
+            function suggestOrderLast(customerID)
+            {
+                $.ajax({
+                    url: "/them-moi-don-hang.aspx/getOrderLast",
+                    type: "POST",
+                    data: JSON.stringify({ 'customerID': customerID }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        let data = JSON.parse(response.d);
+                        let payType = $("#<%=ddlPaymentType.ClientID%>");
+                        let banksDOM = $("#<%=ddlBank.ClientID%>");
+                        let shipType = $("#<%=ddlShippingType.ClientID%>");
+                        let transDOM = $("#<%=ddlTransportCompanyID.ClientID%>");
+                        let transSubDOM = $("#<%=ddlTransportCompanySubID.ClientID%>");
+                        let tranContainerDOM = $("[id$=ddlTransportCompanyID-container]");
+                        let tranSubContainerDOM = $("[id$=ddlTransportCompanySubID-container]");
+
+                        if (data)
+                        {
+                            // Phương thức thanh toán
+                            payType.val(data.payType);
+                            onchangePaymentType(payType)
+                            // Ngân hàng
+                            if (data.payType == "2")
+                                banksDOM.val(data.bankID);
+                            else
+                                banksDOM.val(0);
+                            // Phương thức giao hàng
+                            shipType.val(data.shipType);
+                            onchangeShippingType(shipType)
+                            // Chành xe & nơi tới
+                            if (data.shipType == "4")
+                            {
+                                transDOM.val(data.tranID);
+                                tranContainerDOM.attr("title", data.tranName);
+                                tranContainerDOM.html(data.tranName);
+                                onChangeTransportCompany(transDOM, data.tranSubID);
+                            }
+                            else
+                            {
+                                tranContainerDOM.val(0);
+                                tranContainerDOM.attr("title", "Nhà chành xe");
+                                tranContainerDOM.html("Nhà chành xe");
+                                tranSubContainerDOM.val(0);
+                                tranSubContainerDOM.attr("title", "Chọn nơi nhận");
+                                tranSubContainerDOM.html("Chọn nơi nhận");
+                            }
+                        }
+                        else
+                        {
+                            // Ngân hàng
+                            banksDOM.val(0);
+                            // Chành xe & nơi tới
                             tranContainerDOM.val(0);
                             tranContainerDOM.attr("title", "Nhà chành xe");
                             tranContainerDOM.html("Nhà chành xe");
