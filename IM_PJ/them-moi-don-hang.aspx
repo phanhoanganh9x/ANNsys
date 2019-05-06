@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=2117"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=2118"></script>
     <script src="/App_Themes/Ann/js/search-product.js?v=04052019"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -274,6 +274,7 @@
                         </div>
                         <div class="modal-footer">
                             <button id="closeOrderReturn" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                            <button id="createReturnOrder" type="button" class="btn btn-primary" data-dismiss="modal">Tạo đơn hàng đổi trả</button>
                         </div>
                     </div>
                 </div>
@@ -737,6 +738,17 @@
                         suggestOrderLast(customerID);
                     }
                 })
+
+                $("#createReturnOrder").click(() => {
+                    let customerID = $("#<%=hdfCustomerID.ClientID%>").val();
+
+                    if (!customerID) {
+                        swal("Thông báo", "Không tìm thấy ID của khách hàng này", "error");
+                    }
+                    else {
+                        createReturnOrder(customerID);
+                    }
+                });
             });
 
             // order of item list
@@ -838,7 +850,7 @@
 
                 if (isBlank(customerID))
                 {
-                    swal("Thông báo", "Hãy nhập thông tin khách hàng trước!", "info");
+                    swal("Thông báo", "Đây là khách hàng mới mà ^_^", "info");
                 }
                 else
                 {
@@ -860,7 +872,17 @@
                                 let data = JSON.parse(response.d);
                                 if (data.length == 0)
                                 {
-                                    swal("Thông báo", "Khách hàng này không có đơn đổi trả hoặc đã được trừ tiền!", "error");
+                                    swal({
+                                        title: 'Thông báo',
+                                        text: 'Khách hàng này không có đơn đổi trả hoặc đã được trừ tiền!',
+                                        type: 'warning',
+                                        showCancelButton: true,
+                                        closeOnConfirm: true,
+                                        cancelButtonText: "Để em xem lại...",
+                                        confirmButtonText: "Tạo đơn hàng đổi trả",
+                                    }, function (confirm) {
+                                        if (confirm) createReturnOrder(customerID);
+                                    });
                                 }
                                 else
                                 {
@@ -1431,8 +1453,7 @@
                 });
             }
 
-            function suggestDelivery(customerID)
-            {
+            function suggestDelivery(customerID) {
                 $.ajax({
                     url: "/them-moi-don-hang.aspx/getDeliveryLast",
                     type: "POST",
@@ -1446,16 +1467,14 @@
                         let tranContainerDOM = $("[id$=ddlTransportCompanyID-container]");
                         let tranSubContainerDOM = $("[id$=ddlTransportCompanySubID-container]");
 
-                        
-                        if (data)
-                        {
+
+                        if (data) {
                             transDOM.val(data.tranID);
                             tranContainerDOM.attr("title", data.tranName);
                             tranContainerDOM.html(data.tranName);
                             onChangeTransportCompany(transDOM, data.tranSubID);
                         }
-                        else
-                        {
+                        else {
                             tranContainerDOM.val(0);
                             tranContainerDOM.attr("title", "Nhà chành xe");
                             tranContainerDOM.html("Nhà chành xe");
@@ -1468,10 +1487,9 @@
                         swal("Thông báo", "Đã có vần đề trong việc lấy thông tin gợi ý bank", "error");
                     }
                 });
-            }
+            };
 
-            function suggestOrderLast(customerID)
-            {
+            function suggestOrderLast(customerID) {
                 $.ajax({
                     url: "/them-moi-don-hang.aspx/getOrderLast",
                     type: "POST",
@@ -1488,8 +1506,7 @@
                         let tranContainerDOM = $("[id$=ddlTransportCompanyID-container]");
                         let tranSubContainerDOM = $("[id$=ddlTransportCompanySubID-container]");
 
-                        if (data)
-                        {
+                        if (data) {
                             // Phương thức thanh toán
                             payType.val(data.payType);
                             onchangePaymentType(payType)
@@ -1502,15 +1519,13 @@
                             shipType.val(data.shipType);
                             onchangeShippingType(shipType)
                             // Chành xe & nơi tới
-                            if (data.shipType == "4")
-                            {
+                            if (data.shipType == "4") {
                                 transDOM.val(data.tranID);
                                 tranContainerDOM.attr("title", data.tranName);
                                 tranContainerDOM.html(data.tranName);
                                 onChangeTransportCompany(transDOM, data.tranSubID);
                             }
-                            else
-                            {
+                            else {
                                 tranContainerDOM.val(0);
                                 tranContainerDOM.attr("title", "Nhà chành xe");
                                 tranContainerDOM.html("Nhà chành xe");
@@ -1519,8 +1534,7 @@
                                 tranSubContainerDOM.html("Chọn nơi nhận");
                             }
                         }
-                        else
-                        {
+                        else {
                             // Ngân hàng
                             banksDOM.val(0);
                             // Chành xe & nơi tới
@@ -1536,7 +1550,18 @@
                         swal("Thông báo", "Đã có vần đề trong việc lấy thông tin gợi ý bank", "error");
                     }
                 });
-            }
+            };
+
+            function createReturnOrder(customerID) {
+                var win = window.open('/tao-don-hang-doi-tra?customerID=' + customerID, '_blank');
+                if (win) {
+                    //Browser has allowed it to be opened
+                    win.focus();
+                } else {
+                    //Browser has blocked it
+                    swal("Thông báo", "Vui lòng cho phép cửa sổ bật lên cho trang web này", "error");
+                }
+            };
         </script>
     </telerik:RadScriptBlock>
 

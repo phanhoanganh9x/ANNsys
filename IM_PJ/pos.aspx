@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=2117"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=2118"></script>
     <script src="/App_Themes/Ann/js/search-product.js?v=04052019"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -240,6 +240,7 @@
                         </div>
                         <div class="modal-footer">
                             <button id="closeOrderReturn" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                            <button id="createReturnOrder" type="button" class="btn btn-primary" data-dismiss="modal">Tạo đơn hàng đổi trả</button>
                         </div>
                     </div>
                 </div>
@@ -631,6 +632,17 @@
 
                     $("#closeFee").click();
                 });
+
+                $("#createReturnOrder").click(() => {
+                    let customerID = $("#<%=hdfCustomerID.ClientID%>").val();
+
+                    if (!customerID) {
+                        swal("Thông báo", "Không tìm thấy ID của khách hàng này", "error");
+                    }
+                    else {
+                        createReturnOrder(customerID);
+                    }
+                });
             });
 
             // set height for div product list
@@ -748,7 +760,7 @@
                 let customerID = $("#<%=hdfCustomerID.ClientID%>").val();
 
                 if (isBlank(customerID)) {
-                    swal("Thông báo", "Hãy nhập thông tin khách hàng trước!", "info");
+                    swal("Thông báo", "Đây là khách hàng mới mà ^_^", "info");
                 } else {
                     let modalDOM = $("#orderReturnModal");
                     let customerName = $("#<%=txtFullname.ClientID%>").val();
@@ -768,7 +780,17 @@
                                 let data = JSON.parse(response.d);
                                 if (data.length == 0)
                                 {
-                                    swal("Thông báo", "Khách hàng này không có đơn đổi trả hoặc đã được trừ tiền!", "error");
+                                    swal({
+                                        title: 'Thông báo',
+                                        text: 'Khách hàng này không có đơn đổi trả hoặc đã được trừ tiền!',
+                                        type: 'warning',
+                                        showCancelButton: true,
+                                        closeOnConfirm: true,
+                                        cancelButtonText: "Để em xem lại...",
+                                        confirmButtonText: "Tạo đơn hàng đổi trả",
+                                    }, function (confirm) {
+                                        if (confirm) createReturnOrder(customerID);
+                                    });
                                 }
                                 else
                                 {
@@ -1314,6 +1336,17 @@
                 }
                 return s.substr(0, i + 3) + r +
                     (d ? '.' + Math.round(d * Math.pow(10, dp || 2)) : '');
+            };
+
+            function createReturnOrder(customerID) {
+                var win = window.open('/tao-don-hang-doi-tra?customerID=' + customerID, '_blank');
+                if (win) {
+                    //Browser has allowed it to be opened
+                    win.focus();
+                } else {
+                    //Browser has blocked it
+                    swal("Thông báo", "Vui lòng cho phép cửa sổ bật lên cho trang web này", "error");
+                }
             };
         </script>
     </telerik:RadScriptBlock>

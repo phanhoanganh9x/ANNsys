@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=2117"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=2118"></script>
     <script src="/App_Themes/Ann/js/search-product.js?v=04052019"></script>
     <style>
         .search-product-content {
@@ -675,6 +675,7 @@
                         </div>
                         <div class="modal-footer">
                             <button id="closeOrderReturn" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                            <button id="createReturnOrder" type="button" class="btn btn-primary" data-dismiss="modal">Tạo đơn hàng đổi trả</button>
                         </div>
                     </div>
                 </div>
@@ -1259,6 +1260,17 @@
 
                     $("#closeFee").click();
                 });
+
+                $("#createReturnOrder").click(() => {
+                    let customerID = $("#<%=hdfCustomerID.ClientID%>").val();
+
+                    if (!customerID) {
+                        swal("Thông báo", "Không tìm thấy ID của khách hàng này", "error");
+                    }
+                    else {
+                        createReturnOrder(customerID);
+                    }
+                });
             });
 
             // key press F1 - F4
@@ -1315,14 +1327,14 @@
                 addHTML += "    <td>" + createdDate + "</td>";
                 addHTML += "</tr>";
 
-                return addHTML
-            }
+                return addHTML;
+            };
 
             function searchReturnOrder() {
                 let customerID = $("#<%=hdfCustomerID.ClientID%>").val();
 
                 if (isBlank(customerID)) {
-                    swal("Thông báo", "Hãy nhập thông tin khách hàng trước!", "info");
+                    swal("Thông báo", "Đây là khách hàng mới mà ^_^", "info");
                 } else {
                     let modalDOM = $("#orderReturnModal");
                     let customerName = $("#<%=txtFullname.ClientID%>").val();
@@ -1340,12 +1352,20 @@
                         success: (response) => {
                             if (response.d) {
                                 let data = JSON.parse(response.d);
-                                if (data.length == 0)
-                                {
-                                    swal("Thông báo", "Khách hàng này không có đơn đổi trả hoặc đã được trừ tiền!", "error");
+                                if (data.length == 0) {
+                                    swal({
+                                        title: 'Thông báo',
+                                        text: 'Khách hàng này không có đơn đổi trả hoặc đã được trừ tiền!',
+                                        type: 'warning',
+                                        showCancelButton: true,
+                                        closeOnConfirm: true,
+                                        cancelButtonText: "Để em xem lại...",
+                                        confirmButtonText: "Tạo đơn hàng đổi trả",
+                                    }, function (confirm) {
+                                        if (confirm) createReturnOrder(customerID);
+                                    });
                                 }
-                                else
-                                {
+                                else {
                                     data.forEach((item) => {
                                         modalDOM.find("tbody[id='orderReturn']").append(createOrderReturnHTML(item))
                                     });
@@ -1359,7 +1379,7 @@
                         }
                     });
                 }
-            }
+            };
 
             // get return order
             function getReturnOrder(refundGood) {
@@ -1405,7 +1425,7 @@
             function viewReturnOrder(ID) {
                 var win = window.open("/xem-don-hang-doi-tra?id=" + ID + "", '_blank');
                 win.focus();
-            }
+            };
 
             // delete return order
             function deleteReturnOrder() {
@@ -1426,7 +1446,7 @@
 
                 swal("Thông báo", "Đã bỏ qua đơn hàng đổi trả này!", "info");
                 getAllPrice();
-            }
+            };
 
             // pay order on click button
             function payAll() {
@@ -1437,42 +1457,34 @@
                 var address = $("#<%= txtAddress.ClientID%>").val();
                 var facebooklink = $("#<%= txtFacebook.ClientID%>").val();
 
-                if (phone == "" || name == "" || nick == "" || address == "" || (facebooklink == "" && $("#<%= hdfUsernameCurrent.ClientID%>").val() == "nhom_facebook") )
-                {
-                    if (name == "")
-                    {
+                if (phone == "" || name == "" || nick == "" || address == "" || (facebooklink == "" && $("#<%= hdfUsernameCurrent.ClientID%>").val() == "nhom_facebook")) {
+                    if (name == "") {
                         $("#<%= txtFullname.ClientID%>").focus();
                         swal("Thông báo", "Hãy nhập tên khách hàng!", "error");
                     }
-                    else if (phone == "")
-                    {
+                    else if (phone == "") {
                         $("#<%= txtPhone.ClientID%>").focus();
                         swal("Thông báo", "Hãy nhập số điện thoại khách hàng!", "error");
                     }
-                    else if (nick == "")
-                    {
+                    else if (nick == "") {
                         $("#<%= txtNick.ClientID%>").prop('disabled', false);
                         $("#<%= txtNick.ClientID%>").focus();
                         swal("Thông báo", "Hãy nhập Nick đặt hàng của khách hàng!", "error");
                     }
-                    else if (facebooklink == "" && $("#<%= hdfUsernameCurrent.ClientID%>").val() == "nhom_facebook")
-                    {
+                    else if (facebooklink == "" && $("#<%= hdfUsernameCurrent.ClientID%>").val() == "nhom_facebook") {
                         $("#<%= txtFacebook.ClientID%>").prop('disabled', false);
                         $("#<%= txtFacebook.ClientID%>").focus();
                         swal("Thông báo", "Hãy nhập link Facebook của khách này!", "error");
                     }
-                    else if (address == "")
-                    {
+                    else if (address == "") {
                         $("#<%= txtAddress.ClientID%>").focus();
                         swal("Thông báo", "Hãy nhập địa chỉ khách hàng!", "error");
                     }
 
                 }
-                else
-                {
+                else {
                     // Nếu có sản phẩm trong đơn hàng
-                    if ($(".product-result").length > 0)
-                    {
+                    if ($(".product-result").length > 0) {
                         getAllPrice(true);
                         var list = "";
                         var ordertype = $(".customer-type").val();
@@ -1494,8 +1506,7 @@
                             var quantityInstock = parseFloat($(this).attr("data-quantityinstock"));
                             var productvariableid = $(this).attr("data-productvariableid");
 
-                            if (quantity > 0)
-                            {
+                            if (quantity > 0) {
                                 if (quantity > quantityInstock)
                                     checkoutin = true;
 
@@ -1509,15 +1520,12 @@
                         let excuteStatus = Number($("#<%=ddlExcuteStatus.ClientID%>").val());
 
                         // Nếu chọn trạng thái hủy
-                        if (excuteStatus == 3)
-                        {
+                        if (excuteStatus == 3) {
                             // Nếu trạng thái cũ là đã hủy thì thông báo hủy rồi
-                            if ($("#<%=hdfExcuteStatus.ClientID%>").val() == 3)
-                            {
+                            if ($("#<%=hdfExcuteStatus.ClientID%>").val() == 3) {
                                 swal("Thông báo", "Đơn hàng này đã hủy trước đó!", "warning");
                             }
-                            else
-                            {
+                            else {
                                 swal({
                                     title: "Xác nhận",
                                     text: "Cưng có chắc hủy đơn hàng này không?",
@@ -1527,8 +1535,7 @@
                                     cancelButtonText: "Đợi em xem tí!",
                                     confirmButtonText: "Chắc chắn sếp ơi..",
                                 }, function (isConfirm) {
-                                    if (isConfirm)
-                                    {
+                                    if (isConfirm) {
                                         swal({
                                             title: "Nhập lý do",
                                             text: "Nhập lý do hủy đơn hàng:",
@@ -1539,8 +1546,7 @@
                                             confirmButtonText: "Hủy thôi..",
                                         }, function (orderNote) {
                                             // Kiểm tra xem có nhập lý do hủy không? Không nhập thì không cho hủy
-                                            if (orderNote != "")
-                                            {
+                                            if (orderNote != "") {
                                                 $("#<%=txtOrderNote.ClientID %>").val(orderNote);
                                                 $("#<%=ddlPaymentStatus.ClientID %>").val(1);
                                                 deleteOrder();
@@ -1548,8 +1554,7 @@
                                                 $("#<%=hdfListProduct.ClientID%>").val(list);
                                                 insertOrder();
                                             }
-                                            else
-                                            {
+                                            else {
                                                 swal("Hủy đơn hàng thất bại!", "Chưa nhập lý do nên không được hủy", "error");
                                             }
                                         });
@@ -1557,53 +1562,44 @@
                                 });
                             }
                         }
-                        else if (excuteStatus != 3 && $("#<%=hdfExcuteStatus.ClientID%>").val() == 3 )
-                        {
+                        else if (excuteStatus != 3 && $("#<%=hdfExcuteStatus.ClientID%>").val() == 3) {
                             // Khôi phục đơn hàng đã hủy
                             // Chỉ admin mới được khôi phục đơn hàng hủy
-                            if ($("#<%=hdfRoleID.ClientID%>").val() == 0)
-                            {
+                            if ($("#<%=hdfRoleID.ClientID%>").val() == 0) {
                                 deleteOrder();
                                 $("#<%=hdfOrderType.ClientID %>").val(ordertype);
                                 $("#<%=hdfListProduct.ClientID%>").val(list);
                                 insertOrder();
                             }
-                            else
-                            {
+                            else {
                                 swal("Không thể khôi phục đơn hàng đã hủy!", "Hãy báo cáo chị Ngọc để khôi phục", "error");
                             }
                         }
-                        else if (excuteStatus == 1 && $("#<%=hdfExcuteStatus.ClientID%>").val() == 2)
-                        {
+                        else if (excuteStatus == 1 && $("#<%=hdfExcuteStatus.ClientID%>").val() == 2) {
                             // Chỉ admin mới được đổi trạng thái Đã hoàn tất sang trạng thái Đang xử lý
-                            if ($("#<%=hdfRoleID.ClientID%>").val() == 0)
-                            {
+                            if ($("#<%=hdfRoleID.ClientID%>").val() == 0) {
                                 deleteOrder();
                                 $("#<%=hdfOrderType.ClientID %>").val(ordertype);
                                 $("#<%=hdfListProduct.ClientID%>").val(list);
                                 insertOrder();
                             }
-                            else
-                            {
+                            else {
                                 swal("Không thể đổi trạng thái từ Đã hoàn tất sang Đang xử lý!", "Hãy báo cáo chị Ngọc để khôi phục", "error");
                             }
                         }
-                        else
-                        {
+                        else {
                             // Nếu trạng thái không liên quan đến hủy thì xử lý..
-                            deleteOrder(); 
+                            deleteOrder();
                             $("#<%=hdfOrderType.ClientID %>").val(ordertype);
                             $("#<%=hdfListProduct.ClientID%>").val(list);
                             insertOrder();
                         }
                     }
-                    else
-                    {
+                    else {
                         // Nếu không có sản phẩm trong đơn
                         let excuteStatus = Number($("#<%=ddlExcuteStatus.ClientID%>").val());
 
-                        if (excuteStatus == 3)
-                        {
+                        if (excuteStatus == 3) {
                             swal({
                                 title: "Xác nhận",
                                 text: "Đơn hàng này sẽ bị hủy. Cưng có chắc hủy đơn này không?",
@@ -1613,8 +1609,7 @@
                                 cancelButtonText: "Đợi em xem tí!",
                                 confirmButtonText: "Chắc chắn sếp ơi..",
                             }, function (isConfirm) {
-                                if (isConfirm)
-                                {
+                                if (isConfirm) {
                                     swal({
                                         title: "Nhập lý do",
                                         text: "Nhập lý do hủy đơn hàng:",
@@ -1624,8 +1619,7 @@
                                         cancelButtonText: "Đợi em suy nghĩ!",
                                         confirmButtonText: "Hủy thôi..",
                                     }, function (orderNote) {
-                                        if (orderNote != "")
-                                        {
+                                        if (orderNote != "") {
 
                                             $("#<%=txtOrderNote.ClientID %>").val(orderNote);
                                             $("#<%=ddlPaymentStatus.ClientID %>").val(1);
@@ -1649,8 +1643,7 @@
                                                 }
                                             });
                                         }
-                                        else
-                                        {
+                                        else {
                                             swal("Hủy đơn hàng thất bại!", "Chưa nhập lý do nên không được hủy", "error");
                                         }
                                     });
@@ -1658,14 +1651,13 @@
                             });
 
                         }
-                        else
-                        {
+                        else {
                             $("#txtSearch").focus();
                             swal("Thông báo", "Hãy nhập sản phẩm!", "error");
                         }
                     }
                 }
-            }
+            };
 
             function checkPrepayTransport(ID, SubID) {
                 var t = 0;
@@ -1688,7 +1680,7 @@
                     }
                 });
                 return t;
-            }
+            };
 
             // insert order
             function insertOrder() {
@@ -1700,10 +1692,8 @@
                 var fs = $("#<%=pFeeShip.ClientID%>").val();
                 var feeship = parseFloat(fs.replace(/\,/g, ''));
 
-                if (shippingtype == 2 || shippingtype == 3)
-                {
-                    if (feeship == 0 && $("#<%=pFeeShip.ClientID%>").is(":disabled") == false)
-                    {
+                if (shippingtype == 2 || shippingtype == 3) {
+                    if (feeship == 0 && $("#<%=pFeeShip.ClientID%>").is(":disabled") == false) {
                         $("#<%=pFeeShip.ClientID%>").focus();
                         swal({
                             title: "Có vấn đề:",
@@ -1719,18 +1709,14 @@
                         checkAllValue = false;
                     }
                 }
-                else if (shippingtype == 4)
-                {
-                    if (feeship == 0 && $("#<%=pFeeShip.ClientID%>").is(":disabled") == false)
-                    {
+                else if (shippingtype == 4) {
+                    if (feeship == 0 && $("#<%=pFeeShip.ClientID%>").is(":disabled") == false) {
                         var ID = $("#<%=ddlTransportCompanyID.ClientID%>").val();
                         var SubID = $("#<%=ddlTransportCompanySubID.ClientID%>").val();
 
-                        if (ID != 0 && SubID != 0)
-                        {
+                        if (ID != 0 && SubID != 0) {
                             var checkPrepay = checkPrepayTransport(ID, SubID);
-                            if (checkPrepay == 1)
-                            {
+                            if (checkPrepay == 1) {
                                 $("#<%=pFeeShip.ClientID%>").focus();
                                 swal({
                                     title: "Coi nè:",
@@ -1748,9 +1734,8 @@
                         }
                     }
                 }
-                        
-                if (feeship > 0 && feeship < 10000)
-                {
+
+                if (feeship > 0 && feeship < 10000) {
                     checkAllValue = false;
                     $("#<%=pFeeShip.ClientID%>").focus();
                     swal({
@@ -1767,8 +1752,7 @@
                 var ds = $("#<%=pDiscount.ClientID%>").val();
                 var discount = parseFloat(ds.replace(/\,/g, ''));
 
-                if (discount > 11000 && $("#<%=hdfRoleID.ClientID%>").val() != 0)
-                {
+                if (discount > 11000 && $("#<%=hdfRoleID.ClientID%>").val() != 0) {
                     checkAllValue = false;
                     $("#<%=pDiscount.ClientID%>").focus();
                     swal({
@@ -1782,12 +1766,11 @@
                     });
                 }
 
-                if (checkAllValue == true)
-                {
+                if (checkAllValue == true) {
                     HoldOn.open();
                     $("#<%=btnOrder.ClientID%>").click();
                 }
-            }
+            };
 
             // search product by SKU
             function searchProduct() {
@@ -1809,35 +1792,34 @@
                         orderServer.QuantityInstockString = (Number(orderServer.QuantityInstockString) + Number(orderClient.Quantity)).toString();
                     }
                 });
-            }
+            };
 
             function searchRemovedList(ProductSKU) {
                 var t = ""
-                for (i = 0; i< listOrderDetail.length; i++) {
+                for (i = 0; i < listOrderDetail.length; i++) {
                     if (listOrderDetail[i].SKU == ProductSKU) {
                         t += "data-orderdetailid=\"" + listOrderDetail[i].ID + "\"";
                     }
                 }
                 return t;
-            }
+            };
 
             function removeProductExisted(orderServer) {
                 for (index in listOrderDetail) {
                     if (listOrderDetail[index].ProductID == orderServer.ID) {
-                        listOrderDetail.splice(index,1);
+                        listOrderDetail.splice(index, 1);
                     }
                 }
-            }
+            };
 
             // get all price
             function getAllPrice(is_payAll_call) {
                 if (is_payAll_call == undefined)
                     is_payAll_call = false;
-                if ($(".product-result").length > 0)
-                {
+                if ($(".product-result").length > 0) {
                     var totalprice = 0;
                     var productquantity = 0;
-                    $(".product-result").each(function() {
+                    $(".product-result").each(function () {
                         var price = parseFloat($(this).find(".gia-san-pham").attr("data-price"));
                         var quantity = parseFloat($(this).find(".in-quantity").val());
                         var total = price * quantity;
@@ -1850,7 +1832,7 @@
 
                     $("#<%=hdfTotalPriceNotDiscount.ClientID%>").val(totalprice);
                     $(".totalproductQuantity").html(formatThousands(productquantity, ',') + " sản phẩm");
-                    
+
                     $(".totalpriceorder").html(formatThousands(totalprice, ','));
                     $("#<%=hdfTotalPriceNotDiscountNotFee.ClientID%>").val(totalprice);
                     $("#<%=hdfTotalQuantity.ClientID%>").val(productquantity);
@@ -1884,12 +1866,10 @@
                     }
 
                     // Nếu dùng bằng tay để chỉnh chiết khấu
-                    if (is_payAll_call === true)
-                    {
-                        amount = parseInt($("#<%=pDiscount.ClientID%>").val().replace(/\,/g,''));
+                    if (is_payAll_call === true) {
+                        amount = parseInt($("#<%=pDiscount.ClientID%>").val().replace(/\,/g, ''));
                     }
-                    else
-                    {
+                    else {
                         // Nếu chiết khấu của khách hàng lớn hơn 0
                         if (amountdiscount > 0) {
                             // Nếu <chiết khấu nhóm> của khách hàng lớn hơn mức được <chiết khấu của đơn hàng> thì lấy <chiết khấu nhóm> để tính
@@ -1910,7 +1890,7 @@
                     }
 
                     // Nếu đơn hàng có sẵn chiết khấu và lớn hơn chiết khấu được tính phía trên
-                    if ($("#<%=hdfDiscountInOrder.ClientID%>").val() != 0 && $("#<%=hdfDiscountInOrder.ClientID%>").val() > amount ) {
+                    if ($("#<%=hdfDiscountInOrder.ClientID%>").val() != 0 && $("#<%=hdfDiscountInOrder.ClientID%>").val() > amount) {
                         var dis = $("#<%=hdfDiscountInOrder.ClientID%>").val();
                         var discount = parseFloat(dis.replace(/\,/g, ''));
                         var totalck = discount * productquantity;
@@ -1943,8 +1923,7 @@
                     $(".totalpricedetail").html(formatThousands((totalmoney - refund), ","));
                     $("#<%=hdfTongTienConLai.ClientID%>").val(totalmoney - refund);
                 }
-                else
-                {
+                else {
                     // update status order
                     $("#<%=ddlExcuteStatus.ClientID%>").val(3);
 
@@ -1955,35 +1934,31 @@
 
                 }
                 reIndex();
-            }
+            };
 
             // check empty
             function notEmpty() {
-                if ($("#<%=pDiscount.ClientID%>").val() == '')
-                {
+                if ($("#<%=pDiscount.ClientID%>").val() == '') {
                     var dis = 0;
                     $("#<%=pDiscount.ClientID%>").val(formatThousands(dis, ','));
                 }
-                if ($("#<%=pFeeShip.ClientID%>").val() == '')
-                {
+                if ($("#<%=pFeeShip.ClientID%>").val() == '') {
                     var fee = 0;
                     $("#<%=pFeeShip.ClientID%>").val(formatThousands(fee, ','));
                 }
                 fees.forEach((item) => {
-                    if (item.price == "")
-                    {
+                    if (item.price == "") {
                         item.FeePrice = 0;
                         $("#" + item.UUID).val(0);
                     }
                 })
-            }
+            };
 
             // count total order
             function countTotal() {
                 var total = parseFloat($("#<%=hdfTotalPriceNotDiscount.ClientID%>").val());
                 var quantity = 0;
-                if (!isBlank($("#<%=hdfTotalQuantity.ClientID%>").val()))
-                {
+                if (!isBlank($("#<%=hdfTotalQuantity.ClientID%>").val())) {
                     quantity = parseFloat($("#<%=hdfTotalQuantity.ClientID%>").val());
                 }
                 notEmpty();
@@ -2002,14 +1977,12 @@
                 $("#<%=hdfcheck.ClientID%>").val(discount);
                 $("#<%=hdfDiscountInOrder.ClientID%>").val(discount);
 
-                if (quantity > 0)
-                {
+                if (quantity > 0) {
                     var totalleft = total + feeship + otherfee - discount * quantity;
                     var priceafterchietkhau = total - discount * quantity;
                     $("#<%=hdfTotalQuantity.ClientID%>").val(quantity);
                 }
-                else
-                {
+                else {
                     var totalleft = total + feeship + otherfee - discount * totalproduct;
                     var priceafterchietkhau = total - discount * totalproduct;
                     $("#<%=hdfTotalQuantity.ClientID%>").val(totalproduct);
@@ -2026,15 +1999,14 @@
                 $("#<%=hdfTongTienConLai.ClientID%>").val(totalleft - refund);
 
                 $("#<%=hdfTotalPrice.ClientID%>").val(totalleft);
-            }
+            };
 
             // get product price
             function getProductPrice(obj) {
                 var customertype = obj.val();
-                if ($(".product-result").length > 0)
-                {
+                if ($(".product-result").length > 0) {
                     var totalprice = 0;
-                    $(".product-result").each(function() {
+                    $(".product-result").each(function () {
                         var giasi = $(this).attr("data-giabansi");
                         var giale = $(this).attr("data-giabanle");
                         if (customertype == 1) {
@@ -2047,26 +2019,23 @@
                     });
                     getAllPrice();
                 }
-            }
+            };
 
             // press key
             function keypress(e) {
                 var keypressed = null;
-                if (window.event)
-                {
+                if (window.event) {
                     keypressed = window.event.keyCode; //IE
                 }
-                else
-                {
+                else {
                     keypressed = e.which; //NON-IE, Standard
                 }
-                if (keypressed < 48 || keypressed > 57)
-                {
+                if (keypressed < 48 || keypressed > 57) {
                     if (keypressed == 8 || keypressed == 127)
                         return;
                     return false;
                 }
-            }
+            };
 
                 // format price
             var formatThousands = function(n, dp) {
@@ -2082,8 +2051,7 @@
             };
 
             function deleteOrder() {
-                if (listOrderDetail.length > 0)
-                {
+                if (listOrderDetail.length > 0) {
                     let getDataJSON = function () {
                         let stringJSON = "{listOrderDetail: [";
 
@@ -2109,7 +2077,7 @@
                         dataType: "json"
                     });
                 }
-            }
+            };
 
             function onChangeExcuteStatus() {
                 let excuteStatus = Number($("#<%=ddlExcuteStatus.ClientID%>").val());
@@ -2141,7 +2109,7 @@
 
                         break;
                     case 1:
-                        
+
                         if ($("#<%=hdfExcuteStatus.ClientID%>").val() == 1) {
                             $("#infor-order").removeClass("disable");
                             $("#infor-customer").removeClass("disable");
@@ -2168,21 +2136,19 @@
 
                         break;
                 }
-            }
+            };
             
-            function onChangeTransportCompany(transport)
-            {
+            function onChangeTransportCompany(transport) {
                 let transComID = transport.val();
                 $.ajax({
                     url: "thong-tin-don-hang.aspx/GetTransportSub",
                     type: "POST",
-                    data: JSON.stringify({'transComID': transComID}),
+                    data: JSON.stringify({ 'transComID': transComID }),
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     success: function (msg) {
                         let data = JSON.parse(msg.d);
-                        if (data)
-                        {
+                        if (data) {
                             let tranSubDOM = $("#<%=ddlTransportCompanySubID.ClientID%>");
                             tranSubDOM.html("")
                             data.forEach((item) => {
@@ -2193,17 +2159,28 @@
                             tranSubContainerDOM.attr("title", "Chọn nơi nhận");
                             tranSubContainerDOM.html("Chọn nơi nhận");
 
-                            setTimeout(function() {
+                            setTimeout(function () {
                                 $("#<%=ddlTransportCompanySubID.ClientID%>").select2("open");
-                            }, 200);  
-                            
+                            }, 200);
+
                         }
                     },
                     error: function (err) {
                         swal("Thông báo", "Đã có vấn đề trong việc cập nhật thông tin vận chuyển", "error");
                     }
                 });
-            }
+            };
+
+            function createReturnOrder(customerID) {
+                var win = window.open('/tao-don-hang-doi-tra?customerID=' + customerID, '_blank');
+                if (win) {
+                    //Browser has allowed it to be opened
+                    win.focus();
+                } else {
+                    //Browser has blocked it
+                    swal("Thông báo", "Vui lòng cho phép cửa sổ bật lên cho trang web này", "error");
+                }
+            };
         </script>
     </telerik:RadScriptBlock>
 </asp:Content>

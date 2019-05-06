@@ -62,6 +62,18 @@ namespace IM_PJ
                 
                 this.Title = String.Format("Làm lại đơn hàng trả");
             }
+
+            var customerID = HttpContext.Current.Request["customerID"];
+            if (!String.IsNullOrEmpty(customerID))
+            {
+                var customer = CustomerController.GetByID(Convert.ToInt32(customerID));
+                if (customer != null)
+                {
+                    var serializer = new JavaScriptSerializer();
+                    var script = "$(document).ready(() => { selectCustomerDetail(" + serializer.Serialize(customer) + "); });";
+                    ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "script", script, true);
+                }
+            }
         }
 
         [WebMethod]

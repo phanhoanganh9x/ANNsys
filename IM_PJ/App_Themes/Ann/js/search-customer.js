@@ -529,7 +529,7 @@ function selectCustomerDetail(data) {
     $("input[id$='_txtZalo']").val(data.Zalo).prop('readonly', true);
     $("input[id$='_txtFacebook']").parent().removeClass("width-100");
     $("input[id$='_txtFacebook']").val(data.Facebook).prop('readonly', true);
-    if (data.Facebook === null) {
+    if (!data.Facebook) {
         $(".link-facebook").hide();
         $("input[id$='_txtFacebook']").parent().addClass("width-100");
     }
@@ -586,6 +586,7 @@ function ajaxCheckCustomer() {
                                         confirmButtonText: "Hihi OK sếp..",
                                         html: true,
                                     }, function () {
+                                        $("input[id$='_hdfCustomerID']").val("");
                                         $("input[id$='_txtPhone']").val("");
                                     });
                                 }
@@ -601,18 +602,20 @@ function ajaxCheckCustomer() {
                                         html: true,
                                     }, function (confirm) {
                                         if (confirm) {
+                                            $("input[id$='_hdfCustomerID']").val(data.ID);
                                             $("input[id$='_hdfUsernameCurrent']").val(data.CreatedBy);
                                             selectCustomerDetail(data);
                                         }
                                         else {
+                                            $("input[id$='_hdfCustomerID']").val("");
                                             $("input[id$='_txtPhone']").val("");
                                         }
                                     });
                                 }
                             }
                             else {
+                                $("input[id$='_hdfCustomerID']").val("");
                                 $("input[id$='_txtPhone']").val("");
-                                
                             }
                         });
                     }
