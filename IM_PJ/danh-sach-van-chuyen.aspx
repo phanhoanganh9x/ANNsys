@@ -160,7 +160,7 @@
                         <div class="filter-control">
                             <div class="row">
                                 <div class="col-md-3">
-                                    <asp:DropDownList ID="ddlTransportCompany" runat="server" CssClass="form-control"></asp:DropDownList>
+                                    <asp:DropDownList ID="ddlTransportCompany" runat="server" CssClass="form-control customerlist select2" Height="45px" Width="100%"></asp:DropDownList>
                                 </div>
                                 <div class="col-md-2">
                                     <asp:DropDownList ID="ddlShipperFilter" runat="server" CssClass="form-control"></asp:DropDownList>
@@ -203,22 +203,20 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-2">
-                                    <a href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="getDeliverySession()">
+                                <div class="col-xs-3">
+                                    <a id="filterOrderChoose" href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="getDeliverySession()">
                                         <i class="fa fa-inbox" aria-hidden="true"></i> Lấy đơn hàng đã chọn
                                     </a>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-xs-3">
                                     <a href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="deleteAllDeliverySession()">
                                         <i class="fa fa-remove" aria-hidden="true"></i> Xóa tất cả đơn hàng
                                     </a>
                                 </div>
-                                <div class="col-md-2">
-                                    <a href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="openPrintModal()">
+                                <div class="col-xs-3">
+                                    <a id="printOrderChoose" href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="openPrintModal()">
                                         <i class="fa fa-print" aria-hidden="true"></i> In phiếu giao hàng
                                     </a>
-                                </div>
-                                <div id="numberPrint" class="col-md-3">
                                 </div>
                             </div>
                         </div>
@@ -434,10 +432,8 @@
                         orderChoosed.push(new OrderChoosed(item.OrderID, item.ShippingType, createdDate));
                     });
 
-                    let numberPrint = orderChoosed.length;
-                    if (numberPrint > 0) {
-                        $("#numberPrint").html("<h5>(" + formatNumber(numberPrint.toString()) + " số lượng đơn hàng In)</h5>")
-                    }
+                    // Thể hiện số lượng đơn hàng sẽ In
+                    showNumberOrderChoose();
                 }
             };
 
@@ -914,13 +910,7 @@
                             orderChoosed = data;
 
                             // Thể hiện số lượng đơn hàng sẽ In
-                            let numberPrint = orderChoosed.length;
-                            if (numberPrint > 0) {
-                                $("#numberPrint").html("<h5>(" + formatNumber(numberPrint.toString()) + " số lượng đơn hàng In)</h5>")
-                            }
-                            else {
-                                $("#numberPrint").html("");
-                            }
+                            showNumberOrderChoose();
                         }
                     },
                     error: (xmlhttprequest, textstatus, errorthrow) => {
@@ -945,13 +935,7 @@
                             orderChoosed = [];
 
                         // Thể hiện số lượng đơn hàng sẽ In
-                        let numberPrint = orderChoosed.length;
-                        if (numberPrint > 0) {
-                            $("#numberPrint").html("<h5>(" + formatNumber(numberPrint.toString()) + " số lượng đơn hàng In)</h5>")
-                        }
-                        else {
-                            $("#numberPrint").html("");
-                        }
+                        showNumberOrderChoose();
                     },
                     error: (xmlhttprequest, textstatus, errorthrow) => {
                         swal("Thông báo", "Có lỗi trong quá trình xóa order cho in vận chuyển", "error");
@@ -1132,6 +1116,7 @@
                 let url = window.location.href;
                 let reg = /\?/g;
 
+                url = url.replace(/(&?Page=\d+)/g, "");
                 if (url.search(reg) > 0)
                     url = url + "&isdeliverysession=1";
                 else
@@ -1170,6 +1155,23 @@
                         swal("Thông báo", "Có lỗi trong quá trình xóa tất cả order đã check", "error");
                     }
                 })
+            }
+
+            function showNumberOrderChoose() {
+                let numberPrint = orderChoosed.length;
+                let text = "";
+
+                // text thể hiện
+                if (numberPrint > 0) {
+                    text = "(" + formatNumber(numberPrint.toString()) + ")";
+                }
+
+                $("#filterOrderChoose").html(
+                        "<i class='fa fa-inbox' aria-hidden='true'></i> Lấy đơn hàng đã chọn " + text
+                    );
+                $("#printOrderChoose").html(
+                    "<i class='fa fa-print' aria-hidden='true'></i> In phiếu giao hàng " + text
+                );
             }
         </script>
     </main>
