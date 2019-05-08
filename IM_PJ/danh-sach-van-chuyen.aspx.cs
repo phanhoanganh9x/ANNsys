@@ -1,6 +1,7 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
 using MB.Extensions;
+using Newtonsoft.Json;
 using NHST.Bussiness;
 using System;
 using System.Collections.Generic;
@@ -130,6 +131,7 @@ namespace IM_PJ
                 string CreatedDate = "";
                 string CreatedBy = "";
                 string DeliveryStartAt = "";
+                var isDeliverySession = false;
 
                 if (Request.QueryString["textsearch"] != null)
                     TextSearch = Request.QueryString["textsearch"].Trim();
@@ -151,6 +153,8 @@ namespace IM_PJ
                     CreatedBy = Request.QueryString["createdby"];
                 if (Request.QueryString["deliverystartat"] != null)
                     DeliveryStartAt = Request.QueryString["deliverystartat"];
+                if (Request.QueryString["isdeliverysession"] != null)
+                    isDeliverySession = true;
 
                 txtSearchOrder.Text = TextSearch;
                 ddlTransportCompany.SelectedValue = TransportCompany.ToString();
@@ -219,6 +223,51 @@ namespace IM_PJ
                 }
                 if (DeliveryStatus != 0)
                     rs = rs.Where(x => x.DeliveryStatus == DeliveryStatus).ToList();
+
+                var deliverySession = SessionController.getDeliverySession(acc);
+                hdfSession.Value = JsonConvert.SerializeObject(deliverySession);
+                if (isDeliverySession)
+                {
+                    // Chỉ lấy những order đã check
+                    rs = rs.Join(
+                            deliverySession,
+                            ord => ord.ID,
+                            del => del.OrderID,
+                            (ord, del) => ord
+                        )
+                        .Select(x =>
+                        {
+                            x.CheckDelivery = true;
+                            return x;
+                        })
+                        .ToList();
+                }
+                else
+                {
+                    // Đánh dấu check cho các order đã được check
+                    rs = rs.GroupJoin(
+                            deliverySession,
+                            ord => ord.ID,
+                            del => del.OrderID,
+                            (ord, del) => new { ord, del }
+                        )
+                        .SelectMany(
+                            x => x.del.DefaultIfEmpty(),
+                            (parent, child) => {
+                                if (child != null)
+                                {
+                                    parent.ord.CheckDelivery = true;
+                                }
+                                else
+                                {
+                                    parent.ord.CheckDelivery = false;
+                                }
+                                return parent;
+                            }
+                        )
+                        .Select(x => x.ord)
+                        .ToList();
+                }
 
                 pagingall(rs);
                 ltrNumberOfOrder.Text = rs.Count().ToString();
@@ -299,13 +348,13 @@ namespace IM_PJ
                     html.Append(TrTag.ToString());
                     // Hình thức giáo hàng là chuyển xe
                     // và gói hàng chưa được giao hoặc đang giao
-                    if (item.ShippingType == 4 && (item.DeliveryStatus == 2 || item.DeliveryStatus == 3))
+                    if (item.CheckDelivery.HasValue && item.CheckDelivery.Value)
                     {
-                        html.Append("   <td><input type='checkbox' onchange='changeCheckPrint()'/></td>");
+                        html.Append("   <td><input type='checkbox' onchange='changeCheckPrint($(this))' checked/></td>");
                     }
                     else
                     {
-                        html.Append("   <td><input type='checkbox' onchange='changeCheckPrint()' disabled='disabled'/></td>");
+                        html.Append("   <td><input type='checkbox' onchange='changeCheckPrint($(this))'/></td>");
                     }
                     html.Append("   <td><a href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.ID + "</a></td>");
                     if (!string.IsNullOrEmpty(item.Nick))
@@ -579,6 +628,32 @@ namespace IM_PJ
                 request += "&deliverystartat=" + ddlDeliveryStartAt.SelectedValue;
 
             Response.Redirect(request);
+        }
+
+        [WebMethod]
+        public static string addOrderChoose(List<DeliverySession> deliverySession)
+        {
+            var username = HttpContext.Current.Request.Cookies["userLoginSystem"].Value;
+            var acc = AccountController.GetByUsername(username);
+
+            return SessionController.addDeliverySession(acc, deliverySession);
+        }
+
+        [WebMethod]
+        public static string deleteOrderChoose(List<DeliverySession> deliverySession)
+        {
+            var username = HttpContext.Current.Request.Cookies["userLoginSystem"].Value;
+            var acc = AccountController.GetByUsername(username);
+
+            return SessionController.deleteDeliverySession(acc, deliverySession);
+        }
+
+        [WebMethod]
+        public static void deleteAllOrderChoose()
+        {
+            var username = HttpContext.Current.Request.Cookies["userLoginSystem"].Value;
+            var acc = AccountController.GetByUsername(username);
+            SessionController.deleteDeliverySession(acc);
         }
     }
 }

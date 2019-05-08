@@ -52,52 +52,74 @@ namespace IM_PJ
 
         public void LoadData()
         {
-            int shepperID = Request.QueryString["shipperid"].ToInt(0);
-            string key = Request.QueryString["key"].ToString();
-            var orderCookie = HttpContext.Current.Request.Cookies[key];
+            var shipperID = Request.QueryString.Get("shipperid").ToInt(0);
+            var shippingType = Request.QueryString.Get("shippingtype").ToInt(0);
 
-            if (shepperID == 0 || orderCookie == null)
+            if (shipperID == 0)
             {
-                if (shepperID == 0)
-                    ltrPrintDelivery.Text = String.Format("ShipperID #{0} truyền vào có vấn đề", shepperID);
-                if (orderCookie == null)
-                    ltrPrintDelivery.Text = String.Format("Key #{0} không tồn tại trong cookies của trang", key);
+                ltrPrintDelivery.Text = String.Format("ShipperID #{0} truyền vào có vấn đề", shipperID);
+            }
+            else if (shippingType == 0)
+            {
+                ltrPrintDelivery.Text = String.Format("ShippingType #{0} truyền vào có vấn đề", shippingType);
             }
             else
             {
-                var serializer = new JavaScriptSerializer();
-                var orderIDList = serializer.Deserialize<List<int>>(Server.UrlDecode(orderCookie.Value));
+                string username = Request.Cookies["userLoginSystem"].Value;
+                var acc = AccountController.GetByUsername(username);
 
-                if (orderIDList != null && orderIDList.Count > 0)
+                if (shippingType == 4) // Báo cáo chuyển hàng tới nhà xe
                 {
-                    var data = DeliveryController.getDeliveryReport(orderIDList);
+                    var orders = SessionController.getDeliverySession(acc)
+                        .Where(x => x.ShippingType == shippingType)
+                        .Select(x => x.OrderID)
+                        .OrderBy(o => o)
+                        .ToList();
+
+                    var data = DeliveryController.getTransportReport(orders);
                     if (data.Count == 0)
                     {
                         ltrPrintDelivery.Text = "Không tìm thấy dữ liệu để xuất hóa đơn giao hàng";
                     }
                     else
                     {
-                        ltrPrintDelivery.Text = getReportHTML(data, shepperID);
+                        ltrPrintDelivery.Text = getTransportReportHTML(data, shipperID);
                         ltrPrintEnable.Text = "<div class='print-enable true'></div>";
 
                         // Update Delivery
-                        string username = Request.Cookies["userLoginSystem"].Value;
-                        var acc = AccountController.GetByUsername(username);
-                        DeliveryController.udpateAfterPrint(shepperID, orderIDList, acc.ID);
+                        DeliveryController.udpateAfterPrint(shipperID, orders, acc.ID);
+                    }
+                }
+                else if (shippingType == 5) // Báo cáo chuyển hàng của shipper
+                {
+                    var orders = SessionController.getDeliverySession(acc)
+                        .Where(x => x.ShippingType == shippingType)
+                        .Select(x => x.OrderID)
+                        .OrderBy(o => o)
+                        .ToList();
+
+                    var data = DeliveryController.getShipperReport(orders);
+                    if (data.Count == 0)
+                    {
+                        ltrPrintDelivery.Text = "Không tìm thấy dữ liệu để xuất hóa đơn giao hàng";
+                    }
+                    else
+                    {
+                        ltrPrintDelivery.Text = getShipperReportHTML(data, shipperID);
+                        ltrPrintEnable.Text = "<div class='print-enable true'></div>";
+
+                        // Update Delivery
+                        DeliveryController.udpateAfterPrint(shipperID, orders, acc.ID);
                     }
                 }
                 else
                 {
-                    ltrPrintDelivery.Text = "Đã xay ra lỗi trong quá trình lấy thông tin order";
+                    ltrPrintDelivery.Text = String.Format("Không có báo có vần chuyển nào với ShippintType #{0} này.", shippingType);
                 }
-
-                // Remove cookie
-                orderCookie.Expires = DateTime.Now.AddDays(-1);
-                HttpContext.Current.Response.Cookies.Add(orderCookie);
             }
         }
 
-        public string getReportHTML(List<DeliveryReport> data, int shipperID)
+        public string getTransportReportHTML(List<TransportReport> data, int shipperID)
         {
             var html = new StringBuilder();
             int index = 0;
@@ -148,6 +170,82 @@ namespace IM_PJ
                 html.AppendLine("                        <tr>");
                 html.AppendLine("                            <td colspan='1'  style='text-align: right'>Thu hộ</td>");
                 html.AppendLine(String.Format("                            <td colspan='2'>{0:#,###}</td>", totalCollection));
+                html.AppendLine("                        </tr>");
+            }
+            html.AppendLine("                    </tbody>");
+            html.AppendLine("                </table>");
+            html.AppendLine("            </div>");
+            html.AppendLine("        </div>");
+            html.AppendLine("    </div>");
+            html.AppendLine("</div>");
+
+            return html.ToString();
+        }
+
+        public string getShipperReportHTML(List<ShipperReport> data, int shipperID)
+        {
+            var html = new StringBuilder();
+            decimal totalPayment = 0;
+            decimal totalMoneyCollection = 0;
+            decimal totalPrice = 0;
+            string shipperName = ShipperController.getShipperNameByID(shipperID);
+
+            html.AppendLine("<h1>PHIẾU GỬI HÀNG</h1>");
+
+            html.AppendLine("<div class='delivery'>");
+            html.AppendLine("    <div class='all'>");
+            html.AppendLine("        <div class='body'>");
+            html.AppendLine("            <div class='table-2'>");
+            html.AppendLine("               <div class='info'>");
+            html.AppendLine(String.Format(" <p>Ngày giao: {0}</p>", string.Format("{0:dd/MM HH:mm}", DateTime.Now)));
+            html.AppendLine(String.Format(" <p>Người giao: {0}</p>", shipperName));
+            html.AppendLine("               </div>");
+            html.AppendLine("                <table>");
+            html.AppendLine("                    <colgroup>");
+            html.AppendLine("                        <col />");
+            html.AppendLine("                        <col />");
+            html.AppendLine("                        <col />");
+            html.AppendLine("                        <col />");
+            html.AppendLine("                        <col />");
+            html.AppendLine("                    </colgroup>");
+            html.AppendLine("                    <thead>");
+            html.AppendLine("                        <th>Mã</th>");
+            html.AppendLine("                        <th>Tên khách kàng</th>");
+            html.AppendLine("                        <th>Số tiền</th>");
+            html.AppendLine("                        <th>Thu hộ</th>");
+            html.AppendLine("                        <th>Phí</th>");
+            html.AppendLine("                    </thead>");
+            html.AppendLine("                    <tbody>");
+            foreach (var item in data)
+            {
+                totalPayment += item.Payment;
+                totalMoneyCollection += item.MoneyCollection;
+                totalPrice += item.Price;
+
+                html.AppendLine("                        <tr>");
+                html.AppendLine(String.Format("                            <td>{0}</td>", item.OrderID));
+                html.AppendLine(String.Format("                            <td><strong>{0}</strong></td>", item.CustomerName));
+                html.AppendLine(String.Format("                            <td>{0:#,###}</td>", item.Payment));
+                html.AppendLine(String.Format("                            <td>{0:#,###}</td>", item.MoneyCollection));
+                html.AppendLine(String.Format("                            <td>{0:#,###}</td>", item.Price));
+                html.AppendLine("                        </tr>");
+            }
+            html.AppendLine("                        <tr>");
+            html.AppendLine("                            <td colspan='2' style='text-align: right'>Tổng đơn</td>");
+            html.AppendLine(String.Format("                            <td colspan='3'>{0:#,###}</td>", totalPayment));
+            html.AppendLine("                        </tr>");
+            if (totalMoneyCollection > 0)
+            {
+                html.AppendLine("                        <tr>");
+                html.AppendLine("                            <td colspan='2'  style='text-align: right'>Tổng thu hộ</td>");
+                html.AppendLine(String.Format("                            <td colspan='3'>{0:#,###}</td>", totalMoneyCollection));
+                html.AppendLine("                        </tr>");
+            }
+            if (totalPrice > 0)
+            {
+                html.AppendLine("                        <tr>");
+                html.AppendLine("                            <td colspan='2'  style='text-align: right'>Tổng phí</td>");
+                html.AppendLine(String.Format("                            <td colspan='3'>{0:#,###}</td>", totalPrice));
                 html.AppendLine("                        </tr>");
             }
             html.AppendLine("                    </tbody>");

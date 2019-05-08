@@ -1625,6 +1625,7 @@ namespace IM_PJ.Controllers
             public string ShipNote { get; set; }
             public string ShipperName { get; set; }
             public string InvoiceImage { get; set; }
+            public Boolean? CheckDelivery { get; set; }
         }
 
         public class OrderSQL

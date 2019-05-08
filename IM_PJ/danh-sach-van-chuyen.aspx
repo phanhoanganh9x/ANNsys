@@ -203,10 +203,22 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-3">
-                                    <a href="#PrintModal" class="btn primary-btn fw-btn not-fullwidth" data-toggle="modal" data-backdrop='static' data-keyboard='false'>
+                                <div class="col-md-2">
+                                    <a href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="getDeliverySession()">
+                                        <i class="fa fa-inbox" aria-hidden="true"></i> Lấy đơn hàng đã chọn
+                                    </a>
+                                </div>
+                                <div class="col-md-2">
+                                    <a href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="deleteAllDeliverySession()">
+                                        <i class="fa fa-remove" aria-hidden="true"></i> Xóa tất cả đơn hàng
+                                    </a>
+                                </div>
+                                <div class="col-md-2">
+                                    <a href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="openPrintModal()">
                                         <i class="fa fa-print" aria-hidden="true"></i> In phiếu giao hàng
                                     </a>
+                                </div>
+                                <div id="numberPrint" class="col-md-3">
                                 </div>
                             </div>
                         </div>
@@ -358,7 +370,7 @@
             </div>
         </div>
 
-        <!-- Modal -->
+        <!-- Modal Print Delivery -->
         <div class="modal fade" id="PrintModal" role="dialog">
             <div class="modal-dialog">
                 <!-- Modal content-->
@@ -379,15 +391,59 @@
                     </div>
                     <div class="modal-footer">
                         <button id="closePrint" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
-                        <button id="startPrint" type="button" class="btn btn-primary">In</button>
+                        <button id="shipperPrint" type="button" class="btn btn-primary" onclick="startPrint(5)">Phiếu nhân viên giao</button>
+                        <button id="transportPrint" type="button" class="btn btn-primary" onclick="startPrint(4)">Phiếu chuyển xe</button>
                     </div>
                 </div>
             </div>
         </div>
 
         <asp:HiddenField ID="hdfcreate" runat="server" />
+        <asp:HiddenField ID="hdfSession" runat="server" />
         <script type="text/javascript">
+            class OrderChoosed {
+                constructor(OrderID, ShippingType, CreatedDate) {
+                    this.OrderID = OrderID;
+                    this.ShippingType = ShippingType;
+                    this.CreatedDate = CreatedDate;
+                }
+            };
+
+            // Danh sách các order đã chọn để in
+            var orderChoosed = [];
+
+            function init() {
+                // Hổ trợ xử lý check or uncheck all print
+                checkPrintAll();
+                // Lấy danh sách order đã chọn
+                let data = JSON.parse($("#<%=hdfSession.ClientID%>").val());
+
+                if ($.isArray(data)) {
+                    data.forEach((item) => {
+                        let createdDate = "";
+                        // Format CreateDate
+                        var matchs = item.CreatedDate.match(/\d+/g);
+                        if (matchs) {
+                            let date = new Date(parseInt(matchs[0]));
+                            if (date) {
+                                createdDate = date.format("yyyy-MM-dd");
+                            }
+                        }
+
+                        // Thêm vào mảng order đã chọn
+                        orderChoosed.push(new OrderChoosed(item.OrderID, item.ShippingType, createdDate));
+                    });
+
+                    let numberPrint = orderChoosed.length;
+                    if (numberPrint > 0) {
+                        $("#numberPrint").html("<h5>(" + formatNumber(numberPrint.toString()) + " số lượng đơn hàng In)</h5>")
+                    }
+                }
+            };
+
             $(document).ready(() => {
+                init();
+
                 $("button[data-toggle='modal']").click(e => {
                     let row = e.currentTarget.parentNode.parentNode;
                     let paymenttype = row.dataset["paymenttype"];
@@ -599,21 +655,6 @@
                             }
                         });
                     }
-                    
-                });
-
-                $("#startPrint").click(e => {
-                    let shipperID = $("#<%=ddfShipperPrintModal.ClientID%>").val();
-
-                    if (shipperID != "0")
-                    {
-                        prindelivery(shipperID);
-                        $("#closePrint").click();
-                    }
-                    else
-                    {
-                        swal("Thông báo", "Chưa chọn người giao hàng", "error");
-                    }
                 });
             });
 
@@ -645,19 +686,6 @@
 
                 return datetmp[0] + '/' + datetmp[1] + ' ' + hourtmp[0] + ':' + hourtmp[1];
             }
-
-            //function formatDate(dateString) {
-            //    var date = new Date(dateString);
-
-            //    var day = ('0' + date.getDate()).slice(-2);
-            //    var month = ('0' + (date.getMonth() + 1)).slice(-2);
-            //    var hours = date.getHours();
-            //    hours = hours < 10 ? '0' + hours : hours;
-            //    var minutes = date.getMinutes();
-            //    minutes = minutes < 10 ? '0' + minutes : minutes;
-
-            //    return day + '/' + month + ' ' + hours + ':' + minutes;
-            //}
 
             // Parse URL Queries
             function url_query(query) {
@@ -872,23 +900,97 @@
                 })
             }
 
-            function changeCheckPrintAll(checked) {
-                let childDOM = $("td>input[type='checkbox']").not("[disabled='disabled']");
+            function addOrderChoose(data)
+            {
+                $.ajax({
+                    type: "POST",
+                    url: "/danh-sach-van-chuyen.aspx/addOrderChoose",
+                    data: JSON.stringify({ 'deliverySession': data }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: (response) => {
+                        let data = JSON.parse(response.d);
+                        if (data) {
+                            orderChoosed = data;
 
-                childDOM.each((index, element) => {
-                    element.checked = checked;
+                            // Thể hiện số lượng đơn hàng sẽ In
+                            let numberPrint = orderChoosed.length;
+                            if (numberPrint > 0) {
+                                $("#numberPrint").html("<h5>(" + formatNumber(numberPrint.toString()) + " số lượng đơn hàng In)</h5>")
+                            }
+                            else {
+                                $("#numberPrint").html("");
+                            }
+                        }
+                    },
+                    error: (xmlhttprequest, textstatus, errorthrow) => {
+                        swal("Thông báo", "Có lỗi trong quá trình thêm order cho in vận chuyển", "error");
+                    }
+                })
+            }
+
+            function deleteOrderChoose(data)
+            {
+                $.ajax({
+                    type: "POST",
+                    url: "/danh-sach-van-chuyen.aspx/deleteOrderChoose",
+                    data: JSON.stringify({ 'deliverySession': data }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: (response) => {
+                        let data = JSON.parse(response.d);
+                        if (data)
+                            orderChoosed = data;
+                        else
+                            orderChoosed = [];
+
+                        // Thể hiện số lượng đơn hàng sẽ In
+                        let numberPrint = orderChoosed.length;
+                        if (numberPrint > 0) {
+                            $("#numberPrint").html("<h5>(" + formatNumber(numberPrint.toString()) + " số lượng đơn hàng In)</h5>")
+                        }
+                        else {
+                            $("#numberPrint").html("");
+                        }
+                    },
+                    error: (xmlhttprequest, textstatus, errorthrow) => {
+                        swal("Thông báo", "Có lỗi trong quá trình xóa order cho in vận chuyển", "error");
+                    }
                 });
             }
 
-            function changeCheckPrint() {
+            function changeCheckPrintAll(checked) {
+                let childDOM = $("td>input[type='checkbox']").not("[disabled='disabled']");
+                let data = [];
+                let now = new Date();
+
+                childDOM.each((index, element) => {
+                    let parent = element.parentElement.parentElement;
+                    let orderID = parent.dataset["orderid"];
+                    let shippingType = parent.dataset["shippingtype"];
+
+                    element.checked = checked;
+                    data.push(new OrderChoosed(orderID, shippingType, now.format("yyyy-MM-dd")))
+                });
+
+                if (checked) {
+                    addOrderChoose(data);
+                }
+                else {
+                    deleteOrderChoose(data);
+                }
+            }
+
+            // Kiểm tra xem các phần tử check box không bị disible trong trang
+            // Nếu tất cả là true thì check box all là true
+            // Nếu tất cả là false thì check box all là false
+            function checkPrintAll() {
                 let parentDOM = $("#checkPrintAll");
                 let childDOM = $("td>input[type='checkbox']").not("[disabled='disabled']");
-
                 if (childDOM.length == 0) {
                     parentDOM.prop('checked', false);
                 }
-                else
-                {
+                else {
                     childDOM.each((index, element) => {
                         parentDOM.prop('checked', element.checked);
                         if (!element.checked) return false;
@@ -896,56 +998,178 @@
                 }
             }
 
-            function prindelivery(shipperID) {
-                let childDOM = $("td>input[type='checkbox']:checked");
-                let orders = [];
+            function changeCheckPrint(self) {
+                let parent = self.parent().parent();
+                let orderID = parent.data("orderid");
+                let shippingType = parent.data("shippingtype");
 
-                if (childDOM.length == 0)
-                {
-                    swal("Thông báo", "Bạn chưa chọn đơn hàng nào!", "error");
-                }
-                else
-                {
-                    childDOM.each((index, element) => {
-                        let parent = element.parentElement.parentElement;
-                        let orderID = parent.dataset["orderid"]
-                        let row = $("tr[data-orderid='" + orderID + "']");
-                        let deliveryStatusDom = row.children("#deliveryStatus").children("span");
-                        let shiperName = $("#<%=ddfShipperPrintModal.ClientID%> :selected").text();
-                        let now = new Date();
+                // Thông báo khi order được chọn in đã được chuyển trạng thái hoàng tất đơn hàng
+                if (self.is(":checked")) {
+                    let deliveryStatus = parent.data("deliverystatus");
 
-                        // add order
-                        orders.push(orderID);
-
-                        // Update screen
-                        row.attr("data-shipperid", shipperID);
-                        row.attr("data-deliverystatus", 3);
-                        row.attr("data-deliverydate", now.format("dd/MM/yyyy HH:mm"));
-
-                        // Update screen
-                        element.checked = false;
-                        element.disabled = true;
-                        row.children("#shiperName").html(shiperName);
-                        deliveryStatusDom.removeClass();
-                        deliveryStatusDom.addClass("bg-blue");
-                        deliveryStatusDom.html("Đang giao");
-                        row.find("#downloadInvoiceImage").hide();
-                        row.children("#delDate").html("");
-                    });
-
-                    changeCheckPrint();
-
-                    let key = uuid.v4();
-                    if (key)
+                    if (deliveryStatus && deliveryStatus == 1)
                     {
-                        let date = new Date();
-                        let minutes = 30;
-                        date.setTime(date.getTime() + (minutes * 60 * 1000));
-                        $.cookie(key, JSON.stringify(orders), { expires: date });
-                        let url = "/print-delivery?shipperid=" + shipperID + "&key=" + key;
-                        window.open(url);
+                        swal({
+                            title: 'Thông báo',
+                            text: 'Đơn hàng đã hoàn tất giao hàng.',
+                            type: 'warning',
+                            showCancelButton: true,
+                            closeOnConfirm: true,
+                            cancelButtonText: "Để em xem lại...",
+                            confirmButtonText: "Tiếp tục cho In",
+                        }, function (confirm) {
+                            if (confirm)
+                                self.prop("checked", true);
+                            else
+                            {
+                                self.prop("checked", false);
+                                // Fix bug: Bởi vì swal xử lý bất đồng bộ
+                                changeCheckPrint(self);
+                            }
+                        });
                     }
                 }
+
+                if (self.is(":checked")) {
+                    let now = new Date();
+                    let data = new OrderChoosed(orderID, shippingType, now.format("yyyy-MM-dd"));
+                    addOrderChoose([data]);
+                }
+                else {
+                    let item = orderChoosed.filter((item) => { return item.OrderID == orderID; });
+                    if (item.length == 1) deleteOrderChoose(item);
+                }
+
+                // Hổ trợ xử lý check or uncheck all print
+                checkPrintAll();
+            }
+
+            function openPrintModal() {
+                let shippers = orderChoosed.filter((item) => { return item.ShippingType == 5; })
+                let transports = orderChoosed.filter((item) => { return item.ShippingType == 4; })
+
+                if (shippers.length == 0 && transports.lenght == 0) {
+                    swal("Thông báo", "Bạn chưa chọn đơn hàng nào!", "error");
+                }
+                else {
+                    // Phiếu nhân viên giao
+                    if (shippers.length == 0)
+                        $("#shipperPrint").attr("style", "display: none")
+                    else
+                        $("#shipperPrint").removeAttr("style");
+                    // Phiếu chuyển xe
+                    if (transports.length == 0)
+                        $("#transportPrint").attr("style", "display: none")
+                    else
+                        $("#transportPrint").removeAttr("style");
+
+                    $("#PrintModal").modal({ show: 'true', backdrop: 'static', keyboard: 'false'})
+                }
+            }
+
+            function startPrint(shippingType) {
+                let shipperID = $("#<%=ddfShipperPrintModal.ClientID%>").val();
+
+                if (shipperID != "0") {
+                    let childDOM = null;
+
+                    switch (shippingType) {
+                        case 5: // Nhân viên giao hàng
+                            childDOM = $("td[data-shippingtype='5']>input[type='checkbox']:checked");
+                            break;
+                        case 4: // Chuyển nhà xe
+                            childDOM = $("td[data-shippingtype='4']>input[type='checkbox']:checked");
+                            break;
+                        default:
+                            break;
+                    }
+
+                    //Cập nhật lại thông tin trên màn hình
+                    if (childDOM) {
+                        childDOM.each((index, element) => {
+                            let parent = element.parentElement.parentElement;
+                            let orderID = parent.dataset["orderid"]
+                            let row = $("tr[data-orderid='" + orderID + "']");
+                            let deliveryStatus = row.attr("data-deliverystatus");
+                            let deliveryStatusDom = row.children("#deliveryStatus").children("span");
+                            let shiperName = $("#<%=ddfShipperPrintModal.ClientID%> :selected").text();
+                            let now = new Date();
+
+                            // Update screen
+                            row.attr("data-shipperid", shipperID);
+                            // Trường hợp khác đơn đã hoàn thành thì chuyển về trạng thái đang giao
+                            if (deliveryStatus != "1")
+                            {
+                                row.attr("data-deliverystatus", 3);
+                                row.attr("data-deliverydate", now.format("dd/MM/yyyy HH:mm"));
+                            }
+
+                            // Update screen
+                            row.children("#shiperName").html(shiperName);
+                            // Trường hợp khác đơn đã hoàn thành thì chuyển về trạng thái đang giao
+                            if (deliveryStatus != "1")
+                            {
+                                deliveryStatusDom.removeClass();
+                                deliveryStatusDom.addClass("bg-blue");
+                                deliveryStatusDom.html("Đang giao");
+                                row.find("#downloadInvoiceImage").hide();
+                                row.children("#delDate").html("");
+                            }
+                        });
+                    }
+
+                    // Gửi thông tin về server để tao đơn in
+                    let url = "/print-delivery?shipperid=" + shipperID + "&shippingtype=" + shippingType;
+                    window.open(url);
+                    $("#closePrint").click();
+                }
+                else {
+                    swal("Thông báo", "Chưa chọn người giao hàng", "error");
+                }
+            };
+
+            function getDeliverySession() {
+                let url = window.location.href;
+                let reg = /\?/g;
+
+                if (url.search(reg) > 0)
+                    url = url + "&isdeliverysession=1";
+                else
+                    url = url + "?isdeliverysession=1"
+
+                let win = window.open(url, '_self');
+                if (win) {
+                    //Browser has allowed it to be opened
+                    win.focus();
+                } else {
+                    //Browser has blocked it
+                    swal("Thông báo", "Vui lòng cho phép cửa sổ bật lên cho trang web này", "error");
+                }
+            }
+
+            function deleteAllDeliverySession() {
+                $.ajax({
+                    type: "POST",
+                    url: "/danh-sach-van-chuyen.aspx/deleteAllOrderChoose",
+                    contentType: "application/json; charset=utf-8",
+                    success: (response) => {
+                        $("#<%=hdfSession.ClientID%>").val("")
+                        orderChoosed = [];
+                        $("#numberPrint").html("")
+
+                        let win = window.open('/danh-sach-van-chuyen', '_self');
+                        if (win) {
+                            //Browser has allowed it to be opened
+                            win.focus();
+                        } else {
+                            //Browser has blocked it
+                            swal("Thông báo", "Vui lòng cho phép cửa sổ bật lên cho trang web này", "error");
+                        }
+                    },
+                    error: (xmlhttprequest, textstatus, errorthrow) => {
+                        swal("Thông báo", "Có lỗi trong quá trình xóa tất cả order đã check", "error");
+                    }
+                })
             }
         </script>
     </main>

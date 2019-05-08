@@ -72,5 +72,6 @@ namespace IM_PJ.Models
         public virtual DbSet<tbl_Product> tbl_Product { get; set; }
         public virtual DbSet<Fee> Fees { get; set; }
         public virtual DbSet<FeeType> FeeTypes { get; set; }
+        public virtual DbSet<Session> Sessions { get; set; }
     }
 }

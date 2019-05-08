@@ -52,6 +52,7 @@
         <EntityTypeShape EntityType="inventorymanagementModel.Shipper" Width="1.5" PointX="21.375" PointY="14.75" />
         <EntityTypeShape EntityType="inventorymanagementModel.Fee" Width="1.5" PointX="21.375" PointY="18.75" />
         <EntityTypeShape EntityType="inventorymanagementModel.FeeType" Width="1.5" PointX="21.375" PointY="22.75" />
+        <EntityTypeShape EntityType="inventorymanagementModel.Session" Width="1.5" PointX="23.375" PointY="0.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

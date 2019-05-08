@@ -38,22 +38,13 @@ namespace IM_PJ.Controllers
             return true;
         }
 
-        public static List<DeliveryReport> getDeliveryReport(List<int> orders)
+        public static List<TransportReport> getTransportReport(List<int> orders)
         {
             using (var con = new inventorymanagementEntities())
             {
-                // Get order id list which didn't shipped to transport
-                var delivered = con.Deliveries
-                    .Where(x => x.Status == 1) // loại bỏ đơn đã giao
-                    .Where(x => orders.Contains(x.OrderID))
-                    .Select(x => x.OrderID)
-                    .OrderBy(o => o)
-                    .ToList();
-                orders = orders.Where(x => !delivered.Contains(x)).ToList();
-
                 var header = con.tbl_Order
-                    .Where(x => x.ExcuteStatus == 2)
-                    .Where(x => x.ShippingType == 4)
+                    .Where(x => x.ExcuteStatus == 2) // Đơn đã hoàn tất
+                    .Where(x => x.ShippingType == 4) // Chuyển tới nhà xe
                     .Where(x => orders.Contains(x.ID))
                     .OrderBy(o => o.ID);
 
@@ -86,7 +77,7 @@ namespace IM_PJ.Controllers
                         }
                     )
                     .GroupBy(x => x.TransportID)
-                    .Select(g => new DeliveryReport
+                    .Select(g => new TransportReport
                     {
                         TransportID = g.Key,
                         TransportName = g.Max(x => x.TransportName),
@@ -94,6 +85,68 @@ namespace IM_PJ.Controllers
                         Collection = g.Sum(x => x.Collection)
                     })
                     .OrderBy(o => o.TransportName)
+                    .ToList();
+
+                return report;
+            }
+        }
+
+        public static List<ShipperReport> getShipperReport(List<int> orders)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var delivery = con.Deliveries
+                    .Where(x => orders.Contains(x.OrderID))
+                    .OrderBy(o => o.OrderID)
+                    .ToList();
+
+                var order = con.tbl_Order
+                     .Where(x => x.ExcuteStatus == 2) // Đơn đã hoàn tất
+                     .Where(x => x.ShippingType == 5) // Nhân viên giao hàng
+                     .Where(x => orders.Contains(x.ID))
+                     .OrderBy(o => o.ID)
+                     .ToList();
+
+                var report = order
+                    .GroupJoin(
+                        delivery,
+                        ord => ord.ID,
+                        del => del.OrderID,
+                        (ord, del) => new { ord, del }
+                    )
+                    .SelectMany(
+                        x => x.del.DefaultIfEmpty(),
+                        (parent, child) => {
+                            var data = new ShipperReport();
+
+                            data.OrderID = parent.ord.ID;
+                            data.CustomerName = parent.ord.CustomerName;
+                            data.Payment = Convert.ToDecimal(parent.ord.TotalPrice);
+                            data.MoneyCollection = 0;
+                            data.Price = 0;
+
+                            if (child != null)
+                            {
+                                // Thu hộ
+                                if (parent.ord.PaymentType == 3)
+                                {
+                                    data.MoneyCollection = child.COO;
+                                }
+                                data.Price = child.COD;
+                            }
+                            else
+                            {
+                                // Thu hộ
+                                if (parent.ord.PaymentType == 3)
+                                {
+                                    data.MoneyCollection = data.Payment;
+                                }
+                                data.Price = Convert.ToDecimal(parent.ord.FeeShipping);
+                            }
+
+                            return data;
+                        }
+                    )
                     .ToList();
 
                 return report;
@@ -122,6 +175,7 @@ namespace IM_PJ.Controllers
                     }
                     else
                     {
+                        var order = con.tbl_Order.Where(x => x.ID == id).FirstOrDefault();
                         var delivery = new Delivery()
                         {
                             UUID = Guid.NewGuid(),
@@ -137,6 +191,16 @@ namespace IM_PJ.Controllers
                             ModifiedBy = user,
                             ModifiedDate = now
                         };
+
+                        if (order != null)
+                        {
+                            // Thu hộ
+                            if (order.PaymentType == 3)
+                            {
+                                delivery.COO = Convert.ToDecimal(order.TotalPrice);
+                            }
+                            delivery.COD = Convert.ToDecimal(order.FeeShipping);
+                        }
                         con.Deliveries.Add(delivery);
                         con.SaveChanges();
                     }
@@ -192,13 +256,22 @@ namespace IM_PJ.Controllers
             }
         }
 
-        public class DeliveryReport
+        public class TransportReport
         {
             public int TransportID { get; set; }
             public string TransportName { get; set; }
             public double Quantity { get; set; }
             // Số lượng thu hộ
             public double Collection { get; set; }
+        }
+
+        public class ShipperReport
+        {
+            public int OrderID { get; set; }
+            public string CustomerName { get; set; }
+            public decimal Payment { get; set; }
+            public decimal MoneyCollection { get; set; }
+            public decimal Price { get; set; }
         }
     }
 }
