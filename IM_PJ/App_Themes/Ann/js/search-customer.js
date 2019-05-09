@@ -494,6 +494,12 @@ function selectCustomer(username) {
             $("input[id$='_hdfCustomerID']").val(id);
             $("input[id$='_hdfUsernameCurrent']").val(createdby);
             swal.close();
+
+            // Trường hợp là them-moi-don-hang page 
+            // Kiểm tra xem có đơn hàng củ chưa hoàn thành và đơn đổi tra hàng nào chưa trừ tiền không
+            if ($.isFunction(window.checkOrderOld)) {
+                checkOrderOld(id);
+            }
         }
     });
 }

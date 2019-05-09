@@ -128,6 +128,19 @@ namespace IM_PJ.Controllers
             }
         }
 
+        public static List<tbl_RefundGoods> GetByCustomerID(int CustomerID, int Status)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var las = con.tbl_RefundGoods
+                    .Where(x => x.CustomerID == CustomerID)
+                    .Where(x => x.Status == Status)
+                    .OrderByDescending(r => r.CreatedDate)
+                    .ToList();
+                return las;
+            }
+        }
+
         public static List<tbl_RefundGoods> GetByAgentIDCustomerIDFromDateToDate(int AgentID, int CustomerID, DateTime FromDate, DateTime ToDate)
         {
             using (var dbe = new inventorymanagementEntities())

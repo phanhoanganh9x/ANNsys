@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=2118"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=2119"></script>
     <script src="/App_Themes/Ann/js/search-product.js?v=04052019"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -350,6 +350,24 @@
                         <div class="modal-footer">
                             <button id="closeOrderInfo" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
                             <button id="updateOrderInfo" type="button" class="btn btn-primary" onclick="insertOrder()">Tạo đơn hàng</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Check Order Old Modal -->
+            <div class="modal fade" id="orderOldModal" role="dialog" data-backdrop="false">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Thông báo khách hàng còn các đơn chưa xử lý</h4>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="closeOrderOld" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                            <button id="openOrder" type="button" class="btn btn-primary">Xem đơn hàng cũ</button>
+                            <button id="openOrderReturn" type="button" class="btn btn-primary">Xem đơn hàng đổi trả</button>
                         </div>
                     </div>
                 </div>
@@ -1561,6 +1579,51 @@
                     //Browser has blocked it
                     swal("Thông báo", "Vui lòng cho phép cửa sổ bật lên cho trang web này", "error");
                 }
+            };
+
+            function checkOrderOld(customerID) {
+                $.ajax({
+                    url: "/them-moi-don-hang.aspx/checkOrderOld",
+                    type: "POST",
+                    data: JSON.stringify({ 'customerID': customerID, 'status': 1 }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        let data = JSON.parse(response.d);
+                        if (data) {
+                            let openOrderDOM = $("#openOrder");
+                            let openOrderReturnDOM = $("#openOrderReturn");
+
+                            // Thông tin đơn hàng cũ chưa xử lý
+                            if (data.numberOrder)
+                            {
+                                openOrderDOM.removeAttr('style');
+                                openOrderDOM.attr('onClick', "window.open('/danh-sach-don-hang?&textsearch=" + data.phone + "&excutestatus=1', '_blank')")
+                            }
+                            else
+                            {
+                                openOrderDOM.removeAttr('onClick');
+                                openOrderDOM.attr('style', 'display: none');
+                            }
+
+                            // Thông tin đơn hàng đổ trả chưa trừ tiền
+                            if (data.numberOrderReturn) {
+                                openOrderReturnDOM.removeAttr('style');
+                                openOrderReturnDOM.attr('onClick', "window.open('/danh-sach-don-tra-hang?&textsearch=" + data.phone + "&status=1', '_blank')")
+                            }
+                            else
+                            {
+                                openOrderReturnDOM.removeAttr('onClick');
+                                openOrderReturnDOM.attr('style', 'display: none');
+                            }
+
+                            $("#orderOldModal").modal({ show: 'true', backdrop: 'static', keyboard: 'false' })
+                        }
+                    },
+                    error: function (err) {
+                        swal("Thông báo", "Đã có vần đề trong việc check đơn hàng cũ", "error");
+                    }
+                });
             };
         </script>
     </telerik:RadScriptBlock>

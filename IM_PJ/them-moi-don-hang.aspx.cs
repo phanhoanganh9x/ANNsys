@@ -424,5 +424,35 @@ namespace IM_PJ
         {
             return OrderController.getLastJSON(customerID);
         }
+
+        /// <summary>
+        /// Lấy thông tin của khách hàng về số lượng order đang xử lý
+        /// và số lượng đơn hàng đổi trả chưa trừ tiền
+        /// </summary>
+        /// <param name="customerID">Mã khách hàng</param>
+        /// <param name="status">1: Đơn hàng đang xử lý | Đơn hàng chưa trừ tiền</param>
+        /// <returns></returns>
+        [WebMethod]
+        public static string checkOrderOld(int customerID, int status = 1)
+        {
+            var customer = CustomerController.GetByID(customerID);
+            var order = OrderController.GetByCustomerID(customerID, status);
+            var orderReturn = RefundGoodController.GetByCustomerID(customerID, status);
+            var serializer = new JavaScriptSerializer();
+
+            if (customer != null)
+            {
+                return serializer.Serialize(new
+                {
+                    phone = customer.CustomerPhone,
+                    numberOrder = order.Count,
+                    numberOrderReturn = orderReturn.Count
+                });
+            }
+            else
+            {
+                return "null";
+            }
+        }
     }
 }

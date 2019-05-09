@@ -1473,6 +1473,19 @@ namespace IM_PJ.Controllers
             }
         }
 
+        public static List<tbl_Order> GetByCustomerID(int ID, int ExcuteStatus)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var las = con.tbl_Order
+                    .Where(x => x.CustomerID == ID)
+                    .Where(x => x.ExcuteStatus == ExcuteStatus)
+                    .OrderByDescending(x => x.ID)
+                    .ToList();
+                return las;
+            }
+        }
+
         public static List<tbl_Order> Report(string fromdate, string todate)
         {
             using (var db = new inventorymanagementEntities())
