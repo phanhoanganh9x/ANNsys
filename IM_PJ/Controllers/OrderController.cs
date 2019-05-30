@@ -3,6 +3,7 @@ using NHST.Bussiness;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -355,449 +356,877 @@ namespace IM_PJ.Controllers
             }
         }
 
+        private static void CalDate(string strDate, ref DateTime fromdate, ref DateTime todate)
+        {
+            switch (strDate)
+            {
+                case "today":
+                    fromdate = DateTime.Today;
+                    todate = DateTime.Now;
+                    break;
+                case "yesterday":
+                    fromdate = fromdate.AddDays(-1);
+                    todate = DateTime.Today;
+                    break;
+                case "beforeyesterday":
+                    fromdate = DateTime.Today.AddDays(-2);
+                    todate = DateTime.Today.AddDays(-1);
+                    break;
+                case "week":
+                    int days = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)DateTime.Today.DayOfWeek;
+                    fromdate = fromdate.AddDays(-days + 1);
+                    todate = DateTime.Now;
+                    break;
+                case "thismonth":
+                    fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
+                    todate = DateTime.Now;
+                    break;
+                case "lastmonth":
+                    var thismonth = new DateTime(fromdate.Year, fromdate.Month, 1);
+                    fromdate = thismonth.AddMonths(-1);
+                    todate = thismonth;
+                    break;
+                case "beforelastmonth":
+                    thismonth = new DateTime(fromdate.Year, fromdate.Month, 1);
+                    fromdate = thismonth.AddMonths(-2);
+                    todate = thismonth.AddMonths(-1);
+                    break;
+                case "7days":
+                    fromdate = fromdate.AddDays(-6);
+                    todate = DateTime.Now;
+                    break;
+                case "30days":
+                    fromdate = fromdate.AddDays(-29);
+                    todate = DateTime.Now;
+                    break;
+            }
+        }
+
         public static List<OrderList> Filter(string TextSearch, int OrderType, int ExcuteStatus, int PaymentStatus, int TransferStatus, int PaymentType, int ShippingType, string Discount, string OtherFee, string CreatedBy, string CreatedDate, string TransferDoneAt, int TransportCompany, string DeliveryStartAt)
         {
-            var list = new List<OrderList>();
-            var sqlMain = new StringBuilder();
-            var sqlSub = new StringBuilder();
+            using (var con = new inventorymanagementEntities())
+            {
+                var orders = con.tbl_Order
+                        .Select(x => new
+                        {
+                            ID = x.ID,
+                            CustomerID = x.CustomerID,
+                            CustomerNewPhone = x.CustomerNewPhone,
+                            OrderType = x.OrderType,
+                            PaymentType = x.PaymentType,
+                            PaymentStatus = x.PaymentStatus,
+                            ShippingType = x.ShippingType,
+                            ShippingCode = x.ShippingCode,
+                            TransportCompanyID = x.TransportCompanyID,
+                            ExcuteStatus = x.ExcuteStatus,
+                            DateDone = x.DateDone,
+                            CreatedDate = x.CreatedDate,
+                            TotalDiscount = x.TotalDiscount,
+                            CreatedBy = x.CreatedBy,
+                            OrderNote = x.OrderNote,
+                            RefundsGoodsID = x.RefundsGoodsID,
+                            // OrderDetail
+                            SKU = String.Empty,
+                            // Customer
+                            CustomerName = String.Empty,
+                            Nick = String.Empty,
+                            CustomerPhone = String.Empty,
+                            // Bank Transfers
+                            TransStatus = 0,
+                            TransDoneAt = DateTime.Now,
+                            // Delivery
+                            DelStartAt = DateTime.Now
+                        })
+                        .Where(x => 1 == 1);
 
-            #region Get data after filtered
-            #region SELECT
-            sqlSub.AppendLine("SELECT");
-            sqlSub.AppendLine("    Ord.ID");
-            sqlSub.AppendLine(",   SUM(ISNULL(OrdDetail.Quantity, 0)) AS Quantity");
-            #endregion
-            #region FROM
-            sqlSub.AppendLine("FROM tbl_Order AS Ord");
-            sqlSub.AppendLine("INNER JOIN tbl_OrderDetail AS OrdDetail");
-            sqlSub.AppendLine("ON    Ord.ID = OrdDetail.OrderID");
-            sqlSub.AppendLine("INNER JOIN tbl_Customer AS Customer");
-            sqlSub.AppendLine("ON    Ord.CustomerID = Customer.ID");
-            sqlSub.AppendLine("LEFT JOIN BankTransfer AS Transfer");
-            sqlSub.AppendLine("ON    Ord.ID = Transfer.OrderID");
-            sqlSub.AppendLine("LEFT JOIN Delivery AS Del");
-            sqlSub.AppendLine("ON    Ord.ID = Del.OrderID");
-            #endregion
-            #region filter by condition
-            sqlSub.AppendLine("WHERE 1 = 1");
-            // Filter Customer name
-            if (TextSearch != "")
-            {
-                string search = Regex.Replace(TextSearch.Trim(), @"[^0-9a-zA-Z\s_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]+", "");
-                string TextSearchName = '"' + search + '"';
-                sqlSub.AppendLine(String.Format("    AND ( (convert(nvarchar, Ord.ID) LIKE '{0}') OR CONTAINS(Ord.CustomerName, '{1}') OR CONTAINS(Customer.Nick, '{1}') OR (Ord.CustomerPhone = '{0}') OR (Ord.CustomerNewPhone = '{0}') OR (Ord.ShippingCode = '{0}') OR (OrdDetail.SKU LIKE '{0}%') OR (Ord.OrderNote LIKE '%{0}%'))", search, TextSearchName));
-            }
-            // Filter Order Type
-            if (OrderType > 0)
-            {
-                sqlSub.AppendLine(String.Format("    AND Ord.OrderType = {0}", OrderType));
-            }
-            // Filter Payment Type
-            if (PaymentType > 0)
-            {
-                sqlSub.AppendLine(String.Format("    AND Ord.PaymentType = {0}", PaymentType));
-            }
-            // Filter Payment Status
-            if (PaymentStatus > 0)
-            {
-                sqlSub.AppendLine(String.Format("    AND Ord.PaymentStatus = {0}", PaymentStatus));
-            }
-            // Filter Excute Status
-            if (ExcuteStatus > 0)
-            {
-                sqlSub.AppendLine(String.Format("    AND Ord.ExcuteStatus = {0}", ExcuteStatus));
-            }
-            // Filter Shipping Type
-            if (ShippingType > 0)
-            {
-                sqlSub.AppendLine(String.Format("    AND Ord.ShippingType = {0}", ShippingType));
-            }
-            // Filter Delivery Start At
-            if (DeliveryStartAt != "")
-            {
-                DateTime fromdate = DateTime.Today;
-                DateTime todate = DateTime.Now;
-                switch (DeliveryStartAt)
+                // Filter Customer name
+                if (!String.IsNullOrEmpty(TextSearch))
                 {
-                    case "today":
-                        fromdate = DateTime.Today;
-                        todate = DateTime.Now;
-                        break;
-                    case "yesterday":
-                        fromdate = fromdate.AddDays(-1);
-                        todate = DateTime.Today;
-                        break;
-                    case "beforeyesterday":
-                        fromdate = DateTime.Today.AddDays(-2);
-                        todate = DateTime.Today.AddDays(-1);
-                        break;
-                    case "week":
-                        int days = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)DateTime.Today.DayOfWeek;
-                        fromdate = fromdate.AddDays(-days + 1);
-                        todate = DateTime.Now;
-                        break;
-                    case "thismonth":
-                        fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
-                        todate = DateTime.Now;
-                        break;
-                    case "lastmonth":
-                        var thismonth = new DateTime(fromdate.Year, fromdate.Month, 1);
-                        fromdate = thismonth.AddMonths(-1);
-                        todate = thismonth;
-                        break;
-                    case "beforelastmonth":
-                        thismonth = new DateTime(fromdate.Year, fromdate.Month, 1);
-                        fromdate = thismonth.AddMonths(-2);
-                        todate = thismonth.AddMonths(-1);
-                        break;
-                    case "7days":
-                        fromdate = fromdate.AddDays(-6);
-                        todate = DateTime.Now;
-                        break;
-                    case "30days":
-                        fromdate = fromdate.AddDays(-29);
-                        todate = DateTime.Now;
-                        break;
+                    string search = Regex.Replace(TextSearch.Trim(), @"[^0-9a-zA-Z\s_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]+", "");
+                    orders = orders
+                        .Join(
+                            con.tbl_OrderDetail,
+                            h => h.ID,
+                            d => d.OrderID,
+                            (h, d) => new
+                            {
+                                ID = h.ID,
+                                CustomerID = h.CustomerID,
+                                CustomerNewPhone = h.CustomerNewPhone,
+                                OrderType = h.OrderType,
+                                PaymentType = h.PaymentType,
+                                PaymentStatus = h.PaymentStatus,
+                                ShippingType = h.ShippingType,
+                                ShippingCode = h.ShippingCode,
+                                TransportCompanyID = h.TransportCompanyID,
+                                ExcuteStatus = h.ExcuteStatus,
+                                DateDone = h.DateDone,
+                                CreatedDate = h.CreatedDate,
+                                TotalDiscount = h.TotalDiscount,
+                                CreatedBy = h.CreatedBy,
+                                OrderNote = h.OrderNote,
+                                RefundsGoodsID = h.RefundsGoodsID,
+                            // OrderDetail
+                            SKU = d.SKU,
+                            // Customer
+                            CustomerName = String.Empty,
+                                Nick = String.Empty,
+                                CustomerPhone = String.Empty,
+                            // Bank Transfers
+                            TransStatus = 0,
+                                TransDoneAt = DateTime.Now,
+                            // Delivery
+                            DelStartAt = DateTime.Now
+                            }
+                        )
+                        .Join(
+                            con.tbl_Customer,
+                            h => h.CustomerID,
+                            c => c.ID,
+                            (h, c) => new
+                            {
+                                ID = h.ID,
+                                CustomerID = h.CustomerID,
+                                CustomerNewPhone = h.CustomerNewPhone,
+                                OrderType = h.OrderType,
+                                PaymentType = h.PaymentType,
+                                PaymentStatus = h.PaymentStatus,
+                                ShippingType = h.ShippingType,
+                                ShippingCode = h.ShippingCode,
+                                TransportCompanyID = h.TransportCompanyID,
+                                ExcuteStatus = h.ExcuteStatus,
+                                DateDone = h.DateDone,
+                                CreatedDate = h.CreatedDate,
+                                TotalDiscount = h.TotalDiscount,
+                                CreatedBy = h.CreatedBy,
+                                OrderNote = h.OrderNote,
+                                RefundsGoodsID = h.RefundsGoodsID,
+                            // OrderDetail
+                            SKU = h.SKU,
+                            // Customer
+                            CustomerName = c.CustomerName,
+                                Nick = c.Nick,
+                                CustomerPhone = c.CustomerPhone,
+                            // Bank Transfers
+                            TransStatus = 0,
+                                TransDoneAt = DateTime.Now,
+                            // Delivery
+                            DelStartAt = DateTime.Now
+                            }
+                        )
+                        .Where(x =>
+                            x.ID.ToString() == search ||
+                            x.CustomerName.Contains(search) ||
+                            x.Nick.Contains(search) ||
+                            x.CustomerPhone == search ||
+                            x.CustomerNewPhone == search ||
+                            x.ShippingCode == search ||
+                            x.OrderNote.Contains(search) ||
+                            x.SKU.StartsWith(search)
+                        );
                 }
-                sqlSub.AppendLine(String.Format("    AND    CONVERT(datetime, Del.StartAt, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromdate.ToString(), todate.ToString()));
-            }
-            // Filter Transport Company
-            if (TransportCompany > 0)
-            {
-                sqlSub.AppendLine(String.Format("    AND Ord.TransportCompanyID = {0}", TransportCompany));
-            }
-            // Filter Transfer Status
-            if (TransferStatus > 0)
-            {
-                if (TransferStatus == 1)
+                // Filter Order Type
+                if (OrderType > 0)
                 {
-                    sqlSub.AppendLine(String.Format("    AND Transfer.Status = 1"));
+                    orders = orders.Where(x =>
+                        x.OrderType == OrderType
+                    );
                 }
-                else if (TransferStatus == 2)
+                // Filter Payment Type
+                if (PaymentType > 0)
                 {
-                    sqlSub.AppendLine(String.Format("    AND Transfer.Status IS NULL"));
+                    orders = orders.Where(x =>
+                        x.PaymentType == PaymentType
+                    );
                 }
-            }
-            // Filter Transfer Done At
-            if (TransferDoneAt != "")
-            {
-                DateTime fromdate = DateTime.Today;
-                DateTime todate = DateTime.Now;
-                switch (TransferDoneAt)
+                // Filter Payment Status
+                if (PaymentStatus > 0)
                 {
-                    case "today":
-                        fromdate = DateTime.Today;
-                        todate = DateTime.Now;
-                        break;
-                    case "yesterday":
-                        fromdate = fromdate.AddDays(-1);
-                        todate = DateTime.Today;
-                        break;
-                    case "beforeyesterday":
-                        fromdate = DateTime.Today.AddDays(-2);
-                        todate = DateTime.Today.AddDays(-1);
-                        break;
-                    case "week":
-                        int days = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)DateTime.Today.DayOfWeek;
-                        fromdate = fromdate.AddDays(-days + 1);
-                        todate = DateTime.Now;
-                        break;
-                    case "thismonth":
-                        fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
-                        todate = DateTime.Now;
-                        break;
-                    case "lastmonth":
-                        var thismonth = new DateTime(fromdate.Year, fromdate.Month, 1);
-                        fromdate = thismonth.AddMonths(-1);
-                        todate = thismonth;
-                        break;
-                    case "beforelastmonth":
-                        thismonth = new DateTime(fromdate.Year, fromdate.Month, 1);
-                        fromdate = thismonth.AddMonths(-2);
-                        todate = thismonth.AddMonths(-1);
-                        break;
-                    case "7days":
-                        fromdate = fromdate.AddDays(-6);
-                        todate = DateTime.Now;
-                        break;
-                    case "30days":
-                        fromdate = fromdate.AddDays(-29);
-                        todate = DateTime.Now;
-                        break;
+                    orders = orders.Where(x =>
+                        x.PaymentStatus == PaymentStatus
+                    );
                 }
-                sqlSub.AppendLine(String.Format("    AND    CONVERT(datetime, Transfer.DoneAt, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromdate.ToString(), todate.ToString()));
-            }
-            // Filter Discount
-            if (Discount != "")
-            {
-                if (Discount == "yes")
+                // Filter Excute Status
+                if (ExcuteStatus > 0)
                 {
-                    sqlSub.AppendLine(String.Format("    AND Ord.TotalDiscount > 0"));
+                    orders = orders.Where(x =>
+                        x.ExcuteStatus == ExcuteStatus
+                    );
                 }
-                else
+                // Filter Shipping Type
+                if (ShippingType > 0)
                 {
-                    sqlSub.AppendLine(String.Format("    AND Ord.TotalDiscount = 0"));
+                    orders = orders.Where(x =>
+                       x.ShippingType == ShippingType
+                    );
                 }
-            }
-            // Filter Created By
-            if (CreatedBy != "")
-            {
-                sqlSub.AppendLine(String.Format("    AND Ord.CreatedBy = '{0}'", CreatedBy));
-            }
-            // Filter Created Date
-            if (CreatedDate != "")
-            {
-                string column = "CreatedDate";
-                if (ExcuteStatus == 2)
+                // Filter Delivery Start At
+                if (!String.IsNullOrEmpty(DeliveryStartAt))
                 {
-                    column = "DateDone";
-                }
-                DateTime fromdate = DateTime.Today;
-                DateTime todate = DateTime.Now;
-                switch (CreatedDate)
-                {
-                    case "today":
-                        fromdate = DateTime.Today;
-                        todate = DateTime.Now;
-                        break;
-                    case "yesterday":
-                        fromdate = fromdate.AddDays(-1);
-                        todate = DateTime.Today;
-                        break;
-                    case "beforeyesterday":
-                        fromdate = DateTime.Today.AddDays(-2);
-                        todate = DateTime.Today.AddDays(-1);
-                        break;
-                    case "week":
-                        int days = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)DateTime.Today.DayOfWeek;
-                        fromdate = fromdate.AddDays(-days + 1);
-                        todate = DateTime.Now;
-                        break;
-                    case "thismonth":
-                        fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
-                        todate = DateTime.Now;
-                        break;
-                    case "lastmonth":
-                        var thismonth = new DateTime(fromdate.Year, fromdate.Month, 1);
-                        fromdate = thismonth.AddMonths(-1);
-                        todate = thismonth;
-                        break;
-                    case "beforelastmonth":
-                        thismonth = new DateTime(fromdate.Year, fromdate.Month, 1);
-                        fromdate = thismonth.AddMonths(-2);
-                        todate = thismonth.AddMonths(-1);
-                        break;
-                    case "7days":
-                        fromdate = fromdate.AddDays(-6);
-                        todate = DateTime.Now;
-                        break;
-                    case "30days":
-                        fromdate = fromdate.AddDays(-29);
-                        todate = DateTime.Now;
-                        break;
-                }
-                sqlSub.AppendLine(String.Format("    AND    CONVERT(datetime, Ord." + column + ", 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromdate.ToString(), todate.ToString()));
-            }
-            #endregion
-            #region GROUP BY
-            sqlSub.AppendLine("GROUP BY");
-            sqlSub.AppendLine("    Ord.ID");
-            #endregion
-            #endregion
+                    DateTime fromdate = DateTime.Today;
+                    DateTime todate = DateTime.Now;
+                    CalDate(DeliveryStartAt, ref fromdate, ref todate);
 
-            #region SQL Main
-            #region SELECT
-            sqlMain.AppendLine("SELECT");
-            sqlMain.AppendLine("    Ord.ID");
-            sqlMain.AppendLine(",   Ord.CustomerName");
-            sqlMain.AppendLine(",   Ord.CustomerPhone");
-            sqlMain.AppendLine(",   Customer.Nick");
-            sqlMain.AppendLine(",   Ord.CustomerID");
-            sqlMain.AppendLine(",   Ord.OrderType");
-            sqlMain.AppendLine(",   Ord.ExcuteStatus");
-            sqlMain.AppendLine(",   Ord.PaymentStatus");
-            sqlMain.AppendLine(",   Ord.PaymentType");
-            sqlMain.AppendLine(",   Ord.ShippingType");
-            sqlMain.AppendLine(",   Ord.TotalPrice");
-            sqlMain.AppendLine(",   Ord.TotalDiscount");
-            sqlMain.AppendLine(",   ISNULL(Ref.TotalPrice, 0) AS TotalRefund");
-            sqlMain.AppendLine(",   Ord.FeeShipping");
-            sqlMain.AppendLine(",   FeeSub.OtherFeeName");
-            sqlMain.AppendLine(",   FeeSub.OtherFeeValue");
-            sqlMain.AppendLine(",   Ord.CreatedBy");
-            sqlMain.AppendLine(",   Ord.CreatedDate");
-            sqlMain.AppendLine(",   Ord.DateDone");
-            sqlMain.AppendLine(",   Ord.OrderNote");
-            sqlMain.AppendLine(",   Ord.RefundsGoodsID");
-            sqlMain.AppendLine(",   Fil.Quantity");
-            sqlMain.AppendLine(",   Ord.ShippingCode");
-            sqlMain.AppendLine(",   Ord.TransportCompanyID");
-            sqlMain.AppendLine(",   Ord.TransportCompanySubID");
-            sqlMain.AppendLine(",   Ord.OrderNote");
-            sqlMain.AppendLine(",   Ord.PostalDeliveryType");
-            sqlMain.AppendLine(",   Transfer.CusBankID");
-            sqlMain.AppendLine(",   CusBank.BankName AS CusBankName");
-            sqlMain.AppendLine(",   Transfer.AccBankID");
-            sqlMain.AppendLine(",   AccBank.BankName AS AccBankName");
-            sqlMain.AppendLine(",   ISNULL(Transfer.Money, 0) AS MoneyReceive");
-            sqlMain.AppendLine(",   ISNULL(Transfer.Status, 2) AS TransferStatus");
-            sqlMain.AppendLine(",   (CASE ISNULL(Transfer.Status, 2) WHEN 1 THEN N'Đã nhận tiền' ELSE N'Chưa nhận tiền' END) AS StatusName");
-            sqlMain.AppendLine(",   Transfer.DoneAt");
-            sqlMain.AppendLine(",   Transfer.Note AS TransferNote");
-            sqlMain.AppendLine(",   Delivery.StartAt AS DeliveryDate");
-            sqlMain.AppendLine(",   ISNULL(Delivery.Status, 2) AS DeliveryStatus"); // Case 2: Chưa giao
-            sqlMain.AppendLine(",   Delivery.ShipperID");
-            sqlMain.AppendLine(",   Delivery.COD AS CostOfDelivery");
-            sqlMain.AppendLine(",   Delivery.COO AS CollectionOfOrder");
-            sqlMain.AppendLine(",   Delivery.ShipNote");
-            sqlMain.AppendLine(",   Delivery.Image AS InvoiceImage");
-            sqlMain.AppendLine(",   Delivery.ShipperName");
-            #endregion
-            #region FROM
-            sqlMain.AppendLine("FROM tbl_Order AS Ord");
-            sqlMain.AppendLine("INNER JOIN (");
-            sqlMain.AppendLine(sqlSub.ToString());
-            sqlMain.AppendLine(") AS Fil");
-            sqlMain.AppendLine("ON    Ord.ID = Fil.ID");
-            sqlMain.AppendLine("LEFT JOIN tbl_RefundGoods AS Ref");
-            sqlMain.AppendLine("ON    Ord.RefundsGoodsID = Ref.ID");
-            sqlMain.AppendLine("INNER JOIN tbl_Customer AS Customer");
-            sqlMain.AppendLine("ON    Ord.CustomerID = Customer.ID");
-            sqlMain.AppendLine("LEFT JOIN BankTransfer AS Transfer");
-            sqlMain.AppendLine("ON    Ord.ID = Transfer.OrderID");
-            sqlMain.AppendLine("LEFT JOIN Bank AS CusBank");
-            sqlMain.AppendLine("ON    Transfer.CusBankID = CusBank.ID");
-            sqlMain.AppendLine("LEFT JOIN BankAccount AS AccBank");
-            sqlMain.AppendLine("ON    Transfer.AccBankID = AccBank.ID");
-            sqlMain.AppendLine("LEFT JOIN (");
-            sqlMain.AppendLine("    SELECT");
-            sqlMain.AppendLine("        DEL.OrderID");
-            sqlMain.AppendLine("    ,   DEL.StartAt");
-            sqlMain.AppendLine("    ,   DEL.Status");
-            sqlMain.AppendLine("    ,   DEL.ShipperID");
-            sqlMain.AppendLine("    ,   DEL.COD");
-            sqlMain.AppendLine("    ,   DEL.COO");
-            sqlMain.AppendLine("    ,   DEL.ShipNote");
-            sqlMain.AppendLine("    ,   DEL.Image");
-            sqlMain.AppendLine("    ,   SHI.Name AS ShipperName");
-            sqlMain.AppendLine("    FROM Delivery AS DEL");
-            sqlMain.AppendLine("    INNER JOIN Shipper AS SHI");
-            sqlMain.AppendLine("    ON DEL.ShipperID = SHI.ID");
-            sqlMain.AppendLine(") AS Delivery");
-            sqlMain.AppendLine("ON    Ord.ID = Delivery.OrderID");
-            sqlMain.AppendLine("LEFT JOIN (");
-            sqlMain.AppendLine("    SELECT");
-            sqlMain.AppendLine("        Fee.OrderID");
-            sqlMain.AppendLine("    ,   (CASE WHEN COUNT(Fee.OrderID) = 1 THEN MAX(FeeType.Name) ELSE N'Nhiều phí khác' END) AS OtherFeeName");
-            sqlMain.AppendLine("    ,   SUM(ISNULL(Fee.FeePrice, 0)) AS OtherFeeValue");
-            sqlMain.AppendLine("    FROM Fee");
-            sqlMain.AppendLine("    INNER JOIN FeeType");
-            sqlMain.AppendLine("    ON    Fee.FeeTypeID = FeeType.ID");
-            sqlMain.AppendLine("    GROUP BY Fee.OrderID");
-            sqlMain.AppendLine(") AS FeeSub");
-            sqlMain.AppendLine("ON    Ord.ID = FeeSub.OrderID");
-            #endregion
-            sqlMain.AppendLine("    WHERE 1 = 1");
-            #region WHERE
-            // Filter Other Fee
-            if (OtherFee != "")
-            {
-                if (OtherFee == "yes")
-                {
-                    sqlMain.AppendLine(String.Format("    AND ISNULL(FeeSub.OtherFeeValue, 0) != 0"));
+                    orders = orders
+                        .GroupJoin(
+                            con.Deliveries,
+                            h => h.ID,
+                            d => d.OrderID,
+                            (h, d) => new { h, d }
+                        )
+                        .SelectMany(
+                            x => x.d.DefaultIfEmpty(),
+                            (parent, child) => new
+                            {
+                                ID = parent.h.ID,
+                                CustomerID = parent.h.CustomerID,
+                                CustomerNewPhone = parent.h.CustomerNewPhone,
+                                OrderType = parent.h.OrderType,
+                                PaymentType = parent.h.PaymentType,
+                                PaymentStatus = parent.h.PaymentStatus,
+                                ShippingType = parent.h.ShippingType,
+                                ShippingCode = parent.h.ShippingCode,
+                                TransportCompanyID = parent.h.TransportCompanyID,
+                                ExcuteStatus = parent.h.ExcuteStatus,
+                                DateDone = parent.h.DateDone,
+                                CreatedDate = parent.h.CreatedDate,
+                                TotalDiscount = parent.h.TotalDiscount,
+                                CreatedBy = parent.h.CreatedBy,
+                                OrderNote = parent.h.OrderNote,
+                                RefundsGoodsID = parent.h.RefundsGoodsID,
+                            // OrderDetail
+                            SKU = String.Empty,
+                            // Customer
+                            CustomerName = String.Empty,
+                                Nick = String.Empty,
+                                CustomerPhone = String.Empty,
+                            // Bank Transfers
+                            TransStatus = 0,
+                                TransDoneAt = DateTime.Now,
+                            // Delivery
+                            DelStartAt = child.StartAt
+                            }
+                        )
+                        .Where(x =>
+                            x.DelStartAt >= fromdate &&
+                            x.DelStartAt <= todate
+                        );
                 }
-                else
+                // Filter Transport Company
+                if (TransportCompany > 0)
                 {
-                    sqlMain.AppendLine(String.Format("    AND ISNULL(FeeSub.OtherFeeValue, 0) = 0"));
+                    orders = orders.Where(x =>
+                       x.TransportCompanyID == TransportCompany
+                    );
                 }
+                // Filter Transfer Status or DoneAt
+                if (TransferStatus > 0 || !String.IsNullOrEmpty(TransferDoneAt))
+                {
+                    DateTime fromdate = DateTime.Today;
+                    DateTime todate = DateTime.Now;
+                    CalDate(TransferDoneAt, ref fromdate, ref todate);
+
+                    orders = orders
+                        .GroupJoin(
+                            con.BankTransfers,
+                            h => h.ID,
+                            b => b.OrderID,
+                            (h, b) => new { h, b }
+                        )
+                        .SelectMany(
+                            x => x.b.DefaultIfEmpty(),
+                            (parent, child) => new
+                            {
+                                ID = parent.h.ID,
+                                CustomerID = parent.h.CustomerID,
+                                CustomerNewPhone = parent.h.CustomerNewPhone,
+                                OrderType = parent.h.OrderType,
+                                PaymentType = parent.h.PaymentType,
+                                PaymentStatus = parent.h.PaymentStatus,
+                                ShippingType = parent.h.ShippingType,
+                                ShippingCode = parent.h.ShippingCode,
+                                TransportCompanyID = parent.h.TransportCompanyID,
+                                ExcuteStatus = parent.h.ExcuteStatus,
+                                DateDone = parent.h.DateDone,
+                                CreatedDate = parent.h.CreatedDate,
+                                TotalDiscount = parent.h.TotalDiscount,
+                                CreatedBy = parent.h.CreatedBy,
+                                OrderNote = parent.h.OrderNote,
+                                RefundsGoodsID = parent.h.RefundsGoodsID,
+                            // OrderDetail
+                            SKU = String.Empty,
+                            // Customer
+                            CustomerName = String.Empty,
+                                Nick = String.Empty,
+                                CustomerPhone = String.Empty,
+                            // Bank Transfers
+                            TransStatus = child.Status,
+                                TransDoneAt = child.DoneAt,
+                            // Delivery
+                            DelStartAt = DateTime.Now
+                            }
+                        )
+                        .Where(x => 1 == 1);
+
+                    if (TransferStatus == 1)
+                    {
+                        orders = orders.Where(x =>
+                            x.TransStatus == 1
+                        );
+                    }
+                    else if (TransferStatus == 2)
+                    {
+                        orders = orders.Where(x =>
+                            x.TransStatus != 1
+                        );
+                    }
+
+                    if (!String.IsNullOrEmpty(TransferDoneAt))
+                    {
+
+                        orders = orders.Where(x =>
+                            x.TransDoneAt >= fromdate &&
+                            x.TransDoneAt <= todate
+                        );
+                    }
+                }
+
+                // Filter Discount
+                if (!String.IsNullOrEmpty(Discount))
+                {
+                    if (Discount.Equals("yes"))
+                    {
+                        orders = orders.Where(x =>
+                           x.TotalDiscount > 0
+                        );
+                    }
+                    else
+                    {
+                        orders = orders.Where(x =>
+                           x.TotalDiscount == 0
+                        );
+                    }
+                }
+
+                // Filter Created By
+                if (!String.IsNullOrEmpty(CreatedBy))
+                {
+                    orders = orders.Where(x =>
+                        x.CreatedBy == CreatedBy
+                    );
+                }
+
+                // Filter Created Date
+                if (!String.IsNullOrEmpty(CreatedDate))
+                {
+                    DateTime fromdate = DateTime.Today;
+                    DateTime todate = DateTime.Now;
+                    CalDate(CreatedDate, ref fromdate, ref todate);
+
+                    if (ExcuteStatus == 2)
+                    {
+                        orders = orders.Where(x =>
+                            x.DateDone >= fromdate &&
+                            x.DateDone <= todate
+                        );
+                    }
+                    else
+                    {
+                        orders = orders.Where(x =>
+                            x.CreatedDate >= fromdate &&
+                            x.CreatedDate <= todate
+                        );
+                    }
+                }
+
+                // Get info main
+                var header = orders
+                    .Join(
+                        con.tbl_Order,
+                        h => h.ID,
+                        o => o.ID,
+                        (h, o) => o
+                    )
+                    .OrderByDescending(o => o.ID)
+                    .ToList();
+
+                // Get info quantiy
+                var body = orders
+                    .Join(
+                        con.tbl_OrderDetail,
+                        h => h.ID,
+                        od => od.ID,
+                        (h, od) => new
+                        {
+                            OrderID = h.ID,
+                            Quantity = od.Quantity.HasValue ? od.Quantity.Value : 0
+                        }
+                    )
+                    .GroupBy(x => x.OrderID)
+                    .Select(g => new
+                    {
+                        OrderID = g.Key,
+                        Quantity = g.Sum(x => x.Quantity)
+                    })
+                    .OrderByDescending(o => o.OrderID)
+                    .ToList();
+
+                // Get info refunds
+                var refunds = orders.Where(x => x.RefundsGoodsID.HasValue)
+                    .Join(
+                        con.tbl_RefundGoods,
+                        h => h.RefundsGoodsID.Value,
+                        r => r.ID,
+                        (h, r) => new
+                        {
+                            OrderID = h.ID,
+                            RefundsGoodsID = h.RefundsGoodsID,
+                            TotalPrice = r.TotalPrice
+                        });
+
+                // Get info customer
+                var customer = orders
+                    .Join(
+                        con.tbl_Customer,
+                        h => h.CustomerID,
+                        c => c.ID,
+                        (h, c) => new
+                        {
+                            OrderID = h.ID,
+                            CustomerID = c.ID,
+                            CustomerName = c.CustomerName,
+                            Nick = c.Nick,
+                            CustomerPhone = c.CustomerPhone
+                        })
+                    .OrderByDescending(o => o.OrderID)
+                    .ToList();
+
+                // Get info fee
+                var fee = orders
+                    .Join(
+                        con.Fees,
+                        h => h.ID,
+                        f => f.OrderID,
+                        (h, f) => new
+                        {
+                            OrderID = h.ID,
+                            FeeTypeID = f.FeeTypeID,
+                            FeePrice = f.FeePrice
+                        }
+                    )
+                    .Join(
+                        con.FeeTypes,
+                        d => d.FeeTypeID,
+                        t => t.ID,
+                        (d, t) => new
+                        {
+                            OrderID = d.OrderID,
+                            FeeTypeName = t.Name,
+                            FeePrice = d.FeePrice
+                        }
+                    )
+                    .GroupBy(x => x.OrderID)
+                    .Select(g => new
+                    {
+                        OrderID = g.Key,
+                        OtherFeeName = g.Count() > 1 ? "Nhiều phí khác" : g.Max(x => x.FeeTypeName),
+                        OtherFeeValue = g.Sum(x => x.FeePrice)
+                    })
+                    .OrderByDescending(o => o.OrderID)
+                    .ToList();
+
+                // Get info transfer bank
+                var trans = orders.Where(x => x.PaymentType == 2)
+                    .Join(
+                        con.BankTransfers,
+                        h => h.ID,
+                        t => t.OrderID,
+                        (h, t) => new
+                        {
+                            OrderID = h.ID,
+                            CusBankID = t.CusBankID,
+                            AccBankID = t.AccBankID,
+                            Money = t.Money,
+                            Status = t.Status,
+                            DoneAt = t.DoneAt,
+                            Note = t.Note
+                        }
+                    )
+                    .Join(
+                        con.Banks,
+                        h => h.CusBankID,
+                        c => c.ID,
+                        (h, c) => new
+                        {
+                            OrderID = h.OrderID,
+                            CusBankID = h.CusBankID,
+                            AccBankID = h.AccBankID,
+                            Money = h.Money,
+                            Status = h.Status,
+                            DoneAt = h.DoneAt,
+                            Note = h.Note,
+                        // Bank
+                        CusBankName = c.BankName
+                        }
+                    )
+                    .Join(
+                        con.BankAccounts,
+                        h => h.AccBankID,
+                        a => a.ID,
+                        (h, a) => new
+                        {
+                            OrderID = h.OrderID,
+                            CusBankID = h.CusBankID,
+                            AccBankID = h.AccBankID,
+                            Money = h.Money,
+                            Status = h.Status,
+                            DoneAt = h.DoneAt,
+                            Note = h.Note,
+                        // Bank
+                        CusBankName = h.CusBankName,
+                        // Bank Account
+                        AccBankName = a.BankName
+                        }
+                    )
+                    .OrderByDescending(o => o.OrderID)
+                    .ToList();
+
+                // Get info delivery
+                var deliveries = orders.Where(x => x.ShippingType == 4 || x.ShippingType == 5)
+                    .Join(
+                        con.Deliveries,
+                        h => h.ID,
+                        t => t.OrderID,
+                        (h, t) => new
+                        {
+                            OrderID = h.ID,
+                            StartAt = t.StartAt,
+                            Status = t.Status,
+                            ShipperID = t.ShipperID,
+                            COD = t.COD,
+                            COO = t.COO,
+                            ShipNote = t.ShipNote,
+                            Image = t.Image,
+                        }
+                    )
+                    .Join(
+                        con.Shippers,
+                        h => h.ShipperID,
+                        c => c.ID,
+                        (h, c) => new
+                        {
+                            OrderID = h.OrderID,
+                            StartAt = h.StartAt,
+                            Status = h.Status,
+                            ShipperID = h.ShipperID,
+                            COD = h.COD,
+                            COO = h.COO,
+                            ShipNote = h.ShipNote,
+                            Image = h.Image,
+                        // Shipper
+                        ShipperName = c.Name
+                        }
+                    )
+                    .OrderByDescending(o => o.OrderID)
+                    .ToList();
+
+                var data = header
+                    .Join(
+                        body,
+                        h => h.ID,
+                        b => b.OrderID,
+                        (h, b) => new OrderList()
+                        {
+                            ID = h.ID,
+                            CustomerID = h.CustomerID.Value,
+                            OrderType = h.OrderType.Value,
+                            ExcuteStatus = h.ExcuteStatus.Value,
+                            PaymentStatus = h.PaymentStatus.Value,
+                            PaymentType = h.PaymentType.Value,
+                            ShippingType = h.ShippingType.Value,
+                            TotalPrice = Convert.ToDouble(h.TotalPrice),
+                            TotalDiscount = h.TotalDiscount.Value,
+                            FeeShipping = Convert.ToDouble(h.FeeShipping),
+                            CreatedBy = h.CreatedBy,
+                            CreatedDate = h.CreatedDate.Value,
+                            DateDone = h.DateDone,
+                            OrderNote = h.OrderNote,
+                            RefundsGoodsID = h.RefundsGoodsID,
+                            ShippingCode = h.ShippingCode,
+                            TransportCompanyID = h.TransportCompanyID,
+                            TransportCompanySubID = h.TransportCompanySubID,
+                            PostalDeliveryType = h.PostalDeliveryType.Value,
+                        // Order Detail
+                        Quantity = Convert.ToInt32(b.Quantity),
+                        }
+                    )
+                    .Join(
+                        customer,
+                        h => new { OrderID = h.ID, CustomerID = h.CustomerID },
+                        c => new { OrderID = c.OrderID, CustomerID = c.CustomerID },
+                        (h, c) => new OrderList()
+                        {
+                            ID = h.ID,
+                            CustomerID = h.CustomerID,
+                            OrderType = h.OrderType,
+                            ExcuteStatus = h.ExcuteStatus,
+                            PaymentStatus = h.PaymentStatus,
+                            PaymentType = h.PaymentType,
+                            ShippingType = h.ShippingType,
+                            TotalPrice = h.TotalPrice,
+                            TotalDiscount = h.TotalDiscount,
+                            FeeShipping = h.FeeShipping,
+                            CreatedBy = h.CreatedBy,
+                            CreatedDate = h.CreatedDate,
+                            DateDone = h.DateDone,
+                            OrderNote = h.OrderNote,
+                            RefundsGoodsID = h.RefundsGoodsID,
+                            ShippingCode = h.ShippingCode,
+                            TransportCompanyID = h.TransportCompanyID,
+                            TransportCompanySubID = h.TransportCompanySubID,
+                            PostalDeliveryType = h.PostalDeliveryType,
+                        // Order Detail
+                        Quantity = h.Quantity,
+                        // Customer
+                        CustomerName = c.CustomerName,
+                            Nick = c.Nick,
+                            CustomerPhone = c.CustomerPhone
+                        }
+                    )
+                    .GroupJoin(
+                        refunds,
+                        h => new { OrderID = h.ID, RefundsGoodsID = h.RefundsGoodsID },
+                        rf => new { OrderID = rf.OrderID, RefundsGoodsID = rf.RefundsGoodsID },
+                        (h, rf) => new { h, rf }
+                    )
+                    .SelectMany(
+                        x => x.rf.DefaultIfEmpty(),
+                        (parent, child) => new OrderList()
+                        {
+                            ID = parent.h.ID,
+                            CustomerID = parent.h.CustomerID,
+                            OrderType = parent.h.OrderType,
+                            ExcuteStatus = parent.h.ExcuteStatus,
+                            PaymentStatus = parent.h.PaymentStatus,
+                            PaymentType = parent.h.PaymentType,
+                            ShippingType = parent.h.ShippingType,
+                            TotalPrice = parent.h.TotalPrice,
+                            TotalDiscount = parent.h.TotalDiscount,
+                            FeeShipping = parent.h.FeeShipping,
+                            CreatedBy = parent.h.CreatedBy,
+                            CreatedDate = parent.h.CreatedDate,
+                            DateDone = parent.h.DateDone,
+                            OrderNote = parent.h.OrderNote,
+                            RefundsGoodsID = parent.h.RefundsGoodsID,
+                            ShippingCode = parent.h.ShippingCode,
+                            TransportCompanyID = parent.h.TransportCompanyID,
+                            TransportCompanySubID = parent.h.TransportCompanySubID,
+                            PostalDeliveryType = parent.h.PostalDeliveryType,
+                        // Order Detail
+                        Quantity = parent.h.Quantity,
+                        // Customer
+                        CustomerName = parent.h.CustomerName,
+                            Nick = parent.h.Nick,
+                            CustomerPhone = parent.h.CustomerPhone,
+                        // Refunds
+                        TotalRefund = child != null ? Convert.ToDouble(child.TotalPrice) : 0
+                        }
+                    )
+                    .GroupJoin(
+                        fee,
+                        h => h.ID,
+                        f => f.OrderID,
+                        (h, f) => new { h, f }
+                    )
+                    .SelectMany(
+                        x => x.f.DefaultIfEmpty(),
+                        (parent, child) => new OrderList()
+                        {
+                            ID = parent.h.ID,
+                            CustomerID = parent.h.CustomerID,
+                            OrderType = parent.h.OrderType,
+                            ExcuteStatus = parent.h.ExcuteStatus,
+                            PaymentStatus = parent.h.PaymentStatus,
+                            PaymentType = parent.h.PaymentType,
+                            ShippingType = parent.h.ShippingType,
+                            TotalPrice = parent.h.TotalPrice,
+                            TotalDiscount = parent.h.TotalDiscount,
+                            FeeShipping = parent.h.FeeShipping,
+                            CreatedBy = parent.h.CreatedBy,
+                            CreatedDate = parent.h.CreatedDate,
+                            DateDone = parent.h.DateDone,
+                            OrderNote = parent.h.OrderNote,
+                            RefundsGoodsID = parent.h.RefundsGoodsID,
+                            ShippingCode = parent.h.ShippingCode,
+                            TransportCompanyID = parent.h.TransportCompanyID,
+                            TransportCompanySubID = parent.h.TransportCompanySubID,
+                            PostalDeliveryType = parent.h.PostalDeliveryType,
+                        // Order Detail
+                        Quantity = parent.h.Quantity,
+                        // Customer
+                        CustomerName = parent.h.CustomerName,
+                            Nick = parent.h.Nick,
+                            CustomerPhone = parent.h.CustomerPhone,
+                        // Refunds
+                        TotalRefund = parent.h.TotalRefund,
+                        // Fee Other
+                        OtherFeeName = child != null ? child.OtherFeeName : String.Empty,
+                            OtherFeeValue = child != null ? Convert.ToDouble(child.OtherFeeValue) : 0
+                        }
+                    )
+                    .GroupJoin(
+                        trans,
+                        h => h.ID,
+                        t => t.OrderID,
+                        (h, t) => new { h, t }
+                    )
+                    .SelectMany(
+                        x => x.t.DefaultIfEmpty(),
+                        (parent, child) =>
+                        {
+                            var result = new OrderList
+                            {
+                                ID = parent.h.ID,
+                                CustomerID = parent.h.CustomerID,
+                                OrderType = parent.h.OrderType,
+                                ExcuteStatus = parent.h.ExcuteStatus,
+                                PaymentStatus = parent.h.PaymentStatus,
+                                PaymentType = parent.h.PaymentType,
+                                ShippingType = parent.h.ShippingType,
+                                TotalPrice = parent.h.TotalPrice,
+                                TotalDiscount = parent.h.TotalDiscount,
+                                FeeShipping = parent.h.FeeShipping,
+                                CreatedBy = parent.h.CreatedBy,
+                                CreatedDate = parent.h.CreatedDate,
+                                DateDone = parent.h.DateDone,
+                                OrderNote = parent.h.OrderNote,
+                                RefundsGoodsID = parent.h.RefundsGoodsID,
+                                ShippingCode = parent.h.ShippingCode,
+                                TransportCompanyID = parent.h.TransportCompanyID,
+                                TransportCompanySubID = parent.h.TransportCompanySubID,
+                                PostalDeliveryType = parent.h.PostalDeliveryType,
+                            // Order Detail
+                            Quantity = parent.h.Quantity,
+                            // Customer
+                            CustomerName = parent.h.CustomerName,
+                                Nick = parent.h.Nick,
+                                CustomerPhone = parent.h.CustomerPhone,
+                            // Refunds
+                            TotalRefund = parent.h.TotalRefund,
+                            // Fee Other
+                            OtherFeeName = parent.h.OtherFeeName,
+                                OtherFeeValue = parent.h.OtherFeeValue,
+                            };
+
+                            if (child != null)
+                            {
+                            // Transfer Bank
+                            result.CusBankID = child.CusBankID;
+                                result.CusBankName = child.CusBankName;
+                                result.AccBankID = child.AccBankID;
+                                result.AccBankName = child.AccBankName;
+                                result.MoneyReceive = child.Money;
+                                result.TransferStatus = child.Status;
+                                result.StatusName = child.Status == 1 ? "Đã nhận tiền" : "Chưa nhận tiền";
+                                result.DoneAt = child.DoneAt;
+                                result.TransferNote = child.Note;
+                            }
+
+                            return result;
+                        }
+                    )
+                    .GroupJoin(
+                        deliveries,
+                        h => h.ID,
+                        d => d.OrderID,
+                        (h, d) => new { h, d }
+                    )
+                    .SelectMany(
+                        x => x.d.DefaultIfEmpty(),
+                        (parent, child) =>
+                        {
+                            var result = new OrderList()
+                            {
+                                ID = parent.h.ID,
+                                CustomerID = parent.h.CustomerID,
+                                OrderType = parent.h.OrderType,
+                                ExcuteStatus = parent.h.ExcuteStatus,
+                                PaymentStatus = parent.h.PaymentStatus,
+                                PaymentType = parent.h.PaymentType,
+                                ShippingType = parent.h.ShippingType,
+                                TotalPrice = parent.h.TotalPrice,
+                                TotalDiscount = parent.h.TotalDiscount,
+                                FeeShipping = parent.h.FeeShipping,
+                                CreatedBy = parent.h.CreatedBy,
+                                CreatedDate = parent.h.CreatedDate,
+                                DateDone = parent.h.DateDone,
+                                OrderNote = parent.h.OrderNote,
+                                RefundsGoodsID = parent.h.RefundsGoodsID,
+                                ShippingCode = parent.h.ShippingCode,
+                                TransportCompanyID = parent.h.TransportCompanyID,
+                                TransportCompanySubID = parent.h.TransportCompanySubID,
+                                PostalDeliveryType = parent.h.PostalDeliveryType,
+                            // Order Detail
+                            Quantity = parent.h.Quantity,
+                            // Customer
+                            CustomerName = parent.h.CustomerName,
+                                Nick = parent.h.Nick,
+                                CustomerPhone = parent.h.CustomerPhone,
+                            // Refunds
+                            TotalRefund = parent.h.TotalRefund,
+                            // Fee Other
+                            OtherFeeName = parent.h.OtherFeeName,
+                                OtherFeeValue = parent.h.OtherFeeValue,
+                            // Transfer Bank
+                            CusBankID = parent.h.CusBankID,
+                                CusBankName = parent.h.CusBankName,
+                                AccBankID = parent.h.AccBankID,
+                                AccBankName = parent.h.AccBankName,
+                                MoneyReceive = parent.h.MoneyReceive,
+                                TransferStatus = parent.h.TransferStatus,
+                                StatusName = parent.h.StatusName,
+                                DoneAt = parent.h.DoneAt,
+                                TransferNote = parent.h.TransferNote,
+                            };
+
+                            if (child != null)
+                            {
+                            // Delivery
+                            result.DeliveryDate = child.StartAt;
+                                result.DeliveryStatus = child.Status;
+                                result.ShipperID = child.ShipperID;
+                                result.CostOfDelivery = child.COD;
+                                result.CollectionOfOrder = child.COO;
+                                result.ShipNote = child.ShipNote;
+                                result.InvoiceImage = child.Image;
+                                result.ShipperName = child.ShipperName;
+                            }
+                            else
+                            {
+                                result.DeliveryStatus = 2;
+                            }
+
+                            return result;
+                        }
+                    )
+                    .Where(x => 1 == 1);
+
+                if (!String.IsNullOrEmpty(OtherFee))
+                {
+                    if (OtherFee.Equals("yes"))
+                    {
+                        data = data.Where(x => x.OtherFeeValue != 0);
+                    }
+                    else
+                    {
+                        data = data.Where(x => x.OtherFeeValue == 0);
+                    }
+                }
+
+                var list = data.OrderByDescending(o => o.ID).ToList();
+
+                return list;
             }
-            #endregion
-            #region ORDER BY
-            sqlMain.AppendLine("ORDER BY Ord.ID DESC");
-            #endregion
-            #endregion
-
-            var reader = (IDataReader)SqlHelper.ExecuteDataReader(sqlMain.ToString());
-            while (reader.Read())
-            {
-                var entity = new OrderList();
-
-                entity.ID = Convert.ToInt32(reader["ID"]);
-                entity.CustomerName = reader["CustomerName"].ToString();
-                entity.CustomerPhone = reader["CustomerPhone"].ToString();
-                entity.CustomerID = Convert.ToInt32(reader["CustomerID"]);
-                entity.Nick = reader["Nick"].ToString();
-                entity.OrderType = Convert.ToInt32(reader["OrderType"]);
-                entity.ExcuteStatus = Convert.ToInt32(reader["ExcuteStatus"]);
-                entity.PaymentStatus = Convert.ToInt32(reader["PaymentStatus"]);
-                entity.PaymentType = Convert.ToInt32(reader["PaymentType"]);
-                entity.ShippingType = Convert.ToInt32(reader["ShippingType"]);
-                entity.FeeShipping = Convert.ToInt32(reader["FeeShipping"]);
-                entity.OtherFeeName = reader["OtherFeeName"].ToString();
-                if (reader["OtherFeeValue"] != DBNull.Value)
-                    entity.OtherFeeValue = Convert.ToInt32(reader["OtherFeeValue"]);
-                else
-                    entity.OtherFeeValue = 0;
-                entity.TotalPrice = Convert.ToInt32(reader["TotalPrice"]);
-                entity.TotalDiscount = Convert.ToInt32(reader["TotalDiscount"]);
-                entity.TotalRefund = Convert.ToInt32(reader["TotalRefund"]);
-                entity.CreatedBy = reader["CreatedBy"].ToString();
-                entity.CreatedDate = Convert.ToDateTime(reader["CreatedDate"]);
-                if (reader["DateDone"] != DBNull.Value)
-                    entity.DateDone = Convert.ToDateTime(reader["DateDone"]);
-                if (reader["RefundsGoodsID"] != DBNull.Value)
-                    entity.RefundsGoodsID = Convert.ToInt32(reader["RefundsGoodsID"]);
-                entity.Quantity = Convert.ToInt32(reader["Quantity"]);
-                entity.ShippingCode = reader["ShippingCode"].ToString();
-                if (reader["TransportCompanyID"] != DBNull.Value)
-                    entity.TransportCompanyID = Convert.ToInt32(reader["TransportCompanyID"]);
-                if (reader["TransportCompanySubID"] != DBNull.Value)
-                    entity.TransportCompanySubID = Convert.ToInt32(reader["TransportCompanySubID"]);
-                entity.OrderNote = reader["OrderNote"].ToString();
-                if (reader["PostalDeliveryType"] != DBNull.Value)
-                    entity.PostalDeliveryType = Convert.ToInt32(reader["PostalDeliveryType"]);
-
-                // Custom Transfer Bank
-                if (reader["CusBankID"] != DBNull.Value)
-                    entity.CusBankID = Convert.ToInt32(reader["CusBankID"]);
-                if (reader["CusBankName"] != DBNull.Value)
-                    entity.CusBankName = reader["CusBankName"].ToString();
-                if (reader["AccBankID"] != DBNull.Value)
-                    entity.AccBankID = Convert.ToInt32(reader["AccBankID"]);
-                if (reader["AccBankName"] != DBNull.Value)
-                    entity.AccBankName = reader["AccBankName"].ToString();
-                if (reader["MoneyReceive"] != DBNull.Value)
-                    entity.MoneyReceive = Convert.ToDecimal(reader["MoneyReceive"]);
-                if (reader["TransferStatus"] != DBNull.Value)
-                    entity.TransferStatus = Convert.ToInt32(reader["TransferStatus"]);
-                if (reader["StatusName"] != DBNull.Value)
-                    entity.StatusName = reader["StatusName"].ToString();
-                if (reader["DoneAt"] != DBNull.Value)
-                    entity.DoneAt = Convert.ToDateTime(reader["DoneAt"]);
-                if (reader["TransferNote"] != DBNull.Value)
-                    entity.TransferNote = reader["TransferNote"].ToString();
-
-                // Custom Delivery
-                if (reader["DeliveryDate"] != DBNull.Value)
-                    entity.DeliveryDate = Convert.ToDateTime(reader["DeliveryDate"]);
-                if (reader["DeliveryStatus"] != DBNull.Value)
-                    entity.DeliveryStatus = Convert.ToInt32(reader["DeliveryStatus"]);
-                if (reader["ShipperID"] != DBNull.Value)
-                    entity.ShipperID = Convert.ToInt32(reader["ShipperID"]);
-                if (reader["CostOfDelivery"] != DBNull.Value)
-                    entity.CostOfDelivery = Convert.ToDecimal(reader["CostOfDelivery"]);
-                if (reader["CollectionOfOrder"] != DBNull.Value)
-                    entity.CollectionOfOrder = Convert.ToDecimal(reader["CollectionOfOrder"]);
-                if (reader["ShipNote"] != DBNull.Value)
-                    entity.ShipNote = reader["ShipNote"].ToString();
-                if (reader["ShipperName"] != DBNull.Value)
-                    entity.ShipperName = reader["ShipperName"].ToString();
-                if (reader["InvoiceImage"] != DBNull.Value)
-                    entity.InvoiceImage = reader["InvoiceImage"].ToString();
-                list.Add(entity);
-            }
-            reader.Close();
-            return list;
         }
 
         public static List<tbl_Order> SearchByStatical(int orderType, int PaymentStatus, int ExcuteStatus, string s, int agentID, int PaymentType, int ShippingType, string sku)
