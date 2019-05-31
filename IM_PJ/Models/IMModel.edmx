@@ -31,7 +31,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.BankAccount' does not have
             <PropertyRef Name="ModifiedBy" />
             <PropertyRef Name="ModifiedDate" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="BankName" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="AccountName" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="AccountNumber" Type="nvarchar" MaxLength="30" Nullable="false" />
@@ -308,6 +308,8 @@ warning 6002: The table/view 'inventorymanagement.dbo.BankAccount' does not have
           <Property Name="TransportCompanySubID" Type="int" />
           <Property Name="CustomerPhone2" Type="nvarchar" MaxLength="15" />
           <Property Name="CustomerPhoneBackup" Type="nvarchar" MaxLength="15" />
+          <Property Name="UnSignedNick" Type="varchar" MaxLength="255" />
+          <Property Name="UnSignedName" Type="varchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="tbl_CustomerLevel">
           <Key>
@@ -1514,6 +1516,8 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
           <Property Name="TransportCompanySubID" Type="Int32" />
           <Property Name="CustomerPhone2" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
           <Property Name="CustomerPhoneBackup" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="UnSignedNick" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="UnSignedName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="tbl_Order">
           <Key>
@@ -2356,6 +2360,8 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
           <EntitySetMapping Name="tbl_Customer">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Customer">
               <MappingFragment StoreEntitySet="tbl_Customer">
+                <ScalarProperty Name="UnSignedName" ColumnName="UnSignedName" />
+                <ScalarProperty Name="UnSignedNick" ColumnName="UnSignedNick" />
                 <ScalarProperty Name="CustomerPhoneBackup" ColumnName="CustomerPhoneBackup" />
                 <ScalarProperty Name="CustomerPhone2" ColumnName="CustomerPhone2" />
                 <ScalarProperty Name="TransportCompanySubID" ColumnName="TransportCompanySubID" />

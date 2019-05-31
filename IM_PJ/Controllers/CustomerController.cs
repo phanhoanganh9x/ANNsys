@@ -22,6 +22,7 @@ namespace IM_PJ.Controllers
             {
                 tbl_Customer ui = new tbl_Customer();
                 ui.CustomerName = CustomerName;
+                ui.UnSignedName = UnSign.convert(CustomerName);
                 ui.CustomerPhone = CustomerPhone;
                 ui.CustomerAddress = CustomerAddress;
                 if (!string.IsNullOrEmpty(CustomerEmail))
@@ -42,6 +43,7 @@ namespace IM_PJ.Controllers
                     ui.ProvinceID = Province.ToInt();
 
                 ui.Nick = Nick;
+                ui.UnSignedNick = UnSign.convert(Nick);
 
                 if (!string.IsNullOrEmpty(Avatar))
                     ui.Avatar = Avatar;
@@ -79,6 +81,7 @@ namespace IM_PJ.Controllers
                 if (ui != null)
                 {
                     ui.CustomerName = CustomerName;
+                    ui.UnSignedName = UnSign.convert(CustomerName);
                     ui.CustomerPhone = CustomerPhone;
                     ui.CustomerAddress = CustomerAddress;
                     ui.CustomerEmail = CustomerEmail;
@@ -92,6 +95,7 @@ namespace IM_PJ.Controllers
                     ui.Facebook = Facebook;
                     ui.Note = Note;
                     ui.Nick = Nick;
+                    ui.UnSignedNick = UnSign.convert(Nick);
                     ui.Avatar = Avatar;
                     ui.ShippingType = ShippingType;
                     ui.PaymentType = PaymentType;

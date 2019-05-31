@@ -407,124 +407,27 @@ namespace IM_PJ.Controllers
             using (var con = new inventorymanagementEntities())
             {
                 var orders = con.tbl_Order
-                        .Select(x => new
-                        {
-                            ID = x.ID,
-                            CustomerID = x.CustomerID,
-                            CustomerNewPhone = x.CustomerNewPhone,
-                            OrderType = x.OrderType,
-                            PaymentType = x.PaymentType,
-                            PaymentStatus = x.PaymentStatus,
-                            ShippingType = x.ShippingType,
-                            ShippingCode = x.ShippingCode,
-                            TransportCompanyID = x.TransportCompanyID,
-                            ExcuteStatus = x.ExcuteStatus,
-                            DateDone = x.DateDone,
-                            CreatedDate = x.CreatedDate,
-                            TotalDiscount = x.TotalDiscount,
-                            CreatedBy = x.CreatedBy,
-                            OrderNote = x.OrderNote,
-                            RefundsGoodsID = x.RefundsGoodsID,
-                            // OrderDetail
-                            SKU = String.Empty,
-                            // Customer
-                            CustomerName = String.Empty,
-                            Nick = String.Empty,
-                            CustomerPhone = String.Empty,
-                            // Bank Transfers
-                            TransStatus = 0,
-                            TransDoneAt = DateTime.Now,
-                            // Delivery
-                            DelStartAt = DateTime.Now
-                        })
-                        .Where(x => 1 == 1);
+                    .Select(x => new
+                    {
+                        ID = x.ID,
+                        CustomerID = x.CustomerID,
+                        CustomerNewPhone = x.CustomerNewPhone,
+                        OrderType = x.OrderType,
+                        PaymentType = x.PaymentType,
+                        PaymentStatus = x.PaymentStatus,
+                        ShippingType = x.ShippingType,
+                        ShippingCode = x.ShippingCode,
+                        TransportCompanyID = x.TransportCompanyID,
+                        ExcuteStatus = x.ExcuteStatus,
+                        DateDone = x.DateDone,
+                        CreatedDate = x.CreatedDate,
+                        TotalDiscount = x.TotalDiscount,
+                        CreatedBy = x.CreatedBy,
+                        OrderNote = x.OrderNote,
+                        RefundsGoodsID = x.RefundsGoodsID,
+                    })
+                    .Where(x => 1 == 1);
 
-                // Filter Customer name
-                if (!String.IsNullOrEmpty(TextSearch))
-                {
-                    string search = Regex.Replace(TextSearch.Trim(), @"[^0-9a-zA-Z\s_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]+", "");
-                    orders = orders
-                        .Join(
-                            con.tbl_OrderDetail,
-                            h => h.ID,
-                            d => d.OrderID,
-                            (h, d) => new
-                            {
-                                ID = h.ID,
-                                CustomerID = h.CustomerID,
-                                CustomerNewPhone = h.CustomerNewPhone,
-                                OrderType = h.OrderType,
-                                PaymentType = h.PaymentType,
-                                PaymentStatus = h.PaymentStatus,
-                                ShippingType = h.ShippingType,
-                                ShippingCode = h.ShippingCode,
-                                TransportCompanyID = h.TransportCompanyID,
-                                ExcuteStatus = h.ExcuteStatus,
-                                DateDone = h.DateDone,
-                                CreatedDate = h.CreatedDate,
-                                TotalDiscount = h.TotalDiscount,
-                                CreatedBy = h.CreatedBy,
-                                OrderNote = h.OrderNote,
-                                RefundsGoodsID = h.RefundsGoodsID,
-                            // OrderDetail
-                            SKU = d.SKU,
-                            // Customer
-                            CustomerName = String.Empty,
-                                Nick = String.Empty,
-                                CustomerPhone = String.Empty,
-                            // Bank Transfers
-                            TransStatus = 0,
-                                TransDoneAt = DateTime.Now,
-                            // Delivery
-                            DelStartAt = DateTime.Now
-                            }
-                        )
-                        .Join(
-                            con.tbl_Customer,
-                            h => h.CustomerID,
-                            c => c.ID,
-                            (h, c) => new
-                            {
-                                ID = h.ID,
-                                CustomerID = h.CustomerID,
-                                CustomerNewPhone = h.CustomerNewPhone,
-                                OrderType = h.OrderType,
-                                PaymentType = h.PaymentType,
-                                PaymentStatus = h.PaymentStatus,
-                                ShippingType = h.ShippingType,
-                                ShippingCode = h.ShippingCode,
-                                TransportCompanyID = h.TransportCompanyID,
-                                ExcuteStatus = h.ExcuteStatus,
-                                DateDone = h.DateDone,
-                                CreatedDate = h.CreatedDate,
-                                TotalDiscount = h.TotalDiscount,
-                                CreatedBy = h.CreatedBy,
-                                OrderNote = h.OrderNote,
-                                RefundsGoodsID = h.RefundsGoodsID,
-                            // OrderDetail
-                            SKU = h.SKU,
-                            // Customer
-                            CustomerName = c.CustomerName,
-                                Nick = c.Nick,
-                                CustomerPhone = c.CustomerPhone,
-                            // Bank Transfers
-                            TransStatus = 0,
-                                TransDoneAt = DateTime.Now,
-                            // Delivery
-                            DelStartAt = DateTime.Now
-                            }
-                        )
-                        .Where(x =>
-                            x.ID.ToString() == search ||
-                            x.CustomerName.Contains(search) ||
-                            x.Nick.Contains(search) ||
-                            x.CustomerPhone == search ||
-                            x.CustomerNewPhone == search ||
-                            x.ShippingCode == search ||
-                            x.OrderNote.Contains(search) ||
-                            x.SKU.StartsWith(search)
-                        );
-                }
                 // Filter Order Type
                 if (OrderType > 0)
                 {
@@ -560,135 +463,13 @@ namespace IM_PJ.Controllers
                        x.ShippingType == ShippingType
                     );
                 }
-                // Filter Delivery Start At
-                if (!String.IsNullOrEmpty(DeliveryStartAt))
-                {
-                    DateTime fromdate = DateTime.Today;
-                    DateTime todate = DateTime.Now;
-                    CalDate(DeliveryStartAt, ref fromdate, ref todate);
 
-                    orders = orders
-                        .GroupJoin(
-                            con.Deliveries,
-                            h => h.ID,
-                            d => d.OrderID,
-                            (h, d) => new { h, d }
-                        )
-                        .SelectMany(
-                            x => x.d.DefaultIfEmpty(),
-                            (parent, child) => new
-                            {
-                                ID = parent.h.ID,
-                                CustomerID = parent.h.CustomerID,
-                                CustomerNewPhone = parent.h.CustomerNewPhone,
-                                OrderType = parent.h.OrderType,
-                                PaymentType = parent.h.PaymentType,
-                                PaymentStatus = parent.h.PaymentStatus,
-                                ShippingType = parent.h.ShippingType,
-                                ShippingCode = parent.h.ShippingCode,
-                                TransportCompanyID = parent.h.TransportCompanyID,
-                                ExcuteStatus = parent.h.ExcuteStatus,
-                                DateDone = parent.h.DateDone,
-                                CreatedDate = parent.h.CreatedDate,
-                                TotalDiscount = parent.h.TotalDiscount,
-                                CreatedBy = parent.h.CreatedBy,
-                                OrderNote = parent.h.OrderNote,
-                                RefundsGoodsID = parent.h.RefundsGoodsID,
-                            // OrderDetail
-                            SKU = String.Empty,
-                            // Customer
-                            CustomerName = String.Empty,
-                                Nick = String.Empty,
-                                CustomerPhone = String.Empty,
-                            // Bank Transfers
-                            TransStatus = 0,
-                                TransDoneAt = DateTime.Now,
-                            // Delivery
-                            DelStartAt = child.StartAt
-                            }
-                        )
-                        .Where(x =>
-                            x.DelStartAt >= fromdate &&
-                            x.DelStartAt <= todate
-                        );
-                }
                 // Filter Transport Company
                 if (TransportCompany > 0)
                 {
                     orders = orders.Where(x =>
                        x.TransportCompanyID == TransportCompany
                     );
-                }
-                // Filter Transfer Status or DoneAt
-                if (TransferStatus > 0 || !String.IsNullOrEmpty(TransferDoneAt))
-                {
-                    DateTime fromdate = DateTime.Today;
-                    DateTime todate = DateTime.Now;
-                    CalDate(TransferDoneAt, ref fromdate, ref todate);
-
-                    orders = orders
-                        .GroupJoin(
-                            con.BankTransfers,
-                            h => h.ID,
-                            b => b.OrderID,
-                            (h, b) => new { h, b }
-                        )
-                        .SelectMany(
-                            x => x.b.DefaultIfEmpty(),
-                            (parent, child) => new
-                            {
-                                ID = parent.h.ID,
-                                CustomerID = parent.h.CustomerID,
-                                CustomerNewPhone = parent.h.CustomerNewPhone,
-                                OrderType = parent.h.OrderType,
-                                PaymentType = parent.h.PaymentType,
-                                PaymentStatus = parent.h.PaymentStatus,
-                                ShippingType = parent.h.ShippingType,
-                                ShippingCode = parent.h.ShippingCode,
-                                TransportCompanyID = parent.h.TransportCompanyID,
-                                ExcuteStatus = parent.h.ExcuteStatus,
-                                DateDone = parent.h.DateDone,
-                                CreatedDate = parent.h.CreatedDate,
-                                TotalDiscount = parent.h.TotalDiscount,
-                                CreatedBy = parent.h.CreatedBy,
-                                OrderNote = parent.h.OrderNote,
-                                RefundsGoodsID = parent.h.RefundsGoodsID,
-                            // OrderDetail
-                            SKU = String.Empty,
-                            // Customer
-                            CustomerName = String.Empty,
-                                Nick = String.Empty,
-                                CustomerPhone = String.Empty,
-                            // Bank Transfers
-                            TransStatus = child.Status,
-                                TransDoneAt = child.DoneAt,
-                            // Delivery
-                            DelStartAt = DateTime.Now
-                            }
-                        )
-                        .Where(x => 1 == 1);
-
-                    if (TransferStatus == 1)
-                    {
-                        orders = orders.Where(x =>
-                            x.TransStatus == 1
-                        );
-                    }
-                    else if (TransferStatus == 2)
-                    {
-                        orders = orders.Where(x =>
-                            x.TransStatus != 1
-                        );
-                    }
-
-                    if (!String.IsNullOrEmpty(TransferDoneAt))
-                    {
-
-                        orders = orders.Where(x =>
-                            x.TransDoneAt >= fromdate &&
-                            x.TransDoneAt <= todate
-                        );
-                    }
                 }
 
                 // Filter Discount
@@ -739,8 +520,203 @@ namespace IM_PJ.Controllers
                     }
                 }
 
+                var orderFilter = orders.Select(x => new {
+                    ID = x.ID,
+                    CustomerID = x.CustomerID,
+                    RefundsGoodsID = x.RefundsGoodsID
+                });
+
+                // Filter orderid or customername or customerphone or nick or shipcode
+                if (!String.IsNullOrEmpty(TextSearch))
+                {
+                    string search = Regex.Replace(TextSearch.Trim(), @"[^0-9a-zA-Z\s_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]+", "").Trim().ToLower();
+                    search = UnSign.convert(search);
+
+                    var number = Regex.IsMatch(search, @"^\d+$");
+                    var textNumber = Regex.IsMatch(search, @"^\w+\d+$");
+
+                    if (number)
+                    {
+                        orderFilter = orders
+                            .Join(
+                                con.tbl_Customer,
+                                h => h.CustomerID,
+                                c => c.ID,
+                                (h, c) => new
+                                {
+                                    ID = h.ID,
+                                    CustomerID = h.CustomerID,
+                                    RefundsGoodsID = h.RefundsGoodsID,
+                                    // Customer
+                                    CustomerPhone = c.CustomerPhone,
+                                    CustomerNewPhone = h.CustomerNewPhone
+                                }
+                            )
+                            .Where(x =>
+                                x.ID.ToString() == search ||
+                                x.CustomerPhone == search ||
+                                x.CustomerNewPhone == search
+                            )
+                            .Select(x => new {
+                                ID = x.ID,
+                                CustomerID = x.CustomerID,
+                                RefundsGoodsID = x.RefundsGoodsID
+                            });
+                    }
+                    else if (textNumber)
+                    {
+                        orderFilter = orders
+                            .Join(
+                                con.tbl_OrderDetail,
+                                h => h.ID,
+                                d => d.OrderID,
+                                (h, d) => new
+                                {
+                                    ID = h.ID,
+                                    CustomerID = h.CustomerID,
+                                    ShippingCode = h.ShippingCode,
+                                    RefundsGoodsID = h.RefundsGoodsID,
+                                    // Order detail
+                                    SKU = d.SKU,
+                                }
+                            )
+                            .Where(x =>
+                                x.SKU.ToLower().StartsWith(search) ||
+                                x.ShippingCode.ToLower() == search
+                            )
+                            .Select(x => new {
+                                ID = x.ID,
+                                CustomerID = x.CustomerID,
+                                RefundsGoodsID = x.RefundsGoodsID
+                            });
+                    }
+                    else
+                    {
+                        orderFilter = orders
+                            .Join(
+                                con.tbl_Customer,
+                                h => h.CustomerID,
+                                c => c.ID,
+                                (h, c) => new
+                                {
+                                    ID = h.ID,
+                                    CustomerID = h.CustomerID,
+                                    ShippingCode = h.ShippingCode,
+                                    RefundsGoodsID = h.RefundsGoodsID,
+                                    // Customer
+                                    UnSignedName = c.UnSignedName,
+                                    UnSignedNick = c.UnSignedNick
+                                }
+                            )
+                            .Where(x =>
+                                x.UnSignedName.ToLower().Contains(search) ||
+                                x.UnSignedNick.ToLower().Contains(search) ||
+                                x.ShippingCode == search
+                            )
+                            .Select(x => new {
+                                ID = x.ID,
+                                CustomerID = x.CustomerID,
+                                RefundsGoodsID = x.RefundsGoodsID
+                            });
+                    }
+                }
+
+                // Filter Delivery Start At
+                if (!String.IsNullOrEmpty(DeliveryStartAt))
+                {
+                    DateTime fromdate = DateTime.Today;
+                    DateTime todate = DateTime.Now;
+                    CalDate(DeliveryStartAt, ref fromdate, ref todate);
+
+                    orderFilter = orders
+                        .GroupJoin(
+                            con.Deliveries,
+                            h => h.ID,
+                            d => d.OrderID,
+                            (h, d) => new { h, d }
+                        )
+                        .SelectMany(
+                            x => x.d.DefaultIfEmpty(),
+                            (parent, child) => new
+                            {
+                                ID = parent.h.ID,
+                                CustomerID = parent.h.CustomerID,
+                                RefundsGoodsID = parent.h.RefundsGoodsID,
+                                // Delivery
+                                DelStartAt = child.StartAt
+                            }
+                        )
+                        .Where(x =>
+                            x.DelStartAt >= fromdate &&
+                            x.DelStartAt <= todate
+                        )
+                        .Select(x => new {
+                            ID = x.ID,
+                            CustomerID = x.CustomerID,
+                            RefundsGoodsID = x.RefundsGoodsID
+                        });
+                }
+
+
+                // Filter Transfer Status or DoneAt
+                if (TransferStatus > 0 || !String.IsNullOrEmpty(TransferDoneAt))
+                {
+                    DateTime fromdate = DateTime.Today;
+                    DateTime todate = DateTime.Now;
+                    CalDate(TransferDoneAt, ref fromdate, ref todate);
+
+                    var tempTrans = orders
+                        .GroupJoin(
+                            con.BankTransfers,
+                            h => h.ID,
+                            b => b.OrderID,
+                            (h, b) => new { h, b }
+                        )
+                        .SelectMany(
+                            x => x.b.DefaultIfEmpty(),
+                            (parent, child) => new
+                            {
+                                ID = parent.h.ID,
+                                CustomerID = parent.h.CustomerID,
+                                RefundsGoodsID = parent.h.RefundsGoodsID,
+                                // Bank Transfers
+                                TransStatus = child.Status,
+                                TransDoneAt = child.DoneAt,
+                            }
+                        )
+                        .Where(x => 1 == 1);
+
+                    if (TransferStatus == 1)
+                    {
+                        tempTrans = tempTrans.Where(x =>
+                            x.TransStatus == 1
+                        );
+                    }
+                    else if (TransferStatus == 2)
+                    {
+                        tempTrans = tempTrans.Where(x =>
+                            x.TransStatus != 1
+                        );
+                    }
+
+                    if (!String.IsNullOrEmpty(TransferDoneAt))
+                    {
+
+                        tempTrans = tempTrans.Where(x =>
+                            x.TransDoneAt >= fromdate &&
+                            x.TransDoneAt <= todate
+                        );
+                    }
+
+                    orderFilter = tempTrans.Select(x => new {
+                        ID = x.ID,
+                        CustomerID = x.CustomerID,
+                        RefundsGoodsID = x.RefundsGoodsID
+                    });
+                }
+
                 // Get info main
-                var header = orders
+                var header = orderFilter
                     .Join(
                         con.tbl_Order,
                         h => h.ID,
@@ -751,11 +727,11 @@ namespace IM_PJ.Controllers
                     .ToList();
 
                 // Get info quantiy
-                var body = orders
+                var body = orderFilter
                     .Join(
                         con.tbl_OrderDetail,
                         h => h.ID,
-                        od => od.ID,
+                        od => od.OrderID.Value,
                         (h, od) => new
                         {
                             OrderID = h.ID,
@@ -772,7 +748,7 @@ namespace IM_PJ.Controllers
                     .ToList();
 
                 // Get info refunds
-                var refunds = orders.Where(x => x.RefundsGoodsID.HasValue)
+                var refunds = orderFilter.Where(x => x.RefundsGoodsID.HasValue)
                     .Join(
                         con.tbl_RefundGoods,
                         h => h.RefundsGoodsID.Value,
@@ -785,7 +761,7 @@ namespace IM_PJ.Controllers
                         });
 
                 // Get info customer
-                var customer = orders
+                var customer = orderFilter
                     .Join(
                         con.tbl_Customer,
                         h => h.CustomerID,
@@ -802,7 +778,7 @@ namespace IM_PJ.Controllers
                     .ToList();
 
                 // Get info fee
-                var fee = orders
+                var fee = orderFilter
                     .Join(
                         con.Fees,
                         h => h.ID,
@@ -836,7 +812,7 @@ namespace IM_PJ.Controllers
                     .ToList();
 
                 // Get info transfer bank
-                var trans = orders.Where(x => x.PaymentType == 2)
+                var trans = orderFilter
                     .Join(
                         con.BankTransfers,
                         h => h.ID,
@@ -865,8 +841,8 @@ namespace IM_PJ.Controllers
                             Status = h.Status,
                             DoneAt = h.DoneAt,
                             Note = h.Note,
-                        // Bank
-                        CusBankName = c.BankName
+                            // Bank
+                            CusBankName = c.BankName
                         }
                     )
                     .Join(
@@ -882,17 +858,17 @@ namespace IM_PJ.Controllers
                             Status = h.Status,
                             DoneAt = h.DoneAt,
                             Note = h.Note,
-                        // Bank
-                        CusBankName = h.CusBankName,
-                        // Bank Account
-                        AccBankName = a.BankName
+                            // Bank
+                            CusBankName = h.CusBankName,
+                            // Bank Account
+                            AccBankName = a.BankName
                         }
                     )
                     .OrderByDescending(o => o.OrderID)
                     .ToList();
 
                 // Get info delivery
-                var deliveries = orders.Where(x => x.ShippingType == 4 || x.ShippingType == 5)
+                var deliveries = orderFilter
                     .Join(
                         con.Deliveries,
                         h => h.ID,
@@ -923,8 +899,8 @@ namespace IM_PJ.Controllers
                             COO = h.COO,
                             ShipNote = h.ShipNote,
                             Image = h.Image,
-                        // Shipper
-                        ShipperName = c.Name
+                            // Shipper
+                            ShipperName = c.Name
                         }
                     )
                     .OrderByDescending(o => o.OrderID)
@@ -938,26 +914,26 @@ namespace IM_PJ.Controllers
                         (h, b) => new OrderList()
                         {
                             ID = h.ID,
-                            CustomerID = h.CustomerID.Value,
-                            OrderType = h.OrderType.Value,
-                            ExcuteStatus = h.ExcuteStatus.Value,
-                            PaymentStatus = h.PaymentStatus.Value,
-                            PaymentType = h.PaymentType.Value,
-                            ShippingType = h.ShippingType.Value,
+                            CustomerID = h.CustomerID.HasValue ? h.CustomerID.Value : 0,
+                            OrderType = h.OrderType.HasValue ? h.OrderType.Value : 0,
+                            ExcuteStatus = h.ExcuteStatus.HasValue ? h.ExcuteStatus.Value : 0,
+                            PaymentStatus = h.PaymentStatus.HasValue ? h.PaymentStatus.Value : 0,
+                            PaymentType = h.PaymentType.HasValue ? h.PaymentType.Value : 0,
+                            ShippingType = h.ShippingType.HasValue ? h.ShippingType.Value : 0,
                             TotalPrice = Convert.ToDouble(h.TotalPrice),
                             TotalDiscount = h.TotalDiscount.Value,
                             FeeShipping = Convert.ToDouble(h.FeeShipping),
                             CreatedBy = h.CreatedBy,
-                            CreatedDate = h.CreatedDate.Value,
+                            CreatedDate = h.CreatedDate.HasValue ? h.CreatedDate.Value : DateTime.Now,
                             DateDone = h.DateDone,
                             OrderNote = h.OrderNote,
                             RefundsGoodsID = h.RefundsGoodsID,
                             ShippingCode = h.ShippingCode,
                             TransportCompanyID = h.TransportCompanyID,
                             TransportCompanySubID = h.TransportCompanySubID,
-                            PostalDeliveryType = h.PostalDeliveryType.Value,
-                        // Order Detail
-                        Quantity = Convert.ToInt32(b.Quantity),
+                            PostalDeliveryType = h.PostalDeliveryType.HasValue ? h.PostalDeliveryType.Value : 0,
+                            // Order Detail
+                            Quantity = Convert.ToInt32(b.Quantity),
                         }
                     )
                     .Join(
@@ -985,10 +961,10 @@ namespace IM_PJ.Controllers
                             TransportCompanyID = h.TransportCompanyID,
                             TransportCompanySubID = h.TransportCompanySubID,
                             PostalDeliveryType = h.PostalDeliveryType,
-                        // Order Detail
-                        Quantity = h.Quantity,
-                        // Customer
-                        CustomerName = c.CustomerName,
+                            // Order Detail
+                            Quantity = h.Quantity,
+                            // Customer
+                            CustomerName = c.CustomerName,
                             Nick = c.Nick,
                             CustomerPhone = c.CustomerPhone
                         }
@@ -1022,14 +998,14 @@ namespace IM_PJ.Controllers
                             TransportCompanyID = parent.h.TransportCompanyID,
                             TransportCompanySubID = parent.h.TransportCompanySubID,
                             PostalDeliveryType = parent.h.PostalDeliveryType,
-                        // Order Detail
-                        Quantity = parent.h.Quantity,
-                        // Customer
-                        CustomerName = parent.h.CustomerName,
+                            // Order Detail
+                            Quantity = parent.h.Quantity,
+                            // Customer
+                            CustomerName = parent.h.CustomerName,
                             Nick = parent.h.Nick,
                             CustomerPhone = parent.h.CustomerPhone,
-                        // Refunds
-                        TotalRefund = child != null ? Convert.ToDouble(child.TotalPrice) : 0
+                            // Refunds
+                            TotalRefund = child != null ? Convert.ToDouble(child.TotalPrice) : 0
                         }
                     )
                     .GroupJoin(
@@ -1061,16 +1037,16 @@ namespace IM_PJ.Controllers
                             TransportCompanyID = parent.h.TransportCompanyID,
                             TransportCompanySubID = parent.h.TransportCompanySubID,
                             PostalDeliveryType = parent.h.PostalDeliveryType,
-                        // Order Detail
-                        Quantity = parent.h.Quantity,
-                        // Customer
-                        CustomerName = parent.h.CustomerName,
+                            // Order Detail
+                            Quantity = parent.h.Quantity,
+                            // Customer
+                            CustomerName = parent.h.CustomerName,
                             Nick = parent.h.Nick,
                             CustomerPhone = parent.h.CustomerPhone,
-                        // Refunds
-                        TotalRefund = parent.h.TotalRefund,
-                        // Fee Other
-                        OtherFeeName = child != null ? child.OtherFeeName : String.Empty,
+                            // Refunds
+                            TotalRefund = parent.h.TotalRefund,
+                            // Fee Other
+                            OtherFeeName = child != null ? child.OtherFeeName : String.Empty,
                             OtherFeeValue = child != null ? Convert.ToDouble(child.OtherFeeValue) : 0
                         }
                     )
@@ -1082,69 +1058,7 @@ namespace IM_PJ.Controllers
                     )
                     .SelectMany(
                         x => x.t.DefaultIfEmpty(),
-                        (parent, child) =>
-                        {
-                            var result = new OrderList
-                            {
-                                ID = parent.h.ID,
-                                CustomerID = parent.h.CustomerID,
-                                OrderType = parent.h.OrderType,
-                                ExcuteStatus = parent.h.ExcuteStatus,
-                                PaymentStatus = parent.h.PaymentStatus,
-                                PaymentType = parent.h.PaymentType,
-                                ShippingType = parent.h.ShippingType,
-                                TotalPrice = parent.h.TotalPrice,
-                                TotalDiscount = parent.h.TotalDiscount,
-                                FeeShipping = parent.h.FeeShipping,
-                                CreatedBy = parent.h.CreatedBy,
-                                CreatedDate = parent.h.CreatedDate,
-                                DateDone = parent.h.DateDone,
-                                OrderNote = parent.h.OrderNote,
-                                RefundsGoodsID = parent.h.RefundsGoodsID,
-                                ShippingCode = parent.h.ShippingCode,
-                                TransportCompanyID = parent.h.TransportCompanyID,
-                                TransportCompanySubID = parent.h.TransportCompanySubID,
-                                PostalDeliveryType = parent.h.PostalDeliveryType,
-                            // Order Detail
-                            Quantity = parent.h.Quantity,
-                            // Customer
-                            CustomerName = parent.h.CustomerName,
-                                Nick = parent.h.Nick,
-                                CustomerPhone = parent.h.CustomerPhone,
-                            // Refunds
-                            TotalRefund = parent.h.TotalRefund,
-                            // Fee Other
-                            OtherFeeName = parent.h.OtherFeeName,
-                                OtherFeeValue = parent.h.OtherFeeValue,
-                            };
-
-                            if (child != null)
-                            {
-                            // Transfer Bank
-                            result.CusBankID = child.CusBankID;
-                                result.CusBankName = child.CusBankName;
-                                result.AccBankID = child.AccBankID;
-                                result.AccBankName = child.AccBankName;
-                                result.MoneyReceive = child.Money;
-                                result.TransferStatus = child.Status;
-                                result.StatusName = child.Status == 1 ? "Đã nhận tiền" : "Chưa nhận tiền";
-                                result.DoneAt = child.DoneAt;
-                                result.TransferNote = child.Note;
-                            }
-
-                            return result;
-                        }
-                    )
-                    .GroupJoin(
-                        deliveries,
-                        h => h.ID,
-                        d => d.OrderID,
-                        (h, d) => new { h, d }
-                    )
-                    .SelectMany(
-                        x => x.d.DefaultIfEmpty(),
-                        (parent, child) =>
-                        {
+                        (parent, child) => {
                             var result = new OrderList()
                             {
                                 ID = parent.h.ID,
@@ -1166,19 +1080,79 @@ namespace IM_PJ.Controllers
                                 TransportCompanyID = parent.h.TransportCompanyID,
                                 TransportCompanySubID = parent.h.TransportCompanySubID,
                                 PostalDeliveryType = parent.h.PostalDeliveryType,
-                            // Order Detail
-                            Quantity = parent.h.Quantity,
-                            // Customer
-                            CustomerName = parent.h.CustomerName,
+                                // Order Detail
+                                Quantity = parent.h.Quantity,
+                                // Customer
+                                CustomerName = parent.h.CustomerName,
                                 Nick = parent.h.Nick,
                                 CustomerPhone = parent.h.CustomerPhone,
-                            // Refunds
-                            TotalRefund = parent.h.TotalRefund,
-                            // Fee Other
-                            OtherFeeName = parent.h.OtherFeeName,
+                                // Refunds
+                                TotalRefund = parent.h.TotalRefund,
+                                // Fee Other
+                                OtherFeeName = parent.h.OtherFeeName,
                                 OtherFeeValue = parent.h.OtherFeeValue,
-                            // Transfer Bank
-                            CusBankID = parent.h.CusBankID,
+                            };
+
+                            if (child != null)
+                            {
+                                // Transfer Bank
+                                result.CusBankID = child.CusBankID;
+                                result.CusBankName = child.CusBankName;
+                                result.AccBankID = child.AccBankID;
+                                result.AccBankName = child.AccBankName;
+                                result.MoneyReceive = child.Money;
+                                result.TransferStatus = child.Status;
+                                result.StatusName = child.Status == 1 ? "Đã nhận tiền" : "Chưa nhận tiền";
+                                result.DoneAt = child.DoneAt;
+                                result.TransferNote = child.Note;
+                            }
+
+                            return result;
+                        }
+                    )
+                    .GroupJoin(
+                        deliveries,
+                        h => h.ID,
+                        d => d.OrderID,
+                        (h, d) => new { h, d }
+                    )
+                    .SelectMany(
+                        x => x.d.DefaultIfEmpty(),
+                        (parent, child) => {
+                            var result = new OrderList()
+                            {
+                                ID = parent.h.ID,
+                                CustomerID = parent.h.CustomerID,
+                                OrderType = parent.h.OrderType,
+                                ExcuteStatus = parent.h.ExcuteStatus,
+                                PaymentStatus = parent.h.PaymentStatus,
+                                PaymentType = parent.h.PaymentType,
+                                ShippingType = parent.h.ShippingType,
+                                TotalPrice = parent.h.TotalPrice,
+                                TotalDiscount = parent.h.TotalDiscount,
+                                FeeShipping = parent.h.FeeShipping,
+                                CreatedBy = parent.h.CreatedBy,
+                                CreatedDate = parent.h.CreatedDate,
+                                DateDone = parent.h.DateDone,
+                                OrderNote = parent.h.OrderNote,
+                                RefundsGoodsID = parent.h.RefundsGoodsID,
+                                ShippingCode = parent.h.ShippingCode,
+                                TransportCompanyID = parent.h.TransportCompanyID,
+                                TransportCompanySubID = parent.h.TransportCompanySubID,
+                                PostalDeliveryType = parent.h.PostalDeliveryType,
+                                // Order Detail
+                                Quantity = parent.h.Quantity,
+                                // Customer
+                                CustomerName = parent.h.CustomerName,
+                                Nick = parent.h.Nick,
+                                CustomerPhone = parent.h.CustomerPhone,
+                                // Refunds
+                                TotalRefund = parent.h.TotalRefund,
+                                // Fee Other
+                                OtherFeeName = parent.h.OtherFeeName,
+                                OtherFeeValue = parent.h.OtherFeeValue,
+                                // Transfer Bank
+                                CusBankID = parent.h.CusBankID,
                                 CusBankName = parent.h.CusBankName,
                                 AccBankID = parent.h.AccBankID,
                                 AccBankName = parent.h.AccBankName,
@@ -1191,8 +1165,8 @@ namespace IM_PJ.Controllers
 
                             if (child != null)
                             {
-                            // Delivery
-                            result.DeliveryDate = child.StartAt;
+                                // Delivery
+                                result.DeliveryDate = child.StartAt;
                                 result.DeliveryStatus = child.Status;
                                 result.ShipperID = child.ShipperID;
                                 result.CostOfDelivery = child.COD;

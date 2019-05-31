@@ -38,5 +38,7 @@ namespace IM_PJ.Models
         public Nullable<int> TransportCompanySubID { get; set; }
         public string CustomerPhone2 { get; set; }
         public string CustomerPhoneBackup { get; set; }
+        public string UnSignedNick { get; set; }
+        public string UnSignedName { get; set; }
     }
 }
