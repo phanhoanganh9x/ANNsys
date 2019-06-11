@@ -1,5 +1,6 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Utils;
 using MB.Extensions;
 using NHST.Bussiness;
 using System;
@@ -174,14 +175,14 @@ namespace IM_PJ
                 // thư viện ảnh
                 var image = ProductImageController.GetByProductID(id);
                 imageGallery.Text = "<ul class=\"image-gallery\">";
-                imageGallery.Text += "<li><img src=\"" + p.ProductImage + "\" /><a href='" + p.ProductImage + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></li>";
+                imageGallery.Text += "<li><img src=\"" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Small) + "\" /><a href='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Small) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></li>";
                 if (image != null)
                 {
                     foreach (var img in image)
                     {
                         if (img.ProductImage != p.ProductImage)
                         {
-                            imageGallery.Text += "<li><img src=\"" + img.ProductImage + "\" /><a href='" + img.ProductImage + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></li>";
+                            imageGallery.Text += "<li><img src=\"" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Small) + "\" /><a href='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Small) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></li>";
                         }
                     }
                 }
@@ -241,7 +242,7 @@ namespace IM_PJ
                     html.Append("<tr>");
                     if (!string.IsNullOrEmpty(item.Image))
                     {
-                        html.Append("   <td><img src=\"" + item.Image + "\"/></td>");
+                        html.Append("   <td><img src=\"" + Thumbnail.getURL(item.Image, Thumbnail.Size.Small) + "\"/></td>");
                     }
                     else
                     {

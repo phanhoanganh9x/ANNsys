@@ -1,5 +1,6 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Utils;
 using MB.Extensions;
 using NHST.Bussiness;
 using System;
@@ -100,13 +101,13 @@ namespace IM_PJ
 
                                 if (!string.IsNullOrEmpty(pv.Image))
                                 {
-                                    p.ProductImage = "<img src=\"" + pv.Image + "\" />";
-                                    p.ProductImageOrigin = pv.Image;
+                                    p.ProductImage = "<img src=\"" + Thumbnail.getURL(pv.Image, Thumbnail.Size.Small) + "\" />";
+                                    p.ProductImageOrigin = Thumbnail.getURL(pv.Image, Thumbnail.Size.Small);
                                 }
                                 else if (!string.IsNullOrEmpty(product.ProductImage))
                                 {
-                                    p.ProductImage = "<img src=\"" + product.ProductImage + "\" />";
-                                    p.ProductImageOrigin = product.ProductImage;
+                                    p.ProductImage = "<img src=\"" + Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Small) + "\" />";
+                                    p.ProductImageOrigin = Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Small);
                                 }
                                 else
                                 {
@@ -149,8 +150,8 @@ namespace IM_PJ
 
                         if (!string.IsNullOrEmpty(product.ProductImage))
                         {
-                            p.ProductImage = "<img src=\"" + product.ProductImage + "\" />";
-                            p.ProductImageOrigin = product.ProductImage;
+                            p.ProductImage = "<img src=\"" + Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Small) + "\" />";
+                            p.ProductImageOrigin = Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Small);
                         }
                         else
                         {
@@ -213,13 +214,13 @@ namespace IM_PJ
 
                             if (!string.IsNullOrEmpty(productvariable.Image))
                             {
-                                p.ProductImage = "<img src=\"" + productvariable.Image + "\" />";
+                                p.ProductImage = "<img src=\"" + Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Small) + "\" />";
                                 p.ProductImageOrigin = productvariable.Image;
                             }
                             else if (_product != null && !string.IsNullOrEmpty(_product.ProductImage))
                             {
-                                p.ProductImage = "<img src=\"" + _product.ProductImage + "\" />";
-                                p.ProductImageOrigin = _product.ProductImage;
+                                p.ProductImage = "<img src=\"" + Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Small) + "\" />";
+                                p.ProductImageOrigin = Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Small);
                             }
                             else
                             {

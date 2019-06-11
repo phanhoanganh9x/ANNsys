@@ -134,7 +134,7 @@ namespace IM_PJ
                     {
                         if (!string.IsNullOrEmpty(item.ProductImage))
                         {
-                            item.ProductContent += String.Format("<p><img src='/wp-content/uploads/{0}' alt='{1}'/></p>", item.ProductImage.Split('/')[3], item.ProductTitle);
+                            item.ProductContent += String.Format("<p><img src='/wp-content/uploads/{0}' alt='{1}'/></p>", item.ProductImage, item.ProductTitle);
                         }
 
                         if (!string.IsNullOrEmpty(item.ProductImageClean))
@@ -149,7 +149,7 @@ namespace IM_PJ
                             foreach (var image in productImage)
                             {
                                 item.ProductImage += "|" + image.ProductImage;
-                                item.ProductContent += String.Format("<p><img src='/wp-content/uploads/{0}' alt='{1}'/></p>", image.ProductImage.Split('/')[3], item.ProductTitle);
+                                item.ProductContent += String.Format("<p><img src='/wp-content/uploads/{0}' alt='{1}'/></p>", image.ProductImage, item.ProductTitle);
                             }
                         }
                     }
@@ -191,7 +191,7 @@ namespace IM_PJ
                     {
                         if (!string.IsNullOrEmpty(item.ProductImage))
                         {
-                            item.ProductContent += String.Format("<p><img src='/wp-content/uploads/{0}' alt='{1}'/></p>", item.ProductImage.Split('/')[3], item.ProductTitle);
+                            item.ProductContent += String.Format("<p><img src='/wp-content/uploads/{0}' alt='{1}'/></p>", item.ProductImage, item.ProductTitle);
                         }
 
                         if (!string.IsNullOrEmpty(item.ProductImageClean))
@@ -206,7 +206,7 @@ namespace IM_PJ
                             foreach (var image in productImage)
                             {
                                 item.ProductImage += "|" + image.ProductImage;
-                                item.ProductContent += String.Format("<p><img src='/wp-content/uploads/{0}' alt='{1}'/></p>", image.ProductImage.Split('/')[3], item.ProductTitle);
+                                item.ProductContent += String.Format("<p><img src='/wp-content/uploads/{0}' alt='{1}'/></p>", image.ProductImage, item.ProductTitle);
                             }
                         }
                     }

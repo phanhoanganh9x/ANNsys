@@ -1,5 +1,6 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Utils;
 using MB.Extensions;
 using NHST.Bussiness;
 using System;
@@ -285,13 +286,13 @@ namespace IM_PJ
                                     var img = ProductImageController.GetFirstByProductID(product.ID);
                                     if (!string.IsNullOrEmpty(product.ProductImage))
                                     {
-                                        ProductImage = "<img src=\"" + product.ProductImage + "\" />";
-                                        ProductImageOrigin = product.ProductImage;
+                                        ProductImage = "<img src=\"" + Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Small) + "\" />";
+                                        ProductImageOrigin = Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Small);
                                     }
                                     else if (img != null)
                                     {
-                                        ProductImage = "<img src=\"" + img.ProductImage + "\" />";
-                                        ProductImageOrigin = img.ProductImage;
+                                        ProductImage = "<img src=\"" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Small) + "\" />";
+                                        ProductImageOrigin = Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Small);
                                     }
                                     else
                                     {
@@ -356,13 +357,13 @@ namespace IM_PJ
 
                                     if (!string.IsNullOrEmpty(productvariable.Image))
                                     {
-                                        ProductImage = "<img src=\"" + productvariable.Image + "\" />";
-                                        ProductImageOrigin = productvariable.Image;
+                                        ProductImage = "<img src=\"" + Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Small) + "\" />";
+                                        ProductImageOrigin = Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Small);
                                     }
                                     else if (_product != null && !string.IsNullOrEmpty(_product.ProductImage))
                                     {
-                                        ProductImage = "<img src=\"" + _product.ProductImage + "\" />";
-                                        ProductImageOrigin = _product.ProductImage;
+                                        ProductImage = "<img src=\"" + Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Small) + "\" />";
+                                        ProductImageOrigin = Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Small);
                                     }
                                     else
                                     {

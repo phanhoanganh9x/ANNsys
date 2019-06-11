@@ -1,5 +1,6 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Utils;
 using MB.Extensions;
 using NHST.Bussiness;
 using System;
@@ -304,8 +305,8 @@ namespace IM_PJ
 
                                     if (!string.IsNullOrEmpty(product.ProductImage))
                                     {
-                                        ProductImage = "<img onclick='openImage($(this))' src='" + product.ProductImage + "' />";
-                                        ProductImageOrigin = product.ProductImage;
+                                        ProductImage = "<img onclick='openImage($(this))' src='" + Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Small) + "' />";
+                                        ProductImageOrigin = Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Small);
                                     }
                                     else
                                     {
@@ -374,13 +375,13 @@ namespace IM_PJ
 
                                     if (!string.IsNullOrEmpty(productvariable.Image))
                                     {
-                                        ProductImage = "<img onclick='openImage($(this))' src='" + productvariable.Image + "' />";
-                                        ProductImageOrigin = productvariable.Image;
+                                        ProductImage = "<img onclick='openImage($(this))' src='" + Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Small) + "' />";
+                                        ProductImageOrigin = Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Small);
                                     }
                                     else if (_product != null && !string.IsNullOrEmpty(_product.ProductImage))
                                     {
-                                        ProductImage = "<img onclick='openImage($(this))' src='" + _product.ProductImage + "' />";
-                                        ProductImageOrigin = _product.ProductImage;
+                                        ProductImage = "<img onclick='openImage($(this))' src='" + Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Small) + "' />";
+                                        ProductImageOrigin = Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Small);
                                     }
                                     else
                                     {

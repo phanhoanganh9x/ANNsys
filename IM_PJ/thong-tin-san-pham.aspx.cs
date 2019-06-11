@@ -12,6 +12,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Telerik.Web.UI;
 using System.IO;
+using IM_PJ.Utils;
 
 namespace IM_PJ
 {
@@ -171,7 +172,7 @@ namespace IM_PJ
                     {
                         foreach (var img in image)
                         {
-                            imageGallery.Text += "<li><img src='" + img.ProductImage + "' /><a href='javascript:;' data-image-id='" + img.ID + "' onclick='deleteImageGallery($(this))' class='btn-delete'><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Xóa hình</a></li>";
+                            imageGallery.Text += "<li><img src='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Small) + "' /><a href='javascript:;' data-image-id='" + img.ID + "' onclick='deleteImageGallery($(this))' class='btn-delete'><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Xóa hình</a></li>";
                         }
                     }
                     imageGallery.Text += "</ul>";
@@ -197,7 +198,7 @@ namespace IM_PJ
                             string deleteVariableImage = "<a href='javascript:;' onclick='deleteImageVariable($(this))' class='btn-delete hide'><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Xóa hình</a>";
                             if (!string.IsNullOrEmpty(item.Image))
                             {
-                                VariableImage = item.Image;
+                                VariableImage = Thumbnail.getURL(item.Image, Thumbnail.Size.Small);
                                 deleteVariableImage = "<a href='javascript:;' onclick='deleteImageVariable($(this))' class='btn-delete'><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Xóa hình</a>";
                             }
 

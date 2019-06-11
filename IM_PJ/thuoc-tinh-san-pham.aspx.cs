@@ -1,5 +1,6 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Utils;
 using MB.Extensions;
 using NHST.Bussiness;
 using System;
@@ -102,7 +103,7 @@ namespace IM_PJ
                     html.Append("<tr>");
                     if (!string.IsNullOrEmpty(item.Image))
                     {
-                        html.Append("   <td><img src=\"" + item.Image + "\"/></td>");
+                        html.Append("   <td><img src=\"" + Thumbnail.getURL(item.Image, Thumbnail.Size.Small) + "\"/></td>");
                     }
                     else
                     {

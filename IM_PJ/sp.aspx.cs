@@ -13,6 +13,7 @@ using System.Web.UI.WebControls;
 using System.Web.Script.Serialization;
 using System.Web.Services;
 using static IM_PJ.Controllers.ProductController;
+using IM_PJ.Utils;
 
 namespace IM_PJ
 {
@@ -166,7 +167,7 @@ namespace IM_PJ
                     html.Append("<div class='col-md-3 item-" + i + " product-item'>");
                     html.Append("<div class='row'>");
                     html.Append("     <div class='col-xs-12'>");
-                    html.Append("   <p><a href='/xem-sp?id=" + item.ID + "'><img src='" + item.ProductImage + "'></a></p>");
+                    html.Append("   <p><a href='/xem-sp?id=" + Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Small) + "'><img src='" + Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Small) + "'></a></p>");
                     html.Append("   <h3 class='product-name'><a href='/xem-sp?id=" + item.ID + "'>" + item.ProductSKU + " - " + item.ProductTitle + "</a></h3>");
                     html.Append("   <h3 class='product-price'>📌 " + string.Format("{0:N0}", item.RegularPrice) + "</h3>");
 

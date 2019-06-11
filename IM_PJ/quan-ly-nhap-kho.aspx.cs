@@ -1,5 +1,6 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Utils;
 using MB.Extensions;
 using NHST.Bussiness;
 using System;
@@ -127,7 +128,7 @@ namespace IM_PJ
 
                                 if (!string.IsNullOrEmpty(pv.Image))
                                 {
-                                    p.ProductImage = "<img onclick='openImage($(this))' src=\"" + pv.Image + "\" />";
+                                    p.ProductImage = "<img onclick='openImage($(this))' src=\"" + Thumbnail.getURL(pv.Image, Thumbnail.Size.Small) + "\" />";
                                     p.ProductImageOrigin = pv.Image;
                                 }
                                 else
@@ -171,8 +172,8 @@ namespace IM_PJ
 
                         if (!string.IsNullOrEmpty(products.ProductImage))
                         {
-                            p.ProductImage = "<img onclick='openImage($(this))' src=\"" + products.ProductImage + "\" />";
-                            p.ProductImageOrigin = products.ProductImage;
+                            p.ProductImage = "<img onclick='openImage($(this))' src=\"" + Thumbnail.getURL(products.ProductImage, Thumbnail.Size.Small) + "\" />";
+                            p.ProductImageOrigin = Thumbnail.getURL(products.ProductImage, Thumbnail.Size.Small);
                         }
                         else
                         {
@@ -234,8 +235,8 @@ namespace IM_PJ
 
                                 if (!string.IsNullOrEmpty(value.Image))
                                 {
-                                    p.ProductImage = "<img onclick='openImage($(this))' src=\"" + value.Image + "\" />";
-                                    p.ProductImageOrigin = value.Image;
+                                    p.ProductImage = "<img onclick='openImage($(this))' src=\"" + Thumbnail.getURL(value.Image, Thumbnail.Size.Small) + "\" />";
+                                    p.ProductImageOrigin = Thumbnail.getURL(value.Image, Thumbnail.Size.Small);
                                 }
                                 else
                                 {

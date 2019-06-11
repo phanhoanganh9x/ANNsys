@@ -1,5 +1,6 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Utils;
 using MB.Extensions;
 using Newtonsoft.Json;
 using NHST.Bussiness;
@@ -241,7 +242,7 @@ namespace IM_PJ
                                                         + "\" data-TienGiam=\"" + item.DiscountPricePerProduct
                                                         + "\" data-Soluongtoida=\"" + item.QuantityMax + "\" data-RefundFee=\"" + item.RefundFeePerProduct + "\"  >";
                                     html += "   <td>" + t + "</td>";
-                                    html += "   <td class='image-item'><img src='" + item.ProductImage + "'></td>";
+                                    html += "   <td class='image-item'><img src='" + Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Small) + "'></td>";
                                     html += "   <td class='name-item'><a href='/xem-san-pham?sku=" + item.SKU + "' target='_blank'>" + item.ProductName + "</a>" + variable + "</td>";
                                     html += "   <td class='sku-item'>" + item.SKU + "</td>";
                                     html += "   <td class='price-item giagoc' data-giagoc=\"" + item.GiavonPerProduct + "\">" + string.Format("{0:N0}", Convert.ToDouble(item.GiavonPerProduct)) + "</td>";

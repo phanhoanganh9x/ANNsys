@@ -32,7 +32,7 @@ function showProductVariable(productVariables) {
         html += "         <td class='order-item check-column'>";
         html += "             <input class='check-popup' data-productVariableID='" + item.ProductVariableID + "' type='checkbox' onchange='check($(this))' />";
         html += "         </td>";
-        html += "         <td class='image-column'><img src='" + item.ProductImage + "'></td>";
+        html += "         <td class='image-column'><img src='/uploads/images/85x85/" + item.ProductImage + "'></td>";
         html += "         <td class='name-column'>" + item.ProductTitle + "</td>";
         html += "         <td class='sku-column key'>" + item.ChildSKU + "</td>";
         html += "         <td class='variable-column'>" + item.VariableValue + "</td>";
@@ -191,9 +191,11 @@ function addHtmlProductResult(item) {
     // for page them-moi-don-hang
     if (_isStock) {
         html += "   <td class='order-item'>" + orderItem + "</td>";
+        html += "   <td class='image-item'><img onclick='openImage($(this))' src='/uploads/images/160x160/" + item.ProductImage + "'></td>";
     }
-
-    html += "   <td class='image-item'><img onclick='openImage($(this))' src='" + item.ProductImage + "'></td>";
+    else {
+        html += "   <td class='image-item'><img onclick='openImage($(this))' src='/uploads/images/85x85/" + item.ProductImage + "'></td>";
+    }
     html += "   <td class='name-item'><a href='/xem-san-pham?id=" + item.ProductID + "&variableid=" + item.ProductVariableID + "' target='_blank'>" + item.ProductTitle + "</a></td>";
     html += "   <td class='sku-item'>" + SKU + "</td>";
     html += "   <td class='variable-item'>" + item.VariableValue + "</td>";

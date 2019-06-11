@@ -13,6 +13,7 @@ using System.Web.UI.WebControls;
 using System.Web.Script.Serialization;
 using System.Web.Services;
 using static IM_PJ.Controllers.ProductController;
+using IM_PJ.Utils;
 
 namespace IM_PJ
 {
@@ -410,7 +411,7 @@ namespace IM_PJ
                     html.Append("<tr>");
 
                     html.Append("<td>");
-                    html.Append("   <a href=\"/xem-san-pham?id=" + item.ID + "\"><img src=\"" + item.ProductImage + "\"/></a>");
+                    html.Append("   <a href=\"/xem-san-pham?id=" + item.ID + "\"><img src=\"" + Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Small) + "\"/></a>");
                     html.Append("   <a href=\"javascript:;\" onclick=\"copyProductInfo(" + item.ID + ")\" class=\"btn download-btn h45-btn\"><i class=\"fa fa-files-o\"></i> Copy</a>");
                     html.Append("</td>");
 

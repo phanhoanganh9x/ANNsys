@@ -1,4 +1,5 @@
 ﻿using IM_PJ.Controllers;
+using IM_PJ.Utils;
 using MB.Extensions;
 using NHST.Bussiness;
 using System;
@@ -370,7 +371,10 @@ namespace IM_PJ
                                     try
                                     {
                                         f.SaveAs(Server.MapPath(o));
-                                        ProductImage = o;
+                                        ProductImage = Path.GetFileName(Server.MapPath(o));
+                                        // Thumbnail
+                                        Thumbnail.create(Server.MapPath(o), 85, 85);
+                                        Thumbnail.create(Server.MapPath(o), 160, 160);
                                     }
                                     catch { }
                                 }
@@ -387,7 +391,10 @@ namespace IM_PJ
                                     try
                                     {
                                         f.SaveAs(Server.MapPath(o));
-                                        ProductImageClean = o;
+                                        ProductImageClean = Path.GetFileName(Server.MapPath(o));
+                                        // Thumbnail
+                                        Thumbnail.create(Server.MapPath(o), 85, 85);
+                                        Thumbnail.create(Server.MapPath(o), 160, 160);
                                     }
                                     catch { }
                                 }
@@ -404,7 +411,10 @@ namespace IM_PJ
                                     try
                                     {
                                         f.SaveAs(Server.MapPath(o));
-                                        IMG = o;
+                                        IMG = Path.GetFileName(Server.MapPath(o));
+                                        // Thumbnail
+                                        Thumbnail.create(Server.MapPath(o), 85, 85);
+                                        Thumbnail.create(Server.MapPath(o), 160, 160);
                                         ProductImageController.Insert(kq.ToInt(), IMG, false, currentDate, username);
                                     }
                                     catch { }
@@ -446,7 +456,10 @@ namespace IM_PJ
                                         {
                                             var o = path + kq + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName));
                                             postedFile.SaveAs(Server.MapPath(o));
-                                            image = o;
+                                            image = Path.GetFileName(Server.MapPath(o));
+                                            // Thumbnail
+                                            Thumbnail.create(Server.MapPath(o), 85, 85);
+                                            Thumbnail.create(Server.MapPath(o), 160, 160);
                                         }
 
                                         string kq1 = ProductVariableController.Insert(ProductID, ProductSKU, productvariablesku, 0, stockstatus, Convert.ToDouble(regularprice),

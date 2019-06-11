@@ -1,5 +1,6 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Utils;
 using MB.Extensions;
 using NHST.Bussiness;
 using System;
@@ -85,7 +86,7 @@ namespace IM_PJ
 
                     if (p.ProductImage != null)
                     {
-                        ProductThumbnail.Text = "<p><img src=\"" + p.ProductImage + "\" /><a href='" + p.ProductImage + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></p>";
+                        ProductThumbnail.Text = "<p><img src=\"" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Small) + "\" /><a href='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Small) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></p>";
                     }
 
                     var image = ProductImageController.GetByProductID(id);
@@ -96,7 +97,7 @@ namespace IM_PJ
                         {
                             if(img.ProductImage != p.ProductImage)
                             {
-                                imageGallery.Text += "<p><img src=\"" + img.ProductImage + "\" /><a href='" + img.ProductImage + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></p>";
+                                imageGallery.Text += "<p><img src=\"" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Small) + "\" /><a href='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Small) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></p>";
                             }
                         }
                     }
@@ -149,7 +150,7 @@ namespace IM_PJ
                     html.Append("<div class='col-md-3 product-item'>");
                     if (!string.IsNullOrEmpty(item.Image))
                     {
-                        html.Append("   <p><img src=\"" + item.Image + "\"/><a href='" + item.Image + "' download class='btn download-btn h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></p></p>");
+                        html.Append("   <p><img src=\"" + Thumbnail.getURL(item.Image, Thumbnail.Size.Small) + "\"/><a href='" + Thumbnail.getURL(item.Image, Thumbnail.Size.Small) + "' download class='btn download-btn h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></p></p>");
                     }
                     else
                     {
