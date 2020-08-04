@@ -1882,8 +1882,8 @@
                                             let order_id = $("#<%=hdOrderInfoID.ClientID%>").val();
                                             $.ajax({
                                                 type: "POST",
-                                                url: "/thong-tin-don-hang.aspx/UpdateStatus",
-                                                data: "{OrderId: " + order_id + "}",
+                                                url: "thong-tin-don-hang.aspx/UpdateStatus",
+                                                data: JSON.stringify({OrderID: order_id }),
                                                 contentType: "application/json; charset=utf-8",
                                                 dataType: "json",
                                                 success: function (msg) {

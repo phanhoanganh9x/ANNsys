@@ -82,11 +82,12 @@ namespace IM_PJ
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
-                string TextSearch = "";
-                string RefundFee = "";
+                string TextSearch = String.Empty;
+                string RefundFee = String.Empty;
                 int Status = 0;
-                string CreatedBy = "";
-                string CreatedDate = "";
+                string CreatedBy = String.Empty;
+                string CreatedDate = String.Empty;
+                int Page = 1;
 
                 if (Request.QueryString["textsearch"] != null)
                 {
@@ -108,51 +109,44 @@ namespace IM_PJ
                 {
                     CreatedDate = Request.QueryString["createddate"];
                 }
+                if (Request.QueryString["Page"] != null)
+                {
+                    Page = Request.QueryString["Page"].ToInt();
+                }
 
                 txtSearchOrder.Text = TextSearch;
                 ddlStatus.SelectedValue = Status.ToString();
                 ddlRefundFee.SelectedValue = RefundFee.ToString();
                 ddlCreatedBy.Text = CreatedBy.ToString();
                 ddlCreatedDate.SelectedValue = CreatedDate.ToString();
+                ddlCreatedBy.Enabled = acc.RoleID == 0;
 
-                List<RefundOrder> rs = new List<RefundOrder>();
-                rs = RefundGoodController.Filter(TextSearch, Status, RefundFee, CreatedBy, CreatedDate);
-            
-                if (acc.RoleID != 0)
+                var filter = new RefundFilterModel()
                 {
-                    rs = rs.Where(x => x.CreatedBy == acc.Username).ToList();
-                    ddlCreatedBy.Enabled = false;
-                }
-
-                // ẩn sản phẩm theo thời gian
-                DateTime year = new DateTime(2019, 12, 15);
-
-                var config = ConfigController.GetByTop1();
-                
-                if (config.ViewAllOrders == 1)
+                    search = TextSearch,
+                    status = Status,
+                    feeStatus = RefundFee,
+                    dateTimePicker = CreatedDate,
+                    staff = acc.RoleID != 0 ? acc.Username : CreatedBy
+                };
+                // Create pagination
+                var pagination = new PaginationMetadataModel()
                 {
-                    year = new DateTime(2018, 6, 22);
-                }
+                    currentPage = Page
+                };
+                var rs = RefundGoodController.Filter(filter, ref pagination);
 
-                if (config.ViewAllReports == 0)
-                {
-                    year = DateTime.Now.AddMonths(-2);
-                }
-
-                rs = rs.Where(x => x.CreatedDate >= year).ToList();
-
-                pagingall(rs);
-
-                ltrNumberOfOrder.Text = rs.Count().ToString();
+                pagingall(rs, pagination);
+                ltrNumberOfOrder.Text = pagination.totalCount.ToString();
+                PageCount = pagination.totalPages;
             }
         }
         #region Paging
-        public void pagingall(List<RefundOrder> acs)
+        public void pagingall(List<RefundOrder> data, PaginationMetadataModel pagination)
         {
             string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
 
-            int PageSize = 30;
             StringBuilder html = new StringBuilder();
             html.Append("<thead>");
             html.Append("<tr>");
@@ -172,76 +166,56 @@ namespace IM_PJ
             html.Append("</thead>");
 
             html.Append("<tbody>");
-            if (acs.Count > 0)
+
+            foreach (var item in data)
             {
-                int TotalItems = acs.Count;
-                if (TotalItems % PageSize == 0)
-                    PageCount = TotalItems / PageSize;
-                else
-                    PageCount = TotalItems / PageSize + 1;
+                html.Append("<tr>");
+                html.Append("   <td data-title='Mã đơn'><a target='_blank' href='/xem-don-hang-doi-tra?id=" + item.ID + "'>" + item.ID + "</a></td>");
 
-                Int32 Page = GetIntFromQueryString("Page");
-
-                if (Page == -1) Page = 1;
-                int FromRow = (Page - 1) * PageSize;
-                int ToRow = Page * PageSize - 1;
-                if (ToRow >= TotalItems)
-                    ToRow = TotalItems - 1;
-                
-                for (int i = FromRow; i < ToRow + 1; i++)
+                if (!string.IsNullOrEmpty(item.Nick))
                 {
-                    var item = acs[i];
-                    html.Append("<tr>");
-                    html.Append("   <td data-title='Mã đơn'><a target='_blank' href='/xem-don-hang-doi-tra?id=" + item.ID + "'>" + item.ID + "</a></td>");
-
-                    if (!string.IsNullOrEmpty(item.Nick))
-                    {
-                        html.Append("   <td data-title='Khách hàng' class='customer-td'><a target='_blank' class='customer-name-link' href='/xem-don-hang-doi-tra?id=" + item.ID + "'>" + item.Nick.ToTitleCase() + "</a><br><span class='name-bottom-nick'>(" + item.CustomerName.ToTitleCase() + ")</span></td>");
-                    }
-                    else
-                    {
-                        html.Append("   <td data-title='Khách hàng' class='customer-td'><a target='_blank' class='customer-name-link' href='/xem-don-hang-doi-tra?id=" + item.ID + "'>" + item.CustomerName.ToTitleCase() + "</a></td>");
-                    }
-
-                    html.Append("   <td data-title='Số lượng'>" + string.Format("{0:N0}", Convert.ToDouble(item.Quantity)) + "</td>");
-                    html.Append("   <td data-title='Phí đổi hàng'>" + string.Format("{0:N0}", Convert.ToDouble(item.TotalRefundFee)) + "</td>");
-                    html.Append("   <td data-title='Tổng tiền'><strong>" + string.Format("{0:N0}", Convert.ToDouble(item.TotalPrice)) + "</strong></td>");
-                    html.Append("   <td data-title='Trạng thái'>" + PJUtils.RefundStatus(Convert.ToInt32(item.Status)) + "</td>");
-
-                    if(item.OrderSaleID > 0)
-                    {
-                        html.Append("   <td data-title='Đơn trừ tiền'><a class='customer-name-link' target='_blank' title='Bấm vào xem đơn hàng trừ tiền' href='/thong-tin-don-hang?id=" + item.OrderSaleID + "'>" + item.OrderSaleID + "</a></td>");
-                    }
-                    else
-                    {
-                        html.Append("   <td data-title='Đơn trừ tiền'></td>");
-                    }
-
-                    if (acc.RoleID == 0)
-                    {
-                        html.Append("   <td data-title='Nhân viên'>" + item.CreatedBy + "</td>");
-                    }
-
-                    string date = string.Format("<strong>{0:dd/MM}</strong><br>{0:HH:mm}", item.CreatedDate);
-                    html.Append("   <td data-title='Ngày tạo'>" + date + "</td>");
-
-                    html.Append("   <td data-title='Thao tác' class='update-button'>");
-                    html.Append("       <a href='/print-invoice-return?id=" + item.ID + "' title='In hóa đơn' target='_blank' class='btn primary-btn h45-btn'><i class='fa fa-print' aria-hidden='true'></i></a>");
-                    html.Append("       <a href='/print-return-order-image?id=" + item.ID + "' title='Lấy ảnh đơn hàng' target='_blank' class='btn primary-btn btn-red h45-btn'><i class='fa fa-picture-o' aria-hidden='true'></i></a>");
-                    html.Append("   </td>");
-                    html.Append("</tr>");
+                    html.Append("   <td data-title='Khách hàng' class='customer-td'><a target='_blank' class='customer-name-link' href='/xem-don-hang-doi-tra?id=" + item.ID + "'>" + item.Nick.ToTitleCase() + "</a><br><span class='name-bottom-nick'>(" + item.CustomerName.ToTitleCase() + ")</span></td>");
                 }
-            }
-            else
-            {
+                else
+                {
+                    html.Append("   <td data-title='Khách hàng' class='customer-td'><a target='_blank' class='customer-name-link' href='/xem-don-hang-doi-tra?id=" + item.ID + "'>" + item.CustomerName.ToTitleCase() + "</a></td>");
+                }
+
+                html.Append("   <td data-title='Số lượng'>" + string.Format("{0:N0}", Convert.ToDouble(item.Quantity)) + "</td>");
+                html.Append("   <td data-title='Phí đổi hàng'>" + string.Format("{0:N0}", Convert.ToDouble(item.TotalRefundFee)) + "</td>");
+                html.Append("   <td data-title='Tổng tiền'><strong>" + string.Format("{0:N0}", Convert.ToDouble(item.TotalPrice)) + "</strong></td>");
+                html.Append("   <td data-title='Trạng thái'>" + PJUtils.RefundStatus(Convert.ToInt32(item.Status)) + "</td>");
+
+                if (item.OrderSaleID > 0)
+                {
+                    html.Append("   <td data-title='Đơn trừ tiền'><a class='customer-name-link' target='_blank' title='Bấm vào xem đơn hàng trừ tiền' href='/thong-tin-don-hang?id=" + item.OrderSaleID + "'>" + item.OrderSaleID + "</a></td>");
+                }
+                else
+                {
+                    html.Append("   <td data-title='Đơn trừ tiền'></td>");
+                }
+
                 if (acc.RoleID == 0)
                 {
+                    html.Append("   <td data-title='Nhân viên'>" + item.CreatedBy + "</td>");
+                }
+
+                string date = string.Format("<strong>{0:dd/MM}</strong><br>{0:HH:mm}", item.CreatedDate);
+                html.Append("   <td data-title='Ngày tạo'>" + date + "</td>");
+
+                html.Append("   <td data-title='Thao tác' class='update-button'>");
+                html.Append("       <a href='/print-invoice-return?id=" + item.ID + "' title='In hóa đơn' target='_blank' class='btn primary-btn h45-btn'><i class='fa fa-print' aria-hidden='true'></i></a>");
+                html.Append("       <a href='/print-return-order-image?id=" + item.ID + "' title='Lấy ảnh đơn hàng' target='_blank' class='btn primary-btn btn-red h45-btn'><i class='fa fa-picture-o' aria-hidden='true'></i></a>");
+                html.Append("   </td>");
+                html.Append("</tr>");
+            }
+
+            if (data.Count == 0)
+            {
+                if (acc.RoleID == 0)
                     html.Append("<tr><td colspan='10'>Không tìm thấy đơn hàng...</td></tr>");
-                }
                 else
-                {
                     html.Append("<tr><td colspan='9'>Không tìm thấy đơn hàng...</td></tr>");
-                }
             }
 
             ltrList.Text = html.ToString();

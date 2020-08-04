@@ -231,6 +231,7 @@ namespace IM_PJ
                         var cust = CustomerController.GetByPhone(phone);
                         if (cust != null)
                         {
+                            #region Tạo đơn hàng đổi tra
                             int custID = cust.ID;
                             string totalprice = hdfTotalPrice.Value;
                             string totalquantity = hdfTotalQuantity.Value;
@@ -244,8 +245,10 @@ namespace IM_PJ
                             //insert ddlstatus, refundnote
                             int status = ddlRefundStatus.SelectedValue.ToInt();
                             string RefundsNote = txtRefundsNote.Text;
-                            int rID = RefundGoodController.Insert(AgentID, totalprice, status, custID, Convert.ToDouble(totalquantity),
+                            int rID = RefundGoodController.Insert(AgentID, totalprice, status, custID, Convert.ToInt32(totalquantity),
                                 totalrefund, agentName, cust.CustomerName, cust.CustomerPhone, currentDate, username, RefundsNote);
+                            #endregion
+
                             if (rID > 0)
                             {
                                 string listString = hdfListProduct.Value;
@@ -254,6 +257,7 @@ namespace IM_PJ
                                 {
                                     for (int i = 0; i < items.Length - 1; i++)
                                     {
+                                        #region Tạo chi tiết đơn hàng đổi tra
                                         string[] element = items[i].Split(';');
                                         var sku = element[0];
                                         var orderID = element[1].ToInt(0);
@@ -275,6 +279,9 @@ namespace IM_PJ
                                             quantityMax, PriceNotFeeRefund.ToString(), ProductType, true, RefundType, RefundFeePerProduct.ToString(),
                                             rdTotalRefundFee.ToString(), GiavonPerProduct.ToString(), DiscountPricePerProduct.ToString(), SoldPricePerProduct.ToString(),
                                             TotalPriceRow, currentDate, username);
+                                        #endregion
+
+                                        #region Cập nhật stock
                                         if (rdID > 0)
                                         {
                                             if (RefundType < 3)
@@ -375,8 +382,12 @@ namespace IM_PJ
                                                 }
                                             }
                                         }
-                                        PJUtils.ShowMessageBoxSwAlertCallFunction("Tạo đơn hàng đổi trả thành công", "s", true, "redirectTo(" + rID + ")", Page);
+                                        #endregion
                                     }
+
+                                    RefundGoodController.updateQuantityCOGS(rID);
+
+                                    PJUtils.ShowMessageBoxSwAlertCallFunction("Tạo đơn hàng đổi trả thành công", "s", true, "redirectTo(" + rID + ")", Page);
                                 }
                             }
                         }

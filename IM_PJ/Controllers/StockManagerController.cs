@@ -66,6 +66,8 @@ namespace IM_PJ.Controllers
                             stockBalance.ParentID = stock.ParentID;
                             stockBalance.CreatedDate = stock.CreatedDate.Value.AddMilliseconds(-10);
                             stockBalance.CreatedBy = stock.CreatedBy;
+                            stockBalance.ModifiedDate = stock.CreatedDate.Value.AddMilliseconds(-10);
+                            stockBalance.ModifiedBy = stock.CreatedBy;
                             stockBalance.MoveProID = stock.MoveProID;
 
                             dbe.tbl_StockManager.Add(stockBalance);
@@ -106,6 +108,8 @@ namespace IM_PJ.Controllers
                         stockBalance.ParentID = stock.ParentID;
                         stockBalance.CreatedDate = stock.CreatedDate.Value.AddMilliseconds(-10);
                         stockBalance.CreatedBy = stock.CreatedBy;
+                        stockBalance.ModifiedDate = stock.CreatedDate.Value.AddMilliseconds(-10);
+                        stockBalance.ModifiedBy = stock.CreatedBy;
                         stockBalance.MoveProID = stock.MoveProID;
 
                         dbe.tbl_StockManager.Add(stockBalance);
@@ -352,6 +356,8 @@ namespace IM_PJ.Controllers
                                 ParentID = stockNew.ParentID,
                                 CreatedDate = stockNew.CreatedDate,
                                 CreatedBy = stockNew.CreatedBy,
+                                ModifiedDate = stockNew.CreatedDate,
+                                ModifiedBy = stockNew.CreatedBy,
                                 MoveProID = stockNew.MoveProID
                             };
                          })
@@ -404,6 +410,8 @@ namespace IM_PJ.Controllers
                                             ParentID = stockNew.ParentID,
                                             CreatedDate = stockNew.CreatedDate.Value.AddMilliseconds(-10),
                                             CreatedBy = stockNew.CreatedBy,
+                                            ModifiedDate = stockNew.CreatedDate.Value.AddMilliseconds(-10),
+                                            ModifiedBy = stockNew.CreatedBy,
                                             MoveProID = stockNew.MoveProID
                                         });
 
@@ -422,6 +430,8 @@ namespace IM_PJ.Controllers
                                         ParentID = stockNew.ParentID,
                                         CreatedDate = stockNew.CreatedDate,
                                         CreatedBy = stockNew.CreatedBy,
+                                        ModifiedDate = stockNew.CreatedDate,
+                                        ModifiedBy = stockNew.CreatedBy,
                                         MoveProID = stockNew.MoveProID
                                     };
                                 }
@@ -442,6 +452,8 @@ namespace IM_PJ.Controllers
                                         ParentID = stockNew.ParentID,
                                         CreatedDate = stockNew.CreatedDate,
                                         CreatedBy = stockNew.CreatedBy,
+                                        ModifiedDate = stockNew.CreatedDate,
+                                        ModifiedBy = stockNew.CreatedBy,
                                         MoveProID = stockNew.MoveProID
                                     };
                                 }
@@ -464,6 +476,8 @@ namespace IM_PJ.Controllers
                                         ParentID = stockNew.ParentID,
                                         CreatedDate = stockNew.CreatedDate.Value.AddMilliseconds(-10),
                                         CreatedBy = stockNew.CreatedBy,
+                                        ModifiedDate = stockNew.CreatedDate.Value.AddMilliseconds(-10),
+                                        ModifiedBy = stockNew.CreatedBy,
                                         MoveProID = stockNew.MoveProID
                                     });
 
@@ -482,6 +496,8 @@ namespace IM_PJ.Controllers
                                     ParentID = stockNew.ParentID,
                                     CreatedDate = stockNew.CreatedDate,
                                     CreatedBy = stockNew.CreatedBy,
+                                    ModifiedDate = stockNew.CreatedDate,
+                                    ModifiedBy = stockNew.CreatedBy,
                                     MoveProID = stockNew.MoveProID
                                 };
                             }

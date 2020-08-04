@@ -42,6 +42,7 @@ namespace IM_PJ.Models
         public virtual DbSet<FeeType> FeeTypes { get; set; }
         public virtual DbSet<GroupNotifyPromotion> GroupNotifyPromotions { get; set; }
         public virtual DbSet<Notification> Notifications { get; set; }
+        public virtual DbSet<NotificationCategory> NotificationCategories { get; set; }
         public virtual DbSet<NotifyNew> NotifyNews { get; set; }
         public virtual DbSet<NotifyPromotion> NotifyPromotions { get; set; }
         public virtual DbSet<NotifyUser> NotifyUsers { get; set; }
@@ -49,6 +50,7 @@ namespace IM_PJ.Models
         public virtual DbSet<PostClone> PostClones { get; set; }
         public virtual DbSet<PostPublic> PostPublics { get; set; }
         public virtual DbSet<PostPublicImage> PostPublicImages { get; set; }
+        public virtual DbSet<PostWordpress> PostWordpresses { get; set; }
         public virtual DbSet<ProductTag> ProductTags { get; set; }
         public virtual DbSet<ReceivedProductHistory> ReceivedProductHistories { get; set; }
         public virtual DbSet<Register> Registers { get; set; }
@@ -98,7 +100,5 @@ namespace IM_PJ.Models
         public virtual DbSet<UserNotifyPromotion> UserNotifyPromotions { get; set; }
         public virtual DbSet<WebWordpress> WebWordpresses { get; set; }
         public virtual DbSet<ZaloIndustry> ZaloIndustries { get; set; }
-        public virtual DbSet<PostWordpress> PostWordpresses { get; set; }
-        public virtual DbSet<NotificationCategory> NotificationCategories { get; set; }
     }
 }

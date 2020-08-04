@@ -258,8 +258,8 @@ namespace IM_PJ
 
                 if (a != null)
                 {
+                    #region Lấy thông tin tao đơn đổi tra
                     // Change user
-                    
                     string UserHelp = "";
                     string redirectToUsername = "";
                     if (username != hdfUsernameCurrent.Value)
@@ -282,6 +282,7 @@ namespace IM_PJ
                     int ProvinceID = hdfProvinceID.Value.ToInt(0);
                     int DistrictID = hdfDistrictID.Value.ToInt(0);
                     int WardID = hdfWardID.Value.ToInt(0);
+                    #endregion
 
                     if (!string.IsNullOrEmpty(CustomerPhone))
                     {
@@ -289,12 +290,14 @@ namespace IM_PJ
 
                         if (checkCustomer != null)
                         {
+                            #region Cập nhật thông tin khách hàng
                             int custID = checkCustomer.ID;
 
                             string kq = CustomerController.Update(custID, CustomerName, checkCustomer.CustomerPhone, CustomerAddress, "", checkCustomer.CustomerLevelID.Value, checkCustomer.Status.Value, checkCustomer.CreatedBy, currentDate, username, false, Zalo, Facebook, checkCustomer.Note, Nick, checkCustomer.Avatar, checkCustomer.ShippingType.Value, checkCustomer.PaymentType.Value, checkCustomer.TransportCompanyID.Value, checkCustomer.TransportCompanySubID.Value, checkCustomer.CustomerPhone2, ProvinceID, DistrictID, WardID);
+                            #endregion
 
+                            #region Tạo đơn hàng đổi trả
                             double totalPrice = Convert.ToDouble(hdfTotalPrice.Value);
-                            double totalQuantity = Convert.ToDouble(hdfTotalQuantity.Value);
                             double totalRefund = Convert.ToDouble(hdfTotalRefund.Value);
                             int OrderSaleID = hdfOrderSaleID.Value.ToInt(0);
                             
@@ -321,7 +324,6 @@ namespace IM_PJ
                                     TotalPrice = totalPrice.ToString(),
                                     Status = status,
                                     CustomerID = custID,
-                                    TotalQuantity = totalQuantity,
                                     TotalRefundFee = totalRefund.ToString(),
                                     CreatedDate = currentDate,
                                     CreatedBy = username,
@@ -332,90 +334,101 @@ namespace IM_PJ
                                     OrderSaleID = OrderSaleID,
                                     UserHelp = UserHelp
                                 });
+                            #endregion
 
                             if (rID > 0)
                             {
+                                #region Cập nhật đơn đổi hàng vào order
                                 if (OrderSaleID != 0)
                                 {
                                     OrderController.UpdateRefund(OrderSaleID, rID, username);
                                 }
+                                #endregion
 
+                                #region Thực hiện tạo chi tiết đơn đổi hàng
                                 RefundGoodModel refundModel = JsonConvert.DeserializeObject<RefundGoodModel>(hdfListProduct.Value);
-
+                                var refundDetails = new List<tbl_RefundGoodsDetails>();
+                                var stocks = new List<tbl_StockManager>();
                                 int t = 0;
                                 int time = 0;
+
                                 foreach (RefundDetailModel item in refundModel.RefundDetails)
                                 {
+                                    #region Tạo từng dòng chi tiết đổi hàng
                                     t++;
                                     time += 20;
-                                    int rdID = RefundGoodDetailController.Insert(
-                                        new tbl_RefundGoodsDetails()
-                                        {
-                                            RefundGoodsID = rID,
-                                            AgentID = agentID,
-                                            OrderID = 0,
-                                            ProductName = item.ProductTitle,
-                                            CustomerID = custID,
-                                            SKU = item.ProductStyle == 1 ? item.ParentSKU : item.ChildSKU,
-                                            Quantity = item.QuantityRefund,
-                                            QuantityMax = item.QuantityRefund,
-                                            PriceNotFeeRefund = (item.QuantityRefund * item.ReducedPrice).ToString(),
-                                            ProductType = item.ProductStyle,
-                                            IsCount = true,
-                                            RefundType = item.ChangeType,
-                                            RefundFeePerProduct = item.ChangeType == 2 ? item.FeeRefund.ToString() : "0",
-                                            TotalRefundFee = item.ChangeType == 2 ? (item.FeeRefund * item.QuantityRefund).ToString() : "0",
-                                            GiavonPerProduct = item.Price.ToString(),
-                                            DiscountPricePerProduct = (item.Price - item.ReducedPrice).ToString(),
-                                            SoldPricePerProduct = item.ReducedPrice.ToString(),
-                                            TotalPriceRow = item.TotalFeeRefund.ToString(),
-                                            CreatedDate = currentDate.AddMilliseconds(time),
-                                            CreatedBy = username
-                                        });
-                                    
-                                    if (rdID > 0)
+                                    refundDetails.Add( new tbl_RefundGoodsDetails()
                                     {
-                                        if (item.ChangeType < 3)
+                                        RefundGoodsID = rID,
+                                        AgentID = agentID,
+                                        OrderID = 0,
+                                        ProductName = item.ProductTitle,
+                                        CustomerID = custID,
+                                        SKU = item.ProductStyle == 1 ? item.ParentSKU : item.ChildSKU,
+                                        Quantity = item.QuantityRefund,
+                                        QuantityMax = item.QuantityRefund,
+                                        PriceNotFeeRefund = (item.QuantityRefund * item.ReducedPrice).ToString(),
+                                        ProductType = item.ProductStyle,
+                                        IsCount = true,
+                                        RefundType = item.ChangeType,
+                                        RefundFeePerProduct = item.ChangeType == 2 ? item.FeeRefund.ToString() : "0",
+                                        TotalRefundFee = item.ChangeType == 2 ? (item.FeeRefund * item.QuantityRefund).ToString() : "0",
+                                        GiavonPerProduct = item.Price.ToString(),
+                                        DiscountPricePerProduct = (item.Price - item.ReducedPrice).ToString(),
+                                        SoldPricePerProduct = item.ReducedPrice.ToString(),
+                                        TotalPriceRow = item.TotalFeeRefund.ToString(),
+                                        CreatedDate = currentDate.AddMilliseconds(time),
+                                        CreatedBy = username
+                                    });
+                                    #endregion
+
+                                    #region Cập nhật thông tin đổi hàng vào Stock
+                                    if (item.ChangeType < 3)
+                                    {
+                                        int typeRe = 0;
+                                        string note = "";
+
+                                        if (item.ChangeType == 1)
                                         {
-                                            int typeRe = 0;
-                                            string note = "";
+                                            note = "Đổi size đơn " + rID;
+                                            typeRe = 8;
+                                        }
+                                        else if (item.ChangeType == 2)
+                                        {
+                                            note = "Đổi sản phẩm khác đơn " + rID;
+                                            typeRe = 9;
+                                        }
 
-                                            if (item.ChangeType == 1)
+                                        if (item.ChangeType == 1 || item.ChangeType == 2)
+                                        {
+                                            stocks.Add(new tbl_StockManager()
                                             {
-                                                note = "Đổi size đơn " + rdID;
-                                                typeRe = 8;
-                                            }
-                                            else if (item.ChangeType == 2)
-                                            {
-                                                note = "Đổi sản phẩm khác đơn " + rdID;
-                                                typeRe = 9;
-                                            }
-
-                                            if (item.ChangeType == 1 || item.ChangeType == 2)
-                                            {
-                                                StockManagerController.Insert(
-                                                    new tbl_StockManager
-                                                    {
-                                                        AgentID = agentID,
-                                                        ProductID = item.ProductStyle == 1 ? item.ProductID : 0,
-                                                        ProductVariableID = item.ProductVariableID,
-                                                        Quantity = item.QuantityRefund,
-                                                        QuantityCurrent = 0,
-                                                        Type = 1,
-                                                        NoteID = note,
-                                                        OrderID = 0,
-                                                        Status = typeRe,
-                                                        SKU = item.ProductStyle == 1 ? item.ParentSKU : item.ChildSKU,
-                                                        CreatedDate = currentDate.AddMilliseconds(time),
-                                                        CreatedBy = username,
-                                                        MoveProID = 0,
-                                                        ParentID = item.ProductID,
-                                                    });
-                                            }
+                                                AgentID = agentID,
+                                                ProductID = item.ProductStyle == 1 ? item.ProductID : 0,
+                                                ProductVariableID = item.ProductVariableID,
+                                                Quantity = item.QuantityRefund,
+                                                QuantityCurrent = 0,
+                                                Type = 1,
+                                                NoteID = note,
+                                                OrderID = 0,
+                                                Status = typeRe,
+                                                SKU = item.ProductStyle == 1 ? item.ParentSKU : item.ChildSKU,
+                                                CreatedDate = currentDate.AddMilliseconds(time),
+                                                CreatedBy = username,
+                                                MoveProID = 0,
+                                                ParentID = item.ProductID,
+                                            });
                                         }
                                     }
-                                    PJUtils.ShowMessageBoxSwAlertCallFunction("Tạo đơn hàng đổi trả thành công", "s", true, "redirectTo(" + rID + ",'" + redirectToUsername + "')", Page);
+                                    #endregion
                                 }
+
+                                refundDetails = RefundGoodDetailController.Insert(refundDetails);
+                                RefundGoodController.updateQuantityCOGS(rID);
+                                StockManagerController.Insert(stocks);
+                                #endregion
+
+                                PJUtils.ShowMessageBoxSwAlertCallFunction("Tạo đơn hàng đổi trả thành công", "s", true, "redirectTo(" + rID + ",'" + redirectToUsername + "')", Page);
                             }
                         }
                     }

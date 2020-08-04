@@ -349,9 +349,11 @@ namespace IM_PJ
                     }
 
                     int OrderID = ret.ID;
-                    double totalQuantity = 0;
+
                     if (OrderID > 0)
                     {
+                        var orderDetails = new List<tbl_OrderDetail>();
+                        var stockManager = new List<tbl_StockManager>();
                         string list = hdfListProduct.Value;
                         var items = list.Split(';').Where(x => !String.IsNullOrEmpty(x)).ToList();
                         if (items.Count > 0)
@@ -383,10 +385,25 @@ namespace IM_PJ
                             double Price = Convert.ToDouble(itemValue[9]);
                             string ProductVariableSave = itemValue[10];
 
-                            OrderDetailController.Insert(AgentID, OrderID, SKU, ProductID, ProductVariableID, ProductVariableSave, Quantity, Price, 1, 0,
-                                ProductType, currentDate, username, true);
+                            orderDetails.Add(new tbl_OrderDetail()
+                            {
+                                AgentID = AgentID,
+                                OrderID = OrderID,
+                                SKU = SKU,
+                                ProductID = ProductID,
+                                ProductVariableID = ProductVariableID,
+                                ProductVariableDescrition = ProductVariableSave,
+                                Quantity = Quantity,
+                                Price = Price,
+                                Status = 1,
+                                DiscountPrice = 0,
+                                ProductType = ProductType,
+                                CreatedDate = currentDate,
+                                CreatedBy = username,
+                                IsCount = true
+                            });
 
-                            StockManagerController.Insert(
+                            stockManager.Add(
                                 new tbl_StockManager
                                 {
                                     AgentID = AgentID,
@@ -404,8 +421,11 @@ namespace IM_PJ
                                     MoveProID = 0,
                                     ParentID = parentID,
                                 });
-                            totalQuantity += Quantity;
                         }
+
+                        OrderDetailController.Insert(orderDetails);
+                        OrderController.updateQuantityCOGS(OrderID);
+                        StockManagerController.Insert(stockManager);
 
                         string refund = hdSession.Value;
                         if (refund != "1")
