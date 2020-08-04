@@ -2679,10 +2679,10 @@ namespace IM_PJ.Controllers
                         TotalCouponValue = x.Max(m => m.TotalCouponValue)
                     }
                     )
-                    .GroupBy(g => g.DateDone)
+                    .GroupBy(g => g.DateDone.ToString("yyyy-MM-dd"))
                     .Select(x => new
                     {
-                        DateDone = x.Key,
+                        DateDone = Convert.ToDateTime(x.Key),
                         TotalNumberOfOrder = x.Sum(s => s.Number),
                         TotalSoldQuantity = x.Sum(s => s.TotalSoldQuantity),
                         TotalSalePrice = x.Sum(s => s.TotalSalePrice),
@@ -2716,10 +2716,10 @@ namespace IM_PJ.Controllers
                         TotalRefundCost = x.Sum(s => s.RefundCost),
                         TotalRefundFee = x.Max(m => m.TotalRefundFee)
                     })
-                    .GroupBy(g => g.DateDone)
+                    .GroupBy(g => g.DateDone.ToString("yyyy-MM-dd"))
                     .Select(x => new
                     {
-                        DateDone = x.Key,
+                        DateDone = Convert.ToDateTime(x.Key),
                         TotalRefundQuantity = x.Sum(s => s.TotalRefundQuantity),
                         TotalRefundPrice = x.Sum(s => s.TotalRefundPrice),
                         TotalRefundCost = x.Sum(s => s.TotalRefundCost),
