@@ -912,7 +912,7 @@ namespace IM_PJ.Controllers
 
             if (now < new DateTime(year: 2020, month: 7, day: 1))
                 return result;
-            if (now > new DateTime(year: 2020, month: 7, day: 31))
+            if (now > new DateTime(year: 2020, month: 8, day: 31))
                 return result;
             #endregion
 
