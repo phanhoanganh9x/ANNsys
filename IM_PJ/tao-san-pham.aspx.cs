@@ -580,7 +580,7 @@ namespace IM_PJ
                                     }
                                 }
 
-                                PJUtils.ShowMessageBoxSwAlertCallFunction("Tạo sản phẩm thành công", "s", true, "redirectTo(" + kq + ")", Page);
+                                PJUtils.ShowMessageBoxSwAlertCallFunction("Tạo sản phẩm thành công", "s", true, "redirectTo(" + kq + ", '" + ProductSKU  + "')", Page);
                             }
                         }
 

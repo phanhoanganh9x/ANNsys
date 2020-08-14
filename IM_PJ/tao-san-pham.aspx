@@ -678,7 +678,8 @@
                 
             });
 
-            function redirectTo(ID) {
+            function redirectTo(ID, SKU) {
+                syncKvProduct(SKU);
                 window.location.href = "/xem-san-pham?id=" +ID;
             }
 
@@ -1397,6 +1398,22 @@
                 global.textBoxLoad = textBoxLoad;
             })(window);
 
+            // #region KiotViet
+            // Đồng bộ sản phẩm lên KiotViet
+            function syncKvProduct(productSKU) {
+                $.ajax({
+                    url: "/api/v1/kiotviet/product",
+                    headers: {
+                        "Authorization": "Basic " + btoa("anhtruyen:0979610642"),
+                        "retailerName": "iwillgiaminh"
+                    },
+                    method: 'POST',
+                    contentType: 'application/json',
+                    dataType: "json",
+                    data: JSON.stringify({ "productSKU": productSKU })
+                });
+            }
+            // #endregion
         </script>
     </telerik:RadCodeBlock>
 </asp:Content>
