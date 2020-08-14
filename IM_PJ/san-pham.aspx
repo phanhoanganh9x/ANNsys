@@ -9,6 +9,9 @@
         .page-title {
             margin-top: 15px;
         }
+        .padding-none {
+            padding: 0;
+        }
         .margin-right-15px {
             margin-right: 12px!important;
         }
@@ -412,9 +415,6 @@
                                 <div class="col-md-12 col-xs-12">
                                     <a href="javascript:;" onclick="searchProduct()" class="btn primary-btn margin-right-15px"><i class="fa fa-search"></i> Lọc</a>
                                     <a href="/" class="btn primary-btn margin-right-15px"><i class="fa fa-times" aria-hidden="true"></i> Bỏ lọc</a>
-                                    <a href="javascript:;" onclick="postALLProductKiotViet()" class="btn-action btn primary-btn margin-right-15px" disabled="disabled" readonly>
-                                        <i class="fa fa-arrow-up"></i> Kiot
-                                    </a>
                                     <a href="javascript:;" onclick="postALLProductZaloShop()" class="btn-action btn primary-btn margin-right-15px" disabled="disabled" readonly>
                                         <i class="fa fa-arrow-up"></i> Zalo
                                     </a>
@@ -423,6 +423,40 @@
                                     </a>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h5>KiotViet</h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 padding-none">
+                    <div class="filter-above-wrap clear">
+                        <div class="col-md-3 col-xs-12">
+                            <asp:DropDownList ID="ddlRetailer" runat="server" CssClass="form-control" style="background-color: #fff">
+                                <asp:ListItem Value="" Text="Tên nhà bán lẻ"></asp:ListItem>
+                                <asp:ListItem Value="iwillgiaminh" Text="iwillgiaminh"></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                        <div class="col-md-9 col-xs-12">
+                            <a href="javascript:;" id="btnSyncKvCategory" onclick="syncKvProductByCategory()" class="btn primary-btn margin-right-15px hidden" title="Đăng tất cả các sản phẩm theo danh mục">
+                                <i class="fa fa-arrow-up"></i> Danh mục
+                            </a>
+                            <a href="javascript:;" id="btnKvCategoryObserve" onclick="registerKvCategoryObservation()" class="btn primary-btn margin-right-15px hidden" title="Đăng khi có sản phẩm mới">
+                                <i class="fa fa-eye"></i> Danh mục
+                            </a>
+                            <a href="javascript:;" id="btnKvCategoryUnObserve" onclick="deleteKvCategoryObservation()" class="btn primary-btn margin-right-15px hidden" title="Không đăng sản phẩm mới">
+                                <i class="fa fa-eye-slash"></i> Danh mục
+                            </a>
+                            <a href="javascript:;" id="btnSyncAllKvProduct" onclick="syncKvProducts()" class="btn primary-btn margin-right-15px hidden" title="Đăng sản phẩm đã chọn">
+                                <i class="fa fa-arrow-up"></i> Sản phẩm
+                            </a>
+                            <a href="javascript:;" id="btnDeleteAllKvProduct" onclick="deleteKvProducts()" class="btn primary-btn btn-red margin-right-15px hidden" title="Xóa sản phẩm đã chọn">
+                                <i class="fa fa-times"></i> Sản phẩm
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -455,6 +489,9 @@
         <script src="/App_Themes/Ann/js/services/common/product-service.js?v=11072020"></script>
         
         <script type="text/javascript">
+            let observeKvCategory = false;
+            let productSync = [];
+            let productRemoval = [];
 
             $(document).ready(function() {
                 $("#<%=txtSearchProduct.ClientID%>").keyup(function (e) {
@@ -481,8 +518,239 @@
 
                     }
                 })
+
+                // Danh mục
+                _initCategory();
+
+                // KiotViet
+                _initKv();
             })
-            
+
+            function _initCategory() {
+                let $ddlCategory = $("#<%=ddlCategory.ClientID%>");
+
+                $ddlCategory.change(function () {
+                    let retailerName = $("#<%=ddlRetailer.ClientID%>").val();
+
+                    _handleBtnKvCategory(retailerName, $(this).val());
+                });
+            }
+
+            // Cài đặt KiotViet
+            function _initKv() {
+                let $ddlCategory = $("#<%=ddlCategory.ClientID%>");
+                let $ddlRetailer = $("#<%=ddlRetailer.ClientID%>");
+
+                // Header
+                _handleBtnKvCategory($ddlRetailer.val(), $ddlCategory.val());
+                _handleBtnKvProduct($ddlRetailer.val());
+                // Row
+                _handleBtnKvRow($ddlRetailer.val());
+
+                $ddlRetailer.change(function () {
+                    searchProduct();
+                });
+            }
+
+            // Xử lý ẩn hiện button KiotVet theo dõi danh mục 
+            function _handleBtnKvCategory(retailerName, categoryId) {
+                let $btnSyncKvCategory = $("#btnSyncKvCategory");
+                let $btnKvCategoryObserve = $("#btnKvCategoryObserve");
+                let $btnKvCategoryUnObserve = $("#btnKvCategoryUnObserve");
+
+                if (!retailerName || categoryId == "0") {
+                    observeKvCategory = false;
+                    // Sync Category
+                    $btnSyncKvCategory.addClass("hidden");
+                    // Observer Category
+                    $btnKvCategoryObserve.addClass("hidden");
+                    // UnObserver Category
+                    $btnKvCategoryUnObserve.addClass("hidden");
+
+                    return;
+                }
+
+                // Sync Category
+                $btnSyncKvCategory.removeClass("hidden");
+
+                $.ajax({
+                    url: "api/v1/kiotviet/category/ann-shop/" + categoryId,
+                    headers: {
+                        "Authorization": "Basic " + btoa("anhtruyen:0979610642"),
+                        "retailerName": retailerName
+                    },
+                    method: 'GET',
+                    success: (response, textStatus, xhr) => {
+                        let category = response;
+
+                        if (category && category.cronJob) {
+                            observeKvCategory = true;
+                            // Observer Category
+                            $btnKvCategoryObserve.addClass("hidden");
+                            // UnObserver Category
+                            $btnKvCategoryUnObserve.removeClass("hidden");
+                        }
+                        else {
+                            observeKvCategory = false;
+                            // Observer Category
+                            $btnKvCategoryObserve.removeClass("hidden");
+                            // UnObserver Category
+                            $btnKvCategoryUnObserve.addClass("hidden");
+                        }
+                    }
+                });
+            }
+
+            function _handleBtnKvProduct(retailerName) {
+                let $btnSyncAllKvProduct = $("#btnSyncAllKvProduct");
+                let $btnDeleteAllKvProduct = $("#btnDeleteAllKvProduct");
+
+                if (retailerName) {
+                    if (productSync.length > 0 && productRemoval.length > 0) {
+                        // Sync Product
+                        $btnSyncAllKvProduct.addClass("hidden");
+                        $btnSyncAllKvProduct.attr("disabled", true);
+                        $btnSyncAllKvProduct.attr("readonly", true);
+                        // Delete Product
+                        $btnDeleteAllKvProduct.addClass("hidden");
+                        $btnDeleteAllKvProduct.attr("disabled", true);
+                        $btnDeleteAllKvProduct.attr("readonly", true);
+                    }
+                    else if (productSync.length > 0 && productRemoval.length == 0) {
+                        // Sync Product
+                        $btnSyncAllKvProduct.removeClass("hidden");
+                        $btnSyncAllKvProduct.attr("disabled", false);
+                        $btnSyncAllKvProduct.attr("readonly", false);
+                        // Delete Product
+                        $btnDeleteAllKvProduct.addClass("hidden");
+                        $btnDeleteAllKvProduct.attr("disabled", true);
+                        $btnDeleteAllKvProduct.attr("readonly", true);
+                    }
+                    else if (productSync.length == 0 && productRemoval.length > 0) {
+                        // Sync Product
+                        $btnDeleteAllKvProduct.addClass("hidden");
+                        $btnSyncAllKvProduct.attr("disabled", true);
+                        $btnSyncAllKvProduct.attr("readonly", true);
+                        // Delete Product
+                        $btnDeleteAllKvProduct.removeClass("hidden");
+                        $btnDeleteAllKvProduct.attr("disabled", false);
+                        $btnDeleteAllKvProduct.attr("readonly", false);
+                    }
+                    else {
+                        // Sync Product
+                        $btnSyncAllKvProduct.addClass("hidden");
+                        $btnSyncAllKvProduct.attr("disabled", true);
+                        $btnSyncAllKvProduct.attr("readonly", true);
+                        // Delete Product
+                        $btnDeleteAllKvProduct.addClass("hidden");
+                        $btnDeleteAllKvProduct.attr("disabled", true);
+                        $btnDeleteAllKvProduct.attr("readonly", true);
+                    }
+                }
+                else {
+                    // Sync Product
+                    $btnSyncAllKvProduct.addClass("hidden");
+                    $btnSyncAllKvProduct.attr("disabled", true);
+                    $btnSyncAllKvProduct.attr("readonly", true);
+                    // Delete Product
+                    $btnDeleteAllKvProduct.addClass("hidden");
+                    $btnDeleteAllKvProduct.attr("disabled", true);
+                    $btnDeleteAllKvProduct.attr("readonly", true);
+                }
+            }
+
+            // Xử lý ẩn hiện các button KiotViet trên mỗi dòng
+            function _handleBtnKvRow(retailerName)
+            {
+                let $trProducts = $(".tr-product");
+                let productIdList = "";
+
+                $.each($trProducts, function (index, element) {
+                    $(this).data("existsKv", false);
+                    $(this).data("observeKvProduct", false);
+
+                    if (index == 0)
+                        productIdList += $(this).data("productid");
+                    else
+                        productIdList += "," + $(this).data("productid");
+                });
+
+                if (!productIdList)
+                    return;
+
+                if (!retailerName)
+                {
+                    $.each($trProducts, function (index, element) {
+                        let $btnKvSyncProduct = $(this).find(".btn-sync-kv-product");
+                        let $btnKvDeleteProduct = $(this).find(".btn-delete-kv-product");
+                        let $btnKvObserverProduct = $(this).find(".btn-kv-product-observation");
+                        let $btnKvUnObserverProduct = $(this).find(".btn-kv-product-unobserver");
+
+                        $(this).data("existsKv", false);
+                        $(this).data("observeKvProduct", false);
+                        $btnKvSyncProduct.addClass("hidden");
+                        $btnKvDeleteProduct.addClass("hidden");
+                        $btnKvObserverProduct.addClass("hidden");
+                        $btnKvUnObserverProduct.addClass("hidden");
+                    });
+
+                    return;
+                }
+
+                $.ajax({
+                    beforeSend: function () {
+                        HoldOn.open();
+                    },
+                    url: "/api/v1/kiotviet/product?isMaster=true&referenceProductId=" + productIdList,
+                    headers: {
+                        "Authorization": "Basic " + btoa("anhtruyen:0979610642"),
+                        "retailerName": retailerName
+                    },
+                    method: 'GET',
+                    success: (response, textStatus, xhr) => {
+                        HoldOn.close();
+
+                        let data = response || [];
+
+                        $.each($trProducts, function (index, element) {
+                            let $btnKvSyncProduct = $(this).find(".btn-sync-kv-product");
+                            let $btnKvDeleteProduct = $(this).find(".btn-delete-kv-product");
+                            let $btnKvObserverProduct = $(this).find(".btn-kv-product-observation");
+                            let $btnKvUnObserverProduct = $(this).find(".btn-kv-product-unobserver");
+                            let productSKU =  $(this).data("productsku");
+                            let product = data.find(item => item.code.startsWith(productSKU));
+
+                            if (product) {
+                                $(this).data("existsKv", true);
+                                $btnKvSyncProduct.addClass("hidden");
+                                $btnKvDeleteProduct.removeClass("hidden");
+
+                                if (product.cronJob) {
+                                    $(this).data("observeKvProduct", true);
+                                    $btnKvObserverProduct.addClass("hidden");
+                                    $btnKvUnObserverProduct.removeClass("hidden");
+                                }
+                                else {
+                                    product.data("observeKvProduct", false);
+                                    $btnKvObserverProduct.removeClass("hidden");
+                                    $btnKvUnObserverProduct.addClass("hidden");
+                                }
+                            }
+                            else {
+                                $(this).data("existsKv", false);
+                                $(this).data("observeKvProduct", false);
+                                $btnKvSyncProduct.removeClass("hidden");
+                                $btnKvDeleteProduct.addClass("hidden");
+                                $btnKvObserverProduct.addClass("hidden");
+                                $btnKvUnObserverProduct.addClass("hidden");
+                            }
+                        });
+                    },
+                    error: (xhr, textStatus, error) => {
+                        HoldOn.close();
+                    }
+                });
+            }
 
             // Parse URL Queries
             function url_query(query)
@@ -550,6 +818,7 @@
                 let size = $("#<%=ddlSize.ClientID%>").val();
                 let tag = $("#<%=ddlTag.ClientID%>").val();
                 let orderby = $("#<%=ddlOrderBy.ClientID%>").val();
+                let retailerName = $("#<%=ddlRetailer.ClientID%>").val();
 
                 if (search != "")
                 {
@@ -611,6 +880,11 @@
                     request += "&orderby=" + orderby;
                 }
 
+                // Add filter order by
+                if (retailerName) {
+                    request += "&retailerName=" + retailerName;
+                }
+
                 window.open(request, "_self");
             }
 
@@ -629,9 +903,31 @@
                 }
 
                 // Checkbox children
-                childDOM.each((index, element) => {
-                    element.checked = checked;
+                $.each(childDOM, function (index, element) {
+                    let $trProduct = $(this).parent().parent();
+                    $(this).prop("checked", checked);
+
+                    if ($trProduct.data("existsKv")) {
+                        if (checked) {
+                            productRemoval.push($trProduct.data("productid"));
+                            productRemoval = $.unique(productRemoval.sort());
+                        }
+                        else {
+                            productRemoval = productRemoval.filter(element => element != $trProduct.data("productid"));
+                        }
+                    }
+                    else {
+                        if (checked) {
+                            productSync.push($trProduct.data("productsku"));
+                            productSync = $.unique(productSync.sort());
+                        }
+                        else {
+                            productSync = productSync.filter(element => element != $trProduct.data("productsku"));
+                        }
+                    }
                 });
+
+                _handleBtnKvProduct($("#<%=ddlRetailer.ClientID%>").val());
             }
 
             function checkAll() {
@@ -651,10 +947,533 @@
             }
 
             function changeCheck(self) {
+                let $trProduct = self.parent().parent();
+                let checked = self.is(':checked');
+
+                if ($trProduct.data("existsKv")) {
+                    if (checked) {
+                        productRemoval.push($trProduct.data("productid"));
+                        productRemoval = $.unique(productRemoval.sort());
+                    }
+                    else {
+                        productRemoval = productRemoval.filter(element => element != $trProduct.data("productid"))
+                    }
+                }
+                else {
+                    if (checked) {
+                        productSync.push($trProduct.data("productsku"));
+                        productSync = $.unique(productSync.sort());
+                    }
+                    else {
+                        productSync = productSync.filter(element => element != $trProduct.data("productsku"));
+                    }
+                }
+
+                _handleBtnKvProduct($("#<%=ddlRetailer.ClientID%>").val())
 
                 // Hổ trợ xử lý check or uncheck
                 checkAll();
             }
+
+            // #region KiotViet
+            // Đồng bộ sản phẩm lên KiotViet theo danh mục
+            function syncKvProductByCategory() {
+                let retailerName = $("#<%=ddlRetailer.ClientID%>").val();
+                let $ddlCategory = $("#<%=ddlCategory.ClientID%>");
+
+                if (!retailerName || $ddlCategory.val() == "0")
+                    return;
+
+                let titleAlert = "Sản phẩm đang được đăng từ từ lên KiotViet theo danh mục";
+                let dataJSON = JSON.stringify({ "categorySlug": $ddlCategory.data("slug") });
+
+                $.ajax({
+                    beforeSend: function () {
+                        HoldOn.open();
+                    },
+                    url: "/api/v1/cron-job/kiotviet/sync-product",
+                    headers: {
+                        "Authorization": "Basic " + btoa("anhtruyen:0979610642"),
+                        "retailerName": retailerName
+                    },
+                    contentType: 'application/json',
+                    method: 'POST',
+                    dataType: "json",
+                    data: dataJSON,
+                    success: (response, textStatus, xhr) => {
+                        HoldOn.close();
+
+                        if (xhr.status == 200) {
+                            return swal({
+                                title: titleAlert,
+                                text: "Thành công",
+                                type: "success",
+                                html: true
+                            }, function () {
+                                location.reload();
+                            });
+                        } else {
+                            _alterError(titleAlert);
+                        }
+                    },
+                    error: (xhr, textStatus, error) => {
+                        HoldOn.close();
+                        _alterError(titleAlert, xhr.responseJSON);
+                    }
+                });
+            }
+
+            // Đăng ký theo dõi danh mục
+            function registerKvCategoryObservation() {
+                let retailerName = $("#<%=ddlRetailer.ClientID%>").val();
+                let categoryId = $("#<%=ddlCategory.ClientID%>").val();
+
+                if (!retailerName || categoryId == "0")
+                    return;
+
+                let titleAlert = "Đăng ký theo dõi danh mục";
+
+                $.ajax({
+                    beforeSend: function () {
+                        HoldOn.open();
+                    },
+                    url: "/api/v1/kiotviet/category/ann-shop/" + categoryId + "/observation",
+                    headers: {
+                        "Authorization": "Basic " + btoa("anhtruyen:0979610642"),
+                        "retailerName": retailerName
+                    },
+                    contentType: 'application/json',
+                    method: 'POST',
+                    success: (response, textStatus, xhr) => {
+                        HoldOn.close();
+                        let $btnKvCategoryObserve = $("#btnKvCategoryObserve");
+                        let $btnKvCategoryUnObserve = $("#btnKvCategoryUnObserve");
+
+                        if (xhr.status == 200) {
+                            observeKvCategory = true;
+                            // Observer Category
+                            $btnKvCategoryObserve.addClass("hidden");
+                            // UnObserver Category
+                            $btnKvCategoryUnObserve.removeClass("hidden");
+
+                            _alterSuccess(titleAlert, "Thành công");
+                        } else {
+                            _alterError(titleAlert);
+                        }
+                    },
+                    error: (xhr, textStatus, error) => {
+                        HoldOn.close();
+                        _alterError(titleAlert, xhr.responseJSON);
+                    }
+                });
+            }
+
+            // Bỏ theo dõi danh mục
+            function deleteKvCategoryObservation() {
+                let retailerName = $("#<%=ddlRetailer.ClientID%>").val();
+                let categoryId = $("#<%=ddlCategory.ClientID%>").val();
+
+                if (!retailerName || categoryId == "0")
+                    return;
+
+                let titleAlert = "Bỏ theo theo dõi danh mục";
+
+                $.ajax({
+                    beforeSend: function () {
+                        HoldOn.open();
+                    },
+                    url: "/api/v1/kiotviet/category/ann-shop/" + categoryId + "/observation",
+                    headers: {
+                        "Authorization": "Basic " + btoa("anhtruyen:0979610642"),
+                        "retailerName": retailerName
+                    },
+                    contentType: 'application/json',
+                    method: 'DELETE',
+                    success: (response, textStatus, xhr) => {
+                        HoldOn.close();
+                        let $btnKvCategoryObserve = $("#btnKvCategoryObserve");
+                        let $btnKvCategoryUnObserve = $("#btnKvCategoryUnObserve");
+
+                        if (xhr.status == 200) {
+                            observeKvCategory = false;
+                            // Observer Category
+                            $btnKvCategoryObserve.removeClass("hidden");
+                            // UnObserver Category
+                            $btnKvCategoryUnObserve.addClass("hidden");
+
+                            _alterSuccess(titleAlert, "Thành công");
+                        } else {
+                            _alterError(titleAlert);
+                        }
+                    },
+                    error: (xhr, textStatus, error) => {
+                        HoldOn.close();
+                        _alterError(titleAlert, xhr.responseJSON);
+                    }
+                });
+            }
+
+            // Đồng bộ danh sách sản phẩm lên KiotViet
+            function syncKvProducts() {
+                let retailerName = $("#<%=ddlRetailer.ClientID%>").val();
+
+                if (!retailerName || productSync.length == 0)
+                    return;
+
+                let titleAlert = "Các sản phẩm đang được đăng từ từ lên KiotViet";
+
+                $.ajax({
+                    beforeSend: function () {
+                        HoldOn.open();
+                    },
+                    url: "/api/v1/cron-job/kiotviet/sync-product",
+                    headers: {
+                        "Authorization": "Basic " + btoa("anhtruyen:0979610642"),
+                        "retailerName": retailerName
+                    },
+                    contentType: 'application/json',
+                    method: 'POST',
+                    dataType: "json",
+                    data: JSON.stringify({ "productSKU": productSync.join(',') }),
+                    success: (response, textStatus, xhr) => {
+                        HoldOn.close();
+                        let $btnSyncAllKvProduct = $("#btnSyncAllKvProduct");
+                        let $btnDeleteAllKvProduct = $("#btnDeleteAllKvProduct");
+
+                        if (xhr.status == 200) {
+                            $.each(productSync, function (index, element) {
+                                let $trProduct = $(".tr-product[data-productsku='" + element + "']");
+                                let $btnKvSyncProduct = $trProduct.find(".btn-sync-kv-product");
+                                let $btnKvDeleteProduct = $trProduct.find(".btn-delete-kv-product");
+                                let $btnKvObserverProduct = $trProduct.find(".btn-kv-product-observation");
+                                let $btnKvUnObserverProduct = $trProduct.find(".btn-kv-product-unobserver");
+
+                                $trProduct.data("existsKv", true);
+                                $trProduct.data("observeKvProduct", true);
+                                $btnKvSyncProduct.addClass("hidden");
+                                $btnKvDeleteProduct.removeClass("hidden");
+                                $btnKvObserverProduct.addClass("hidden");
+                                $btnKvUnObserverProduct.removeClass("hidden");
+
+                                productRemoval.push($trProduct.data("productid"));
+                                productRemoval = $.unique(productRemoval.sort());
+                            });
+                            productSync = [];
+
+                            // Sync Product
+                            $btnSyncAllKvProduct.addClass("hidden");
+                            $btnSyncAllKvProduct.attr("disabled", true);
+                            $btnSyncAllKvProduct.attr("readonly", true);
+                            // Delete Product
+                            $btnDeleteAllKvProduct.removeClass("hidden");
+                            $btnDeleteAllKvProduct.attr("disabled", false);
+                            $btnDeleteAllKvProduct.attr("readonly", false);
+
+                            _alterSuccess(titleAlert, "Thành công");
+                        } else {
+                            _alterError(titleAlert);
+                        }
+                    },
+                    error: (xhr, textStatus, error) => {
+                        HoldOn.close();
+                        _alterError(titleAlert, xhr.responseJSON);
+                    }
+                });
+            }
+
+            // Xóa sản phẩm
+            function deleteKvProducts() {
+                let retailerName = $("#<%=ddlRetailer.ClientID%>").val();
+
+                if (!retailerName || productRemoval.length == 0)
+                    return;
+
+                let titleAlert = "Các sản phẩm đang được xóa dần trên KiotViet";
+
+                $.ajax({
+                    beforeSend: function () {
+                        HoldOn.open();
+                    },
+                    url: "/api/v1/cron-job/kiotviet/product",
+                    headers: {
+                        "Authorization": "Basic " + btoa("anhtruyen:0979610642"),
+                        "retailerName": retailerName
+                    },
+                    contentType: 'application/json',
+                    method: 'DELETE',
+                    dataType: "json",
+                    data: JSON.stringify({ "referenceProductId": productRemoval.join(',') }),
+                    success: (response, textStatus, xhr) => {
+                        HoldOn.close();
+                        let $btnSyncAllKvProduct = $("#btnSyncAllKvProduct");
+                        let $btnDeleteAllKvProduct = $("#btnDeleteAllKvProduct");
+
+                        if (xhr.status == 200) {
+                            $.each(productRemoval, function (index, element) {
+                                let $trProduct = $(".tr-product[data-productid='" + element + "']");
+                                let $btnKvSyncProduct = $trProduct.find(".btn-sync-kv-product");
+                                let $btnKvDeleteProduct = $trProduct.find(".btn-delete-kv-product");
+                                let $btnKvObserverProduct = $trProduct.find(".btn-kv-product-observation");
+                                let $btnKvUnObserverProduct = $trProduct.find(".btn-kv-product-unobserver");
+
+                                $trProduct.data("existsKv", false);
+                                $trProduct.data("observeKvProduct", false);
+                                $btnKvSyncProduct.removeClass("hidden");
+                                $btnKvDeleteProduct.addClass("hidden");
+                                $btnKvObserverProduct.addClass("hidden");
+                                $btnKvUnObserverProduct.addClass("hidden");
+
+                                productSync.push($trProduct.data("productsku"));
+                                productSync = $.unique(productSync.sort());
+                            });
+                            productRemoval = [];
+
+                            // Sync Product
+                            $btnSyncAllKvProduct.removeClass("hidden");
+                            $btnSyncAllKvProduct.attr("disabled", false);
+                            $btnSyncAllKvProduct.attr("readonly", false);
+                            // Delete Product
+                            $btnDeleteAllKvProduct.addClass("hidden");
+                            $btnDeleteAllKvProduct.attr("disabled", true);
+                            $btnDeleteAllKvProduct.attr("readonly", true);
+
+                            _alterSuccess(titleAlert, "Thành công");
+                        } else {
+                            _alterError(titleAlert);
+                        }
+                    },
+                    error: (xhr, textStatus, error) => {
+                        HoldOn.close();
+                        _alterError(titleAlert, xhr.responseJSON);
+                    }
+                });
+            }
+
+            // Đồng bộ sản phẩm lên KiotViet
+            function syncKvProduct(productSKU) {
+                let retailerName = $("#<%=ddlRetailer.ClientID%>").val();
+
+                if (!retailerName || !productSKU)
+                    return;
+
+                let $trProduct = $(".tr-product[data-productsku='" + productSKU + "']");
+
+                if ($trProduct.data("existsKv"))
+                    return;
+
+                let titleAlert = "Đăng sản phẩm KiotViet";
+
+                $.ajax({
+                    beforeSend: function () {
+                        HoldOn.open();
+                    },
+                    url: "/api/v1/kiotviet/product",
+                    headers: {
+                        "Authorization": "Basic " + btoa("anhtruyen:0979610642"),
+                        "retailerName": retailerName
+                    },
+                    method: 'POST',
+                    contentType: 'application/json',
+                    dataType: "json",
+                    data: JSON.stringify({ "productSKU": productSKU }),
+                    success: (response, textStatus, xhr) => {
+                        HoldOn.close();
+                        let $btnKvSyncProduct = $trProduct.find(".btn-sync-kv-product");
+                        let $btnKvDeleteProduct = $trProduct.find(".btn-delete-kv-product");
+                        let $btnKvObserverProduct = $trProduct.find(".btn-kv-product-observation");
+                        let $btnKvUnObserverProduct = $trProduct.find(".btn-kv-product-unobserver");
+
+                        if (xhr.status == 200) {
+                            $trProduct.data("existsKv", true);
+                            $trProduct.data("observeKvProduct", true);
+                            $btnKvSyncProduct.addClass("hidden");
+                            $btnKvDeleteProduct.removeClass("hidden");
+                            $btnKvObserverProduct.addClass("hidden");
+                            $btnKvUnObserverProduct.removeClass("hidden");
+
+                            let checked = $trProduct.find("input[type='checkbox']").is(":checked");
+
+                            if (checked)
+                            {
+                                // Product Removal
+                                productRemoval.push($trProduct.data("productid"));
+                                productRemoval = $.unique(productRemoval.sort());
+                                // Product Sync
+                                productSync = productSync.filter(item => item != $trProduct.data("productsku"));
+                                // Handle button KiotViet at header
+                                _handleBtnKvProduct(retailerName);
+                            }
+
+                            _alterSuccess(titleAlert, "Đăng sản phẩm <strong>" + productSKU + "</strong> thành công!");
+                        } else {
+                            _alterError(titleAlert);
+                        }
+                    },
+                    error: (xhr, textStatus, error) => {
+                        HoldOn.close();
+                        _alterError(titleAlert, xhr.responseJSON);
+                    }
+                });
+            }
+
+            // Xóa sản phẩm
+            function deleteKvProduct(productId) {
+                let retailerName = $("#<%=ddlRetailer.ClientID%>").val();
+
+                if (!retailerName || !productId || !$.isNumeric(productId))
+                    return;
+
+                let $trProduct = $(".tr-product[data-productid='" + productId + "']");
+
+                if (!$trProduct.data("existsKv"))
+                    return;
+
+                let titleAlert = "Xóa sản phẩm KiotViet";
+
+                $.ajax({
+                    beforeSend: function () {
+                        HoldOn.open();
+                    },
+                    url: "/api/v1/kiotviet/product",
+                    headers: {
+                        "Authorization": "Basic " + btoa("anhtruyen:0979610642"),
+                        "retailerName": retailerName
+                    },
+                    method: 'DELETE',
+                    contentType: 'application/json',
+                    dataType: "json",
+                    data: JSON.stringify({ "referenceProductId": productId }),
+                    success: (response, textStatus, xhr) => {
+                        HoldOn.close();
+                        let $btnKvSyncProduct = $trProduct.find(".btn-sync-kv-product");
+                        let $btnKvDeleteProduct = $trProduct.find(".btn-delete-kv-product");
+                        let $btnKvObserverProduct = $trProduct.find(".btn-kv-product-observation");
+                        let $btnKvUnObserverProduct = $trProduct.find(".btn-kv-product-unobserver");
+
+                        if (xhr.status == 200) {
+                            $trProduct.data("existsKv", false);
+                            $trProduct.data("observeKvProduct", false);
+                            $btnKvSyncProduct.removeClass("hidden");
+                            $btnKvDeleteProduct.addClass("hidden");
+                            $btnKvObserverProduct.addClass("hidden");
+                            $btnKvUnObserverProduct.addClass("hidden");
+
+                            let checked = $trProduct.find("input[type='checkbox']").is(":checked");
+
+                            if (checked) {
+                                // Product Removal
+                                productSync.push($trProduct.data("productsku"));
+                                productSync = $.unique(productSync.sort());
+                                // Product Sync
+                                productRemoval = productRemoval.filter(item => item != $trProduct.data("productid"));
+                                // Handle button KiotViet at header
+                                _handleBtnKvProduct(retailerName);
+                            }
+
+                            _alterSuccess(titleAlert, "Xóa sản phẩm <strong>" + $trProduct.data("productsku") + "</strong> thành công!");
+                        } else {
+                            _alterError(titleAlert);
+                        }
+                    },
+                    error: (xhr, textStatus, error) => {
+                        HoldOn.close();
+                        _alterError(titleAlert, xhr.responseJSON);
+                    }
+                });
+            }
+
+            // Đăng ký theo dõi danh mục
+            function registerKvProductObservation(productSKU) {
+                let retailerName = $("#<%=ddlRetailer.ClientID%>").val();
+
+                if (!retailerName || !productSKU)
+                    return;
+
+                let $trProduct = $(".tr-product[data-productsku='" + productSKU + "']");
+
+                if ($trProduct.data("observeKvProduct"))
+                    return;
+
+                let titleAlert = "Đăng ký theo dõi sản phẩm";
+
+                $.ajax({
+                    beforeSend: function () {
+                        HoldOn.open();
+                    },
+                    url: "/api/v1/kiotviet/product/" + productSKU + "/observation",
+                    headers: {
+                        "Authorization": "Basic " + btoa("anhtruyen:0979610642"),
+                        "retailerName": retailerName
+                    },
+                    method: 'POST',
+                    success: (response, textStatus, xhr) => {
+                        HoldOn.close();
+                        let $btnKvObserverProduct = $trProduct.find(".btn-kv-product-observation");
+                        let $btnKvUnObserverProduct = $trProduct.find(".btn-kv-product-unobserver");
+
+                        if (xhr.status == 200) {
+                            $trProduct.data("observeKvProduct", true);
+                            $btnKvObserverProduct.addClass("hidden");
+                            $btnKvUnObserverProduct.removeClass("hidden");
+
+                            _alterSuccess(titleAlert, "Sản phẩm <strong>" + productSKU + "</strong> đăng ký theo dõi thành công!");
+                        } else {
+                            _alterError(titleAlert);
+                        }
+                    },
+                    error: (xhr, textStatus, error) => {
+                        HoldOn.close();
+                        _alterError(titleAlert, xhr.responseJSON);
+                    }
+                });
+            }
+
+            // Bỏ theo dõi danh mục
+            function deleteKvProductObservation(productSKU) {
+                let retailerName = $("#<%=ddlRetailer.ClientID%>").val();
+
+                if (!retailerName || !productSKU)
+                    return;
+
+                let $trProduct = $(".tr-product[data-productsku='" + productSKU + "']");
+
+                if (!$trProduct.data("observeKvProduct"))
+                    return;
+
+                let titleAlert = "Bỏ theo dõi sản phẩm";
+
+                $.ajax({
+                    beforeSend: function () {
+                        HoldOn.open();
+                    },
+                    url: "/api/v1/kiotviet/product/" + productSKU + "/observation",
+                    headers: {
+                        "Authorization": "Basic " + btoa("anhtruyen:0979610642"),
+                        "retailerName": retailerName
+                    },
+                    method: 'DELETE',
+                    success: (response, textStatus, xhr) => {
+                        HoldOn.close();
+                        let $btnKvObserverProduct = $trProduct.find(".btn-kv-product-observation");
+                        let $btnKvUnObserverProduct = $trProduct.find(".btn-kv-product-unobserver");
+
+                        if (xhr.status == 200) {
+                            $trProduct.data("observeKvProduct", false);
+                            $btnKvObserverProduct.removeClass("hidden");
+                            $btnKvUnObserverProduct.addClass("hidden");
+
+                            _alterSuccess(titleAlert, "Sản phẩm <strong>" + productSKU + "</strong> đã bỏ theo dõi thành công!");
+                        } else {
+                            _alterError(titleAlert);
+                        }
+                    },
+                    error: (xhr, textStatus, error) => {
+                        HoldOn.close();
+                        _alterError(titleAlert, xhr.responseJSON);
+                    }
+                });
+            }
+            // #endregion
 
             function postALLProductZaloShop() {
                 let $checkBox = $("td>input[type='checkbox']:checked");
@@ -682,48 +1501,6 @@
                     dataType: "json",
                     data: dataJSON,
                     url: "/api/v1/zaloshop/product",
-                    success: (response, textStatus, xhr) => {
-                        HoldOn.close();
-
-                        if (xhr.status == 200) {
-                            _alterSuccess(titleAlert, "Thành công");
-                        } else {
-                            _alterError(titleAlert);
-                        }
-                    },
-                    error: (xhr, textStatus, error) => {
-                        HoldOn.close();
-                        _alterError(titleAlert, xhr.responseJSON);
-                    }
-                });
-            }
-
-            function postALLProductKiotViet() {
-                let $checkBox = $("td>input[type='checkbox']:checked");
-                let products = [];
-
-                $checkBox.each(function (index, element) {
-                    let $tr = element.parentElement.parentElement;
-
-                    products.push($tr.dataset.productsku);
-                });
-
-                let titleAlert = "Đăng sản phẩm KiotViet";
-
-                if (products.length == 0)
-                    return _alterError(titleAlert, { message: "Chưa chọn sản phẩm nào!" });
-
-                let dataJSON = JSON.stringify({ "productSKU": products.join(',') });
-
-                $.ajax({
-                    beforeSend: function () {
-                        HoldOn.open();
-                    },
-                    method: 'POST',
-                    contentType: 'application/json',
-                    dataType: "json",
-                    data: dataJSON,
-                    url: "/api/v1/kiotviet/product",
                     success: (response, textStatus, xhr) => {
                         HoldOn.close();
 
@@ -774,38 +1551,7 @@
                 });
             }
 
-            function postProductKiotViet(productSKU) {
-                let titleAlert = "Đăng sản phẩm KiotViet";
-
-                if (!productSKU)
-                    _alterError(titleAlert, { message: "Chưa chọn sản phẩm nào!" });
-
-                let dataJSON = JSON.stringify({ "productSKU": productSKU });
-
-                $.ajax({
-                    beforeSend: function () {
-                        HoldOn.open();
-                    },
-                    method: 'POST',
-                    contentType: 'application/json',
-                    dataType: "json",
-                    data: dataJSON,
-                    url: "/api/v1/kiotviet/product",
-                    success: (response, textStatus, xhr) => {
-                        HoldOn.close();
-
-                        if (xhr.status == 200) {
-                            _alterSuccess(titleAlert, "Đăng sản phẩm <strong>" + productSKU + "</strong> thành công!");
-                        } else {
-                            _alterError(titleAlert);
-                        }
-                    },
-                    error: (xhr, textStatus, error) => {
-                        HoldOn.close();
-                        _alterError(titleAlert, xhr.responseJSON);
-                    }
-                });
-            }
+            
 
             function deleteProductZaloShop(productSKU) {
                 let titleAlert = "Xóa sản phẩm Zalo Shop";
