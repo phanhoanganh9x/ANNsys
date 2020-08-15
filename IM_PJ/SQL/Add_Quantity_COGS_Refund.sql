@@ -9,62 +9,62 @@ BEGIN
 END
 
 -- Khoi tao column
---BEGIN
---    -- Refund
---    BEGIN
---        IF COL_LENGTH('tbl_RefundGoodsDetails', 'TotalCostOfGood') IS NOT NULL
---            ALTER TABLE tbl_RefundGoodsDetails
---            DROP COLUMN TotalCostOfGood;
+ --BEGIN
+ --   -- Refund
+ --   BEGIN
+ --       IF COL_LENGTH('tbl_RefundGoodsDetails', 'TotalCostOfGood') IS NOT NULL
+ --           ALTER TABLE tbl_RefundGoodsDetails
+ --           DROP COLUMN TotalCostOfGood;
 
---        IF COL_LENGTH('tbl_RefundGoodsDetails', 'CostOfGood') IS NOT NULL
---        BEGIN
---            IF OBJECT_ID('DF_tbl_RefundGoodsDetails_CostOfGood', 'D') IS NOT NULL
---                ALTER TABLE tbl_RefundGoodsDetails
---                DROP CONSTRAINT [DF_tbl_RefundGoodsDetails_CostOfGood];
+ --       IF COL_LENGTH('tbl_RefundGoodsDetails', 'CostOfGood') IS NOT NULL
+ --       BEGIN
+ --           IF OBJECT_ID('DF_tbl_RefundGoodsDetails_CostOfGood', 'D') IS NOT NULL
+ --               ALTER TABLE tbl_RefundGoodsDetails
+ --               DROP CONSTRAINT [DF_tbl_RefundGoodsDetails_CostOfGood];
 
---            ALTER TABLE tbl_RefundGoodsDetails
---            DROP COLUMN CostOfGood;
---        END
+ --           ALTER TABLE tbl_RefundGoodsDetails
+ --           DROP COLUMN CostOfGood;
+ --       END
 
---        ALTER TABLE tbl_RefundGoodsDetails 
---        ADD [CostOfGood] INT NOT NULL 
---        CONSTRAINT [DF_tbl_RefundGoodsDetails_CostOfGood] DEFAULT 0
---        WITH VALUES;
+ --       ALTER TABLE tbl_RefundGoodsDetails 
+ --       ADD [CostOfGood] MONEY NOT NULL 
+ --       CONSTRAINT [DF_tbl_RefundGoodsDetails_CostOfGood] DEFAULT 0
+ --       WITH VALUES;
 
---        ALTER TABLE tbl_RefundGoodsDetails 
---        ADD TotalCostOfGood AS (ISNULL(Quantity, 0) * CostOfGood);
+ --       ALTER TABLE tbl_RefundGoodsDetails 
+ --       ADD TotalCostOfGood AS (ISNULL(Quantity, 0) * CostOfGood);
 
---        IF COL_LENGTH('tbl_RefundGoods', 'TotalQuantity') IS NOT NULL
---        BEGIN
---            IF OBJECT_ID('DF_tbl_RefundGoods_TotalQuantity', 'D') IS NOT NULL
---                ALTER TABLE tbl_RefundGoods
---                DROP CONSTRAINT [DF_tbl_RefundGoods_TotalQuantity];
+ --       IF COL_LENGTH('tbl_RefundGoods', 'TotalQuantity') IS NOT NULL
+ --       BEGIN
+ --           IF OBJECT_ID('DF_tbl_RefundGoods_TotalQuantity', 'D') IS NOT NULL
+ --               ALTER TABLE tbl_RefundGoods
+ --               DROP CONSTRAINT [DF_tbl_RefundGoods_TotalQuantity];
 
---            ALTER TABLE tbl_RefundGoods
---            DROP COLUMN TotalQuantity;
---        END
+ --           ALTER TABLE tbl_RefundGoods
+ --           DROP COLUMN TotalQuantity;
+ --       END
 
---        ALTER TABLE tbl_RefundGoods
---        ADD [TotalQuantity] INT NOT NULL 
---        CONSTRAINT [DF_tbl_RefundGoods_TotalQuantity] DEFAULT 0
---        WITH VALUES;
+ --       ALTER TABLE tbl_RefundGoods
+ --       ADD [TotalQuantity] INT NOT NULL 
+ --       CONSTRAINT [DF_tbl_RefundGoods_TotalQuantity] DEFAULT 0
+ --       WITH VALUES;
 
---        IF COL_LENGTH('tbl_RefundGoods', 'TotalCostOfGood') IS NOT NULL
---        BEGIN
---            IF OBJECT_ID('DF_tbl_RefundGoods_TotalCostOfGood', 'D') IS NOT NULL
---                ALTER TABLE tbl_RefundGoods
---                DROP CONSTRAINT [DF_tbl_RefundGoods_TotalCostOfGood];
+ --       IF COL_LENGTH('tbl_RefundGoods', 'TotalCostOfGood') IS NOT NULL
+ --       BEGIN
+ --           IF OBJECT_ID('DF_tbl_RefundGoods_TotalCostOfGood', 'D') IS NOT NULL
+ --               ALTER TABLE tbl_RefundGoods
+ --               DROP CONSTRAINT [DF_tbl_RefundGoods_TotalCostOfGood];
 
---            ALTER TABLE tbl_RefundGoods
---            DROP COLUMN TotalCostOfGood;
---        END
+ --           ALTER TABLE tbl_RefundGoods
+ --           DROP COLUMN TotalCostOfGood;
+ --       END
 
---        ALTER TABLE tbl_RefundGoods
---        ADD [TotalCostOfGood] INT NOT NULL 
---        CONSTRAINT [DF_tbl_RefundGoods_TotalCostOfGood] DEFAULT 0
---        WITH VALUES;
---    END
---END
+ --       ALTER TABLE tbl_RefundGoods
+ --       ADD [TotalCostOfGood] MONEY NOT NULL 
+ --       CONSTRAINT [DF_tbl_RefundGoods_TotalCostOfGood] DEFAULT 0
+ --       WITH VALUES;
+ --   END
+ --END
 
 BEGIN
     SET NOCOUNT ON; 
@@ -98,7 +98,7 @@ BEGIN
         FROM
             tbl_RefundGoods AS RF
         ORDER BY
-            RF.ID
+            RF.ID DESC
         ;
 
         SELECT
@@ -109,7 +109,7 @@ BEGIN
         INNER JOIN #Refunds AS RF
             ON RFD.RefundGoodsID = RF.ID
         ORDER BY
-            RFD.RefundGoodsID
+            RFD.RefundGoodsID DESC
         ,   RFD.SKU
         ;
     END
@@ -118,7 +118,7 @@ BEGIN
         @ProductStyle INT,
         @SKU NVARCHAR(255),
         @Quantity INT,
-        @COGS INT;
+        @COGS MONEY;
 
     -- Cap nhat Refund
     BEGIN
@@ -213,7 +213,7 @@ BEGIN
             BEGIN
                 SELECT
                     @Quantity = SUM(ISNULL(RFD.Quantity,0))
-                ,   @COGS = SUM(ISNULL(RFD.CostOfGood, 0))
+                ,   @COGS = SUM(ISNULL(RFD.TotalCostOfGood, 0))
                 FROM
                     tbl_RefundGoodsDetails AS RFD
                 WHERE

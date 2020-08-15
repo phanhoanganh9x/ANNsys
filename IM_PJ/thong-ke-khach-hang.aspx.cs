@@ -136,9 +136,12 @@ namespace IM_PJ
                         totalCostOfGoods = x.Sum(s => s.costOfGoods),
                         totalPrice = x.Sum(s => s.price),
                         totalDiscount = x.Sum(s => s.discount),
+                        totalCoupon = x.Sum(s => s.coupon),
+                        // Phí giao hàng dùng để tham khảo
                         totalFeeShipping = x.Sum(s => s.feeShipping),
                         totalQuantityRefund = x.Sum(s => s.quantityRefund),
                         totalQuantityProductRefund = x.Sum(s => s.quantityProductRefund),
+                        // Tiền hoàn trả đã bao gồm phí hoàn trả
                         totalRefundMoney = x.Sum(s => s.refundMoney),
                         totalRefundFee = x.Sum(s => s.refundFee),
                         totalRefundCapital = x.Sum(s => s.refundCapital)
@@ -158,10 +161,11 @@ namespace IM_PJ
                 // Dòng 2
                 ltrTotalPrice.Text = String.Format("{0:N0} đ", report.totalPrice);
                 ltrTotalDiscount.Text = String.Format("{0:N0} đ", report.totalDiscount);
+                // Phí giao hàng dùng để tham khảo
                 ltrTotalFeeShipping.Text = String.Format("{0:N0} đ", report.totalFeeShipping);
                 ltrTotalRefundMoney.Text = String.Format("{0:N0} đ", report.totalRefundMoney);
                 ltrTotalRefundFee.Text = String.Format("{0:N0} đ", report.totalRefundFee);
-                ltrTotalProfit.Text = String.Format("{0:N0} đ", (report.totalPrice - report.totalCostOfGoods - report.totalDiscount) - (report.totalRefundMoney - report.totalRefundCapital));
+                ltrTotalProfit.Text = String.Format("{0:N0} đ", (report.totalPrice - report.totalCostOfGoods) - report.totalDiscount - report.totalCoupon - (report.totalRefundMoney - report.totalRefundCapital) + report.totalRefundFee);
             }
         }
 

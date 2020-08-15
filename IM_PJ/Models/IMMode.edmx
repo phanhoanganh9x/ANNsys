@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="inventorymanagementModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="inventorymanagementModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Bank">
           <Key>
             <PropertyRef Name="ID" />
@@ -883,6 +883,8 @@
           <Property Name="CouponValue" Type="money" />
           <Property Name="GHTKFee" Type="int" />
           <Property Name="Weight" Type="float" />
+          <Property Name="TotalQuantity" Type="int" Nullable="false" />
+          <Property Name="TotalCostOfGood" Type="money" Nullable="false" />
         </EntityType>
         <EntityType Name="tbl_OrderDetail">
           <Key>
@@ -905,6 +907,8 @@
           <Property Name="ModifiedDate" Type="datetime" />
           <Property Name="ModifiedBy" Type="nvarchar(max)" />
           <Property Name="IsCount" Type="bit" />
+          <Property Name="CostOfGood" Type="money" Nullable="false" />
+          <Property Name="TotalCostOfGood" Type="float" StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="tbl_OrderReturnGood">
           <Key>
@@ -1087,7 +1091,6 @@
           <Property Name="TotalPrice" Type="nvarchar(max)" />
           <Property Name="Status" Type="int" />
           <Property Name="CustomerID" Type="int" />
-          <Property Name="TotalQuantity" Type="float" />
           <Property Name="TotalRefundFee" Type="nvarchar(max)" />
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="CreatedBy" Type="nvarchar(max)" />
@@ -1099,6 +1102,8 @@
           <Property Name="RefundNote" Type="nvarchar(max)" />
           <Property Name="OrderSaleID" Type="int" />
           <Property Name="UserHelp" Type="nvarchar(max)" />
+          <Property Name="TotalQuantity" Type="int" Nullable="false" />
+          <Property Name="TotalCostOfGood" Type="money" Nullable="false" />
         </EntityType>
         <EntityType Name="tbl_RefundGoodsDetails">
           <Key>
@@ -1127,6 +1132,8 @@
           <Property Name="CreatedBy" Type="nvarchar(max)" />
           <Property Name="ModifiedDate" Type="datetime" />
           <Property Name="ModifiedBy" Type="nvarchar(max)" />
+          <Property Name="CostOfGood" Type="money" Nullable="false" />
+          <Property Name="TotalCostOfGood" Type="float" StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="tbl_Role">
           <Key>
@@ -1389,7 +1396,8 @@
           <EntitySet Name="WebWordpress" EntityType="Self.WebWordpress" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZaloIndustry" EntityType="Self.ZaloIndustry" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="inventorymanagementModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -1444,12 +1452,12 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Stock" Type="Int32" Nullable="false" />
           <Property Name="Active" Type="Boolean" Nullable="false" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="CreatedBy" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Stock" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="CheckWarehouseDetail">
           <Key>
@@ -1657,6 +1665,22 @@
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
         </EntityType>
+        <EntityType Name="NotificationCategory">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Icon" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Slug" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ParentID" Type="Int32" Nullable="false" />
+          <Property Name="Hidden" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
         <EntityType Name="NotifyNew">
           <Key>
             <PropertyRef Name="ID" />
@@ -1785,6 +1809,24 @@
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="PostWordpress">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PostPublicID" Type="Int32" Nullable="false" />
+          <Property Name="WebWordpress" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PostWordpressID" Type="Int32" Nullable="false" />
+          <Property Name="CategoryID" Type="Int32" />
+          <Property Name="Title" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Summary" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Thumbnail" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="ProductTag">
           <Key>
@@ -2237,6 +2279,8 @@
           <Property Name="CouponValue" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="GHTKFee" Type="Int32" />
           <Property Name="Weight" Type="Double" />
+          <Property Name="TotalQuantity" Type="Int32" Nullable="false" />
+          <Property Name="TotalCostOfGood" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
         </EntityType>
         <EntityType Name="tbl_OrderDetail">
           <Key>
@@ -2259,6 +2303,8 @@
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="IsCount" Type="Boolean" />
+          <Property Name="CostOfGood" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="TotalCostOfGood" Type="Double" annotation:StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="tbl_OrderReturnGood">
           <Key>
@@ -2441,7 +2487,6 @@
           <Property Name="TotalPrice" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Int32" />
           <Property Name="CustomerID" Type="Int32" />
-          <Property Name="TotalQuantity" Type="Double" />
           <Property Name="TotalRefundFee" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="CreatedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -2453,6 +2498,8 @@
           <Property Name="RefundNote" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="OrderSaleID" Type="Int32" />
           <Property Name="UserHelp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TotalQuantity" Type="Int32" Nullable="false" />
+          <Property Name="TotalCostOfGood" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
         </EntityType>
         <EntityType Name="tbl_RefundGoodsDetails">
           <Key>
@@ -2481,6 +2528,8 @@
           <Property Name="CreatedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CostOfGood" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="TotalCostOfGood" Type="Double" annotation:StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="tbl_Role">
           <Key>
@@ -2684,6 +2733,7 @@
           <EntitySet Name="FeeTypes" EntityType="Self.FeeType" />
           <EntitySet Name="GroupNotifyPromotions" EntityType="Self.GroupNotifyPromotion" />
           <EntitySet Name="Notifications" EntityType="Self.Notification" />
+          <EntitySet Name="NotificationCategories" EntityType="Self.NotificationCategory" />
           <EntitySet Name="NotifyNews" EntityType="Self.NotifyNew" />
           <EntitySet Name="NotifyPromotions" EntityType="Self.NotifyPromotion" />
           <EntitySet Name="NotifyUsers" EntityType="Self.NotifyUser" />
@@ -2691,6 +2741,7 @@
           <EntitySet Name="PostClones" EntityType="Self.PostClone" />
           <EntitySet Name="PostPublics" EntityType="Self.PostPublic" />
           <EntitySet Name="PostPublicImages" EntityType="Self.PostPublicImage" />
+          <EntitySet Name="PostWordpresses" EntityType="Self.PostWordpress" />
           <EntitySet Name="ProductTags" EntityType="Self.ProductTag" />
           <EntitySet Name="ReceivedProductHistories" EntityType="Self.ReceivedProductHistory" />
           <EntitySet Name="Registers" EntityType="Self.Register" />
@@ -2740,43 +2791,7 @@
           <EntitySet Name="UserNotifyPromotions" EntityType="Self.UserNotifyPromotion" />
           <EntitySet Name="WebWordpresses" EntityType="Self.WebWordpress" />
           <EntitySet Name="ZaloIndustries" EntityType="Self.ZaloIndustry" />
-          <EntitySet Name="PostWordpresses" EntityType="inventorymanagementModel.PostWordpress" />
-          <EntitySet Name="NotificationCategories" EntityType="inventorymanagementModel.NotificationCategory" />
         </EntityContainer>
-        <EntityType Name="PostWordpress">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="PostPublicID" Type="Int32" Nullable="false" />
-          <Property Name="WebWordpress" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="PostWordpressID" Type="Int32" Nullable="false" />
-          <Property Name="CategoryID" Type="Int32" />
-          <Property Name="Title" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Summary" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Thumbnail" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="NotificationCategory">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Icon" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Slug" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ParentID" Type="Int32" Nullable="false" />
-          <Property Name="Hidden" Type="Boolean" Nullable="false" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2834,9 +2849,9 @@
           <EntitySetMapping Name="CheckWarehouses">
             <EntityTypeMapping TypeName="inventorymanagementModel.CheckWarehouse">
               <MappingFragment StoreEntitySet="CheckWarehouse">
-                <ScalarProperty Name="Stock" ColumnName="Stock" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Stock" ColumnName="Stock" />
                 <ScalarProperty Name="Active" ColumnName="Active" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
@@ -3064,6 +3079,23 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="NotificationCategories">
+            <EntityTypeMapping TypeName="inventorymanagementModel.NotificationCategory">
+              <MappingFragment StoreEntitySet="NotificationCategory">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Icon" ColumnName="Icon" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Slug" ColumnName="Slug" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ParentID" ColumnName="ParentID" />
+                <ScalarProperty Name="Hidden" ColumnName="Hidden" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="NotifyNews">
             <EntityTypeMapping TypeName="inventorymanagementModel.NotifyNew">
               <MappingFragment StoreEntitySet="NotifyNews">
@@ -3197,6 +3229,25 @@
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PostWordpresses">
+            <EntityTypeMapping TypeName="inventorymanagementModel.PostWordpress">
+              <MappingFragment StoreEntitySet="PostWordpress">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="PostPublicID" ColumnName="PostPublicID" />
+                <ScalarProperty Name="WebWordpress" ColumnName="WebWordpress" />
+                <ScalarProperty Name="PostWordpressID" ColumnName="PostWordpressID" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Summary" ColumnName="Summary" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="Thumbnail" ColumnName="Thumbnail" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -3473,7 +3524,6 @@
           <EntitySetMapping Name="tbl_Customer">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Customer">
               <MappingFragment StoreEntitySet="tbl_Customer">
-                <ScalarProperty Name="SendSMSIntroApp" ColumnName="SendSMSIntroApp" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Nick" ColumnName="Nick" />
                 <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
@@ -3502,6 +3552,7 @@
                 <ScalarProperty Name="UnSignedName" ColumnName="UnSignedName" />
                 <ScalarProperty Name="DistrictId" ColumnName="DistrictId" />
                 <ScalarProperty Name="WardId" ColumnName="WardId" />
+                <ScalarProperty Name="SendSMSIntroApp" ColumnName="SendSMSIntroApp" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -3673,6 +3724,8 @@
                 <ScalarProperty Name="CouponValue" ColumnName="CouponValue" />
                 <ScalarProperty Name="GHTKFee" ColumnName="GHTKFee" />
                 <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="TotalQuantity" ColumnName="TotalQuantity" />
+                <ScalarProperty Name="TotalCostOfGood" ColumnName="TotalCostOfGood" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -3696,6 +3749,8 @@
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="IsCount" ColumnName="IsCount" />
+                <ScalarProperty Name="CostOfGood" ColumnName="CostOfGood" />
+                <ScalarProperty Name="TotalCostOfGood" ColumnName="TotalCostOfGood" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -3889,7 +3944,6 @@
                 <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
-                <ScalarProperty Name="TotalQuantity" ColumnName="TotalQuantity" />
                 <ScalarProperty Name="TotalRefundFee" ColumnName="TotalRefundFee" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
@@ -3901,6 +3955,8 @@
                 <ScalarProperty Name="RefundNote" ColumnName="RefundNote" />
                 <ScalarProperty Name="OrderSaleID" ColumnName="OrderSaleID" />
                 <ScalarProperty Name="UserHelp" ColumnName="UserHelp" />
+                <ScalarProperty Name="TotalQuantity" ColumnName="TotalQuantity" />
+                <ScalarProperty Name="TotalCostOfGood" ColumnName="TotalCostOfGood" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -3930,6 +3986,8 @@
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CostOfGood" ColumnName="CostOfGood" />
+                <ScalarProperty Name="TotalCostOfGood" ColumnName="TotalCostOfGood" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4069,7 +4127,6 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="inventorymanagementModel.User">
               <MappingFragment StoreEntitySet="User">
-                <ScalarProperty Name="ViewStatus" ColumnName="ViewStatus" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Phone" ColumnName="Phone" />
                 <ScalarProperty Name="Password" ColumnName="Password" />
@@ -4080,6 +4137,7 @@
                 <ScalarProperty Name="City" ColumnName="City" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ViewStatus" ColumnName="ViewStatus" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4125,42 +4183,6 @@
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="PostWordpresses">
-            <EntityTypeMapping TypeName="inventorymanagementModel.PostWordpress">
-              <MappingFragment StoreEntitySet="PostWordpress">
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="Thumbnail" ColumnName="Thumbnail" />
-                <ScalarProperty Name="Content" ColumnName="Content" />
-                <ScalarProperty Name="Summary" ColumnName="Summary" />
-                <ScalarProperty Name="Title" ColumnName="Title" />
-                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
-                <ScalarProperty Name="PostWordpressID" ColumnName="PostWordpressID" />
-                <ScalarProperty Name="WebWordpress" ColumnName="WebWordpress" />
-                <ScalarProperty Name="PostPublicID" ColumnName="PostPublicID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="NotificationCategories">
-            <EntityTypeMapping TypeName="inventorymanagementModel.NotificationCategory">
-              <MappingFragment StoreEntitySet="NotificationCategory">
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="Hidden" ColumnName="Hidden" />
-                <ScalarProperty Name="ParentID" ColumnName="ParentID" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Slug" ColumnName="Slug" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Icon" ColumnName="Icon" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

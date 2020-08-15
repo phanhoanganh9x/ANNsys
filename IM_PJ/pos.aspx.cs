@@ -326,6 +326,7 @@ namespace IM_PJ
                 {
                     if (acc.RoleID == 0 || acc.RoleID == 2)
                     {
+                        #region Lấy thông tin khởi tạo Order
                         // Change user
                         string UserHelp = "";
                         if (username != hdfUsernameCurrent.Value)
@@ -353,6 +354,7 @@ namespace IM_PJ
 
                         string kq = "";
 
+                        #region Cập nhật thông tin khách hàng
                         if (checkCustomer != null)
                         {
                             CustomerID = checkCustomer.ID;
@@ -366,6 +368,7 @@ namespace IM_PJ
                                 CustomerID = kq.ToInt(0);
                             }
                         }
+                        #endregion
 
                         string totalPrice = hdfTotalPrice.Value.ToString();
                         string totalPriceNotDiscount = hdfTotalPriceNotDiscount.Value;
@@ -425,8 +428,9 @@ namespace IM_PJ
                         var ret = OrderController.InsertOnSystem(order);
 
                         int OrderID = ret.ID;
+                        #endregion
 
-                        // Insert Other Fee
+                        #region Khởi tạo Other Fee
                         if (!String.IsNullOrEmpty(hdfOtherFees.Value))
                         {
                             JavaScriptSerializer serializer = new JavaScriptSerializer();
@@ -445,15 +449,18 @@ namespace IM_PJ
                                 FeeController.Update(ret.ID, fees);
                             }
                         }
+                        #endregion
 
-                        // Inactive code coupon
+                        #region Cập nhật Coupon
                         if (order.CouponID.HasValue && order.CouponID.Value > 0)
                         {
                             CouponController.updateStatusCouponCustomer(CustomerID, order.CouponID.Value, false);
                         }
+                        #endregion
 
                         if (OrderID > 0)
                         {
+                            #region Khởi tạo chi tiết đơn hàng
                             ProductPOS POS = JsonConvert.DeserializeObject<ProductPOS>(hdfListProduct.Value);
                             List<tbl_OrderDetail> orderDetails = new List<tbl_OrderDetail>();
                             List<tbl_StockManager> stockManager = new List<tbl_StockManager>();
@@ -508,12 +515,18 @@ namespace IM_PJ
                                         MoveProID = 0,
                                         ParentID = parentID
                                     }
-                                    );
+                                );
                             }
 
                             OrderDetailController.Insert(orderDetails);
+                            #endregion
+
+                            // Cập nhật lại sô lượng và giá vố vào đơn hàng
+                            OrderController.updateQuantityCOGS(OrderID);
+                            // Cập nhật lại thông tin kho hàng
                             StockManagerController.Insert(stockManager);
 
+                            #region Khởi tạo đơn hàng đổi trả
                             string refund = hdSession.Value;
                             if (refund != "1")
                             {
@@ -521,6 +534,7 @@ namespace IM_PJ
                                 var update = RefundGoodController.UpdateStatus(RefundID[0].ToInt(), username, 2, OrderID);
                                 var updateor = OrderController.UpdateRefund(OrderID, RefundID[0].ToInt(), username);
                             }
+                            #endregion
 
                             // Hoàn thành khởi tạo đơn hàng nên gán lại giá trị trang lúc ban đầu
                             hdStatusPage.Value = "Create";
@@ -531,7 +545,6 @@ namespace IM_PJ
             }
             catch (Exception)
             {
-                
                 ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "script", "$(function () { handleErrorSubmit(); });", true);
             }
         }

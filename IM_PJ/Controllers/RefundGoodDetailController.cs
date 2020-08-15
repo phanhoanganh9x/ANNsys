@@ -18,8 +18,32 @@ namespace IM_PJ.Controllers
             string PriceNotFeeRefund, int ProductType, bool IsCount, int RefundType, string RefundFeePerProduct, string TotalRefundFee, string GiavonPerProduct,
             string DiscountPricePerProduct, string SoldPricePerProduct, string TotalPriceRow, DateTime CreatedDate, string CreatedBy)
         {
-            using (var dbe = new inventorymanagementEntities())
+            using (var con = new inventorymanagementEntities())
             {
+                #region Cập nhật thôn tin giá vốn
+                Nullable<double> cogs = null;
+
+                #region Sản phẩm đơn gian
+                if (ProductType == 1)
+                {
+                    cogs = con.tbl_Product
+                        .Where(x => x.ProductSKU == SKU)
+                        .Select(x => x.CostOfGood.HasValue ? x.CostOfGood.Value : 0)
+                        .SingleOrDefault();
+                }
+                #endregion
+
+                #region Sản phẩm biến thể
+                if (ProductType == 2)
+                {
+                    cogs = con.tbl_ProductVariable
+                        .Where(x => x.SKU == SKU)
+                        .Select(x => x.CostOfGood.HasValue ? x.CostOfGood.Value : 0)
+                        .SingleOrDefault();
+                }
+                #endregion
+                #endregion
+
                 tbl_RefundGoodsDetails a = new tbl_RefundGoodsDetails();
                 a.RefundGoodsID = RefundGoodsID;
                 a.AgentID = AgentID;
@@ -41,21 +65,134 @@ namespace IM_PJ.Controllers
                 a.TotalPriceRow = TotalPriceRow;
                 a.CreatedDate = CreatedDate;
                 a.CreatedBy = CreatedBy;
-                dbe.tbl_RefundGoodsDetails.Add(a);
-                dbe.SaveChanges();
+                a.ModifiedDate = CreatedDate;
+                a.ModifiedBy = CreatedBy;
+                a.CostOfGood = cogs.HasValue ? Convert.ToDecimal(cogs.Value) : 0;
+                con.tbl_RefundGoodsDetails.Add(a);
+                con.SaveChanges();
                 int kq = a.ID;
                 return kq;
             }
         }
 
-        public static int Insert(tbl_RefundGoodsDetails refundDetail)
+        public static List<tbl_RefundGoodsDetails> Insert(List<tbl_RefundGoodsDetails> refundDetails)
         {
             using (var con = new inventorymanagementEntities())
             {
-                con.tbl_RefundGoodsDetails.Add(refundDetail);
-                con.SaveChanges();
-                int kq = refundDetail.ID;
-                return kq;
+                if (refundDetails == null && refundDetails.Count == 0)
+                    return null;
+
+                #region Cập nhật thôn tin giá vốn
+                List<ProductCOGSModel> product = new List<ProductCOGSModel>();
+                List<ProductVariationCOGSModel> variation = new List<ProductVariationCOGSModel>();
+
+                #region Sản phẩm đơn gian
+                var productFilter = refundDetails
+                    .Where(x => x.ProductType == 1)
+                    .Where(x => !String.IsNullOrEmpty(x.SKU))
+                    .Select(x => x.SKU)
+                    .Distinct()
+                    .ToList();
+
+                if (productFilter != null && productFilter.Count > 0)
+                {
+                    product = con.tbl_Product
+                        .Where(x => !String.IsNullOrEmpty(x.ProductSKU))
+                        .Where(x => productFilter.Contains(x.ProductSKU))
+                        .Select(x => new ProductCOGSModel()
+                        {
+                            id = x.ID,
+                            sku = x.ProductSKU,
+                            cogs = x.CostOfGood.HasValue ? x.CostOfGood.Value : 0
+                        })
+                        .OrderBy(o => o.id)
+                        .ToList();
+                }
+                #endregion
+
+                #region Sản phẩm biến thể
+                var variationFilter = refundDetails
+                    .Where(x => x.ProductType == 2)
+                    .Where(x => !String.IsNullOrEmpty(x.SKU))
+                    .Select(x => x.SKU)
+                    .Distinct()
+                    .ToList();
+
+                if (variationFilter != null && variationFilter.Count > 0)
+                {
+                    variation = con.tbl_ProductVariable
+                        .Where(x => !String.IsNullOrEmpty(x.SKU))
+                        .Where(x => variationFilter.Contains(x.SKU))
+                        .Select(x => new ProductVariationCOGSModel()
+                        {
+                            id = x.ID,
+                            sku = x.SKU,
+                            cogs = x.CostOfGood.HasValue ? x.CostOfGood.Value : 0
+                        })
+                        .OrderBy(o => o.id)
+                        .ToList();
+                }
+                #endregion
+                #endregion
+
+                #region Cập nhật chi tiết đơn hàng
+                refundDetails = refundDetails
+                    .Where(x => x.ProductType.HasValue)
+                    .Where(x => !String.IsNullOrEmpty(x.SKU))
+                    .GroupJoin(
+                        product,
+                        d => new { productStyle = d.ProductType.Value, productSKU = d.SKU },
+                        p => new { productStyle = 1, productSKU = p.sku },
+                        (d, p) => new { refund = d, product = p }
+                    )
+                    .SelectMany(
+                        x => x.product.DefaultIfEmpty(),
+                        (parent, child) => new { refund = parent.refund, product = child }
+                    )
+                    .GroupJoin(
+                        variation,
+                        temp => new { productStyle = temp.refund.ProductType.Value, variationSKU = temp.refund.SKU },
+                        v => new { productStyle = 2, variationSKU = v.sku },
+                        (temp, v) => new { order = temp.refund, product = temp.product, variation = v }
+                    )
+                    .SelectMany(
+                        x => x.variation.DefaultIfEmpty(),
+                        (parent, child) => new { order = parent.order, product = parent.product, variation = child }
+                    )
+                    .Select(x =>
+                    {
+                        var item = x.order;
+
+                        item.ModifiedDate = item.CreatedDate;
+                        item.ModifiedBy = item.ModifiedBy;
+
+                        // Cập nhật số tiền gốc
+                        if (item.ProductType == 1 && x.product != null)
+                            item.CostOfGood += Convert.ToDecimal(x.product.cogs);
+                        if (item.ProductType == 2 && x.variation != null)
+                            item.CostOfGood += Convert.ToDecimal(x.variation.cogs);
+
+                        return item;
+                    })
+                    .ToList();
+                #endregion
+
+                #region Khởi tạo chi tiết đơn hàng
+                var size = 100;
+                var counts = Math.Ceiling(refundDetails.Count / (double)size);
+
+                for (int index = 0; index < counts; index++)
+                {
+                    var insertedData = refundDetails
+                        .Skip(index * size)
+                        .Take(size)
+                        .ToList();
+                    con.tbl_RefundGoodsDetails.AddRange(insertedData);
+                    con.SaveChanges();
+                }
+                #endregion
+
+                return refundDetails;
             }
         }
 

@@ -63,32 +63,43 @@ namespace IM_PJ
             int day = Convert.ToInt32((todate - fromdate).TotalDays);
 
             var reportModel = OrderController.GetProfitReport(fromdate, todate);
-            double TotalSalePrice = reportModel.Sum(x => x.TotalSalePrice);
-            double TotalRefundPrice = reportModel.Sum(x => x.TotalRefundPrice);
-            double TotalRevenue = TotalSalePrice - TotalRefundPrice;
-            double TotalSaleCost = reportModel.Sum(x => x.TotalSaleCost);
-            double TotalRefundCost = reportModel.Sum(x => x.TotalRefundCost);
-            double TotalCost = TotalSaleCost - TotalRefundCost;
-            double TotalSaleDiscount = reportModel.Sum(x => x.TotalSaleDiscount);
-            double TotalRefundFee = reportModel.Sum(x => x.TotalRefundFee);
-            double TotalProfit = TotalRevenue - TotalCost - TotalSaleDiscount + TotalRefundFee;
-            double AverageProfitPerProduct = 0;
-            int TotalSoldQuantity = reportModel.Sum(x => x.TotalSoldQuantity);
-            int TotalRefundQuantity = reportModel.Sum(x => x.TotalRefundQuantity);
-            int TotalRemainQuantity = TotalSoldQuantity - TotalRefundQuantity;
 
-            int TotalNumberOfOrder = reportModel.Sum(x => x.TotalNumberOfOrder);
-            if (TotalNumberOfOrder > 0)
+            if (reportModel == null || reportModel.Count == 0)
+                return;
+
+            var sumReport = reportModel
+                .GroupBy(g => 1)
+                .Select(x => new
+                {
+                    TotalNumberOfOrder = x.Sum(s => s.TotalNumberOfOrder),
+                    TotalSoldQuantity = x.Sum(s => s.TotalSoldQuantity),
+                    TotalSalePrice = x.Sum(s => s.TotalSalePrice),
+                    TotalSaleDiscount = x.Sum(s => s.TotalSaleDiscount),
+                    TotalSaleCost = x.Sum(s => s.TotalSaleCost),
+                    TotalRefundQuantity = x.Sum(s => s.TotalRefundQuantity),
+                    TotalRefundPrice = x.Sum(s => s.TotalRefundPrice),
+                    TotalRefundCost = x.Sum(s => s.TotalRefundCost),
+                    TotalRefundFee = x.Sum(s => s.TotalRefundFee),
+                })
+                .Single();
+
+            double TotalRevenue = sumReport.TotalSalePrice - sumReport.TotalRefundPrice;
+            double TotalCost = sumReport.TotalSaleCost - sumReport.TotalRefundCost;
+            double TotalProfit = TotalRevenue - TotalCost - sumReport.TotalSaleDiscount + sumReport.TotalRefundFee;
+            double AverageProfitPerProduct = 0;
+            int TotalRemainQuantity = sumReport.TotalSoldQuantity - sumReport.TotalRefundQuantity;
+
+            if (sumReport.TotalNumberOfOrder > 0)
             {
                 AverageProfitPerProduct = Math.Ceiling(TotalProfit / TotalRemainQuantity);
             }
 
             ltrTotalRemain.Text = (TotalRemainQuantity).ToString() + " cái";
             ltrAverageTotalRemain.Text = (TotalRemainQuantity / day).ToString() + " cái/ngày";
-            ltrTotalSales.Text = (TotalSoldQuantity).ToString() + " cái";
-            ltrAverageTotalSales.Text = (TotalSoldQuantity / day).ToString() + " cái/ngày";
-            ltrTotalRefund.Text = (TotalRefundQuantity).ToString() + " cái";
-            ltrAverageTotalRefund.Text = (TotalRefundQuantity / day).ToString() + " cái/ngày";
+            ltrTotalSales.Text = (sumReport.TotalSoldQuantity).ToString() + " cái";
+            ltrAverageTotalSales.Text = (sumReport.TotalSoldQuantity / day).ToString() + " cái/ngày";
+            ltrTotalRefund.Text = (sumReport.TotalRefundQuantity).ToString() + " cái";
+            ltrAverageTotalRefund.Text = (sumReport.TotalRefundQuantity / day).ToString() + " cái/ngày";
             ltrAverageProfitPerProduct.Text = string.Format("{0:N0}", AverageProfitPerProduct) + " đ/cái";
 
             if (day > 1)

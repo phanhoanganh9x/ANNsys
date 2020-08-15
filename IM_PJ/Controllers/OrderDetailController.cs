@@ -16,8 +16,33 @@ namespace IM_PJ.Controllers
         public static string Insert(int AgentID, int OrderID, string SKU, int ProductID, int ProductVariableID, string ProductVariableDescrition, double Quantity,
             double Price, int Status, double DiscountPrice, int ProductType, DateTime CreatedDate, string CreatedBy, bool IsCount)
         {
-            using (var dbe = new inventorymanagementEntities())
+            using (var con = new inventorymanagementEntities())
             {
+                #region Cập nhật thôn tin giá vốn
+                Nullable<double> cogs = null;
+
+                #region Sản phẩm đơn gian
+                if (ProductType == 1)
+                {
+                    cogs = con.tbl_Product
+                        .Where(x => x.ID == ProductID)
+                        .Select(x => x.CostOfGood.HasValue ? x.CostOfGood.Value : 0)
+                        .SingleOrDefault();
+                }
+                #endregion
+
+                #region Sản phẩm biến thể
+                if (ProductType == 2)
+                {
+                    cogs = con.tbl_ProductVariable
+                        .Where(x => x.ID == ProductVariableID)
+                        .Select(x => x.CostOfGood.HasValue ? x.CostOfGood.Value : 0)
+                        .SingleOrDefault();
+                }
+                #endregion
+                #endregion
+
+                #region Khởi tạo chi tiết đơn hàng
                 tbl_OrderDetail ui = new tbl_OrderDetail();
                 ui.AgentID = AgentID;
                 ui.OrderID = OrderID;
@@ -32,17 +57,47 @@ namespace IM_PJ.Controllers
                 ui.ProductType = ProductType;
                 ui.CreatedDate = CreatedDate;
                 ui.CreatedBy = CreatedBy;
+                ui.ModifiedDate = CreatedDate;
+                ui.ModifiedBy = CreatedBy;
                 ui.IsCount = IsCount;
-                dbe.tbl_OrderDetail.Add(ui);
-                int kq = dbe.SaveChanges();
+                ui.CostOfGood = cogs.HasValue ? Convert.ToDecimal(cogs.Value) : 0;
+                con.tbl_OrderDetail.Add(ui);
+                int kq = con.SaveChanges();
+                #endregion
+
                 return kq.ToString();
             }
         }
 
         public static void Insert(tbl_OrderDetail orderDetail)
         {
-            using (var dbe = new inventorymanagementEntities())
+            using (var con = new inventorymanagementEntities())
             {
+                #region Cập nhật thôn tin giá vốn
+                Nullable<double> cogs = null;
+
+                #region Sản phẩm đơn gian
+                if (orderDetail.ProductType == 1)
+                {
+                    cogs = con.tbl_Product
+                        .Where(x => x.ID == orderDetail.ProductID)
+                        .Select(x => x.CostOfGood.HasValue ? x.CostOfGood.Value : 0)
+                        .SingleOrDefault();
+                }
+                #endregion
+
+                #region Sản phẩm biến thể
+                if (orderDetail.ProductType == 2)
+                {
+                    cogs = con.tbl_ProductVariable
+                        .Where(x => x.ID == orderDetail.ProductVariableID)
+                        .Select(x => x.CostOfGood.HasValue ? x.CostOfGood.Value : 0)
+                        .SingleOrDefault();
+                }
+                #endregion
+                #endregion
+
+                #region Khởi tạo chi tiết đơn hàng
                 tbl_OrderDetail ui = new tbl_OrderDetail();
                 ui.AgentID = orderDetail.AgentID;
                 ui.OrderID = orderDetail.OrderID;
@@ -57,39 +112,143 @@ namespace IM_PJ.Controllers
                 ui.ProductType = orderDetail.ProductType;
                 ui.CreatedDate = orderDetail.CreatedDate;
                 ui.CreatedBy = orderDetail.CreatedBy;
+                ui.ModifiedDate = orderDetail.ModifiedDate;
+                ui.ModifiedBy = orderDetail.ModifiedBy;
                 ui.IsCount = orderDetail.IsCount;
-                dbe.tbl_OrderDetail.Add(ui);
-                dbe.SaveChanges();
+                ui.CostOfGood = cogs.HasValue ? Convert.ToDecimal(cogs.Value) : 0;
+                con.tbl_OrderDetail.Add(ui);
+                con.SaveChanges();
+                #endregion
             }
         }
 
-        public static void Insert(List<tbl_OrderDetail> orderDetails)
+        /// <summary>
+        /// Khởi tạo chi tiết đơn hàng
+        /// </summary>
+        /// <param name="orderDetails">Danh sách các sản phẩm</param>
+        public static List<tbl_OrderDetail> Insert(List<tbl_OrderDetail> orderDetails)
         {
             using (var con = new inventorymanagementEntities())
             {
-                var index = 1;
+                if (orderDetails == null && orderDetails.Count == 0)
+                    return null;
 
-                foreach(tbl_OrderDetail order in orderDetails)
+                #region Cập nhật thôn tin giá vốn
+                List<ProductCOGSModel> product = new List<ProductCOGSModel>();
+                List<ProductVariationCOGSModel> variation = new List<ProductVariationCOGSModel>();
+
+                #region Sản phẩm đơn gian
+                var productFilter = orderDetails
+                    .Where(x => x.ProductType == 1)
+                    .Where(x => x.ProductID.HasValue)
+                    .Select(x => x.ProductID.Value)
+                    .Distinct()
+                    .ToList();
+
+                if (productFilter != null && productFilter.Count > 0)
                 {
-                    if (index >= 100)
-                    {
-                        index = 1;
-                        con.tbl_OrderDetail.Add(order);
-                        con.SaveChanges();
-                    }
-                    else
-                    {
-                        con.tbl_OrderDetail.Add(order);
-                    }
-
-                    index++;
+                    product = con.tbl_Product
+                        .Where(x =>
+                            productFilter.Contains(x.ID)
+                        )
+                        .Select(x => new ProductCOGSModel()
+                        {
+                            id = x.ID,
+                            cogs = x.CostOfGood.HasValue ? x.CostOfGood.Value : 0
+                        })
+                        .OrderBy(o => o.id)
+                        .ToList();
                 }
+                #endregion
 
-                con.SaveChanges();
+                #region Sản phẩm biến thể
+                var variationFilter = orderDetails
+                    .Where(x => x.ProductType == 2)
+                    .Where(x => x.ProductVariableID.HasValue)
+                    .Select(x => x.ProductVariableID.Value)
+                    .Distinct()
+                    .ToList();
+
+                if (variationFilter != null && variationFilter.Count > 0)
+                {
+                    variation = con.tbl_ProductVariable
+                        .Where(x =>
+                            variationFilter.Contains(x.ID)
+                        )
+                        .Select(x => new ProductVariationCOGSModel()
+                        {
+                            id = x.ID,
+                            cogs = x.CostOfGood.HasValue ? x.CostOfGood.Value : 0
+                        })
+                        .OrderBy(o => o.id)
+                        .ToList();
+                }
+                #endregion
+                #endregion
+
+                #region Cập nhật chi tiết đơn hàng
+                orderDetails = orderDetails
+                    .Where(x => x.ProductType.HasValue)
+                    .Where(x => x.ProductID.HasValue)
+                    .Where(x => x.ProductVariableID.HasValue)
+                    .GroupJoin(
+                        product,
+                        d => new { productStyle = d.ProductType.Value, productID = d.ProductID.Value },
+                        p => new { productStyle = 1, productID = p.id },
+                        (d, p) => new { order = d, product = p }
+                    )
+                    .SelectMany(
+                        x => x.product.DefaultIfEmpty(),
+                        (parent, child) => new { order = parent.order, product = child }
+                    )
+                    .GroupJoin(
+                        variation,
+                        temp => new { productStyle = temp.order.ProductType.Value, variationID = temp.order.ProductVariableID.Value },
+                        v => new { productStyle = 2, variationID = v.id },
+                        (temp, v) => new { order = temp.order, product = temp.product, variation = v }
+                    )
+                    .SelectMany(
+                        x => x.variation.DefaultIfEmpty(),
+                        (parent, child) => new { order = parent.order, product = parent.product, variation = child }
+                    )
+                    .Select(x =>
+                    {
+                        var item = x.order;
+
+                        item.ModifiedDate = item.CreatedDate;
+                        item.ModifiedBy = item.ModifiedBy;
+
+                        // Cập nhật số tiền gốc
+                        if (item.ProductType == 1 && x.product != null)
+                            item.CostOfGood += Convert.ToDecimal(x.product.cogs);
+                        if (item.ProductType == 2 && x.variation != null)
+                            item.CostOfGood += Convert.ToDecimal(x.variation.cogs);
+
+                        return item;
+                    })
+                    .ToList();
+                #endregion
+
+                #region Khởi tạo chi tiết đơn hàng
+                var size = 100;
+                var counts = Math.Ceiling(orderDetails.Count / (double)size);
+
+                for (int index = 0; index < counts; index++)
+                {
+                    var insertedData = orderDetails
+                        .Skip(index * size)
+                        .Take(size)
+                        .ToList();
+                    con.tbl_OrderDetail.AddRange(insertedData);
+                    con.SaveChanges();
+                }
+                #endregion
+
+                return orderDetails;
             }
         }
 
-        public static string UpdateQuantity(int ID, double Quantity, double Price, DateTime CreatedDate, string CreatedBy)
+        public static string UpdateQuantity(int ID, double Quantity, double Price, DateTime ModifiedDate, string ModifiedBy)
         {
             using (var dbe = new inventorymanagementEntities())
             {
@@ -98,8 +257,8 @@ namespace IM_PJ.Controllers
                 {
                     ui.Quantity = Quantity;
                     ui.Price = Price;
-                    ui.CreatedDate = CreatedDate;
-                    ui.CreatedBy = CreatedBy;
+                    ui.ModifiedDate = ModifiedDate;
+                    ui.ModifiedBy = ModifiedBy;
                     int kq = dbe.SaveChanges();
                     return kq.ToString();
                 }

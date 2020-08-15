@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="1070bb193bd2476b8090c54e55dd5aec" Name="Diagram1" ZoomLevel="97">
+      <Diagram DiagramId="f4999175dbc64b6292e9395ff8420991" Name="Diagram1">
         <EntityTypeShape EntityType="inventorymanagementModel.Bank" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.BankAccount" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.BankTransfer" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
@@ -22,64 +22,64 @@
         <EntityTypeShape EntityType="inventorymanagementModel.FeeType" Width="1.5" PointX="2.75" PointY="10.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.GroupNotifyPromotion" Width="1.5" PointX="10.75" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.Notification" Width="1.5" PointX="10.75" PointY="8.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.NotifyNew" Width="1.5" PointX="12.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.NotifyPromotion" Width="1.5" PointX="12.75" PointY="5.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.NotifyUser" Width="1.5" PointX="12.75" PointY="10.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.PostCategory" Width="1.5" PointX="14.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.PostClone" Width="1.5" PointX="0.75" PointY="14.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.PostPublic" Width="1.5" PointX="2.75" PointY="14.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.PostPublicImage" Width="1.5" PointX="4.75" PointY="14.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.ProductTag" Width="1.5" PointX="14.75" PointY="5.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.ReceivedProductHistory" Width="1.5" PointX="14.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.NotificationCategory" Width="1.5" PointX="12.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.NotifyNew" Width="1.5" PointX="12.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.NotifyPromotion" Width="1.5" PointX="12.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.NotifyUser" Width="1.5" PointX="14.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.PostCategory" Width="1.5" PointX="0.75" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.PostClone" Width="1.5" PointX="2.75" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.PostPublic" Width="1.5" PointX="4.75" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.PostPublicImage" Width="1.5" PointX="14.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.PostWordpress" Width="1.5" PointX="14.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.ProductTag" Width="1.5" PointX="10.75" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.ReceivedProductHistory" Width="1.5" PointX="12.75" PointY="14.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.Register" Width="1.5" PointX="14.75" PointY="14.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.RegisterProduct" Width="1.5" PointX="6.75" PointY="15.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.Session" Width="1.5" PointX="8.75" PointY="15.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.Shipper" Width="1.5" PointX="10.75" PointY="15.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.StockManager2" Width="1.5" PointX="16.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.Tag" Width="1.5" PointX="16.75" PointY="5.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_Account" Width="1.5" PointX="16.75" PointY="8.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_AccountInfo" Width="1.5" PointX="16.75" PointY="12.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_Agent" Width="1.5" PointX="16.75" PointY="17.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_AgentProduct" Width="1.5" PointX="18.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_AgentProductVariable" Width="1.5" PointX="18.75" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_Category" Width="1.5" PointX="18.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.Session" Width="1.5" PointX="16.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.Shipper" Width="1.5" PointX="16.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.StockManager2" Width="1.5" PointX="16.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.Tag" Width="1.5" PointX="16.75" PointY="13.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_Account" Width="1.5" PointX="16.75" PointY="16.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_AccountInfo" Width="1.5" PointX="18.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_Agent" Width="1.5" PointX="18.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_AgentProduct" Width="1.5" PointX="8.75" PointY="18.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_AgentProductVariable" Width="1.5" PointX="18.75" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_Category" Width="1.5" PointX="18.75" PointY="14.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_Config" Width="1.5" PointX="0.75" PointY="19.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_Customer" Width="1.5" PointX="2.75" PointY="19.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_CustomerLevel" Width="1.5" PointX="8.75" PointY="19.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_Discount" Width="1.5" PointX="10.75" PointY="19.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_DiscountCustomer" Width="1.5" PointX="12.75" PointY="19.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_CustomerLevel" Width="1.5" PointX="10.75" PointY="19.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_Discount" Width="1.5" PointX="12.75" PointY="19.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_DiscountCustomer" Width="1.5" PointX="18.75" PointY="19.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_DiscountGroup" Width="1.5" PointX="20.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_LinkImnage" Width="1.5" PointX="20.75" PointY="6.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_MovePro" Width="1.5" PointX="20.75" PointY="9.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_MoveProdDetail" Width="1.5" PointX="20.75" PointY="14.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_Order" Width="1.5" PointX="20.75" PointY="20.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_OrderDetail" Width="1.5" PointX="4.75" PointY="21.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_OrderReturnGood" Width="1.5" PointX="22.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_Post" Width="1.5" PointX="22.75" PointY="5.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_PostCategory" Width="1.5" PointX="22.75" PointY="10.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_PostImage" Width="1.5" PointX="22.75" PointY="13.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_Product" Width="1.5" PointX="14.75" PointY="22.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_ProductImage" Width="1.5" PointX="16.75" PointY="22.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_ProductVariable" Width="1.5" PointX="22.75" PointY="17.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_ProductVariableImage" Width="1.5" PointX="6.75" PointY="23.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_ProductVariableValue" Width="1.5" PointX="8.75" PointY="23.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_Province" Width="1.5" PointX="10.75" PointY="23.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_RefundGoods" Width="1.5" PointX="22.75" PointY="23.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_RefundGoodsDetails" Width="1.5" PointX="24.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_Role" Width="1.5" PointX="24.75" PointY="7.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_SessionInOu" Width="1.5" PointX="24.75" PointY="11.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_StockManager" Width="1.5" PointX="24.75" PointY="15.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_Supplier" Width="1.5" PointX="24.75" PointY="21.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_TransportCompany" Width="1.5" PointX="24.75" PointY="25.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_Variable" Width="1.5" PointX="26.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_VariableValue" Width="1.5" PointX="26.75" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_WhiteDomain" Width="1.5" PointX="26.75" PointY="8.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.User" Width="1.5" PointX="10.75" PointY="26.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.UserNotifyPromotion" Width="1.5" PointX="26.75" PointY="12.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.WebWordpress" Width="1.5" PointX="26.75" PointY="16.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.ZaloIndustry" Width="1.5" PointX="16.75" PointY="26.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.PostWordpress" Width="1.5" PointX="0.75" PointY="27.75" />
-        <EntityTypeShape EntityType="inventorymanagementModel.NotificationCategory" Width="1.5" PointX="3.375" PointY="27.75" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_Order" Width="1.5" PointX="14.75" PointY="20.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_OrderDetail" Width="1.5" PointX="20.75" PointY="20.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_OrderReturnGood" Width="1.5" PointX="4.75" PointY="21.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_Post" Width="1.5" PointX="22.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_PostCategory" Width="1.5" PointX="22.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_PostImage" Width="1.5" PointX="6.75" PointY="22.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_Product" Width="1.5" PointX="22.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_ProductImage" Width="1.5" PointX="22.75" PointY="17.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_ProductVariable" Width="1.5" PointX="22.75" PointY="21.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_ProductVariableImage" Width="1.5" PointX="8.75" PointY="23.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_ProductVariableValue" Width="1.5" PointX="10.75" PointY="23.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_Province" Width="1.5" PointX="16.75" PointY="23.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_RefundGoods" Width="1.5" PointX="24.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_RefundGoodsDetails" Width="1.5" PointX="24.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_Role" Width="1.5" PointX="24.75" PointY="13.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_SessionInOu" Width="1.5" PointX="24.75" PointY="17.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_StockManager" Width="1.5" PointX="24.75" PointY="21.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_Supplier" Width="1.5" PointX="26.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_TransportCompany" Width="1.5" PointX="26.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_Variable" Width="1.5" PointX="4.75" PointY="26.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_VariableValue" Width="1.5" PointX="26.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_WhiteDomain" Width="1.5" PointX="26.75" PointY="13.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.User" Width="1.5" PointX="16.75" PointY="26.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.UserNotifyPromotion" Width="1.5" PointX="26.75" PointY="17.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.WebWordpress" Width="1.5" PointX="18.75" PointY="26.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.ZaloIndustry" Width="1.5" PointX="26.75" PointY="21.75" IsExpanded="true" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

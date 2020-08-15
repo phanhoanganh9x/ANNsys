@@ -67,6 +67,7 @@ namespace IM_PJ
                 foreach (var c in categories)
                 {
                     ListItem listitem = new ListItem(h + c.CategoryName, c.ID.ToString());
+                    listitem.Attributes.Add("data-slug", c.Slug);
                     ddlCategory.Items.Add(listitem);
 
                     addItemCategory(c.ID, h + "---");
@@ -112,6 +113,9 @@ namespace IM_PJ
                 
             string orderBy = String.Empty;
             int tag = 0;
+
+            // KiotViet
+            string retailerName = String.Empty;
 
             if (Request.QueryString["textsearch"] != null)
                 TextSearch = Request.QueryString["textsearch"].Trim();
@@ -160,6 +164,10 @@ namespace IM_PJ
                 tag = Request.QueryString["tag"].ToInt();
             }
 
+            // KiotViet
+            if (!String.IsNullOrEmpty(Request.QueryString["retailerName"]))
+                retailerName = Request.QueryString["retailerName"];
+
             txtSearchProduct.Text = TextSearch;
             ddlCategory.SelectedValue = CategoryID.ToString();
             ddlStockStatus.SelectedValue = StockStatus.ToString();
@@ -190,6 +198,10 @@ namespace IM_PJ
 
             ddlTag.SelectedValue = tag.ToString();
             ddlOrderBy.SelectedValue = orderBy;
+
+            // KiotViet
+            if (!String.IsNullOrEmpty(retailerName))
+                ddlRetailer.SelectedValue = retailerName;
 
             // Create order filter
             var filter = new ProductFilterModel()
@@ -486,7 +498,7 @@ namespace IM_PJ
 
                 foreach (var item in acs)
                 {
-                    html.AppendLine(String.Format("<tr data-productsku='{0}'>", item.ProductSKU));
+                    html.AppendLine(String.Format("<tr class='tr-product' data-productid='{0}' data-productsku='{1}'>", item.ID, item.ProductSKU));
                     html.AppendLine("   <td><input type='checkbox' onchange='changeCheck($(this))' /></td>");
                     html.AppendLine("<td>");
                     html.AppendLine("   <a target='_blank' href='/chi-tiet-san-pham?id=" + item.ID + "'><img src='" + Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Large) + "'></a>");
@@ -523,7 +535,10 @@ namespace IM_PJ
                     html.AppendLine("   <td class='update-button'>");
                     html.AppendLine("       <a href='javascript:;' title='Copy thông tin sản phẩm này' class='btn primary-btn' onclick='copyProductInfo(" + item.ID + ")'><i class='fa fa-files-o' aria-hidden='true'></i> Copy</a>");
                     html.AppendLine("       <a href='javascript:;' title='Tải tất cả hình sản phẩm này' class='btn primary-btn' onclick='getAllProductImage(`" + item.ProductSKU + "`)'><i class='fa fa-download' aria-hidden='true'></i> Hình</a>");
-                    html.AppendLine("       <a href='javascript:;' title='Đăng sản phẩm lên KiotViet' class='btn primary-btn' onclick='postProductKiotViet(`" + item.ProductSKU + "`)'><i class='fa fa-arrow-up' aria-hidden='true'></i> Kiot</a>");
+                    html.AppendLine("       <a href='javascript:;' title='Đăng sản phẩm lên KiotViet' class='btn primary-btn btn-sync-kv-product hidden' onclick='syncKvProduct(`" + item.ProductSKU + "`)'><i class='fa fa-arrow-up' aria-hidden='true'></i> Kiot</a>");
+                    html.AppendLine("       <a href='javascript:;' title='Xóa sản phẩm trên KiotViet' class='btn primary-btn btn-red btn-delete-kv-product hidden' onclick='deleteKvProduct(`" + item.ID + "`)'><i class='fa fa-times' aria-hidden='true'></i> Kiot</a>");
+                    html.AppendLine("       <a href='javascript:;' title='Theo dõi sản phẩm' class='btn primary-btn btn-kv-product-observation hidden' onclick='registerKvProductObservation(`" + item.ProductSKU + "`)'><i class='fa fa-eye' aria-hidden='true'></i> Kiot</a>");
+                    html.AppendLine("       <a href='javascript:;' title='Bỏ theo dõi sản phẩm' class='btn primary-btn btn-kv-product-unobserver hidden' onclick='deleteKvProductObservation(`" + item.ProductSKU + "`)'><i class='fa fa-eye-slash' aria-hidden='true'></i> Kiot</a>");
                     html.AppendLine("       <a href='javascript:;' title='Đăng sản phẩm lên Zalo Shop' class='btn primary-btn' onclick='postProductZaloShop(`" + item.ProductSKU + "`)'><i class='fa fa-arrow-up' aria-hidden='true'></i> Zalo</a>");
                     html.AppendLine("       <a href='javascript:;' title='Tải file sản phẩm Zalo Shop' class='btn primary-btn btn-blue' onclick='downloadProductZaloShop(`" + item.ProductSKU + "`)'><i class='fa fa-download' aria-hidden='true'></i> Zalo</a>");
                     html.AppendLine("       <a href='javascript:;' title='Xóa sản phẩm trên Zalo Shop' class='btn primary-btn btn-red' onclick='deleteProductZaloShop(`" + item.ProductSKU + "`)'><i class='fa fa-times' aria-hidden='true'></i> Zalo</a>");

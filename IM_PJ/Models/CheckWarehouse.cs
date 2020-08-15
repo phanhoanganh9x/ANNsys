@@ -16,11 +16,11 @@ namespace IM_PJ.Models
     {
         public int ID { get; set; }
         public string Name { get; set; }
+        public int Stock { get; set; }
         public bool Active { get; set; }
         public System.DateTime CreatedDate { get; set; }
         public string CreatedBy { get; set; }
         public System.DateTime ModifiedDate { get; set; }
         public string ModifiedBy { get; set; }
-        public int Stock { get; set; }
     }
 }

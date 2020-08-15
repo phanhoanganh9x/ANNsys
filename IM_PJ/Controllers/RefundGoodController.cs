@@ -15,7 +15,7 @@ namespace IM_PJ.Controllers
     public class RefundGoodController
     {
         #region CRUD
-        public static int Insert(int AgentID, string TotalPrice, int Status, int CustomerID, double TotalQuantity, string TotalRefundFee,
+        public static int Insert(int AgentID, string TotalPrice, int Status, int CustomerID, int TotalQuantity, string TotalRefundFee,
             string AgentName, string CustomerName, string CustomerPhone, DateTime CreatedDate, string CreatedBy, string RefundNote)
         {
             using (var dbe = new inventorymanagementEntities())
@@ -69,6 +69,50 @@ namespace IM_PJ.Controllers
                 }
                 else
                     return null;
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật lại số lượng đổi trả và tiền vốn
+        /// </summary>
+        /// <param name="refundID">Mã đơn hàng đổi trả</param>
+        /// <returns></returns>
+        public static tbl_RefundGoods updateQuantityCOGS(int refundID)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var refund = con.tbl_RefundGoods.Where(x => x.ID == refundID).SingleOrDefault();
+
+                if (refund == null)
+                    return null;
+
+                var updatedData = con.tbl_RefundGoodsDetails
+                    .Where(x => x.RefundGoodsID.HasValue)
+                    .Where(x => x.RefundGoodsID.Value == refundID)
+                    .Select(x => new
+                    {
+                        Quantity = x.Quantity.HasValue ? x.Quantity.Value : 0,
+                        TotalCostOfGood = x.TotalCostOfGood.HasValue ? x.TotalCostOfGood.Value : 0
+                    })
+                    .ToList()
+                    .GroupBy(g => 1)
+                    .Select(x => new
+                    {
+                        totalQuantity = x.Sum(s => Convert.ToInt32(s.Quantity)),
+                        totalCOGS = x.Sum(s => s.TotalCostOfGood)
+                    })
+                    .SingleOrDefault();
+
+                if (updatedData != null)
+                {
+                    refund.TotalQuantity = updatedData.totalQuantity;
+                    refund.TotalCostOfGood = Convert.ToDecimal(updatedData.totalCOGS);
+                    con.SaveChanges();
+
+                    return refund;
+                }
+
+                return null;
             }
         }
 
@@ -250,119 +294,210 @@ namespace IM_PJ.Controllers
             }
         }
 
-        public static List<RefundOrder> Filter(string TextSearch, int Status, string RefundFee, string CreatedBy, string CreatedDate)
+        public static List<RefundOrder> Filter(RefundFilterModel filter, ref PaginationMetadataModel pagination)
         {
-            var list = new List<RefundOrder>();
-            var sql = new StringBuilder();
-
-            sql.AppendLine(String.Format("SELECT Ord.ID, Ord.CustomerName, Ord.CustomerPhone, Customer.Nick, Ord.CustomerID, Ord.Status, Ord.TotalPrice, Ord.TotalRefundFee, Ord.CreatedBy, Ord.CreatedDate, Ord.RefundNote, Ord.OrderSaleID, SUM(ISNULL(OrdDetail.Quantity, 0)) AS Quantity "));
-            sql.AppendLine(String.Format("FROM tbl_RefundGoods AS Ord"));
-            sql.AppendLine(String.Format("INNER JOIN tbl_RefundGoodsDetails AS OrdDetail"));
-            sql.AppendLine(String.Format("ON 	Ord.ID = OrdDetail.RefundGoodsID"));
-            sql.AppendLine(String.Format("INNER JOIN tbl_Customer AS Customer"));
-            sql.AppendLine(String.Format("ON 	Ord.CustomerID = Customer.ID"));
-            sql.AppendLine(String.Format("WHERE 1 = 1"));
-
-            if (Status > 0)
+            using (var con = new inventorymanagementEntities())
             {
-                sql.AppendLine(String.Format("	AND Ord.Status = {0}", Status));
-            }
+                #region Loại bớt data chỉ lấy những dữ liệu trong 2019-02-15
+                // ẩn sản phẩm theo thời gian
+                DateTime year = new DateTime(2019, 12, 15);
 
-            if (RefundFee != "")
-            {
-                if(RefundFee == "yes")
+                var config = ConfigController.GetByTop1();
+
+                if (config.ViewAllOrders == 1)
                 {
-                    sql.AppendLine(String.Format("	AND Ord.TotalRefundFee > 0"));
+                    year = new DateTime(2018, 6, 22);
                 }
-                else
+
+                if (config.ViewAllReports == 0)
                 {
-                    sql.AppendLine(String.Format("	AND Ord.TotalRefundFee = 0"));
+                    year = DateTime.Now.AddMonths(-2);
                 }
-            }
 
-            if (TextSearch != "")
-            {
-                string TextSearchName = '"' + TextSearch + '"';
-                sql.AppendLine(String.Format("	AND (  CONTAINS(Ord.CustomerName, '{1}') OR CONTAINS(Customer.Nick, '{1}') OR (Ord.CustomerPhone = '{0}') OR (convert(nvarchar, Ord.ID) = '{0}') OR (convert(nvarchar, Ord.OrderSaleID) = '{0}') OR (OrdDetail.SKU LIKE '{0}%')  )", TextSearch, TextSearchName));
-            }
+                var refunds = con.tbl_RefundGoods
+                    .Where(x => x.CreatedDate.HasValue)
+                    .Where(x => x.CreatedDate >= year);
+                #endregion
 
-            if (CreatedBy != "")
-            {
-                sql.AppendLine(String.Format("	AND Ord.CreatedBy = '{0}'", CreatedBy));
-            }
-
-            if (CreatedDate != "")
-            {
-                DateTime fromdate = DateTime.Today;
-                DateTime todate = DateTime.Now;
-                switch (CreatedDate)
+                #region Các filter trực tiếp trên RefundGoods table
+                // Filter Status
+                if (filter.status > 0)
+                    refunds = refunds.Where(x => x.Status == filter.status);
+                // Filter Created By
+                if (!String.IsNullOrEmpty(filter.staff))
+                    refunds = refunds.Where(x => x.CreatedBy == filter.staff);
+                // Filter Created Date
+                if (!String.IsNullOrEmpty(filter.dateTimePicker))
                 {
-                    case "today":
-                        fromdate = DateTime.Today;
-                        todate = DateTime.Now;
-                        break;
-                    case "yesterday":
-                        fromdate = fromdate.AddDays(-1);
-                        todate = DateTime.Today;
-                        break;
-                    case "beforeyesterday":
-                        fromdate = DateTime.Today.AddDays(-2);
-                        todate = DateTime.Today.AddDays(-1);
-                        break;
-                    case "week":
-                        int days = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)DateTime.Today.DayOfWeek;
-                        fromdate = fromdate.AddDays(-days + 1);
-                        todate = DateTime.Now;
-                        break;
-                    case "thismonth":
-                        fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
-                        todate = DateTime.Now;
-                        break;
-                    case "lastmonth":
-                        var thismonth = new DateTime(fromdate.Year, fromdate.Month, 1);
-                        fromdate = thismonth.AddMonths(-1);
-                        todate = thismonth;
-                        break;
-                    case "7days":
-                        fromdate = DateTime.Today.AddDays(-6);
-                        todate = DateTime.Now;
-                        break;
-                    case "30days":
-                        fromdate = DateTime.Today.AddDays(-29);
-                        todate = DateTime.Now;
-                        break;
+                    DateTime fromdate = DateTime.Today;
+                    DateTime todate = DateTime.Now;
+                    switch (filter.dateTimePicker)
+                    {
+                        case "today":
+                            fromdate = DateTime.Today;
+                            todate = DateTime.Now;
+                            break;
+                        case "yesterday":
+                            fromdate = fromdate.AddDays(-1);
+                            todate = DateTime.Today;
+                            break;
+                        case "beforeyesterday":
+                            fromdate = DateTime.Today.AddDays(-2);
+                            todate = DateTime.Today.AddDays(-1);
+                            break;
+                        case "week":
+                            int days = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)DateTime.Today.DayOfWeek;
+                            fromdate = fromdate.AddDays(-days + 1);
+                            todate = DateTime.Now;
+                            break;
+                        case "thismonth":
+                            fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
+                            todate = DateTime.Now;
+                            break;
+                        case "lastmonth":
+                            var thismonth = new DateTime(fromdate.Year, fromdate.Month, 1);
+                            fromdate = thismonth.AddMonths(-1);
+                            todate = thismonth;
+                            break;
+                        case "7days":
+                            fromdate = DateTime.Today.AddDays(-6);
+                            todate = DateTime.Now;
+                            break;
+                        case "30days":
+                            fromdate = DateTime.Today.AddDays(-29);
+                            todate = DateTime.Now;
+                            break;
+                    }
+
+                    refunds = refunds
+                        .Where(x => x.CreatedDate.HasValue)
+                        .Where(x => x.CreatedDate >= fromdate)
+                        .Where(x => x.CreatedDate <= todate);
                 }
-                sql.AppendLine(String.Format("	AND	(CONVERT(NVARCHAR(10), Ord.CreatedDate, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121))", fromdate, todate));
+                // Filter Search
+                if (!String.IsNullOrEmpty(filter.search))
+                {
+                    var customerFilter = con.tbl_Customer
+                        .Where(x =>
+                            x.CustomerName.Contains(filter.search) ||
+                            x.Nick.Contains(filter.search) ||
+                            x.CustomerPhone == filter.search
+                        )
+                        .Join(
+                            refunds.Where(x => x.CustomerID.HasValue),
+                            c => c.ID,
+                            r => r.CustomerID,
+                            (c, r) => new { refundID = r.ID }
+                        )
+                        .Distinct();
+
+                    var refundDetailFilter = con.tbl_RefundGoodsDetails
+                        .Where(x => x.SKU.StartsWith(filter.search))
+                        .Where(x => x.RefundGoodsID.HasValue)
+                        .Join(
+                            refunds,
+                            d => d.RefundGoodsID.Value,
+                            r => r.ID,
+                            (d, r) => d
+                        )
+                        .Select(x => new { refundID = x.RefundGoodsID.Value })
+                        .Distinct();
+
+                    refunds = refunds.Where(x =>
+                        x.ID.ToString() == filter.search ||
+                        x.OrderSaleID.ToString() == filter.search ||
+                        customerFilter.Where(c => c.refundID == x.ID).Any() ||
+                        refundDetailFilter.Where(d => d.refundID == x.ID).Any()
+                    );
+                }
+                #endregion
+
+                #region Lấy thông tin khách hàng
+                var customer = con.tbl_Customer
+                    .Join(
+                        refunds
+                            .Where(x => x.CustomerID.HasValue)
+                            .Select(x => new { CustomerID = x.CustomerID.Value })
+                            .Distinct(),
+                        c => c.ID,
+                        r => r.CustomerID,
+                        (c, r) => c
+                    )
+                    .Select(x => new {
+                        customerID = x.ID,
+                        customerName = x.CustomerName,
+                        customerPhone = x.CustomerPhone,
+                        nick = x.Nick
+                    })
+                    .ToList();
+                #endregion
+
+                #region Trường hợp filter đặc biệt
+                var data = refunds
+                    .Select(x => new
+                    {
+                        refundID = x.ID,
+                        status = x.Status,
+                        dateDone = x.CreatedDate,
+                        customerID = x.CustomerID,
+                        totalQuantity = x.TotalQuantity,
+                        totalPrice = String.IsNullOrEmpty(x.TotalPrice) ? "0" : x.TotalPrice,
+                        totalRefundFee = String.IsNullOrEmpty(x.TotalRefundFee) ? "0" : x.TotalRefundFee,
+                        orderID = x.OrderSaleID,
+                        note = x.RefundNote,
+                        createdBy = x.CreatedBy
+                    })
+                    .ToList();
+
+                #region Filter TotalRefundFee (do column kiểu nvarchar)
+                // Filter Fee Status
+                if (!String.IsNullOrEmpty(filter.feeStatus) && filter.feeStatus == "yes")
+                    data = data.Where(x => Convert.ToDecimal(x.totalRefundFee) > 0).ToList();
+                else if (!String.IsNullOrEmpty(filter.feeStatus) && filter.feeStatus == "no")
+                    data = data.Where(x => Convert.ToDecimal(x.totalRefundFee) == 0).ToList();
+                #endregion
+                #endregion
+
+                #region Tính toán phân trang
+                // Calculate pagination
+                pagination.totalCount = data.Count();
+                pagination.totalPages = (int)Math.Ceiling(pagination.totalCount / (double)pagination.pageSize);
+
+                data = data
+                    .OrderByDescending(x => x.refundID)
+                    .Skip((pagination.currentPage - 1) * pagination.pageSize)
+                    .Take(pagination.pageSize)
+                    .ToList();
+                #endregion
+
+                #region Xuất dữ liệu
+                var result = data
+                    .Join(
+                        customer,
+                        d => d.customerID,
+                        c => c.customerID,
+                        (d, c) => new RefundOrder()
+                        {
+                            ID = d.refundID,
+                            CreatedDate = d.dateDone.Value,
+                            Status = d.status.HasValue ? d.status.Value : 0,
+                            CustomerID = c.customerID,
+                            CustomerName = c.customerName,
+                            CustomerPhone = c.customerPhone,
+                            Nick = c.nick,
+                            Quantity = d.totalQuantity,
+                            TotalPrice = Convert.ToDouble(d.totalPrice),
+                            TotalRefundFee = Convert.ToDouble(d.totalRefundFee),
+                            OrderSaleID = d.orderID,
+                            RefundNote = d.note,
+                            CreatedBy = d.createdBy
+                        }
+                    )
+                    .ToList();
+                #endregion
+
+                return result;
             }
-
-            sql.AppendLine(String.Format("GROUP BY Ord.ID, Ord.CustomerName, Ord.CustomerPhone, Customer.Nick, Ord.CustomerID, Ord.Status, Ord.TotalPrice, Ord.TotalRefundFee, Ord.CreatedBy, Ord.CreatedDate, Ord.RefundNote, Ord.OrderSaleID"));
-            sql.AppendLine(String.Format("ORDER BY Ord.ID DESC"));
-
-            var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
-            while (reader.Read())
-            {
-                var entity = new RefundOrder();
-
-                entity.ID = Convert.ToInt32(reader["ID"]);
-                entity.CustomerName = reader["CustomerName"].ToString();
-                entity.CustomerPhone = reader["CustomerPhone"].ToString();
-                entity.CustomerID = Convert.ToInt32(reader["CustomerID"]);
-                entity.Nick = reader["Nick"].ToString();
-                entity.Status = Convert.ToInt32(reader["Status"]);
-                entity.TotalPrice = Convert.ToInt32(reader["TotalPrice"]);
-                entity.TotalRefundFee = Convert.ToInt32(reader["TotalRefundFee"]);
-                entity.CreatedBy = reader["CreatedBy"].ToString();
-                entity.CreatedDate = Convert.ToDateTime(reader["CreatedDate"]);
-                if (reader["RefundNote"] != DBNull.Value)
-                    entity.RefundNote = reader["RefundNote"].ToString();
-                if (reader["OrderSaleID"] != DBNull.Value)
-                    entity.OrderSaleID = Convert.ToInt32(reader["OrderSaleID"]);
-                entity.Quantity = Convert.ToInt32(reader["Quantity"]);
-
-                list.Add(entity);
-            }
-            reader.Close();
-            return list;
         }
 
         public static UserReportModel getUserReport(string CreatedBy, DateTime fromDate, DateTime toDate)
@@ -373,18 +508,18 @@ namespace IM_PJ.Controllers
             sql.AppendLine(String.Format("SELECT Ord.ID, SUM(ISNULL(OrdDetail.Quantity, 0)) AS Quantity, SUM(OrdDetail.Quantity * ISNULL(Product.CostOfGood, Variable.CostOfGood)) AS TotalCost, SUM(OrdDetail.Quantity * OrdDetail.SoldPricePerProduct) AS TotalRevenue, SUM(OrdDetail.Quantity * OrdDetail.RefundFeePerProduct) AS TotalRefundFee"));
             sql.AppendLine(String.Format("FROM tbl_RefundGoods AS Ord"));
             sql.AppendLine(String.Format("INNER JOIN tbl_RefundGoodsDetails AS OrdDetail"));
-            sql.AppendLine(String.Format("ON 	Ord.ID = OrdDetail.RefundGoodsID"));
+            sql.AppendLine(String.Format("ON     Ord.ID = OrdDetail.RefundGoodsID"));
             sql.AppendLine(String.Format("LEFT JOIN tbl_ProductVariable AS Variable"));
-            sql.AppendLine(String.Format("ON 	OrdDetail.SKU = Variable.SKU"));
+            sql.AppendLine(String.Format("ON     OrdDetail.SKU = Variable.SKU"));
             sql.AppendLine(String.Format("LEFT JOIN tbl_Product AS Product"));
-            sql.AppendLine(String.Format("ON 	OrdDetail.SKU = Product.ProductSKU"));
+            sql.AppendLine(String.Format("ON     OrdDetail.SKU = Product.ProductSKU"));
             sql.AppendLine(String.Format("WHERE 1 = 1"));
 
             if (!String.IsNullOrEmpty(CreatedBy))
             {
                 sql.AppendLine(String.Format("    AND Ord.CreatedBy = '{0}'", CreatedBy));
             }
-            sql.AppendLine(String.Format("	AND	(CONVERT(NVARCHAR(10), Ord.CreatedDate, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121))", fromDate, toDate));
+            sql.AppendLine(String.Format("    AND    (CONVERT(NVARCHAR(10), Ord.CreatedDate, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121))", fromDate, toDate));
             sql.AppendLine(String.Format("GROUP BY Ord.ID, OrdDetail.RefundFeePerProduct"));
 
             var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
@@ -777,7 +912,7 @@ namespace IM_PJ.Controllers
 
             if (now < new DateTime(year: 2020, month: 7, day: 1))
                 return result;
-            if (now > new DateTime(year: 2020, month: 7, day: 31))
+            if (now > new DateTime(year: 2020, month: 8, day: 31))
                 return result;
             #endregion
 

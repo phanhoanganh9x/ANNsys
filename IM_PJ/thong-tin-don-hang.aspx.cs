@@ -835,6 +835,8 @@ namespace IM_PJ
                         var order = OrderController.GetByID(OrderID);
                         if (order != null)
                         {
+                            #region Xử lý Order
+                            #region Lấy thông để cập nhật Order
                             username = order.CreatedBy;
                             int userID = AccountController.GetByUsername(username).ID;
 
@@ -866,6 +868,7 @@ namespace IM_PJ
                             int TransportCompanySubID = hdfTransportCompanySubID.Value.ToInt(0);
                             int PostalDeliveryType = ddlPostalDeliveryType.SelectedValue.ToInt();
 
+                            #region Câp nhật thông tin khách hàng
                             var Customer = CustomerController.GetByPhone(CustomerPhone);
                             if (Customer != null)
                             {
@@ -880,6 +883,7 @@ namespace IM_PJ
                                     CustomerID = kq.ToInt(0);
                                 }
                             }
+                            #endregion
 
                             string totalPrice = hdfTotalPrice.Value.ToString();
 
@@ -902,7 +906,7 @@ namespace IM_PJ
                             {
                                 DiscountPerProduct = Convert.ToDouble(hdfDiscountAmount.Value);
                             }
-                                
+
                             string sl = hdftotal.Value;
                             if (!string.IsNullOrEmpty(hdfTotalQuantity.Value))
                             {
@@ -912,6 +916,7 @@ namespace IM_PJ
                             string FeeShipping = pFeeShip.Value.ToString();
                             double Weight = Convert.ToDouble(txtWeight.Value);
 
+                            #region Tính ngày kết thúc theo ExcuteStatus và PaymentType
                             string datedone = "";
                             if (order.DateDone != null)
                             {
@@ -950,10 +955,14 @@ namespace IM_PJ
                                     }
                                 }
                             }
+                            #endregion
+
+                            // Update coupon
                             var couponID = hdfCouponID.Value.ToInt(0);
                             var couponIDOld = order.CouponID.HasValue ? order.CouponID.Value : 0;
                             var couponValue = hdfCouponValue.Value.ToDecimal(0);
 
+                            #region Tạo dữ liệu cập nhật Order
                             var orderNew = new tbl_Order()
                             {
                                 ID = OrderID,
@@ -991,13 +1000,16 @@ namespace IM_PJ
                                 CouponValue = couponValue,
                                 Weight = Weight
                             };
+                            #endregion
 
+                            // Update date done
                             if (!String.IsNullOrEmpty(datedone))
                                 orderNew.DateDone = Convert.ToDateTime(datedone);
 
                             OrderController.UpdateOnSystem(orderNew);
+                            #endregion
 
-                            // Insert Other Fee
+                            #region Xử lý Other Fee
                             if (!String.IsNullOrEmpty(hdfOtherFees.Value))
                             {
                                 JavaScriptSerializer serializer = new JavaScriptSerializer();
@@ -1021,8 +1033,9 @@ namespace IM_PJ
                                 // Remove all fee
                                 FeeController.deleteAll(OrderID);
                             }
+                            #endregion
 
-                            // Trường hợp remove mã giảm giá
+                            #region Xử lý Coupon
                             if (couponID == 0)
                             {
                                 if (couponIDOld > 0)
@@ -1040,8 +1053,9 @@ namespace IM_PJ
                                         CouponController.updateStatusCouponCustomer(CustomerID, couponID, false);
                                 }
                             }
+                            #endregion
 
-                            // Insert Or Update Transfer Bank
+                            #region Xử lý Transfer Bank
                             var bankID = ddlBank.SelectedValue.ToInt(0);
                             if (bankID != 0)
                             {
@@ -1055,8 +1069,9 @@ namespace IM_PJ
                                     BankTransferController.Create(order, bankID, acc);
                                 }
                             }
+                            #endregion
 
-                            // Xử lý hủy đơn hàng
+                            #region Xử lý hủy đơn hàng
                             if (ExcuteStatus == 3)
                             {
                                 var productRefund = OrderDetailController.GetByOrderID(order.ID);
@@ -1098,9 +1113,13 @@ namespace IM_PJ
                                 Response.Redirect("/danh-sach-don-hang");
                                 return;
                             }
+                            #endregion
+                            #endregion
 
                             if (OrderID > 0)
                             {
+                                #region Xử lý OrderDetail
+                                #region Cập nhật từng dòng chi tiết đơn hàng
                                 string list = hdfListProduct.Value;
                                 var items = list.Split(';').Where(x => !String.IsNullOrEmpty(x)).ToList();
 
@@ -1109,6 +1128,7 @@ namespace IM_PJ
 
                                 foreach (var item in items)
                                 {
+                                    #region Lấy thông tin chi tiết của đơn hàng
                                     string[] itemValue = item.Split(',');
 
                                     int ProductID = itemValue[0].ToInt();
@@ -1133,8 +1153,9 @@ namespace IM_PJ
                                     double Price = Convert.ToDouble(itemValue[9]);
                                     string ProductVariableSave = itemValue[10];
                                     int OrderDetailID = itemValue[11].ToInt(0);
+                                    #endregion
 
-                                    // Xử lý với trạng thái của đơn hàng đã hủy
+                                    #region Xử lý với trạng thái của đơn hàng đã hủy
                                     if (ExcuteStatusOld == 3)
                                     {
                                         var orderDetail = OrderDetailController.GetByID(OrderDetailID);
@@ -1160,6 +1181,8 @@ namespace IM_PJ
                                                 ProductType = 2,
                                                 CreatedDate = currentDate,
                                                 CreatedBy = username,
+                                                ModifiedDate = currentDate,
+                                                ModifiedBy = username,
                                                 IsCount = true
                                             });
                                         }
@@ -1185,13 +1208,14 @@ namespace IM_PJ
 
                                         continue;
                                     }
+                                    #endregion
 
-                                    // kiểm tra sản phẩm này đã có trong đơn chưa?
-
+                                    #region kiểm tra sản phẩm này đã có trong đơn chưa?
                                     var od = OrderDetailController.GetByID(OrderDetailID);
 
-                                    if (od != null) // nếu sản phẩm này có trong đơn có rồi thì chỉnh sửa
+                                    if (od != null) 
                                     {
+                                        #region nếu sản phẩm này có trong đơn có rồi thì chỉnh sửa
                                         double quantityOld = Convert.ToDouble(od.Quantity);
 
                                         if (quantityOld > Quantity)
@@ -1245,10 +1269,11 @@ namespace IM_PJ
 
                                         // cập nhật số lượng sản phẩm trong đơn hàng
                                         OrderDetailController.UpdateQuantity(OrderDetailID, Quantity, Price, currentDate, username);
+                                        #endregion
                                     }
-                                    // nếu sản phẩm này chưa có trong đơn thì thêm vào
                                     else
                                     {
+                                        #region nếu sản phẩm này chưa có trong đơn thì thêm vào
                                         OrderDetailController.Insert(AgentID, OrderID, SKU, ProductID, ProductVariableID, ProductVariableSave, Quantity, Price, 1, 0, ProductType, currentDate, username, true);
 
                                         StockManagerController.Insert(
@@ -1269,16 +1294,20 @@ namespace IM_PJ
                                                 MoveProID = 0,
                                                 ParentID = parentID,
                                             });
+                                        #endregion
                                     }
                                 }
+                                #endregion
+                                #endregion
+
+                                OrderController.updateQuantityCOGS(OrderID);
+                                #endregion
 
                                 // update stockmanager createdby nếu đổi nhân viên phụ trách
-                                if(ddlCreatedBy.SelectedValue != order.CreatedBy)
-                                {
+                                if (ddlCreatedBy.SelectedValue != order.CreatedBy)
                                     StockManagerController.updateCreatedByOrderID(OrderID, username);
-                                }
 
-                                // thêm đơn hàng đổi trả
+                                #region Thêm đơn hàng đổi trả
                                 string refund = hdSession.Value;
                                 // case click "bo qua"
                                 if (refund == "0")
@@ -1305,6 +1334,7 @@ namespace IM_PJ
                                         }
                                     }
                                 }
+                                #endregion
 
                                 PJUtils.ShowMessageBoxSwAlertCallFunction("Cập nhật đơn hàng thành công" + message, "s", true, "", Page);
                             }

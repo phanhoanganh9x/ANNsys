@@ -520,7 +520,6 @@
     <Content Include="bao-cao.aspx" />
     <Content Include="bv.aspx" />
     <Content Include="chuyen-kho.aspx" />
-    <Content Include="tai-khoan-app.aspx" />
     <Content Include="Models\IMMode.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>IMMode.edmx</DependentUpon>
@@ -531,6 +530,11 @@
       <DependentUpon>IMMode.edmx</DependentUpon>
       <LastGenOutput>IMMode.cs</LastGenOutput>
     </Content>
+    <Content Include="SQL\05CREATE_STORE_PROCEDURE_SyncStock1BasedOnStock2.sql" />
+    <Content Include="SQL\Add_Quantity_COGS_Order.sql" />
+    <Content Include="SQL\Add_Quantity_COGS_Refund.sql" />
+    <Content Include="SQL\Cal_Profit.sql" />
+    <Content Include="tai-khoan-app.aspx" />
     <Content Include="quan-ly-xuat-kho-2.aspx" />
     <Content Include="Content\bootstrap-datetimepicker.css" />
     <Content Include="Content\bootstrap-datetimepicker.min.css" />
@@ -706,7 +710,6 @@
     <Content Include="thong-ke-nhan-vien.aspx" />
     <Content Include="thong-tin-don-hang-chuyen-hoan.aspx" />
     <Content Include="sua-bai-viet.aspx" />
-    <Content Include="uploads\avatars\no-avatar.png" />
     <Content Include="chi-tiet-san-pham.aspx" />
     <Content Include="xem-thong-bao.aspx" />
     <Content Include="xem-bai-viet-app.aspx" />
@@ -989,18 +992,6 @@
       <DependentUpon>chuyen-kho.aspx</DependentUpon>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Models\Pages\thong-ke-chuyen-kho\SubStockTransferReport.cs" />
-    <Compile Include="Models\Pages\thong-ke-chuyen-kho\StockTransferReport.cs" />
-    <Compile Include="Models\PostWordpress.cs">
-      <DependentUpon>IMMode.tt</DependentUpon>
-    </Compile>
-    <Compile Include="tai-khoan-app.aspx.cs">
-      <DependentUpon>tai-khoan-app.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="tai-khoan-app.aspx.designer.cs">
-      <DependentUpon>tai-khoan-app.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Models\Bank.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
@@ -1016,6 +1007,9 @@
     <Compile Include="Models\CheckWarehouseDetail.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Common\Product\ProductCOGSModel.cs" />
+    <Compile Include="Models\Common\Product\ProductVariationCOGSModel.cs" />
+    <Compile Include="Models\Common\Refund\RefundFilterModel.cs" />
     <Compile Include="Models\Coupon.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
@@ -1079,8 +1073,8 @@
     <Compile Include="Models\NotifyUser.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Pages\thong-tin-san-pham\ProductVariationUpdateModel.cs" />
-    <Compile Include="Models\Pages\thong-tin-san-pham\VariationValueUpdateModel.cs" />
+    <Compile Include="Models\Pages\thong-ke-chuyen-kho\SubStockTransferReport.cs" />
+    <Compile Include="Models\Pages\thong-ke-chuyen-kho\StockTransferReport.cs" />
     <Compile Include="Models\PostCategory.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
@@ -1091,6 +1085,9 @@
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PostPublicImage.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PostWordpress.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductTag.cs">
@@ -1240,6 +1237,15 @@
     <Compile Include="Models\ZaloIndustry.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
+    <Compile Include="tai-khoan-app.aspx.cs">
+      <DependentUpon>tai-khoan-app.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="tai-khoan-app.aspx.designer.cs">
+      <DependentUpon>tai-khoan-app.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Pages\thong-tin-san-pham\ProductVariationUpdateModel.cs" />
+    <Compile Include="Models\Pages\thong-tin-san-pham\VariationValueUpdateModel.cs" />
     <Compile Include="quan-ly-xuat-kho-2.aspx.cs">
       <DependentUpon>quan-ly-xuat-kho-2.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1310,7 +1316,7 @@
     <Compile Include="Models\Common\DeliveryProshipFilterModel.cs" />
     <Compile Include="Models\Common\DeliveryPostOfficeFilterModel.cs" />
     <Compile Include="Models\Common\DiscountGroupModel.cs" />
-    <Compile Include="Models\Common\OrderModel.cs" />
+    <Compile Include="Models\Common\Order\OrderModel.cs" />
     <Compile Include="Models\Common\TagModel.cs" />
     <Compile Include="Models\Pages\cron-job-product-status\FilterModel.cs" />
     <Compile Include="Models\Pages\cron-job-product-status\ProductModel.cs" />
@@ -1485,8 +1491,8 @@
     <Compile Include="Models\Common\BusinessReportModel.cs" />
     <Compile Include="Models\Common\AllTypeModel.cs" />
     <Compile Include="Models\Common\PaginationMetadataModel.cs" />
-    <Compile Include="Models\Common\OrderFilterModel.cs" />
-    <Compile Include="Models\Common\ProductFilterModel.cs" />
+    <Compile Include="Models\Common\Order\OrderFilterModel.cs" />
+    <Compile Include="Models\Common\Product\ProductFilterModel.cs" />
     <Compile Include="bv.aspx.cs">
       <DependentUpon>bv.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1494,7 +1500,7 @@
     <Compile Include="bv.aspx.designer.cs">
       <DependentUpon>bv.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Models\Common\RegisterProductFilterModel.cs" />
+    <Compile Include="Models\Common\Product\RegisterProductFilterModel.cs" />
     <Compile Include="Models\Pages\thong-ke-nhap-kho\GoodsReceiptReport.cs" />
     <Compile Include="print-delivery.aspx.cs">
       <DependentUpon>print-delivery.aspx</DependentUpon>
@@ -2302,6 +2308,7 @@
   <ItemGroup>
     <Folder Include="App_Themes\NewUI\js\sweet\.sass-cache\" />
     <Folder Include="App_Themes\NewUI\plugins\" />
+    <Folder Include="uploads\avatars\" />
     <Folder Include="uploads\barcodes\" />
     <Folder Include="uploads\deliveries\post_office\" />
     <Folder Include="uploads\deliveries\proship\" />

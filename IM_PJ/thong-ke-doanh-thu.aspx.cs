@@ -63,25 +63,35 @@ namespace IM_PJ
 
             var reportModel = OrderController.GetProfitReport(fromdate, todate);
 
-            double TotalSalePrice = reportModel.Sum(x => x.TotalSalePrice);
-            double TotalRefundPrice = reportModel.Sum(x => x.TotalRefundPrice);
-            double TotalSaleDiscount = reportModel.Sum(x => x.TotalSaleDiscount);
+            if (reportModel == null || reportModel.Count == 0)
+                return;
 
-            double TotalSale = TotalSalePrice - TotalRefundPrice - TotalSaleDiscount;
-            int TotalNumberOfOrder = reportModel.Sum(x => x.TotalNumberOfOrder);
+            var sumReport = reportModel
+                .GroupBy(g => 1)
+                .Select(x => new
+                {
+                    TotalNumberOfOrder = x.Sum(s => s.TotalNumberOfOrder),
+                    TotalSalePrice = x.Sum(s => s.TotalSalePrice),
+                    TotalSaleDiscount = x.Sum(s => s.TotalSaleDiscount),
+                    TotalRefundPrice = x.Sum(s => s.TotalRefundPrice),
+                })
+                .Single();
 
-            ltrTotalNumberOfOrder.Text = TotalNumberOfOrder.ToString() + " đơn";
-            ltrNumberOfOrderPerDay.Text = (TotalNumberOfOrder / day).ToString() + " đơn/ngày";
+
+            double TotalSale = sumReport.TotalSalePrice - sumReport.TotalRefundPrice - sumReport.TotalSaleDiscount;
+
+            ltrTotalNumberOfOrder.Text = sumReport.TotalNumberOfOrder.ToString() + " đơn";
+            ltrNumberOfOrderPerDay.Text = (sumReport.TotalNumberOfOrder / day).ToString() + " đơn/ngày";
             ltrTotalRevenue.Text = string.Format("{0:N0}", TotalSale);
             ltrAverageRevenue.Text = string.Format("{0:N0}", TotalSale / day) + "đ/ngày";
 
-            if (TotalNumberOfOrder == 0)
+            if (sumReport.TotalNumberOfOrder == 0)
             {
                 ltrRevenuePerOrder.Text = "0";
             }
             else
             {
-                ltrRevenuePerOrder.Text = string.Format("{0:N0}", TotalSale / TotalNumberOfOrder) + "đ/đơn";
+                ltrRevenuePerOrder.Text = string.Format("{0:N0}", TotalSale / sumReport.TotalNumberOfOrder) + "đ/đơn";
             }
 
 
