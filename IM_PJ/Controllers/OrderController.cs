@@ -712,9 +712,9 @@ namespace IM_PJ.Controllers
                                     }
                                 )
                                 .Where(x =>
-                                    x.customer.UnSignedName.ToLower().Contains(search) ||
-                                    x.customer.UnSignedNick.ToLower().Contains(search) ||
-                                    x.order.ShippingCode.ToLower() == search
+                                    (!String.IsNullOrEmpty(x.customer.UnSignedName) && x.customer.UnSignedName.ToLower().Contains(search)) ||
+                                    (!String.IsNullOrEmpty(x.customer.UnSignedNick) && x.customer.UnSignedNick.ToLower().Contains(search)) ||
+                                    (!String.IsNullOrEmpty(x.order.ShippingCode) && x.order.ShippingCode.ToLower() == search)
                                 )
                                 .Select(x => x.order)
                                 .ToList();
