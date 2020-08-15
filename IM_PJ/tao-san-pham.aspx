@@ -1402,9 +1402,9 @@
             // Đồng bộ sản phẩm lên KiotViet
             function syncKvProduct(productSKU) {
                 $.ajax({
-                    url: "/api/v1/kiotviet/product",
+                    url: "/api/v1/cron-job/kiotviet/sync-product",
                     headers: {
-                        "Authorization": "Basic " + btoa("anhtruyen:0979610642"),
+                        "Authorization": "Basic " + btoa("admin:0914615407"),
                         "retailerName": "iwillgiaminh"
                     },
                     method: 'POST',

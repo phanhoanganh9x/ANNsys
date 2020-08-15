@@ -1082,13 +1082,13 @@
                     beforeSend: function () {
                         HoldOn.open();
                     },
-                    url: "/api/v1/kiotviet/category/ann-shop/" + categoryId + "/observation",
+                    url: "/api/v1/kiotviet/category/ann-shop/" + categoryId + "/unobservation",
                     headers: {
                         "Authorization": "Basic " + btoa("anhtruyen:0979610642"),
                         "retailerName": retailerName
                     },
                     contentType: 'application/json',
-                    method: 'DELETE',
+                    method: 'POST',
                     success: (response, textStatus, xhr) => {
                         HoldOn.close();
                         let $btnKvCategoryObserve = $("#btnKvCategoryObserve");
@@ -1200,13 +1200,13 @@
                 //    beforeSend: function () {
                 //        HoldOn.open();
                 //    },
-                //    url: "/api/v1/cron-job/kiotviet/product",
+                //    url: "/api/v1/cron-job/kiotviet/product/delete",
                 //    headers: {
                 //        "Authorization": "Basic " + btoa("anhtruyen:0979610642"),
                 //        "retailerName": retailerName
                 //    },
                 //    contentType: 'application/json',
-                //    method: 'DELETE',
+                //    method: 'POST',
                 //    dataType: "json",
                 //    data: JSON.stringify({ "referenceProductId": productRemoval.join(',') }),
                 //    success: (response, textStatus, xhr) => {
@@ -1340,12 +1340,12 @@
                     beforeSend: function () {
                         HoldOn.open();
                     },
-                    url: "/api/v1/kiotviet/product",
+                    url: "/api/v1/kiotviet/product/delete",
                     headers: {
                         "Authorization": "Basic " + btoa("anhtruyen:0979610642"),
                         "retailerName": retailerName
                     },
-                    method: 'DELETE',
+                    method: 'POST',
                     contentType: 'application/json',
                     dataType: "json",
                     data: JSON.stringify({ "referenceProductId": productId }),
@@ -1434,7 +1434,7 @@
                 });
             }
 
-            // Bỏ theo dõi danh mục
+            // Bỏ theo dõi san pham
             function deleteKvProductObservation(productSKU) {
                 let retailerName = $("#<%=ddlRetailer.ClientID%>").val();
 
@@ -1452,12 +1452,12 @@
                     beforeSend: function () {
                         HoldOn.open();
                     },
-                    url: "/api/v1/kiotviet/product/" + productSKU + "/observation",
+                    url: "/api/v1/kiotviet/product/" + productSKU + "/unobservation",
                     headers: {
                         "Authorization": "Basic " + btoa("anhtruyen:0979610642"),
                         "retailerName": retailerName
                     },
-                    method: 'DELETE',
+                    method: 'POST',
                     success: (response, textStatus, xhr) => {
                         HoldOn.close();
                         let $btnKvObserverProduct = $trProduct.find(".btn-kv-product-observation");
