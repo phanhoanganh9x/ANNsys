@@ -1410,7 +1410,7 @@
                     method: 'POST',
                     contentType: 'application/json',
                     dataType: "json",
-                    data: JSON.stringify({ "productSKU": productSKU })
+                    data: JSON.stringify({ "isCategoryObserved": true, "productSKU": productSKU })
                 });
             }
             // #endregion
