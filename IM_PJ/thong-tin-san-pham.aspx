@@ -174,6 +174,17 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
+                                    Đồng bộ lên KiotViet
+                                </div>
+                                <div class="row-right">
+                                    <asp:RadioButtonList ID="rdbSyncKiotViet" runat="server" RepeatDirection="Horizontal">
+                                        <asp:ListItem Value="true" Selected="True">Có</asp:ListItem>
+                                        <asp:ListItem Value="false">Không</asp:ListItem>
+                                    </asp:RadioButtonList>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
                                     Mã sản phẩm
                                 </div>
                                 <div class="row-right">
@@ -705,6 +716,9 @@
                         $(this).remove();
                     }
                 })
+
+                getKvCategory(+parentID || 0);
+
                 $.ajax({
                     type: "POST",
                     url: "/tao-san-pham.aspx/getParent",
@@ -1453,6 +1467,90 @@
             function isBlank(str) {
                 return (!str || /^\s*$/.test(str));
             }
+
+            // #region KiotViet
+            let _kvUser = "admin";
+            let _kvPassword = "0914615407";
+            let _retailerName = "iwillgiaminh"
+            // Kiểm tra xem danh mục có đang theo dõi không
+            function getKvCategory(categoryId) {
+                if (categoryId == 0)
+                    return;
+
+                let titleAlert = "Kiểm tra danh mục";
+
+                $.ajax({
+                    beforeSend: function () {
+                        HoldOn.open();
+                    },
+                    url: "/api/v1/kiotviet/category/ann-shop/" + categoryId,
+                    headers: {
+                        "Authorization": "Basic " + btoa(_kvUser + ":" + _kvPassword),
+                        "retailerName": _retailerName
+                    },
+                    contentType: 'application/json',
+                    method: 'GET',
+                    success: (response, textStatus, xhr) => {
+                        HoldOn.close();
+
+                        if (xhr.status == 200) {
+                            if (!response.cronJob)
+                            {
+                                let message = "Danh mục đang không được theo dõi.<br>Bạn vẫn muốn đang lên KiotViet";
+
+                                swal({
+                                    title: titleAlert,
+                                    text: message,
+                                    type: "warning",
+                                    showCancelButton: true,
+                                    cancelButtonText: "Để em xem lại...",
+                                    confirmButtonText: "Đúng rồi",
+                                    html: true
+                                }, function (isConfirm) {
+                                    let selected = isConfirm ? 'true' : 'false'; 
+                                    let $rdbSyncKiotViet = $("#<%=rdbSyncKiotViet.ClientID%>").find("input[type='radio']");
+
+                                    $.each($rdbSyncKiotViet, function (index, element) {
+                                        if ($(this).val() == selected)
+                                            $(this).prop('checked', true)
+                                        else
+                                            $(this).prop('checked', false)
+                                    });
+                                });
+                            }
+                        } else {
+                            _alterError(titleAlert);
+                        }
+                    },
+                    error: (xhr, textStatus, error) => {
+                        HoldOn.close();
+                        _alterError(titleAlert, xhr.responseJSON);
+                    }
+                });
+            }
+            // #endregion
+
+            // #region Swal
+            function _alterError(title, responseJSON) {
+                let message = '';
+                title = (typeof title !== 'undefined') ? title : 'Thông báo lỗi';
+
+                if (responseJSON === undefined || responseJSON === null) {
+                    message = 'Đẫ có lỗi xãy ra.';
+                }
+                else {
+                    if (responseJSON.message)
+                        message += responseJSON.message;
+                }
+
+                return swal({
+                    title: title,
+                    text: message,
+                    type: "error",
+                    html: true
+                });
+            }
+            // #endregion
         </script>
     </telerik:RadCodeBlock>
 </asp:Content>

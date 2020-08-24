@@ -220,7 +220,8 @@ namespace IM_PJ
                 webPublish = "",
                 preOrder = "",
                 tag = tag,
-                orderBy = orderBy
+                orderBy = orderBy,
+                syncKiotViet = true
             };
             // Create pagination
             var page = new PaginationMetadataModel()

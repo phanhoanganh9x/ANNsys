@@ -46,5 +46,7 @@ namespace IM_PJ.Models
         public string orderBy { get; set; } = String.Empty;
         // Warehouse
         public int warehouse { get; set; } = 0;
+        // Cho phép đồng bộ lên KiotViet
+        public bool? syncKiotViet { get; set; }
     }
 }

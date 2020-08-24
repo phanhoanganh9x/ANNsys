@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="inventorymanagementModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="inventorymanagementModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Bank">
           <Key>
             <PropertyRef Name="ID" />
@@ -1004,6 +1004,7 @@
           <Property Name="Color" Type="nchar" MaxLength="30" />
           <Property Name="PreOrder" Type="bit" Nullable="false" />
           <Property Name="Old_Price" Type="float" />
+          <Property Name="SyncKiotViet" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="tbl_ProductImage">
           <Key>
@@ -1396,8 +1397,7 @@
           <EntitySet Name="WebWordpress" EntityType="Self.WebWordpress" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZaloIndustry" EntityType="Self.ZaloIndustry" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="inventorymanagementModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -2400,6 +2400,7 @@
           <Property Name="Color" Type="String" MaxLength="30" FixedLength="true" Unicode="true" />
           <Property Name="PreOrder" Type="Boolean" Nullable="false" />
           <Property Name="Old_Price" Type="Double" />
+          <Property Name="SyncKiotViet" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="tbl_ProductImage">
           <Key>
@@ -3817,6 +3818,7 @@
           <EntitySetMapping Name="tbl_Product">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Product">
               <MappingFragment StoreEntitySet="tbl_Product">
+                <ScalarProperty Name="SyncKiotViet" ColumnName="SyncKiotViet" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
                 <ScalarProperty Name="ProductOldID" ColumnName="ProductOldID" />

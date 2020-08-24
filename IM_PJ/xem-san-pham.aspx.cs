@@ -146,8 +146,8 @@ namespace IM_PJ
                 }
 
                 ltrEdit2.Text = ltrEdit1.Text;
-
                 lbProductTitle.Text = p.ProductTitle;
+                rdbSyncKiotViet.SelectedValue = p.SyncKiotViet ? "true" : "false";
                 pContent.Text = p.ProductContent;
                 lblSKU.Text = p.ProductSKU;
                 txtOldSKU.Text = p.ProductSKU;

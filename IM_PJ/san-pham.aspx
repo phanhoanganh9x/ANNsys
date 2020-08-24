@@ -446,18 +446,18 @@
                             <a href="javascript:;" id="btnSyncKvCategory" onclick="syncKvProductByCategory()" class="btn primary-btn margin-right-15px hidden" title="Đăng tất cả các sản phẩm theo danh mục">
                                 <i class="fa fa-arrow-up"></i> Danh mục
                             </a>
-                            <a href="javascript:;" id="btnKvCategoryObserve" onclick="registerKvCategoryObservation()" class="btn primary-btn margin-right-15px hidden" title="Đăng khi có sản phẩm mới">
+                            <%--<a href="javascript:;" id="btnKvCategoryObserve" onclick="registerKvCategoryObservation()" class="btn primary-btn margin-right-15px hidden" title="Đăng khi có sản phẩm mới">
                                 <i class="fa fa-eye"></i> Danh mục
                             </a>
                             <a href="javascript:;" id="btnKvCategoryUnObserve" onclick="deleteKvCategoryObservation()" class="btn primary-btn margin-right-15px hidden" title="Không đăng sản phẩm mới">
                                 <i class="fa fa-eye-slash"></i> Danh mục
-                            </a>
+                            </a>--%>
                             <a href="javascript:;" id="btnSyncAllKvProduct" onclick="syncKvProducts()" class="btn primary-btn margin-right-15px hidden" title="Đăng sản phẩm đã chọn">
                                 <i class="fa fa-arrow-up"></i> Sản phẩm
                             </a>
-                            <a href="javascript:;" id="btnDeleteAllKvProduct" onclick="deleteKvProducts()" class="btn primary-btn btn-red margin-right-15px hidden" title="Xóa sản phẩm đã chọn">
+                            <%--<a href="javascript:;" id="btnDeleteAllKvProduct" onclick="deleteKvProducts()" class="btn primary-btn btn-red margin-right-15px hidden" title="Xóa sản phẩm đã chọn">
                                 <i class="fa fa-times"></i> Sản phẩm
-                            </a>
+                            </a>--%>
                         </div>
                     </div>
                 </div>
@@ -556,17 +556,17 @@
             // Xử lý ẩn hiện button KiotVet theo dõi danh mục 
             function _handleBtnKvCategory(retailerName, categoryId) {
                 let $btnSyncKvCategory = $("#btnSyncKvCategory");
-                let $btnKvCategoryObserve = $("#btnKvCategoryObserve");
-                let $btnKvCategoryUnObserve = $("#btnKvCategoryUnObserve");
+                //let $btnKvCategoryObserve = $("#btnKvCategoryObserve");
+                //let $btnKvCategoryUnObserve = $("#btnKvCategoryUnObserve");
 
                 if (!retailerName || categoryId == "0") {
                     observeKvCategory = false;
                     // Sync Category
                     $btnSyncKvCategory.addClass("hidden");
                     // Observer Category
-                    $btnKvCategoryObserve.addClass("hidden");
+                    //$btnKvCategoryObserve.addClass("hidden");
                     // UnObserver Category
-                    $btnKvCategoryUnObserve.addClass("hidden");
+                    //$btnKvCategoryUnObserve.addClass("hidden");
 
                     return;
                 }
@@ -587,16 +587,16 @@
                         if (category && category.cronJob) {
                             observeKvCategory = true;
                             // Observer Category
-                            $btnKvCategoryObserve.addClass("hidden");
+                            //$btnKvCategoryObserve.addClass("hidden");
                             // UnObserver Category
-                            $btnKvCategoryUnObserve.removeClass("hidden");
+                            //$btnKvCategoryUnObserve.removeClass("hidden");
                         }
                         else {
                             observeKvCategory = false;
                             // Observer Category
-                            $btnKvCategoryObserve.removeClass("hidden");
+                            //$btnKvCategoryObserve.removeClass("hidden");
                             // UnObserver Category
-                            $btnKvCategoryUnObserve.addClass("hidden");
+                            //$btnKvCategoryUnObserve.addClass("hidden");
                         }
                     }
                 });
@@ -604,7 +604,7 @@
 
             function _handleBtnKvProduct(retailerName) {
                 let $btnSyncAllKvProduct = $("#btnSyncAllKvProduct");
-                let $btnDeleteAllKvProduct = $("#btnDeleteAllKvProduct");
+                //let $btnDeleteAllKvProduct = $("#btnDeleteAllKvProduct");
 
                 if (retailerName) {
                     if (productSync.length > 0 && productRemoval.length > 0) {
@@ -613,9 +613,9 @@
                         $btnSyncAllKvProduct.attr("disabled", true);
                         $btnSyncAllKvProduct.attr("readonly", true);
                         // Delete Product
-                        $btnDeleteAllKvProduct.addClass("hidden");
-                        $btnDeleteAllKvProduct.attr("disabled", true);
-                        $btnDeleteAllKvProduct.attr("readonly", true);
+                        //$btnDeleteAllKvProduct.addClass("hidden");
+                        //$btnDeleteAllKvProduct.attr("disabled", true);
+                        //$btnDeleteAllKvProduct.attr("readonly", true);
                     }
                     else if (productSync.length > 0 && productRemoval.length == 0) {
                         // Sync Product
@@ -623,19 +623,19 @@
                         $btnSyncAllKvProduct.attr("disabled", false);
                         $btnSyncAllKvProduct.attr("readonly", false);
                         // Delete Product
-                        $btnDeleteAllKvProduct.addClass("hidden");
-                        $btnDeleteAllKvProduct.attr("disabled", true);
-                        $btnDeleteAllKvProduct.attr("readonly", true);
+                        //$btnDeleteAllKvProduct.addClass("hidden");
+                        //$btnDeleteAllKvProduct.attr("disabled", true);
+                        //$btnDeleteAllKvProduct.attr("readonly", true);
                     }
                     else if (productSync.length == 0 && productRemoval.length > 0) {
                         // Sync Product
-                        $btnDeleteAllKvProduct.addClass("hidden");
+                        $btnSyncAllKvProduct.addClass("hidden");
                         $btnSyncAllKvProduct.attr("disabled", true);
                         $btnSyncAllKvProduct.attr("readonly", true);
                         // Delete Product
-                        $btnDeleteAllKvProduct.removeClass("hidden");
-                        $btnDeleteAllKvProduct.attr("disabled", false);
-                        $btnDeleteAllKvProduct.attr("readonly", false);
+                        //$btnDeleteAllKvProduct.removeClass("hidden");
+                        //$btnDeleteAllKvProduct.attr("disabled", false);
+                        //$btnDeleteAllKvProduct.attr("readonly", false);
                     }
                     else {
                         // Sync Product
@@ -643,9 +643,9 @@
                         $btnSyncAllKvProduct.attr("disabled", true);
                         $btnSyncAllKvProduct.attr("readonly", true);
                         // Delete Product
-                        $btnDeleteAllKvProduct.addClass("hidden");
-                        $btnDeleteAllKvProduct.attr("disabled", true);
-                        $btnDeleteAllKvProduct.attr("readonly", true);
+                        //$btnDeleteAllKvProduct.addClass("hidden");
+                        //$btnDeleteAllKvProduct.attr("disabled", true);
+                        //$btnDeleteAllKvProduct.attr("readonly", true);
                     }
                 }
                 else {
@@ -654,9 +654,9 @@
                     $btnSyncAllKvProduct.attr("disabled", true);
                     $btnSyncAllKvProduct.attr("readonly", true);
                     // Delete Product
-                    $btnDeleteAllKvProduct.addClass("hidden");
-                    $btnDeleteAllKvProduct.attr("disabled", true);
-                    $btnDeleteAllKvProduct.attr("readonly", true);
+                    //$btnDeleteAllKvProduct.addClass("hidden");
+                    //$btnDeleteAllKvProduct.attr("disabled", true);
+                    //$btnDeleteAllKvProduct.attr("readonly", true);
                 }
             }
 
@@ -1024,7 +1024,7 @@
             }
 
             // Đăng ký theo dõi danh mục
-            function registerKvCategoryObservation() {
+            <%--function registerKvCategoryObservation() {
                 let retailerName = $("#<%=ddlRetailer.ClientID%>").val();
                 let categoryId = $("#<%=ddlCategory.ClientID%>").val();
 
@@ -1066,10 +1066,10 @@
                         _alterError(titleAlert, xhr.responseJSON);
                     }
                 });
-            }
+            }--%>
 
             // Bỏ theo dõi danh mục
-            function deleteKvCategoryObservation() {
+            <%--function deleteKvCategoryObservation() {
                 let retailerName = $("#<%=ddlRetailer.ClientID%>").val();
                 let categoryId = $("#<%=ddlCategory.ClientID%>").val();
 
@@ -1111,7 +1111,7 @@
                         _alterError(titleAlert, xhr.responseJSON);
                     }
                 });
-            }
+            }--%>
 
             // Đồng bộ danh sách sản phẩm lên KiotViet
             function syncKvProducts() {
@@ -1138,7 +1138,7 @@
                     success: (response, textStatus, xhr) => {
                         HoldOn.close();
                         let $btnSyncAllKvProduct = $("#btnSyncAllKvProduct");
-                        let $btnDeleteAllKvProduct = $("#btnDeleteAllKvProduct");
+                        //let $btnDeleteAllKvProduct = $("#btnDeleteAllKvProduct");
 
                         if (xhr.status == 200) {
                             $.each(productSync, function (index, element) {
@@ -1165,9 +1165,9 @@
                             $btnSyncAllKvProduct.attr("disabled", true);
                             $btnSyncAllKvProduct.attr("readonly", true);
                             // Delete Product
-                            $btnDeleteAllKvProduct.removeClass("hidden");
-                            $btnDeleteAllKvProduct.attr("disabled", false);
-                            $btnDeleteAllKvProduct.attr("readonly", false);
+                            //$btnDeleteAllKvProduct.removeClass("hidden");
+                            //$btnDeleteAllKvProduct.attr("disabled", false);
+                            //$btnDeleteAllKvProduct.attr("readonly", false);
 
                             _alterSuccess(titleAlert, "Thành công");
                         } else {
@@ -1182,7 +1182,7 @@
             }
 
             // Xóa sản phẩm
-            function deleteKvProducts() {
+            <%--function deleteKvProducts() {
                 let retailerName = $("#<%=ddlRetailer.ClientID%>").val();
 
                 if (!retailerName || productRemoval.length == 0)
@@ -1253,7 +1253,7 @@
                 //        _alterError(titleAlert, xhr.responseJSON);
                 //    }
                 //});
-            }
+            }--%>
 
             // Đồng bộ sản phẩm lên KiotViet
             function syncKvProduct(productSKU) {
