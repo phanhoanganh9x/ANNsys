@@ -74,6 +74,17 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
+                                    Đồng bộ lên KiotViet
+                                </div>
+                                <div class="row-right">
+                                    <asp:RadioButtonList ID="rdbSyncKiotViet" Enabled="false" runat="server" RepeatDirection="Horizontal">
+                                        <asp:ListItem Value="true" Selected="True">Có</asp:ListItem>
+                                        <asp:ListItem Value="false">Không</asp:ListItem>
+                                    </asp:RadioButtonList>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
                                     Mã sản phẩm
                                 </div>
                                 <div class="row-right">

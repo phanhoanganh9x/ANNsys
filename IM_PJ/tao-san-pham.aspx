@@ -176,7 +176,17 @@
                                     <select id="ddlCategory" date-name="parentID" runat="server" class="form-control slparent" data-level="1" onchange="selectCategory($(this))"></select>
                                 </div>
                             </div>
-
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Đồng bộ lên KiotViet
+                                </div>
+                                <div class="row-right">
+                                    <asp:RadioButtonList ID="rdbSyncKiotViet" CssClass="RadioButtonList" runat="server" RepeatDirection="Horizontal">
+                                        <asp:ListItem Value="true" Selected="True">Có</asp:ListItem>
+                                        <asp:ListItem Value="false">Không</asp:ListItem>
+                                    </asp:RadioButtonList>
+                                </div>
+                            </div>
                             <div class="form-row">
                                 <div class="row-left">
                                     Mã sản phẩm
@@ -679,7 +689,11 @@
             });
 
             function redirectTo(ID, SKU) {
-                syncKvProduct(SKU);
+                let $rdbSyncKiotViet = $("#<%=rdbSyncKiotViet.ClientID%>").find("input[type='radio']:checked");
+
+                console.log($rdbSyncKiotViet.val());
+                if ($rdbSyncKiotViet.val() == 'true')
+                    syncKvProduct(SKU);
                 window.location.href = "/xem-san-pham?id=" +ID;
             }
 
@@ -811,6 +825,8 @@
                         $(this).remove();
                     }
                 })
+
+                getKvCategory(+parentID || 0);
 
                 $.ajax({
                     type: "POST",
@@ -1137,7 +1153,6 @@
             }
 
             function addNewProduct() {
-                
                 var listv = "";
                 var a = $("#<%= hdfsetStyle.ClientID%>").val();
                 var parent = $("#<%=hdfParentID.ClientID%>").val();
@@ -1399,18 +1414,100 @@
             })(window);
 
             // #region KiotViet
+            let _kvUser = "admin";
+            let _kvPassword = "0914615407";
+            let _retailerName = "iwillgiaminh"
+            // Kiểm tra xem danh mục có đang theo dõi không
+            function getKvCategory(categoryId) {
+                if (categoryId == 0)
+                    return;
+
+                let titleAlert = "Kiểm tra danh mục";
+
+                $.ajax({
+                    beforeSend: function () {
+                        HoldOn.open();
+                    },
+                    url: "/api/v1/kiotviet/category/ann-shop/" + categoryId,
+                    headers: {
+                        "Authorization": "Basic " + btoa(_kvUser + ":" + _kvPassword),
+                        "retailerName": _retailerName
+                    },
+                    contentType: 'application/json',
+                    method: 'GET',
+                    success: (response, textStatus, xhr) => {
+                        HoldOn.close();
+
+                        if (xhr.status == 200) {
+                            if (!response.cronJob)
+                            {
+                                let message = "Danh mục đang không được theo dõi.<br>Bạn vẫn muốn đang lên KiotViet";
+
+                                swal({
+                                    title: titleAlert,
+                                    text: message,
+                                    type: "warning",
+                                    showCancelButton: true,
+                                    cancelButtonText: "Để em xem lại...",
+                                    confirmButtonText: "Đúng rồi",
+                                    html: true
+                                }, function (isConfirm) {
+                                    let selected = isConfirm ? 'true' : 'false'; 
+                                    let $rdbSyncKiotViet = $("#<%=rdbSyncKiotViet.ClientID%>").find("input[type='radio']");
+
+                                    $.each($rdbSyncKiotViet, function (index, element) {
+                                        if ($(this).val() == selected)
+                                            $(this).prop('checked', true)
+                                        else
+                                            $(this).prop('checked', false)
+                                    });
+                                });
+                            }
+                        } else {
+                            _alterError(titleAlert);
+                        }
+                    },
+                    error: (xhr, textStatus, error) => {
+                        HoldOn.close();
+                        _alterError(titleAlert, xhr.responseJSON);
+                    }
+                });
+            }
+
             // Đồng bộ sản phẩm lên KiotViet
             function syncKvProduct(productSKU) {
                 $.ajax({
-                    url: "/api/v1/cron-job/kiotviet/sync-product",
+                    url: "/api/v1/cron-job/kiotviet/sync-product-schedule",
                     headers: {
-                        "Authorization": "Basic " + btoa("admin:0914615407"),
-                        "retailerName": "iwillgiaminh"
+                        "Authorization": "Basic " + btoa(_kvUser + ":" + _kvPassword),
+                        "retailerName": _retailerName
                     },
                     method: 'POST',
                     contentType: 'application/json',
                     dataType: "json",
-                    data: JSON.stringify({ "isCategoryObserved": true, "productSKU": productSKU })
+                    data: JSON.stringify({ "productSKU": productSKU })
+                });
+            }
+            // #endregion
+
+            // #region Swal
+            function _alterError(title, responseJSON) {
+                let message = '';
+                title = (typeof title !== 'undefined') ? title : 'Thông báo lỗi';
+
+                if (responseJSON === undefined || responseJSON === null) {
+                    message = 'Đẫ có lỗi xãy ra.';
+                }
+                else {
+                    if (responseJSON.message)
+                        message += responseJSON.message;
+                }
+
+                return swal({
+                    title: title,
+                    text: message,
+                    type: "error",
+                    html: true
                 });
             }
             // #endregion

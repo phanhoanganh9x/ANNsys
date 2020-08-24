@@ -366,7 +366,7 @@ namespace IM_PJ
                             }
 
                             int ShowHomePage = ddlShowHomePage.SelectedValue.ToInt(0);
-
+                            var syncKiotViet = rdbSyncKiotViet.SelectedValue == "true";
                             var prodNew = new tbl_Product()
                             {
                                 CategoryID = cateID,
@@ -394,7 +394,8 @@ namespace IM_PJ
                                 ShowHomePage = ShowHomePage,
                                 Color = mainColor,
                                 PreOrder = preOrder,
-                                Old_Price = Old_Price
+                                Old_Price = Old_Price,
+                                SyncKiotViet = syncKiotViet
                             };
 
                             string kq = ProductController.Insert(prodNew);

@@ -233,6 +233,8 @@ namespace IM_PJ
             txtProductTitle.Text = product.ProductTitle;
             // Danh mục
             ddlCategory.SelectedValue = product.CategoryID.ToString();
+            // Đồng bộ lên KiotViet
+            rdbSyncKiotViet.SelectedValue = product.SyncKiotViet ? "true" : "false";
             // Mã sản phẩm
             txtProductSKU.Text = product.ProductSKU;
             // Chất liệu
@@ -510,6 +512,8 @@ namespace IM_PJ
             updatedData.ProductTitle = Regex.Replace(txtProductTitle.Text, @"\s*\,\s*|\s*\;\s*", " - ");
             // Danh mục
             updatedData.CategoryID = Convert.ToInt32(hdfParentID.Value);
+            // Đồng bộ lên KiotViet
+            updatedData.SyncKiotViet = rdbSyncKiotViet.SelectedValue == "true";
             // Mã sản phẩm
             updatedData.ProductSKU = ViewState["SKU"].ToString();
             // Chất liệu

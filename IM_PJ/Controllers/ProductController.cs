@@ -65,6 +65,7 @@ namespace IM_PJ.Controllers
                 ui.Color = product.Color;
                 ui.PreOrder = product.PreOrder;
                 ui.Old_Price = product.Old_Price;
+                ui.SyncKiotViet = product.SyncKiotViet;
 
                 dbe.tbl_Product.Add(ui);
                 dbe.SaveChanges();
@@ -107,6 +108,7 @@ namespace IM_PJ.Controllers
                     ui.Color = product.Color;
                     ui.PreOrder = product.PreOrder;
                     ui.Old_Price = product.Old_Price;
+                    ui.SyncKiotViet = product.SyncKiotViet;
 
                     int kq = dbe.SaveChanges();
                     return kq.ToString();
@@ -980,6 +982,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine(String.Format("    DECLARE @currentPage int = {0};", page.currentPage));
             sql.AppendLine("    DECLARE @totalPages int = 0;");
             #endregion
+
             #region Lấy id category (gồm của category cha and con)
             sql.AppendLine(String.Empty);
             if (filter.category > 0)
@@ -1237,6 +1240,11 @@ namespace IM_PJ.Controllers
             #region Lọc theo sản phẩm Order
             if (!String.IsNullOrEmpty(filter.preOrder))
                 sql.AppendLine(String.Format("    AND PRD.PreOrder = '{0}'", filter.preOrder));
+            #endregion
+
+            #region Lọc theo sản phẩm được phép đồng bộ lên KiotViet
+            if (filter.syncKiotViet.HasValue)
+                sql.AppendLine(String.Format("    AND PRD.SyncKiotViet = {0}", filter.syncKiotViet.Value ? 1 : 0));
             #endregion
 
             sql.AppendLine("     ORDER BY");
