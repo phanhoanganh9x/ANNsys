@@ -438,8 +438,8 @@
                         <div class="col-md-3 col-xs-12">
                             <asp:DropDownList ID="ddlRetailer" runat="server" CssClass="form-control" style="background-color: #fff">
                                 <asp:ListItem Value="" Text="Tên nhà bán lẻ"></asp:ListItem>
-                                <asp:ListItem Value="giaminhwill" Text="giaminhwill"></asp:ListItem>
-                                <asp:ListItem Value="iwillgiaminh" Text="iwillgiaminh"></asp:ListItem>
+                                <asp:ListItem Value="giaminhwill" Text="TK tính tiền"></asp:ListItem>
+                                <asp:ListItem Value="iwillgiaminh" Text="TK Web"></asp:ListItem>
                             </asp:DropDownList>
                         </div>
                         <div class="col-md-9 col-xs-12">
@@ -1134,7 +1134,10 @@
                     contentType: 'application/json',
                     method: 'POST',
                     dataType: "json",
-                    data: JSON.stringify({ "productSKU": productSync.join(',') }),
+                    data: JSON.stringify({
+                        "productSKU": productSync.join(','),
+                        "ignoreQuantity": retailerName == "giaminhwill"
+                    }),
                     success: (response, textStatus, xhr) => {
                         HoldOn.close();
                         let $btnSyncAllKvProduct = $("#btnSyncAllKvProduct");
@@ -1281,7 +1284,10 @@
                     method: 'POST',
                     contentType: 'application/json',
                     dataType: "json",
-                    data: JSON.stringify({ "productSKU": productSKU }),
+                    data: JSON.stringify({
+                        "productSKU": productSKU,
+                        "ignoreQuantity": retailerName == "giaminhwill"
+                    }),
                     success: (response, textStatus, xhr) => {
                         HoldOn.close();
                         let $btnKvSyncProduct = $trProduct.find(".btn-sync-kv-product");
