@@ -691,7 +691,6 @@
             function redirectTo(ID, SKU) {
                 let $rdbSyncKiotViet = $("#<%=rdbSyncKiotViet.ClientID%>").find("input[type='radio']:checked");
 
-                console.log($rdbSyncKiotViet.val());
                 if ($rdbSyncKiotViet.val() == 'true')
                     syncKvProduct(SKU);
                 window.location.href = "/xem-san-pham?id=" +ID;
@@ -1477,15 +1476,12 @@
             // Đồng bộ sản phẩm lên KiotViet
             function syncKvProduct(productSKU) {
                 $.ajax({
-                    url: "/api/v1/cron-job/kiotviet/sync-product-schedule",
+                    url: "/api/v1/cron-job/kiotviet/product/" + productSKU + "/register-sync",
                     headers: {
                         "Authorization": "Basic " + btoa(_kvUser + ":" + _kvPassword),
                         "retailerName": _retailerName
                     },
-                    method: 'POST',
-                    contentType: 'application/json',
-                    dataType: "json",
-                    data: JSON.stringify({ "productSKU": productSKU })
+                    method: 'POST'
                 });
             }
             // #endregion
