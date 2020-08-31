@@ -418,6 +418,8 @@ namespace IM_PJ
                                     SKU = SKU,
                                     CreatedDate = currentDate,
                                     CreatedBy = username,
+                                    ModifiedDate = currentDate,
+                                    ModifiedBy = username,
                                     MoveProID = 0,
                                     ParentID = parentID,
                                 });

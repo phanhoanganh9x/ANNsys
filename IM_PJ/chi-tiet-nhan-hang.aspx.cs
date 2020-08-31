@@ -632,6 +632,8 @@ namespace IM_PJ
                                                         SKU = SKU,
                                                         CreatedDate = currentDate,
                                                         CreatedBy = username,
+                                                        ModifiedDate = currentDate,
+                                                        ModifiedBy = username,
                                                         MoveProID = mpID,
                                                         ParentID = ID
                                                     });
@@ -663,6 +665,8 @@ namespace IM_PJ
                                                         SKU = SKU,
                                                         CreatedDate = currentDate,
                                                         CreatedBy = username,
+                                                        ModifiedDate = currentDate,
+                                                        ModifiedBy = username,
                                                         MoveProID = mpID,
                                                         ParentID = parentID
                                                     });
@@ -718,6 +722,8 @@ namespace IM_PJ
                                             SKU = mpd.SKU,
                                             CreatedDate = currentDate,
                                             CreatedBy = username,
+                                            ModifiedDate = currentDate,
+                                            ModifiedBy = username,
                                             MoveProID = Convert.ToInt32(mpd.MoveProID),
                                             ParentID = ID
                                         });
@@ -749,6 +755,8 @@ namespace IM_PJ
                                             SKU = mpd.SKU,
                                             CreatedDate = currentDate,
                                             CreatedBy = username,
+                                            ModifiedDate = currentDate,
+                                            ModifiedBy = username,
                                             MoveProID = Convert.ToInt32(mpd.MoveProID),
                                             ParentID = parentID
                                         });

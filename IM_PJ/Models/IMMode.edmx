@@ -553,6 +553,7 @@
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Timestamp" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
         </EntityType>
         <EntityType Name="Tag">
           <Key>
@@ -1183,6 +1184,7 @@
           <Property Name="SKU" Type="nvarchar" MaxLength="30" />
           <Property Name="MoveProID" Type="int" />
           <Property Name="ParentID" Type="int" />
+          <Property Name="Timestamp" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
         </EntityType>
         <EntityType Name="tbl_Supplier">
           <Key>
@@ -1949,6 +1951,7 @@
           <Property Name="CreatedBy" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Timestamp" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" ConcurrencyMode="Fixed" />
         </EntityType>
         <EntityType Name="Tag">
           <Key>
@@ -2579,6 +2582,7 @@
           <Property Name="SKU" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="MoveProID" Type="Int32" />
           <Property Name="ParentID" Type="Int32" />
+          <Property Name="Timestamp" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" ConcurrencyMode="Fixed" />
         </EntityType>
         <EntityType Name="tbl_Supplier">
           <Key>
@@ -3363,6 +3367,7 @@
           <EntitySetMapping Name="StockManager2">
             <EntityTypeMapping TypeName="inventorymanagementModel.StockManager2">
               <MappingFragment StoreEntitySet="StockManager2">
+                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="AgentID" ColumnName="AgentID" />
                 <ScalarProperty Name="ProductID" ColumnName="ProductID" />
@@ -4024,6 +4029,7 @@
           <EntitySetMapping Name="tbl_StockManager">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_StockManager">
               <MappingFragment StoreEntitySet="tbl_StockManager">
+                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="AgentID" ColumnName="AgentID" />
                 <ScalarProperty Name="ProductID" ColumnName="ProductID" />

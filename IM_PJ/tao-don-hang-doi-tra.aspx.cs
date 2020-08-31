@@ -415,6 +415,8 @@ namespace IM_PJ
                                                 SKU = item.ProductStyle == 1 ? item.ParentSKU : item.ChildSKU,
                                                 CreatedDate = currentDate.AddMilliseconds(time),
                                                 CreatedBy = username,
+                                                ModifiedDate = currentDate.AddMilliseconds(time),
+                                                ModifiedBy = username,
                                                 MoveProID = 0,
                                                 ParentID = item.ProductID,
                                             });

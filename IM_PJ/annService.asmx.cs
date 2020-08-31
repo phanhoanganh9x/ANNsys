@@ -546,6 +546,8 @@ namespace IM_PJ
                                                 SKU = SKU,
                                                 CreatedDate = currentDate,
                                                 CreatedBy = CreatedBy,
+                                                ModifiedDate = currentDate,
+                                                ModifiedBy = CreatedBy,
                                                 MoveProID = 0,
                                                 ParentID = ProductID
                                             });
@@ -578,6 +580,8 @@ namespace IM_PJ
                                                 SKU = SKU,
                                                 CreatedDate = currentDate,
                                                 CreatedBy = CreatedBy,
+                                                ModifiedDate = currentDate,
+                                                ModifiedBy = CreatedBy,
                                                 MoveProID = 0,
                                                 ParentID = parentID,
                                             });
@@ -816,6 +820,8 @@ namespace IM_PJ
                                     SKU = SKU,
                                     CreatedDate = currentDate,
                                     CreatedBy = CreatedBy,
+                                    ModifiedDate = currentDate,
+                                    ModifiedBy = CreatedBy,
                                     MoveProID = 0,
                                     ParentID = ProductID
                                 });
@@ -848,6 +854,8 @@ namespace IM_PJ
                                     SKU = SKU,
                                     CreatedDate = currentDate,
                                     CreatedBy = CreatedBy,
+                                    ModifiedDate = currentDate,
+                                    ModifiedBy = CreatedBy,
                                     MoveProID = 0,
                                     ParentID = parentID
                                 });

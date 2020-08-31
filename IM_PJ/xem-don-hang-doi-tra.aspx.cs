@@ -426,6 +426,8 @@ namespace IM_PJ
                             SKU = product.ProductStyle == 1 ? product.ParentSKU : product.ChildSKU,
                             CreatedDate = DateTime.Now,
                             CreatedBy = _refundGood.CreateBy,
+                            ModifiedDate = DateTime.Now,
+                            ModifiedBy = _refundGood.CreateBy,
                             MoveProID = 0,
                             ParentID = product.ProductID,
                         });

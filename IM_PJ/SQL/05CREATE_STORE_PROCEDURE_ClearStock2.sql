@@ -1,4 +1,4 @@
-CREATE PROCEDURE ClearStock
+CREATE PROCEDURE ClearStock2
 AS
 BEGIN
     -- Get stock last
@@ -6,13 +6,12 @@ BEGIN
         MAX(ID) AS IDLAST
     INTO #stockLast
     FROM
-        tbl_StockManager AS STM
+        StockManager2 AS STM
     GROUP BY
-        STM.SKU
-    ;
+        STM.SKU;
 
     -- Remove stock which is not last
-    DELETE tbl_StockManager
+    DELETE StockManager2
     WHERE NOT Exists (
         SELECT
             NULL AS DUMMY
@@ -28,11 +27,11 @@ BEGIN
         DECLARE stock_cursor CURSOR FOR
             SELECT
                 STM.ID
-            ,   ISNULL(STM.Type, 1) AS Type
-            ,   ISNULL(STM.Quantity, 0) AS Quantity
-            ,   ISNULL(STM.QuantityCurrent, 0) AS QuantityCurrent
+            ,   STM.Type AS Type
+            ,   STM.Quantity AS Quantity
+            ,   STM.QuantityCurrent AS QuantityCurrent
             FROM
-                tbl_StockManager AS STM
+                StockManager2 AS STM
             INNER JOIN #stockLast as STL
             ON STM.ID = STL.IDLAST
         ;
@@ -55,11 +54,11 @@ BEGIN
 
             IF @QuantityCurrent < 0
             BEGIN
-                UPDATE tbl_StockManager
+                UPDATE StockManager2
                 SET
                     QuantityCurrent = @Quantity
                 ,   Status = 21
-                ,   NoteID = N'Loại bỏ số lượng âm'
+                ,   Note = N'Loại bỏ số lượng âm'
                 ,   ModifiedDate = GETDATE()
                 ,   ModifiedBy = N'admin'
                 WHERE ID = @ID

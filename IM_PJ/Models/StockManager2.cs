@@ -29,5 +29,6 @@ namespace IM_PJ.Models
         public string CreatedBy { get; set; }
         public System.DateTime ModifiedDate { get; set; }
         public string ModifiedBy { get; set; }
+        public byte[] Timestamp { get; set; }
     }
 }
