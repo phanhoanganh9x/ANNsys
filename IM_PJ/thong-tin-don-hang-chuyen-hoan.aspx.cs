@@ -574,6 +574,8 @@ namespace IM_PJ
                                             SKU = product.SKU,
                                             CreatedDate = currentDate,
                                             CreatedBy = product.CreatedBy,
+                                            ModifiedDate = currentDate,
+                                            ModifiedBy = product.CreatedBy,
                                             MoveProID = 0,
                                             ParentID = parentID
                                         });

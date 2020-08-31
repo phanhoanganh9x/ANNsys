@@ -512,6 +512,8 @@ namespace IM_PJ
                                         SKU = item.SKU,
                                         CreatedDate = currentDate,
                                         CreatedBy = username,
+                                        ModifiedDate = currentDate,
+                                        ModifiedBy = username,
                                         MoveProID = 0,
                                         ParentID = parentID
                                     }

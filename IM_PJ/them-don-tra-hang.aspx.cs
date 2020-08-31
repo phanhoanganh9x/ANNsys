@@ -322,6 +322,8 @@ namespace IM_PJ
                                                                 SKU = sku,
                                                                 CreatedDate = currentDate,
                                                                 CreatedBy = username,
+                                                                ModifiedDate = currentDate,
+                                                                ModifiedBy = username,
                                                                 MoveProID = 0,
                                                                 ParentID = productID,
                                                             });
@@ -376,6 +378,8 @@ namespace IM_PJ
                                                             SKU = sku,
                                                             CreatedDate = currentDate,
                                                             CreatedBy = username,
+                                                            ModifiedDate = currentDate,
+                                                            ModifiedBy = username,
                                                             MoveProID = 0,
                                                             ParentID = parentID,
                                                         });
