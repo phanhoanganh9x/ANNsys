@@ -423,6 +423,7 @@ namespace IM_PJ
             Thumbnail.create(filePath, 159, 212);
             Thumbnail.create(filePath, 240, 320);
             Thumbnail.create(filePath, 350, 467);
+            Thumbnail.create(filePath, 420, 420);
             Thumbnail.create(filePath, 600, 0);
 
             return Path.GetFileName(filePath);
@@ -453,6 +454,7 @@ namespace IM_PJ
             Thumbnail.create(filePath, 159, 212);
             Thumbnail.create(filePath, 240, 320);
             Thumbnail.create(filePath, 350, 467);
+            Thumbnail.create(filePath, 420, 420);
             Thumbnail.create(filePath, 600, 0);
 
             return Path.GetFileName(filePath);
@@ -483,6 +485,7 @@ namespace IM_PJ
             Thumbnail.create(filePath, 159, 212);
             Thumbnail.create(filePath, 240, 320);
             Thumbnail.create(filePath, 350, 467);
+            Thumbnail.create(filePath, 420, 420);
             Thumbnail.create(filePath, 600, 0);
 
             return Path.GetFileName(filePath);

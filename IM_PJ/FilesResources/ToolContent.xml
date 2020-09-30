@@ -42,7 +42,7 @@
     <tool name="InsertUnorderedList"/>
   </tools>
   <cssFiles>
-    <item name="~/App_Themes/Ann/css/style-editor.css?v=12092020" />
+    <item name="~/App_Themes/Ann/css/style-editor.css?v=30092020" />
   </cssFiles>
 	<symbols>
 	</symbols>

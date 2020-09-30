@@ -856,19 +856,22 @@ namespace IM_PJ
                     html.AppendLine(Variable);
                 }
 
-                // thông tin liên hệ
-                string categoryName = "";
-                var category = CategoryController.GetByID(product.CategoryID.Value);
-                if (category != null)
+                if (id % 3 == 0)
                 {
-                    categoryName = " " + category.CategoryName.ToUpper();
+                    // thông tin liên hệ
+                    string categoryName = "";
+                    var category = CategoryController.GetByID(product.CategoryID.Value);
+                    if (category != null)
+                    {
+                        categoryName = " " + category.CategoryName.ToUpper();
+                    }
+                    html.AppendLine("\r\n");
+                    html.AppendLine("<p>--------------------------</p>\r\n");
+                    html.AppendLine("<p>⚡⚡ KHO SỈ" + categoryName + " ANN ⚡⚡</p>\r\n");
+                    html.AppendLine("<p>🏭 68 Đường C12, P.13, Tân Bình, TP.HCM</p>\r\n");
+                    html.AppendLine("<p>⭐ Web: https://ann.com.vn </p>\r\n");
                 }
-
-                html.AppendLine("<p>--------------------------</p>\r\n");
-                html.AppendLine("<p>⚡⚡ KHO SỈ" + categoryName +" ANN ⚡⚡</p>\r\n");
-                html.AppendLine("<p>🏭 68 Đường C12, P.13, Tân Bình, TP.HCM</p>\r\n");
-                html.AppendLine("<p>⭐ Zalo: 0918569400 - 0936786404 - 0913268406 - 0918567409</p>\r\n");
-                html.AppendLine("<p>⭐ Web: https://ann.com.vn </p>\r\n");
+                
             }
 
             return html.ToString();

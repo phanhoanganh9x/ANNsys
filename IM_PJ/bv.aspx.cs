@@ -78,7 +78,7 @@ namespace IM_PJ
             ddlCreatedDate.SelectedValue = CreatedDate.ToString();
 
             List<PostSQL> a = new List<PostSQL>();
-            a = PostController.GetAllSql(CategoryID, TextSearch, "1", "false", CreatedDate, "");
+            a = PostController.GetAllSql(CategoryID, TextSearch, "", "", CreatedDate, "");
 
             pagingall(a);
         }

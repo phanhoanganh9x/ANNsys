@@ -451,6 +451,7 @@ namespace IM_PJ
                                         Thumbnail.create(Server.MapPath(o), 159, 212);
                                         Thumbnail.create(Server.MapPath(o), 240, 320);
                                         Thumbnail.create(Server.MapPath(o), 350, 467);
+                                        Thumbnail.create(Server.MapPath(o), 420, 420);
                                         Thumbnail.create(Server.MapPath(o), 600, 0);
                                     }
 
@@ -474,6 +475,7 @@ namespace IM_PJ
                                         Thumbnail.create(Server.MapPath(o), 159, 212);
                                         Thumbnail.create(Server.MapPath(o), 240, 320);
                                         Thumbnail.create(Server.MapPath(o), 350, 467);
+                                        Thumbnail.create(Server.MapPath(o), 420, 420);
                                         Thumbnail.create(Server.MapPath(o), 600, 0);
                                     }
 
@@ -497,6 +499,7 @@ namespace IM_PJ
                                         Thumbnail.create(Server.MapPath(o), 159, 212);
                                         Thumbnail.create(Server.MapPath(o), 240, 320);
                                         Thumbnail.create(Server.MapPath(o), 350, 467);
+                                        Thumbnail.create(Server.MapPath(o), 420, 420);
                                         Thumbnail.create(Server.MapPath(o), 600, 0);
                                     }
 
@@ -547,6 +550,7 @@ namespace IM_PJ
                                                 Thumbnail.create(Server.MapPath(o), 159, 212);
                                                 Thumbnail.create(Server.MapPath(o), 240, 320);
                                                 Thumbnail.create(Server.MapPath(o), 350, 467);
+                                                Thumbnail.create(Server.MapPath(o), 420, 420);
                                                 Thumbnail.create(Server.MapPath(o), 600, 0);
                                             }
 

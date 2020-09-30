@@ -95,7 +95,7 @@
             </div>
         </div>
 
-        <script src="/App_Themes/Ann/js/sync-post.js?v=12092020"></script>
+        <script src="/App_Themes/Ann/js/sync-post.js?v=30092020"></script>
 
         <script type="text/javascript">
             $("#<%=txtSearchPost.ClientID%>").keyup(function (e) {
