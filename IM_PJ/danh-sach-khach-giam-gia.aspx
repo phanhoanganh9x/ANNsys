@@ -2,8 +2,8 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <link rel="stylesheet" href="App_Themes/Ann/css/pages/danh-sach-khach-giam-gia/danh-sach-khach-giam-gia.css?v=11072020" />
-    <link rel="stylesheet" href="App_Themes/Ann/css/common/search-customer.css?v=11072020" />
+    <link rel="stylesheet" href="App_Themes/Ann/css/pages/danh-sach-khach-giam-gia/danh-sach-khach-giam-gia.css?v=12092020" />
+    <link rel="stylesheet" href="App_Themes/Ann/css/common/search-customer.css?v=12092020" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
@@ -130,14 +130,14 @@
 
         <asp:Button ID="btnDelete" runat="server" OnClick="btnDelete_Click" Style="display: none" />
         <script type="text/javascript" src="/App_Themes/Ann/js/HoldOn.js"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=11072020"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/models/common/discount-group-model.js?v=11072020"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/models/common/customer-model.js?v=11072020"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/models/common/order-model.js?v=11072020"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/services/common/search-customer-service.js?v=11072020"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/controllers/common/search-customer-controller.js?v=11072020"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/services/danh-sach-khach-giam-gia/danh-sach-khach-giam-gia-service.js?v=11072020"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/controllers/danh-sach-khach-giam-gia/danh-sach-khach-giam-gia-controller.js?v=11072020"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-giam-gia/danh-sach-khach-giam-gia.js?v=11072020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=12092020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/models/common/discount-group-model.js?v=12092020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/models/common/customer-model.js?v=12092020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/models/common/order-model.js?v=12092020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/services/common/search-customer-service.js?v=12092020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/controllers/common/search-customer-controller.js?v=12092020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/services/danh-sach-khach-giam-gia/danh-sach-khach-giam-gia-service.js?v=12092020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/controllers/danh-sach-khach-giam-gia/danh-sach-khach-giam-gia-controller.js?v=12092020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-giam-gia/danh-sach-khach-giam-gia.js?v=12092020"></script>
     </main>
 </asp:Content>

@@ -230,6 +230,8 @@
                                         <asp:ListItem Text="bansithoitrang.net" Value="bansithoitrang.net" />
                                         <asp:ListItem Text="annshop.vn" Value="annshop.vn" />
                                         <asp:ListItem Text="quanaoxuongmay.com" Value="quanaoxuongmay.com" />
+                                        <asp:ListItem Text="nhapsionline.com" Value="nhapsionline.com" />
+                                        <asp:ListItem Text="thoitrangann.com" Value="thoitrangann.com" />
                                     </asp:DropDownList>
                                     </div>
                                     <div class="col-md-7">

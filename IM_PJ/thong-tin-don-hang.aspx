@@ -3,9 +3,9 @@
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script type="text/javascript" src="/App_Themes/Ann/js/search-customer.js?v=20200703145200"></script>
-    <script type="text/javascript" src="/App_Themes/Ann/js/search-product.js?v=11072020"></script>
-    <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=11072020"></script>
-    <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=11072020"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/search-product.js?v=12092020"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=12092020"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=12092020"></script>
     <style>
         .panel-post {
             margin-bottom: 20px;

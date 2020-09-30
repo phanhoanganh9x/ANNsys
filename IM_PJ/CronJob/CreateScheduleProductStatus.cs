@@ -91,7 +91,8 @@ namespace IM_PJ.CronJob
             web.Add("https://panpan.vn");
             //web.Add("https://chuyensidobo.com");
             web.Add("https://damgiasi.vn");
-
+            web.Add("https://nhapsionline.com");
+            web.Add("https://thoitrangann.com");
             return web;
         }
 
