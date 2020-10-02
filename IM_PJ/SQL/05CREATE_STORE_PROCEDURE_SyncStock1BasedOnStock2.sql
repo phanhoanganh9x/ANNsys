@@ -12,7 +12,7 @@ BEGIN
         SELECT
             STK2.ProductID
         ,   STK2.ProductVariableID
-        ,   MAX(STK2.CreatedDate) AS LastTime
+        ,   MAX(STK2.ID) AS ID
         INTO #Stock2Last
         FROM
             StockManager2 AS STK2
@@ -20,6 +20,19 @@ BEGIN
             STK2.ProductID
         ,   STK2.ProductVariableID
         ;
+
+        -- Loai bo san pham trung lap trong Stock Manager 2
+        BEGIN
+            DELETE FROM StockManager2
+            WHERE NOT EXiSTS (
+                SELECT
+                    NULL AS DUMMY
+                FROM
+                    #Stock2Last AS L
+                WHERE
+                    ID = L.ID
+            );
+        END
 
         SELECT
             STK2.ProductID
@@ -31,7 +44,7 @@ BEGIN
         INNER JOIN #Stock2Last AS L
             ON  STK2.ProductID = L.ProductID
             AND STK2.ProductVariableID = L.ProductVariableID
-            AND STK2.CreatedDate = L.LastTime
+            AND STK2.ID = L.ID
         WHERE
             (STK2.QuantityCurrent + STK2.Quantity * IIF(STK2.Type = 1, 1, -1)) >= @MinQuantity
         ;
@@ -39,6 +52,31 @@ BEGIN
 
     -- Lay san pham trong stock 1 co ton tai trong stock 2
     BEGIN
+        SELECT
+            STK1.ParentID
+        ,   STK1.ProductVariableID
+        ,   MAX(STK1.ID) AS ID
+        INTO #Stock1Last
+        FROM
+            tbl_StockManager AS STK1
+        GROUP BY
+            STK1.ParentID
+        ,   STK1.ProductVariableID
+        ;
+
+        -- Loai bo san pham trung lap trong Stock Manager 1
+        BEGIN
+            DELETE FROM tbl_StockManager
+            WHERE NOT EXiSTS (
+                SELECT
+                    NULL AS DUMMY
+                FROM
+                    #Stock1Last AS L
+                WHERE
+                    ID = L.ID
+            );
+        END
+
         SELECT
             ISNULL(STK1.ParentID, 0) AS ProductID
         ,   ISNULL(STK1.ProductVariableID, 0) AS ProductVariableID
@@ -50,20 +88,12 @@ BEGIN
         INTO #Stock1Filter
         FROM
             tbl_StockManager AS STK1
+        INNER JOIN #Stock1Last AS L
+            ON STK1.ParentID = L.ParentID
+            AND STK1.ProductVariableID = L.ProductVariableID
         INNER JOIN #Stock2 AS STK2
             ON STK1.ParentID = STK2.ProductID
             AND STK1.ProductVariableID = STK2.ProductVariableID
-        ;
-        SELECT
-            STK1.ProductID
-        ,   STK1.ProductVariableID
-        ,   MAX(STK1.CreatedDate) AS LastTime
-        INTO #Stock1Last
-        FROM
-            #Stock1Filter AS STK1
-        GROUP BY
-            STK1.ProductID
-        ,   STK1.ProductVariableID
         ;
 
         SELECT
@@ -74,10 +104,6 @@ BEGIN
         INTO #Stock1
         FROM
             #Stock1Filter AS STK1
-        INNER JOIN #Stock1Last AS L
-            ON  STK1.ProductID = L.ProductID
-            AND STK1.ProductVariableID = L.ProductVariableID
-            AND STK1.CreatedDate = L.LastTime
         ;
     END
 
@@ -126,40 +152,19 @@ BEGIN
 
         WHILE @@FETCH_STATUS = 0
         BEGIN
-           INSERT INTO tbl_StockManager (
-               AgentID
-           ,   ProductID
-           ,   ProductVariableID
-           ,   Quantity
-           ,   QuantityCurrent
-           ,   Type
-           ,   CreatedDate
-           ,   CreatedBy
-           ,   ModifiedDate
-           ,   ModifiedBy
-           ,   NoteID
-           ,   Status
-           ,   SKU
-           ,   MoveProID
-           ,   ParentID
-           )
-           VALUES (
-               1
-           ,   IIF(@ProductVariableID > 0, 0, @ProductID)
-           ,   @ProductVariableID
-           ,   ABS(@AvailableQuantity2 - @AvailableQuantity1)
-           ,   @AvailableQuantity1
-           ,   IIF((@AvailableQuantity2 - @AvailableQuantity1) > 0, 1, 2)
-           ,   GETDATE()
-           ,   'admin'
-           ,   GETDATE()
-           ,   'admin'
-           ,   N'Cân bằng số lượng kho 1 bằng với kho 2'
-           ,   0
-           ,   20
-           ,   0
-           ,   @ProductID
-           );
+            UPDATE tbl_StockManager
+            SET
+                [Type] = IIF((@AvailableQuantity2 - @AvailableQuantity1) > 0, 1, 2)
+            ,   QuantityCurrent = @AvailableQuantity1
+            ,   Quantity = ABS(@AvailableQuantity2 - @AvailableQuantity1)
+            ,   [Status] = 20
+            ,   [NoteID] = N'Cân bằng số lượng kho 1 bằng với kho 2'
+            ,   ModifiedDate = GETDATE()
+            ,   ModifiedBy = N'admin'
+            WHERE
+                ParentID = @ProductID
+                AND ProductVariableID = @ProductVariableID
+            ;
 
            FETCH NEXT FROM product_cusror
            INTO 
@@ -201,20 +206,6 @@ BEGIN
         ,   OLD.AvailableQuantity2 AS AvailableQuantity2
         FROM
             [DATA] AS STK1
-        INNER JOIN (
-            SELECT
-                D.ProductID
-            ,   D.ProductVariableID
-            ,   MAX(D.CreatedDate) AS LastTime
-            FROM
-                [DATA] AS D
-            GROUP BY
-                D.ProductID
-            ,   D.ProductVariableID
-        ) AS L
-            ON  STK1.ProductID = L.ProductID
-            AND STK1.ProductVariableID = L.ProductVariableID
-            AND STK1.CreatedDate = L.LastTime
         INNER JOIN #StockUpdate AS OLD
             ON  STK1.ProductID = OLD.ProductID
             AND STK1.ProductVariableID = OLD.ProductVariableID
