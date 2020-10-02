@@ -462,18 +462,7 @@ namespace IM_PJ
 
             uploadedFile.SaveAs(filePath);
 
-            #region Draw Code
-            // Nội dung sẻ vẽ trên hình
-            var imageCode = txtImageCode.Text.Trim();
-            var extension = Path.GetExtension(filePath);
-
-            _drawCode(Path.GetFileName(filePath), imageCode);
-
-            if (extension != IMAGE_EXTENSION)
-                filePath = filePath.Replace("." + extension, "." + IMAGE_EXTENSION);
-            #endregion
-
-            #region Thumbnail
+            // Thumbnail
             Thumbnail.create(filePath, 85, 113);
             Thumbnail.create(filePath, 159, 212);
             Thumbnail.create(filePath, 240, 320);
@@ -505,18 +494,7 @@ namespace IM_PJ
 
             httpPostedFile.SaveAs(filePath);
 
-            #region Draw Code
-            // Nội dung sẻ vẽ trên hình
-            var imageCode = txtImageCode.Text.Trim();
-            var extension = Path.GetExtension(filePath);
-
-            _drawCode(Path.GetFileName(filePath), imageCode);
-
-            if (extension != IMAGE_EXTENSION)
-                filePath = filePath.Replace("." + extension, "." + IMAGE_EXTENSION);
-            #endregion
-
-            #region Thumbnail
+            // Thumbnail
             Thumbnail.create(filePath, 85, 113);
             Thumbnail.create(filePath, 159, 212);
             Thumbnail.create(filePath, 240, 320);

@@ -387,8 +387,6 @@ namespace IM_PJ
                         }
                         else
                         {
-                            // Nội dung sẻ vẽ trên hình
-                            var imageCode = txtImageCode.Text.Trim();
                             string ProductTitle = Regex.Replace(txtProductTitle.Text.Trim(), @"\s*\,\s*|\s*\;\s*", " - ");
                             string ProductContent = pContent.Content.ToString();
 
