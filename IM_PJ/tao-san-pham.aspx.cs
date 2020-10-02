@@ -98,7 +98,7 @@ namespace IM_PJ
             #endregion
 
             // Thực thi API
-            (HttpWebResponse)httpWebRequest.GetResponse();
+            httpWebRequest.GetResponse();
         }
         #endregion
 
@@ -388,7 +388,7 @@ namespace IM_PJ
                         else
                         {
                             // Nội dung sẻ vẽ trên hình
-                            var imageCode = String.Empty;
+                            var imageCode = txtImageCode.Text.Trim();
                             string ProductTitle = Regex.Replace(txtProductTitle.Text.Trim(), @"\s*\,\s*|\s*\;\s*", " - ");
                             string ProductContent = pContent.Content.ToString();
 

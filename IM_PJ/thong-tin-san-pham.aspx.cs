@@ -438,7 +438,7 @@ namespace IM_PJ
             #endregion
 
             // Thực thi API
-            (HttpWebResponse)httpWebRequest.GetResponse();
+            httpWebRequest.GetResponse();
         }
 
         #region Update
@@ -464,7 +464,7 @@ namespace IM_PJ
 
             #region Draw Code
             // Nội dung sẻ vẽ trên hình
-            var imageCode = String.Empty;
+            var imageCode = txtImageCode.Text.Trim();
             var extension = Path.GetExtension(filePath);
 
             _drawCode(Path.GetFileName(filePath), imageCode);
@@ -507,7 +507,7 @@ namespace IM_PJ
 
             #region Draw Code
             // Nội dung sẻ vẽ trên hình
-            var imageCode = String.Empty;
+            var imageCode = txtImageCode.Text.Trim();
             var extension = Path.GetExtension(filePath);
 
             _drawCode(Path.GetFileName(filePath), imageCode);

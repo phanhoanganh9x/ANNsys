@@ -193,6 +193,14 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
+                                    Nội dung chèn lên hình
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox ID="txtImageCode" runat="server"  CssClass="form-control" placeholder="Nhập nội dung chèn lên hình ảnh" Rows="2"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
                                     Chất liệu
                                 </div>
                                 <div class="row-right">
