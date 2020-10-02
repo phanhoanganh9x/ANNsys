@@ -1,10 +1,4 @@
-﻿using IM_PJ.Controllers;
-using IM_PJ.Models;
-using IM_PJ.Models.Pages.thong_tin_san_pham;
-using IM_PJ.Utils;
-using MB.Extensions;
-using Newtonsoft.Json;
-using NHST.Bussiness;
+﻿#region .NET Framework
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -12,20 +6,37 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Net;
 using System.Web;
 using System.Web.Http;
 using System.Web.Script.Services;
 using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+#endregion
+
+#region Package (third-party)
+using MB.Extensions;
+using Newtonsoft.Json;
 using Telerik.Web.UI;
+#endregion
+
+#region ANN Shop
+using IM_PJ.Controllers;
+using IM_PJ.Models;
+using IM_PJ.Models.Pages.thong_tin_san_pham;
+using IM_PJ.Utils;
+
+using NHST.Bussiness;
 using WebUI.Business;
+#endregion
 
 namespace IM_PJ
 {
     public partial class thong_tin_san_pham : System.Web.UI.Page
     {
         private static string _productSKU;
+        public static string IMAGE_EXTENSION = "png";
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -397,6 +408,39 @@ namespace IM_PJ
         }
         #endregion
 
+        /// <summary>
+        /// Vẽ mã lên hình ảnh của sản phẩm
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <param name="fileName">Tên file hình ảnh</param>
+        /// <param name="code">Nội dung muốn ghi lên hình</param>
+        /// <returns></returns>
+        private void _drawCode(string fileName, string code)
+        {
+            #region Khởi tạo API
+            var api = "http://ann-shop-dotnet-core.com/api/v1/image/draw-code";
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(api);
+
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "POST";
+
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                string json = JsonConvert.SerializeObject(new
+                {
+                    fileName = fileName,
+                    code = code
+                });
+
+                streamWriter.Write(json);
+            }
+            #endregion
+
+            // Thực thi API
+            httpWebRequest.GetResponse();
+        }
+
         #region Update
         /// <summary>
         /// Upload image
@@ -425,6 +469,7 @@ namespace IM_PJ
             Thumbnail.create(filePath, 350, 467);
             Thumbnail.create(filePath, 420, 420);
             Thumbnail.create(filePath, 600, 0);
+            #endregion
 
             return Path.GetFileName(filePath);
         }
@@ -456,6 +501,7 @@ namespace IM_PJ
             Thumbnail.create(filePath, 350, 467);
             Thumbnail.create(filePath, 420, 420);
             Thumbnail.create(filePath, 600, 0);
+            #endregion
 
             return Path.GetFileName(filePath);
         }
@@ -683,7 +729,7 @@ namespace IM_PJ
             {
                 foreach (var file in uploadVariationImage.PostedFiles)
                 {
-                    
+
                     var fileName = file.FileName;
                     var imageName = _uploadImage(productID, file);
 
@@ -714,10 +760,10 @@ namespace IM_PJ
                 {
                     // Thực hiện update biến thể
                     var productVariationID = ProductVariableController.Update(
-                        ID: productVariation.ID, 
-                        ProductID: productID, 
-                        ParentSKU: productSKU, 
-                        SKU: item.sku, 
+                        ID: productVariation.ID,
+                        ProductID: productID,
+                        ParentSKU: productSKU,
+                        SKU: item.sku,
                         Stock: Convert.ToDouble(productVariation.Stock),
                         StockStatus: Convert.ToInt32(productVariation.StockStatus),
                         Regular_Price: item.regularPrice,
@@ -754,9 +800,9 @@ namespace IM_PJ
                 {
                     // Tạo sản phẩm biến thể mới
                     var productVariationID = ProductVariableController.Insert(
-                        ProductID: productID, 
+                        ProductID: productID,
                         ParentSKU: productSKU,
-                        SKU: item.sku, 
+                        SKU: item.sku,
                         Stock: 0,
                         StockStatus: item.stockStatus,
                         Regular_Price: item.regularPrice,
@@ -764,14 +810,14 @@ namespace IM_PJ
                         RetailPrice: item.retailPrice,
                         Image: image,
                         ManageStock: true,
-                        IsHidden: false, 
-                        CreatedDate: now, 
+                        IsHidden: false,
+                        CreatedDate: now,
                         CreatedBy: acc.Username,
                         SupplierID: ddlSupplier.SelectedValue.ToInt(0),
                         SupplierName: ddlSupplier.SelectedItem.ToString(),
                         MinimumInventoryLevel: item.minimumInventoryLevel,
                         MaximumInventoryLevel: item.maximumInventoryLevel);
-                    
+
                     // Khởi tạo biến thể cho sản phẩm con
                     _createVariationValue(new VariationValueUpdateModel()
                     {
@@ -805,11 +851,11 @@ namespace IM_PJ
                 ProductVariableValueController.Insert(
                     ProductVariableID: variationValue.productVariationID,
                     ProductvariableSKU: variationValue.productVariationSKU,
-                    VariableValueID: variableValueID, 
+                    VariableValueID: variableValueID,
                     VariableName: variableName,
                     VariableValue: variableValueName,
                     IsHidden: variationValue.isHidden,
-                    CreatedDate: variationValue.createdDate, 
+                    CreatedDate: variationValue.createdDate,
                     CreatedBy: variationValue.createdBy
                 );
             }

@@ -1,15 +1,11 @@
-﻿using IM_PJ.Controllers;
-using IM_PJ.Models;
-using IM_PJ.Utils;
-using MB.Extensions;
-using Newtonsoft.Json;
-using NHST.Bussiness;
+﻿#region .NET Framework
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Net;
 using System.Web;
 using System.Web.Http;
 using System.Web.Script.Serialization;
@@ -17,15 +13,30 @@ using System.Web.Script.Services;
 using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+#endregion
+
+#region Package (third-party)
+using MB.Extensions;
+using Newtonsoft.Json;
 using Telerik.Web.UI;
+#endregion
+
+#region ANN Shop
+using IM_PJ.Controllers;
+using IM_PJ.Models;
+using IM_PJ.Utils;
+
+using NHST.Bussiness;
+#endregion
 
 namespace IM_PJ
 {
     public partial class tao_san_pham : System.Web.UI.Page
     {
-
+        public static string IMAGE_EXTENSION = "png";
         public static string htmlAll = "";
         public static int element = 0;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -55,6 +66,42 @@ namespace IM_PJ
                 }
             }
         }
+
+        #region Private
+        /// <summary>
+        /// Vẽ mã lên hình ảnh của sản phẩm
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <param name="fileName">Tên file hình ảnh</param>
+        /// <param name="code">Nội dung muốn ghi lên hình</param>
+        /// <returns></returns>
+        private void _drawCode(string fileName, string code)
+        {
+            #region Khởi tạo API
+            var api = "http://ann-shop-dotnet-core.com/api/v1/image/draw-code";
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(api);
+
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "POST";
+
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                string json = JsonConvert.SerializeObject(new
+                {
+                    fileName = fileName,
+                    code = code
+                });
+
+                streamWriter.Write(json);
+            }
+            #endregion
+
+            // Thực thi API
+            httpWebRequest.GetResponse();
+        }
+        #endregion
+
         public void LoadPDW()
         {
             var variablename = VariableController.GetAllIsHidden(false);
@@ -128,7 +175,7 @@ namespace IM_PJ
         public void addItemCategory(int id, string h = "")
         {
             var categories = CategoryController.GetByParentID("", id);
-            
+
             if (categories.Count > 0)
             {
                 foreach (var c in categories)
@@ -446,13 +493,25 @@ namespace IM_PJ
                                     if (!File.Exists(Server.MapPath(o)))
                                     {
                                         f.SaveAs(Server.MapPath(o));
-                                        // Thumbnail
+
+                                        #region Draw Code
+                                        var fileName = Path.GetFileName(o);
+                                        var extension = Path.GetExtension(o);
+
+                                        _drawCode(fileName, imageCode);
+
+                                        if (extension != IMAGE_EXTENSION)
+                                            o = o.Replace("." + extension, "." + IMAGE_EXTENSION);
+                                        #endregion
+
+                                        #region Thumbnail
                                         Thumbnail.create(Server.MapPath(o), 85, 113);
                                         Thumbnail.create(Server.MapPath(o), 159, 212);
                                         Thumbnail.create(Server.MapPath(o), 240, 320);
                                         Thumbnail.create(Server.MapPath(o), 350, 467);
                                         Thumbnail.create(Server.MapPath(o), 420, 420);
                                         Thumbnail.create(Server.MapPath(o), 600, 0);
+                                        #endregion
                                     }
 
                                     ProductImage = Path.GetFileName(Server.MapPath(o));
@@ -494,13 +553,25 @@ namespace IM_PJ
                                     if (!File.Exists(Server.MapPath(o)))
                                     {
                                         f.SaveAs(Server.MapPath(o));
-                                        // Thumbnail
+
+                                        #region Draw Code
+                                        var fileName = Path.GetFileName(o);
+                                        var extension = Path.GetExtension(o);
+
+                                        _drawCode(fileName, imageCode);
+
+                                        if (extension != IMAGE_EXTENSION)
+                                            o = o.Replace("." + extension, "." + IMAGE_EXTENSION);
+                                        #endregion
+
+                                        #region Thumbnail
                                         Thumbnail.create(Server.MapPath(o), 85, 113);
                                         Thumbnail.create(Server.MapPath(o), 159, 212);
                                         Thumbnail.create(Server.MapPath(o), 240, 320);
                                         Thumbnail.create(Server.MapPath(o), 350, 467);
                                         Thumbnail.create(Server.MapPath(o), 420, 420);
                                         Thumbnail.create(Server.MapPath(o), 600, 0);
+                                        #endregion
                                     }
 
                                     IMG = Path.GetFileName(Server.MapPath(o));
