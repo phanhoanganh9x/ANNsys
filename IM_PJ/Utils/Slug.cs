@@ -9,13 +9,12 @@ namespace IM_PJ
 {
     public class Slug
     {
-        public static string ConvertToSlug(string value, bool isFile = false )
+        public static string ConvertToSlug(string value, bool isFile = false, string extension = "")
         {
-            string extension = String.Empty;
-
             if (isFile)
             {
-                extension = Path.GetExtension(value);
+                if (String.IsNullOrEmpty(extension))
+                    extension = Path.GetExtension(value);
                 //Get file name
                 value = Path.GetFileNameWithoutExtension(value);
             }

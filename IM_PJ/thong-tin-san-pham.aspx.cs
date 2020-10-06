@@ -36,7 +36,7 @@ namespace IM_PJ
     public partial class thong_tin_san_pham : System.Web.UI.Page
     {
         private static string _productSKU;
-        public static string IMAGE_EXTENSION = "png";
+        public static string IMAGE_EXTENSION = ".png";
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -159,6 +159,7 @@ namespace IM_PJ
             ViewState["cateID"] = product.CategoryID;
             _productSKU = product.ProductSKU.ToUpper();
             ViewState["SKU"] = product.ProductSKU;
+            this.txtImageCode.Text = String.Format("CODE: {0}", product.ProductSKU);
             hdfParentID.Value = product.CategoryID.ToString();
             hdfsetStyle.Value = product.ProductStyle.ToString();
             ltrBack.Text = "<a href='/xem-san-pham?id=" + product.ID + "' class='btn primary-btn fw-btn not-fullwidth'><i class='fa fa-arrow-left' aria-hidden='true'></i> Trở về</a>";
@@ -419,7 +420,7 @@ namespace IM_PJ
         private void _drawCode(string fileName, string code)
         {
             #region Khởi tạo API
-            var api = "http://ann-shop-dotnet-core.com/api/v1/image/draw-code";
+            var api = "http://localhost:5000/api/v1/image/draw-code";
             var httpWebRequest = (HttpWebRequest)WebRequest.Create(api);
 
             httpWebRequest.ContentType = "application/json";
@@ -452,17 +453,28 @@ namespace IM_PJ
         {
             // Upload image
             var folder = Server.MapPath("/uploads/images");
-            var fileName = Slug.ConvertToSlug(Path.GetFileName(uploadedFile.FileName), isFile: true);
+            var fileName = Slug.ConvertToSlug(Path.GetFileName(uploadedFile.FileName), isFile: true, extension: ".png");
             var filePath = String.Format("{0}/{1}-{2}", folder, productID, fileName);
 
             if (File.Exists(filePath))
             {
-                filePath = String.Format("{0}/{1}-{2}-{3}", folder, productID, DateTime.UtcNow.ToString("HHmmssffff"), fileName);
+                fileName = String.Format("{0}-{1}-{2}", productID, DateTime.UtcNow.ToString("HHmmssffff"), fileName);
+                filePath = String.Format("{0}/{1}", folder, fileName);
             }
 
             uploadedFile.SaveAs(filePath);
 
-            // Thumbnail
+            #region Draw Code
+            fileName = Path.GetFileName(filePath);
+            var extension = Path.GetExtension(filePath);
+
+            _drawCode(fileName, txtImageCode.Text.Trim());
+
+            if (extension != IMAGE_EXTENSION)
+                filePath = filePath.Replace(extension, IMAGE_EXTENSION);
+            #endregion
+
+            #region Thumbnail
             Thumbnail.create(filePath, 85, 113);
             Thumbnail.create(filePath, 159, 212);
             Thumbnail.create(filePath, 240, 320);
@@ -484,17 +496,28 @@ namespace IM_PJ
         {
             // Upload image
             var folder = Server.MapPath("/uploads/images");
-            var fileName = Slug.ConvertToSlug(Path.GetFileName(httpPostedFile.FileName), isFile: true);
+            var fileName = Slug.ConvertToSlug(Path.GetFileName(httpPostedFile.FileName), isFile: true, extension: ".png");
             var filePath = String.Format("{0}/{1}-{2}", folder, productID, fileName);
 
             if (File.Exists(filePath))
             {
-                filePath = String.Format("{0}/{1}-{2}-{3}", folder, productID, DateTime.UtcNow.ToString("HHmmssffff"), fileName);
+                fileName = String.Format("{0}-{1}-{2}", productID, DateTime.UtcNow.ToString("HHmmssffff"), fileName);
+                filePath = String.Format("{0}/{1}", folder, fileName);
             }
 
             httpPostedFile.SaveAs(filePath);
 
-            // Thumbnail
+            #region Draw Code
+            fileName = Path.GetFileName(filePath);
+            var extension = Path.GetExtension(filePath);
+
+            _drawCode(fileName, txtImageCode.Text.Trim());
+
+            if (extension != IMAGE_EXTENSION)
+                filePath = filePath.Replace(extension, IMAGE_EXTENSION);
+            #endregion
+
+            #region Thumbnail
             Thumbnail.create(filePath, 85, 113);
             Thumbnail.create(filePath, 159, 212);
             Thumbnail.create(filePath, 240, 320);
@@ -733,14 +756,15 @@ namespace IM_PJ
                     var fileName = file.FileName;
                     var imageName = _uploadImage(productID, file);
 
-                    productVariationUpdateList
-                        .Where(x => x.image == uploadPath + fileName)
+                    productVariationUpdateList = productVariationUpdateList
                         .Select(x =>
                         {
-                            x.image = uploadPath + imageName;
+                            if (x.image == uploadPath + fileName)
+                                x.image = uploadPath + imageName;
 
                             return x;
-                        });
+                        })
+                        .ToList();
                 }
             }
 
