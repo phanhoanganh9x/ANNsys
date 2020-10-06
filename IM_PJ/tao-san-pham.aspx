@@ -1188,10 +1188,6 @@
                         $("#<%=txtProductSKU.ClientID%>").focus();
                         swal("Thông báo", "Chưa nhập mã sản phẩm", "error");
                     }
-                    else if (imageCode == "" || imageCode.replace("\r\n", "").trim() == "") {
-                        $("#<%=txtImageCode.ClientID%>").focus();
-                        swal("Thông báo", "Chưa nhập code để chèn lên hình", "error");
-                    }
                     else if (materials == "") {
                         $("#<%=txtMaterials.ClientID%>").focus();
                         swal("Thông báo", "Chưa nhập chất liệu sản phẩm", "error");
@@ -1307,10 +1303,6 @@
                         $("#<%=txtProductSKU.ClientID%>").focus();
                         swal("Thông báo", "Chưa nhập mã sản phẩm", "error");
                     }
-                    else if (imageCode == "" || imageCode.replace("\r\n", "").trim() == "") {
-                        $("#<%=txtImageCode.ClientID%>").focus();
-                        swal("Thông báo", "Chưa nhập code để chèn lên hình", "error");
-                    }
                     else if (materials == "") {
                         $("#<%=txtMaterials.ClientID%>").focus();
                         swal("Thông báo", "Chưa nhập chất liệu sản phẩm", "error");
@@ -1383,7 +1375,7 @@
 
                             if (imageCode == "")
                             {
-                                $imageCode.val("CODE: " + sku);
+                                $imageCode.val("CODE: " + sku.trim().toUpperCase());
                                 $imageCode.focus();
                             }
                         }

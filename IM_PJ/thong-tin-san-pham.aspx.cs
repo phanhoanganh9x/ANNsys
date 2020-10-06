@@ -420,7 +420,7 @@ namespace IM_PJ
         private void _drawCode(string fileName, string code)
         {
             #region Khởi tạo API
-            var api = "http://localhost:5000/api/v1/image/draw-code";
+            var api = "http://ann-shop-dotnet-core.com/api/v1/image/draw-code";
             var httpWebRequest = (HttpWebRequest)WebRequest.Create(api);
 
             httpWebRequest.ContentType = "application/json";
@@ -465,13 +465,16 @@ namespace IM_PJ
             uploadedFile.SaveAs(filePath);
 
             #region Draw Code
-            fileName = Path.GetFileName(filePath);
-            var extension = Path.GetExtension(filePath);
+            if (!String.IsNullOrEmpty(txtImageCode.Text.Trim()))
+            {
+                fileName = Path.GetFileName(filePath);
+                var extension = Path.GetExtension(filePath);
 
-            _drawCode(fileName, txtImageCode.Text.Trim());
+                _drawCode(fileName, txtImageCode.Text.Trim());
 
-            if (extension != IMAGE_EXTENSION)
-                filePath = filePath.Replace(extension, IMAGE_EXTENSION);
+                if (extension != IMAGE_EXTENSION)
+                    filePath = filePath.Replace(extension, IMAGE_EXTENSION);
+            }
             #endregion
 
             #region Thumbnail
@@ -508,13 +511,16 @@ namespace IM_PJ
             httpPostedFile.SaveAs(filePath);
 
             #region Draw Code
-            fileName = Path.GetFileName(filePath);
-            var extension = Path.GetExtension(filePath);
+            if (!String.IsNullOrEmpty(txtImageCode.Text.Trim()))
+            {
+                fileName = Path.GetFileName(filePath);
+                var extension = Path.GetExtension(filePath);
 
-            _drawCode(fileName, txtImageCode.Text.Trim());
+                _drawCode(fileName, txtImageCode.Text.Trim());
 
-            if (extension != IMAGE_EXTENSION)
-                filePath = filePath.Replace(extension, IMAGE_EXTENSION);
+                if (extension != IMAGE_EXTENSION)
+                    filePath = filePath.Replace(extension, IMAGE_EXTENSION);
+            }
             #endregion
 
             #region Thumbnail
