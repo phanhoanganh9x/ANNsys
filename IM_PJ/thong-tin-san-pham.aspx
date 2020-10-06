@@ -759,7 +759,7 @@
 
                 if (imageCode == "")
                 {
-                    $imageCode.val("CODE: " + skuNew);
+                    $imageCode.val("CODE: " + skuNew.trim().toUpperCase());
                     $imageCode.focus();
                 }
 
@@ -1193,22 +1193,6 @@
                     swal({
                         title: "Thông báo",
                         text: "Chưa nhập mã sản phẩm",
-                        type: "error"
-                    });
-
-                    return false;
-                }
-
-                // Kiểm tra mã code chèn lên hình
-                let imageCode = $("#<%=txtImageCode.ClientID%>").val() || "";
-
-                if (imageCode == "" || imageCode.replace("\r\n", "").trim() == "") {
-                    HoldOn.close();
-                    $("#<%=txtImageCode.ClientID%>").focus();
-
-                    swal({
-                        title: "Thông báo",
-                        text: "Chưa nhập mã code chèn lên hình",
                         type: "error"
                     });
 
