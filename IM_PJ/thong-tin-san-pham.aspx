@@ -196,7 +196,7 @@
                                     Nội dung chèn lên hình
                                 </div>
                                 <div class="row-right">
-                                    <asp:TextBox ID="txtImageCode" runat="server"  CssClass="form-control" placeholder="Nhập nội dung chèn lên hình ảnh" Rows="2"></asp:TextBox>
+                                    <asp:TextBox ID="txtImageCode" runat="server"  CssClass="form-control" placeholder="Nhập nội dung chèn lên hình ảnh" TextMode="MultiLine" Rows="2"></asp:TextBox>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -754,6 +754,15 @@
 
             // Cập nhật lại tất cả SKU của biến thể sau khi thay đổi SKU cha
             function updateVariationSKUA(skuOld, skuNew) {
+                let $imageCode = $("#<%=txtImageCode.ClientID%>");
+                let imageCode = $imageCode.val() || "";
+
+                if (imageCode == "")
+                {
+                    $imageCode.val("CODE: " + skuNew);
+                    $imageCode.focus();
+                }
+
                 $(".item-var-gen").each(function () {
                     let $variationLabel = $(this).find(".variable-label");
                     let htmlTitle = $variationLabel.html().trim();
@@ -955,7 +964,7 @@
 
                         // img tag
                         $img.attr("src", e.target.result);
-                        $img.attr("data-file-name", "/uploads/images/" + _productID + "-" + fileName);
+                        $img.attr("data-file-name", "/uploads/images/" + fileName);
                         $img.attr("data-changed", true);
                         // a tag
                         $btnDelete.removeClass("hide");
@@ -1190,6 +1199,22 @@
                     return false;
                 }
 
+                // Kiểm tra mã code chèn lên hình
+                let imageCode = $("#<%=txtImageCode.ClientID%>").val() || "";
+
+                if (imageCode == "" || imageCode.replace("\r\n", "").trim() == "") {
+                    HoldOn.close();
+                    $("#<%=txtImageCode.ClientID%>").focus();
+
+                    swal({
+                        title: "Thông báo",
+                        text: "Chưa nhập mã code chèn lên hình",
+                        type: "error"
+                    });
+
+                    return false;
+                }
+
                 // Kiểm tra chất liệu sản phẩm
                 let materials = $("#<%=txtMaterials.ClientID%>").val() || "";
 
@@ -1208,7 +1233,7 @@
 
                 // Kiểm tra về giá sỉ
                 let giasi = $("#<%=pRegular_Price.ClientID%>").val() || "";
-                    
+
                 if (giasi == "") {
                     HoldOn.close();
                     $("#<%=pRegular_Price.ClientID%>").focus();

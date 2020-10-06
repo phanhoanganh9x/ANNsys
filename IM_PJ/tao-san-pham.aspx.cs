@@ -33,7 +33,7 @@ namespace IM_PJ
 {
     public partial class tao_san_pham : System.Web.UI.Page
     {
-        public static string IMAGE_EXTENSION = "png";
+        public static string IMAGE_EXTENSION = ".png";
         public static string htmlAll = "";
         public static int element = 0;
 
@@ -79,7 +79,7 @@ namespace IM_PJ
         private void _drawCode(string fileName, string code)
         {
             #region Khởi tạo API
-            var api = "http://ann-shop-dotnet-core.com/api/v1/image/draw-code";
+            var api = "http://localhost:5000/api/v1/image/draw-code";
             var httpWebRequest = (HttpWebRequest)WebRequest.Create(api);
 
             httpWebRequest.ContentType = "application/json";
@@ -498,10 +498,10 @@ namespace IM_PJ
                                         var fileName = Path.GetFileName(o);
                                         var extension = Path.GetExtension(o);
 
-                                        _drawCode(fileName, imageCode);
+                                        _drawCode(fileName, txtImageCode.Text.Trim());
 
                                         if (extension != IMAGE_EXTENSION)
-                                            o = o.Replace("." + extension, "." + IMAGE_EXTENSION);
+                                            o = o.Replace(extension, IMAGE_EXTENSION);
                                         #endregion
 
                                         #region Thumbnail
@@ -558,10 +558,10 @@ namespace IM_PJ
                                         var fileName = Path.GetFileName(o);
                                         var extension = Path.GetExtension(o);
 
-                                        _drawCode(fileName, imageCode);
+                                        _drawCode(fileName, txtImageCode.Text.Trim());
 
                                         if (extension != IMAGE_EXTENSION)
-                                            o = o.Replace("." + extension, "." + IMAGE_EXTENSION);
+                                            o = o.Replace(extension, IMAGE_EXTENSION);
                                         #endregion
 
                                         #region Thumbnail
@@ -616,6 +616,17 @@ namespace IM_PJ
                                             if (!File.Exists(Server.MapPath(o)))
                                             {
                                                 postedFile.SaveAs(Server.MapPath(o));
+
+                                                #region Draw Code
+                                                var fileName = Path.GetFileName(o);
+                                                var extension = Path.GetExtension(o);
+
+                                                _drawCode(fileName, txtImageCode.Text.Trim());
+
+                                                if (extension != IMAGE_EXTENSION)
+                                                    o = o.Replace(extension, IMAGE_EXTENSION);
+                                                #endregion
+
                                                 // Thumbnail
                                                 Thumbnail.create(Server.MapPath(o), 85, 113);
                                                 Thumbnail.create(Server.MapPath(o), 159, 212);
