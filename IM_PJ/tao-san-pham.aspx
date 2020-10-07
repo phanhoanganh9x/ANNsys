@@ -198,6 +198,15 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
+                                    Nội dung chèn lên hình
+                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" ControlToValidate="txtImageCode" ForeColor="Red" ErrorMessage="(*)" Display="Dynamic" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox ID="txtImageCode" runat="server"  CssClass="form-control" placeholder="Nhập nội dung chèn lên hình ảnh" TextMode="MultiLine" Rows="2"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
                                     Chất liệu
                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="txtMaterials" ForeColor="Red" SetFocusOnError="true" ErrorMessage="(*)" Display="Dynamic"></asp:RequiredFieldValidator>
                                 </div>
@@ -1158,6 +1167,7 @@
                 if (a == 2) {
                     var title = $("#<%=txtProductTitle.ClientID%>").val();
                     var SKU = $("#<%=txtProductSKU.ClientID%>").val();
+                    var imageCode = $("#<%=txtImageCode.ClientID%>").val() || "";
                     var materials = $("#<%=txtMaterials.ClientID%>").val();
                     var maximum = $("#<%=pMaximumInventoryLevel.ClientID%>").val();
                     var minimum = $("#<%=pMinimumInventoryLevel.ClientID%>").val();
@@ -1273,6 +1283,7 @@
                 else {
                     var title = $("#<%=txtProductTitle.ClientID%>").val();
                     var SKU = $("#<%=txtProductSKU.ClientID%>").val();
+                    var imageCode = $("#<%=txtImageCode.ClientID%>").val() || "";
                     var materials = $("#<%=txtMaterials.ClientID%>").val();
                     var giacu = $("#<%=pOld_Price.ClientID%>").val() || 0;
                     var giasi = $("#<%=pRegular_Price.ClientID%>").val();
@@ -1357,6 +1368,16 @@
                             swal("Thông báo", "Mã sản phẩm đã tồn tại. Hãy kiểm tra lại!", "error");
                             $("#<%=txtProductSKU.ClientID%>").select().focus();
                             $("body").removeClass("stop-scrolling");
+                        }
+                        else {
+                            let $imageCode = $("#<%=txtImageCode.ClientID%>");
+                            let imageCode = $imageCode.val() || "";
+
+                            if (imageCode == "")
+                            {
+                                $imageCode.val("CODE: " + sku.trim().toUpperCase());
+                                $imageCode.focus();
+                            }
                         }
                     }
                 });

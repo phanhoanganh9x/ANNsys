@@ -193,6 +193,14 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
+                                    Nội dung chèn lên hình
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox ID="txtImageCode" runat="server"  CssClass="form-control" placeholder="Nhập nội dung chèn lên hình ảnh" TextMode="MultiLine" Rows="2"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
                                     Chất liệu
                                 </div>
                                 <div class="row-right">
@@ -746,6 +754,15 @@
 
             // Cập nhật lại tất cả SKU của biến thể sau khi thay đổi SKU cha
             function updateVariationSKUA(skuOld, skuNew) {
+                let $imageCode = $("#<%=txtImageCode.ClientID%>");
+                let imageCode = $imageCode.val() || "";
+
+                if (imageCode == "")
+                {
+                    $imageCode.val("CODE: " + skuNew.trim().toUpperCase());
+                    $imageCode.focus();
+                }
+
                 $(".item-var-gen").each(function () {
                     let $variationLabel = $(this).find(".variable-label");
                     let htmlTitle = $variationLabel.html().trim();
@@ -947,7 +964,7 @@
 
                         // img tag
                         $img.attr("src", e.target.result);
-                        $img.attr("data-file-name", "/uploads/images/" + _productID + "-" + fileName);
+                        $img.attr("data-file-name", "/uploads/images/" + fileName);
                         $img.attr("data-changed", true);
                         // a tag
                         $btnDelete.removeClass("hide");
@@ -1200,7 +1217,7 @@
 
                 // Kiểm tra về giá sỉ
                 let giasi = $("#<%=pRegular_Price.ClientID%>").val() || "";
-                    
+
                 if (giasi == "") {
                     HoldOn.close();
                     $("#<%=pRegular_Price.ClientID%>").focus();

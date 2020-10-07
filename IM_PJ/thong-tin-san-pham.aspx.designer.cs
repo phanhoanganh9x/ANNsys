@@ -67,6 +67,15 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.TextBox txtProductSKU;
         
         /// <summary>
+        /// txtImageCode control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtImageCode;
+        
+        /// <summary>
         /// txtMaterials control.
         /// </summary>
         /// <remarks>

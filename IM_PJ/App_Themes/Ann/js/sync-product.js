@@ -1,5 +1,5 @@
 ﻿function ShowUpProductToWeb(sku, id, category, up, renew, visibility) {
-    var web = ["ann.com.vn", "khohangsiann.com", "bosiquanao.net", "quanaogiaxuong.com", "bansithoitrang.net", "quanaoxuongmay.com", "annshop.vn", "panpan.vn"];
+    var web = ["ann.com.vn", "khohangsiann.com", "bosiquanao.net", "quanaogiaxuong.com", "bansithoitrang.net", "quanaoxuongmay.com", "annshop.vn", "panpan.vn", "nhapsionline.com", "thoitrangann.com"];
     var web_dobo = ["chuyensidobo.com"];
     var web_vaydam = ["damgiasi.vn"];
 

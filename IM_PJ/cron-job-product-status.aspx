@@ -3,7 +3,7 @@
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link type="text/css" rel="stylesheet" href="Content/bootstrap-toggle.min.css" />
-    <link type="text/css" rel="stylesheet" href="App_Themes/Ann/css/pages/cron-job-product-status/cron-job-product-status.css?v=11072020" />
+    <link type="text/css" rel="stylesheet" href="App_Themes/Ann/css/pages/cron-job-product-status/cron-job-product-status.css?v=30092020" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
@@ -32,7 +32,7 @@
                                         <asp:ListItem Value="ann.com.vn" Text="ann.com.vn"></asp:ListItem>
                                         <asp:ListItem Value="khohangsiann.com" Text="khohangsiann.com"></asp:ListItem>
                                         <asp:ListItem Value="bosiquanao.net" Text="bosiquanao.net"></asp:ListItem>
-                                        <asp:ListItem Value="thoitrangann.com" Text="panpan.vn"></asp:ListItem>
+                                        <asp:ListItem Value="thoitrangann.com" Text="thoitrangann.com"></asp:ListItem>
                                         <asp:ListItem Value="quanaogiaxuong.com" Text="quanaogiaxuong.com"></asp:ListItem>
                                         <asp:ListItem Value="bansithoitrang.net" Text="bansithoitrang.net"></asp:ListItem>
                                         <asp:ListItem Value="quanaoxuongmay.com" Text="quanaoxuongmay.com"></asp:ListItem>
@@ -40,6 +40,7 @@
                                         <asp:ListItem Value="panpan.vn" Text="panpan.vn"></asp:ListItem>
                                         <asp:ListItem Value="chuyensidobo.com" Text="chuyensidobo.com"></asp:ListItem>
                                         <asp:ListItem Value="damgiasi.vn" Text="damgiasi.vn"></asp:ListItem>
+                                        <asp:ListItem Value="nhapsionline.com" Text="nhapsionline.com"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
@@ -187,10 +188,10 @@
         </div>
 
         <script type="text/javascript" src="/Scripts/bootstrap-toggle.min.js"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=11072020"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/sync-product-v2.js?v=11072020"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/services/cron-job-product-status/cron-job-product-status-service.js?v=11072020"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/controllers/cron-job-product-status/cron-job-product-status-controller.js?v=11072020"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/pages/cron-job-product-status/cron-job-product-status.js?v=11072020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=30092020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/sync-product-v2.js?v=30092020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/services/cron-job-product-status/cron-job-product-status-service.js?v=30092020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/controllers/cron-job-product-status/cron-job-product-status-controller.js?v=30092020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/pages/cron-job-product-status/cron-job-product-status.js?v=30092020"></script>
     </main>
 </asp:Content>
