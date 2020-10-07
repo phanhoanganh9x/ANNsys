@@ -198,6 +198,7 @@
                                         <asp:ListItem Value="1" Text="Còn hàng"></asp:ListItem>
                                         <asp:ListItem Value="2" Text="Hết hàng"></asp:ListItem>
                                         <asp:ListItem Value="3" Text="Nhập hàng"></asp:ListItem>
+                                        <asp:ListItem Value="4" Text="Hàng order"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">

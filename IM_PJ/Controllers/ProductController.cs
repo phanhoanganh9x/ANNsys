@@ -1833,26 +1833,35 @@ namespace IM_PJ.Controllers
                     entity.ProductSKU = reader["ProductSKU"].ToString();
 
 
-                if (reader["QuantityLeft"] != DBNull.Value)
+                if (reader["PreOrder"] != DBNull.Value && Convert.ToInt32(reader["PreOrder"]) == 1)
                 {
-                    quantityLeft = Convert.ToDouble(reader["QuantityLeft"]);
-
-                    if (quantityLeft > 0)
-                    {
-                        entity.ProductInstockStatus = "<span class='bg-green'>Còn hàng</span>";
-                        entity.StockStatus = 1;
-                    }
-                    else
-                    {
-                        entity.ProductInstockStatus = "<span class='bg-red'>Hết hàng</span>";
-                        entity.StockStatus = 2;
-                    }
+                    entity.ProductInstockStatus = "<span class='bg-blue'>Hàng order</span>";
+                    entity.StockStatus = 4;
                 }
                 else
                 {
-                    entity.ProductInstockStatus = "<span class='bg-yellow'>Nhập hàng</span>";
-                    entity.StockStatus = 3;
+                    if (reader["QuantityLeft"] != DBNull.Value)
+                    {
+                        quantityLeft = Convert.ToDouble(reader["QuantityLeft"]);
+
+                        if (quantityLeft > 0)
+                        {
+                            entity.ProductInstockStatus = "<span class='bg-green'>Còn hàng</span>";
+                            entity.StockStatus = 1;
+                        }
+                        else
+                        {
+                            entity.ProductInstockStatus = "<span class='bg-red'>Hết hàng</span>";
+                            entity.StockStatus = 2;
+                        }
+                    }
+                    else
+                    {
+                        entity.ProductInstockStatus = "<span class='bg-yellow'>Nhập hàng</span>";
+                        entity.StockStatus = 3;
+                    }
                 }
+                
 
                 entity.TotalProductInstockQuantityLeft = quantityLeft;
                 if (reader["Old_Price"] != DBNull.Value)
@@ -2163,17 +2172,17 @@ namespace IM_PJ.Controllers
                 {
                     if (quantityLeft > 0)
                     {
-                        entity.ProductInstockStatus = "<span class=\"bg-green\">Còn hàng</span>";
+                        entity.ProductInstockStatus = "<span class='bg-green'>Còn hàng</span>";
 
                     }
                     else
                     {
-                        entity.ProductInstockStatus = "<span class=\"bg-red\">Hết hàng</span>";
+                        entity.ProductInstockStatus = "<span class='bg-red'>Hết hàng</span>";
                     }
                 }
                 else
                 {
-                    entity.ProductInstockStatus = "<span class=\"bg-yellow\">Nhập hàng</span>";
+                    entity.ProductInstockStatus = "<span class='bg-yellow'>Nhập hàng</span>";
 
                 }
                 entity.quantityLeft = quantityLeft;

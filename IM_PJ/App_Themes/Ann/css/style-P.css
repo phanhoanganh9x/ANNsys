@@ -1606,47 +1606,49 @@ body {
     #header .hd-left {
         margin-left: 25px;
     }
-
+    .imgpreview {
+        width: 50%;
+    }
 }
 
-    #header {
-        padding: 0 10px;
-    }
+#header {
+    padding: 0 10px;
+}
 
-    #header:before {
-        background-color: #32373c;
-        border-bottom: none;
-    }
+#header:before {
+    background-color: #32373c;
+    border-bottom: none;
+}
 
-    #header .nav-toggle.open + #main-nav {
-        -webkit-box-shadow: none;
-        -moz-box-shadow: initial;
-        box-shadow: none;
-    }
+#header .nav-toggle.open + #main-nav {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: initial;
+    box-shadow: none;
+}
 
-    #header .nav-toggle {
-        left: 0;
-    }
+#header .nav-toggle {
+    left: 0;
+}
 
 .user-action {
     margin-right: 10px;
 }
 
-    .user-action .user-name {
-        padding: 5px 0;
-        display: block;
-        font-weight: normal;
-        line-height: 30px;
-        font-size: 14px;
-    }
+.user-action .user-name {
+    padding: 5px 0;
+    display: block;
+    font-weight: normal;
+    line-height: 30px;
+    font-size: 14px;
+}
 
-    .user-action a.user-name {
-        color: #fff;
-    }
+.user-action a.user-name {
+    color: #fff;
+}
 
-        .user-action a.user-name:hover {
-            color: #f87703;
-        }
+.user-action a.user-name:hover {
+    color: #f87703;
+}
 
 .menuin #header {
     padding-left: 160px;
