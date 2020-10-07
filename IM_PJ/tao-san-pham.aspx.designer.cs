@@ -130,33 +130,6 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.DropDownList ddlPreOrder;
         
         /// <summary>
-        /// pMinimumInventoryLevel control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox pMinimumInventoryLevel;
-        
-        /// <summary>
-        /// pMaximumInventoryLevel control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox pMaximumInventoryLevel;
-        
-        /// <summary>
-        /// ddlSupplier control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlSupplier;
-        
-        /// <summary>
         /// pOld_Price control.
         /// </summary>
         /// <remarks>
@@ -245,15 +218,6 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField ListProductThumbnail;
-        
-        /// <summary>
-        /// ddlShowHomePage control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlShowHomePage;
         
         /// <summary>
         /// pContent control.

@@ -293,31 +293,6 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
-                                    Tồn kho ít nhất
-                                </div>
-                                <div class="row-right">
-                                    <asp:TextBox type="number" min="0" ID="pMinimumInventoryLevel" runat="server" CssClass="form-control" placeholder="Số lượng tồn kho ít nhất"></asp:TextBox>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="row-left">
-                                    Tồn kho nhiều nhất
-                                </div>
-                                <div class="row-right">
-                                    <asp:TextBox type="number" min="0" ID="pMaximumInventoryLevel" runat="server" CssClass="form-control" placeholder="Số lượng tồn kho nhiều nhất"></asp:TextBox>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="row-left">
-                                    Nhà cung cấp
-                                </div>
-                                <div class="row-right">
-                                    <asp:DropDownList ID="ddlSupplier" runat="server" CssClass="form-control">
-                                    </asp:DropDownList>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="row-left">
                                     Giá cũ chưa sale
                                 </div>
                                 <div class="row-right">
@@ -353,6 +328,15 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
+                                    Tags
+                                </div>
+                                <div class="row-right">
+                                    <input type="text" id="txtTag" class="typeahead" data-role="tagsinput" />
+                                    <div id="tagList"></div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
                                     Ảnh đại diện
                                 </div>
                                 <div class="row-right">
@@ -363,15 +347,6 @@
                                     </telerik:RadAsyncUpload>
                                     <asp:Image runat="server" ID="imgProductImage" class="img-product" />
                                     <asp:HiddenField runat="server" ID="hdfProductImage" ClientIDMode="Static" />
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="row-left">
-                                    Tags
-                                </div>
-                                <div class="row-right">
-                                    <input type="text" id="txtTag" class="typeahead" data-role="tagsinput" />
-                                    <div id="tagList"></div>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -1124,8 +1099,8 @@
                             costOfGood: +$(this).find(".costofgood").val() || 0,
                             retailPrice: +$(this).find(".retailprice").val() || 0,
                             variationValue: $(this).attr("data-name-value") || "",
-                            maximumInventoryLevel: +$("#<%=pMaximumInventoryLevel.ClientID%>").val() || 0,
-                            minimumInventoryLevel: +$("#<%=pMinimumInventoryLevel.ClientID%>").val() || 0,
+                            maximumInventoryLevel: 5,
+                            minimumInventoryLevel: 20,
                             stockStatus: 3,
                             checked: true,
                             image: $(this).find(".imgpreview").attr("data-file-name") || ""
@@ -1312,7 +1287,7 @@
                     return false;
 
                 // Kiểm tra màu chủ đạo
-                let maincolor = $("#<%=ddlColor.ClientID%>").val() || "";
+                <%--let maincolor = $("#<%=ddlColor.ClientID%>").val() || "";
 
                 if (maincolor == "") {
                     HoldOn.close();
@@ -1325,7 +1300,7 @@
                     });
 
                     return false;
-                }
+                }--%>
 
                 return true;
             }

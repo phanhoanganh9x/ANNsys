@@ -50,7 +50,7 @@ namespace IM_PJ
                     {
                         if (acc.RoleID == 0 || acc.RoleID == 1 || acc.Username == "nhom_zalo502")
                         {
-                            _loadSupplier();
+                            //_loadSupplier();
                             _loadCategory();
                             _loadData();
                         }
@@ -113,21 +113,21 @@ namespace IM_PJ
         /// <summary>
         /// Tải danh sách nhà cung cấp
         /// </summary>
-        private void _loadSupplier()
-        {
-            var supplier = SupplierController.GetAllWithIsHidden(false);
-            ddlSupplier.Items.Clear();
-            ddlSupplier.Items.Insert(0, new ListItem("Chọn nhà cung cấp", "0"));
-            if (supplier.Count > 0)
-            {
-                foreach (var p in supplier)
-                {
-                    ListItem listitem = new ListItem(p.SupplierName, p.ID.ToString());
-                    ddlSupplier.Items.Add(listitem);
-                }
-                ddlSupplier.DataBind();
-            }
-        }
+        //private void _loadSupplier()
+        //{
+        //    var supplier = SupplierController.GetAllWithIsHidden(false);
+        //    ddlSupplier.Items.Clear();
+        //    ddlSupplier.Items.Insert(0, new ListItem("Chọn nhà cung cấp", "0"));
+        //    if (supplier.Count > 0)
+        //    {
+        //        foreach (var p in supplier)
+        //        {
+        //            ListItem listitem = new ListItem(p.SupplierName, p.ID.ToString());
+        //            ddlSupplier.Items.Add(listitem);
+        //        }
+        //        ddlSupplier.DataBind();
+        //    }
+        //}
 
         private void _loadData()
         {
@@ -162,7 +162,6 @@ namespace IM_PJ
             this.txtImageCode.Text = String.Format("CODE: {0}", product.ProductSKU);
             hdfParentID.Value = product.CategoryID.ToString();
             hdfsetStyle.Value = product.ProductStyle.ToString();
-            ltrBack.Text = "<a href='/xem-san-pham?id=" + product.ID + "' class='btn primary-btn fw-btn not-fullwidth'><i class='fa fa-arrow-left' aria-hidden='true'></i> Trở về</a>";
             ltrBack2.Text = ltrBack.Text;
             // Thông tin product
             _loadProductInfo(product);
@@ -256,12 +255,6 @@ namespace IM_PJ
                 ddlColor.SelectedValue = product.Color.Trim();
             // Loại hàng
             ddlPreOrder.SelectedValue = product.PreOrder ? "1" : "0";
-            // Tồn kho ít nhất
-            pMinimumInventoryLevel.Text = product.MinimumInventoryLevel.ToString();
-            // Tồn kho nhiều nhất
-            pMaximumInventoryLevel.Text = product.MaximumInventoryLevel.ToString();
-            // Nhà cung cấp
-            ddlSupplier.SelectedValue = product.SupplierID.ToString();
             // Giá củ chưa sale
             pOld_Price.Text = product.Old_Price.ToString();
             // Giá sỉ
@@ -601,12 +594,12 @@ namespace IM_PJ
             // Loại hàng
             updatedData.PreOrder = ddlPreOrder.SelectedValue == "1" ? true : false;
             // Tồn kho ít nhât
-            updatedData.MinimumInventoryLevel = String.IsNullOrEmpty(pMinimumInventoryLevel.Text) ? 0 : Convert.ToDouble(pMinimumInventoryLevel.Text);
+            updatedData.MinimumInventoryLevel = 5;
             // Tồn kho nhiều nhất
-            updatedData.MaximumInventoryLevel = String.IsNullOrEmpty(pMaximumInventoryLevel.Text) ? 0 : Convert.ToDouble(pMaximumInventoryLevel.Text);
+            updatedData.MaximumInventoryLevel = 20;
             // Nhà cung cấp
-            updatedData.SupplierID = ddlSupplier.SelectedValue.ToInt(0);
-            updatedData.SupplierName = ddlSupplier.SelectedItem.ToString();
+            updatedData.SupplierID = 0;
+            updatedData.SupplierName = "";
             // Giá củ chưa sale
             updatedData.Old_Price = String.IsNullOrEmpty(pOld_Price.Text) ? 0 : Convert.ToDouble(pOld_Price.Text);
             // Giá sỉ
@@ -843,8 +836,8 @@ namespace IM_PJ
                         IsHidden: false,
                         CreatedDate: now,
                         CreatedBy: acc.Username,
-                        SupplierID: ddlSupplier.SelectedValue.ToInt(0),
-                        SupplierName: ddlSupplier.SelectedItem.ToString(),
+                        SupplierID: 0,
+                        SupplierName: "",
                         MinimumInventoryLevel: item.minimumInventoryLevel,
                         MaximumInventoryLevel: item.maximumInventoryLevel);
 

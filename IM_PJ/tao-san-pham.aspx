@@ -202,7 +202,7 @@
                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" ControlToValidate="txtImageCode" ForeColor="Red" ErrorMessage="(*)" Display="Dynamic" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                 </div>
                                 <div class="row-right">
-                                    <asp:TextBox ID="txtImageCode" runat="server"  CssClass="form-control" placeholder="Nhập nội dung chèn lên hình ảnh" TextMode="MultiLine" Rows="2"></asp:TextBox>
+                                    <asp:TextBox ID="txtImageCode" runat="server"  CssClass="form-control" placeholder="Nhập nội dung chèn lên hình ảnh. Để trống nếu không muốn chèn." TextMode="MultiLine" Rows="2"></asp:TextBox>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -309,31 +309,6 @@
                                     </asp:DropDownList>
                                 </div>
                             </div>
-                            <div class="form-row" id="Minimum">
-                                <div class="row-left">
-                                    Tồn kho ít nhất
-                                </div>
-                                <div class="row-right">
-                                    <asp:TextBox type="number" min="0" value="3" ID="pMinimumInventoryLevel" runat="server" CssClass="form-control" placeholder="Số lượng tồn kho ít nhất"></asp:TextBox>
-                                </div>
-                            </div>
-                            <div class="form-row" id="Maximum">
-                                <div class="row-left">
-                                    Tồn kho nhiều nhất
-                                </div>
-                                <div class="row-right">
-                                    <asp:TextBox type="number" min="0" value="10" ID="pMaximumInventoryLevel" runat="server" CssClass="form-control" placeholder="Số lượng tồn kho nhiều nhất"></asp:TextBox>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="row-left">
-                                    Nhà cung cấp
-                                </div>
-                                <div class="row-right">
-                                    <asp:DropDownList ID="ddlSupplier" runat="server" CssClass="form-control">
-                                    </asp:DropDownList>
-                                </div>
-                            </div>
                             <div class="form-row">
                                 <div class="row-left">
                                     Giá cũ chưa sale
@@ -371,6 +346,15 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
+                                    Tags
+                                </div>
+                                <div class="row-right">
+                                    <input type="text" id="txtTag" class="typeahead" data-role="tagsinput" />
+                                    <div id="tagList"></div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
                                     Ảnh đại diện
                                 </div>
                                 <div class="row-right">
@@ -382,26 +366,6 @@
                                     <asp:Image runat="server" ID="ProductThumbnail" Width="200" />
                                     <asp:HiddenField runat="server" ID="ListProductThumbnail" ClientIDMode="Static" />
                                     <div class="hidProductThumbnail"></div>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="row-left">
-                                    Hiện trang chủ
-                                </div>
-                                <div class="row-right">
-                                    <asp:DropDownList ID="ddlShowHomePage" runat="server" CssClass="form-control">
-                                        <asp:ListItem Text="Không" Value="0"></asp:ListItem>
-                                        <asp:ListItem Text="Có" Value="1"></asp:ListItem>
-                                    </asp:DropDownList>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="row-left">
-                                    Tags
-                                </div>
-                                <div class="row-right">
-                                    <input type="text" id="txtTag" class="typeahead" data-role="tagsinput" />
-                                    <div id="tagList"></div>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -484,7 +448,6 @@
                             <div class="form-row">
                                 <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" onclick="addNewProduct()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Xuất bản</a>
                                 <asp:Button ID="btnSubmit" runat="server" CssClass="btn primary-btn fw-btn not-fullwidth" Text="Xuất bản" OnClick="btnSubmit_Click" Style="display: none" />
-                                <a href="/tat-ca-san-pham" class="btn primary-btn fw-btn not-fullwidth"><i class="fa fa-arrow-left" aria-hidden="true"></i> Trở về</a>
                             </div>
                         </div>
                     </div>
@@ -497,7 +460,6 @@
                         <div class="panel-body">
                              <div class="form-row">
                                 <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" onclick="addNewProduct()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Xuất bản</a>
-                                <a href="/tat-ca-san-pham" class="btn primary-btn fw-btn not-fullwidth"><i class="fa fa-arrow-left" aria-hidden="true"></i> Trở về</a>
                              </div>
                         </div>
                     </div>
@@ -1169,8 +1131,8 @@
                     var SKU = $("#<%=txtProductSKU.ClientID%>").val();
                     var imageCode = $("#<%=txtImageCode.ClientID%>").val() || "";
                     var materials = $("#<%=txtMaterials.ClientID%>").val();
-                    var maximum = $("#<%=pMaximumInventoryLevel.ClientID%>").val();
-                    var minimum = $("#<%=pMinimumInventoryLevel.ClientID%>").val();
+                    var maximum = 5;
+                    var minimum = 20;
                     var giacu = $("#<%=pOld_Price.ClientID%>").val() || 0;
                     var giasi = $("#<%=pRegular_Price.ClientID%>").val();
                     var giavon = $("#<%=pCostOfGood.ClientID%>").val();
@@ -1306,10 +1268,6 @@
                     else if (materials == "") {
                         $("#<%=txtMaterials.ClientID%>").focus();
                         swal("Thông báo", "Chưa nhập chất liệu sản phẩm", "error");
-                    }
-                    else if (maincolor == "") {
-                        $("#<%=ddlColor.ClientID%>").focus();
-                        swal("Thông báo", "Chưa chọn màu chủ đạo", "error");
                     }
                     else if (giasi == "") {
                         $("#<%=pRegular_Price.ClientID%>").focus();

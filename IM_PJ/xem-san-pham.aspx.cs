@@ -27,7 +27,7 @@ namespace IM_PJ
                     if (acc != null)
                     {
                         LoadCategory();
-                        LoadSupplier();
+                        //LoadSupplier();
                         LoadData();
                     }
                 }
@@ -38,21 +38,21 @@ namespace IM_PJ
                 }
             }
         }
-        public void LoadSupplier()
-        {
-            var supplier = SupplierController.GetAllWithIsHidden(false);
-            ddlSupplier.Items.Clear();
-            ddlSupplier.Items.Insert(0, new ListItem("Chưa chọn nhà cung cấp", "0"));
-            if (supplier.Count > 0)
-            {
-                foreach (var p in supplier)
-                {
-                    ListItem listitem = new ListItem(p.SupplierName, p.ID.ToString());
-                    ddlSupplier.Items.Add(listitem);
-                }
-                ddlSupplier.DataBind();
-            }
-        }
+        //public void LoadSupplier()
+        //{
+        //    var supplier = SupplierController.GetAllWithIsHidden(false);
+        //    ddlSupplier.Items.Clear();
+        //    ddlSupplier.Items.Insert(0, new ListItem("Chưa chọn nhà cung cấp", "0"));
+        //    if (supplier.Count > 0)
+        //    {
+        //        foreach (var p in supplier)
+        //        {
+        //            ListItem listitem = new ListItem(p.SupplierName, p.ID.ToString());
+        //            ddlSupplier.Items.Add(listitem);
+        //        }
+        //        ddlSupplier.DataBind();
+        //    }
+        //}
         public void LoadCategory()
         {
             var category = CategoryController.GetAllWithIsHidden(false);
@@ -187,10 +187,8 @@ namespace IM_PJ
                 }
 
                 lbRetailPrice.Text = string.Format("{0:N0}", p.Retail_Price);
-                ddlSupplier.SelectedValue = p.SupplierID.ToString();
                 ddlCategory.SelectedValue = p.CategoryID.ToString();
                 lbMaterials.Text = p.Materials;
-                lbColor.Text = p.Color;
 
                 // Hàng order
                 ddlPreOrder.SelectedValue = p.PreOrder ? "1" : "0";

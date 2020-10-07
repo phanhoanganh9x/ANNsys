@@ -99,29 +99,12 @@
                                     <asp:Label ID="lbMaterials" runat="server" CssClass="form-control"></asp:Label>
                                 </div>
                             </div>
-                            <div class="form-row main-color">
-                                <div class="row-left">
-                                    Màu chủ đạo
-                                </div>
-                                <div class="row-right">
-                                    <asp:Label ID="lbColor" runat="server" CssClass="form-control"></asp:Label>
-                                </div>
-                            </div>
                             <div class="form-row">
                                 <div class="row-left">
                                     Số lượng
                                 </div>
                                 <div class="row-right">
                                     <asp:Label ID="lbProductStock" runat="server" CssClass="form-control"></asp:Label>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="row-left">
-                                    Nhà cung cấp
-                                </div>
-                                <div class="row-right">
-                                    <asp:DropDownList ID="ddlSupplier" runat="server" CssClass="form-control" Enabled="False">
-                                    </asp:DropDownList>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -163,12 +146,12 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
-                                    Hàng Order
+                                    Loại hàng
                                 </div>
                                 <div class="row-right">
                                     <asp:DropDownList ID="ddlPreOrder" runat="server" CssClass="form-control" Enabled="False">
-                                        <asp:ListItem Text="Khồng cần đặt hàng" Value="0"></asp:ListItem>
-                                        <asp:ListItem Text="Phải đặt hàng" Value="1"></asp:ListItem>
+                                        <asp:ListItem Text="Hàng có sẵn" Value="0"></asp:ListItem>
+                                        <asp:ListItem Text="Hàng order" Value="1"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                             </div>
@@ -268,9 +251,9 @@
 
     <script type="text/javascript" src="Scripts/bootstrap-tagsinput.min.js"></script>
 
-    <script src="/App_Themes/Ann/js/sync-product-v2.js?v=30092020"></script>
-    <script src="/App_Themes/Ann/js/copy-product-info.js?v=30092020"></script>pt>
-    <script src="/App_Themes/Ann/js/download-product-image.js?v=30092020"></script>
+    <script src="/App_Themes/Ann/js/sync-product-v2.js?v=06102020"></script>
+    <script src="/App_Themes/Ann/js/copy-product-info.js?v=06102020"></script>pt>
+    <script src="/App_Themes/Ann/js/download-product-image.js?v=06102020"></script>
     <script>
         // init Input Tag
         let txtTagDOM = $('#txtTag');

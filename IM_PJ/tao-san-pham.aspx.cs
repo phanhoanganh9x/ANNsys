@@ -50,7 +50,7 @@ namespace IM_PJ
                         hdfUserRole.Value = acc.RoleID.ToString();
                         if (acc.RoleID == 0 || acc.RoleID == 1 || acc.Username == "nhom_zalo502")
                         {
-                            LoadSupplier();
+                            //LoadSupplier();
                             LoadPDW();
                             LoadCategory();
                         }
@@ -144,21 +144,21 @@ namespace IM_PJ
             BindVariableValue(ddlVariablename.SelectedValue.ToInt(0));
         }
 
-        public void LoadSupplier()
-        {
-            var supplier = SupplierController.GetAllWithIsHidden(false);
-            ddlSupplier.Items.Clear();
-            ddlSupplier.Items.Insert(0, new ListItem("Chọn nhà cung cấp", "0"));
-            if (supplier.Count > 0)
-            {
-                foreach (var p in supplier)
-                {
-                    ListItem listitem = new ListItem(p.SupplierName, p.ID.ToString());
-                    ddlSupplier.Items.Add(listitem);
-                }
-                ddlSupplier.DataBind();
-            }
-        }
+        //public void LoadSupplier()
+        //{
+        //    var supplier = SupplierController.GetAllWithIsHidden(false);
+        //    ddlSupplier.Items.Clear();
+        //    ddlSupplier.Items.Insert(0, new ListItem("Chọn nhà cung cấp", "0"));
+        //    if (supplier.Count > 0)
+        //    {
+        //        foreach (var p in supplier)
+        //        {
+        //            ListItem listitem = new ListItem(p.SupplierName, p.ID.ToString());
+        //            ddlSupplier.Items.Add(listitem);
+        //        }
+        //        ddlSupplier.DataBind();
+        //    }
+        //}
 
         public void LoadCategory()
         {
@@ -395,15 +395,15 @@ namespace IM_PJ
                             double Regular_Price = Convert.ToDouble(pRegular_Price.Text);
                             double CostOfGood = Convert.ToDouble(pCostOfGood.Text);
                             double Retail_Price = Convert.ToDouble(pRetailPrice.Text);
-                            int supplierID = ddlSupplier.SelectedValue.ToInt(0);
-                            string supplierName = ddlSupplier.SelectedItem.ToString();
+                            int supplierID = 0;
+                            string supplierName = "";
                             string mainColor = ddlColor.SelectedValue.Trim();
                             int a = 1;
                             var preOrder = ddlPreOrder.SelectedValue == "1" ? true : false;
                             double Old_Price = String.IsNullOrEmpty(pOld_Price.Text) ? 0 : Convert.ToDouble(pOld_Price.Text);
 
-                            double MinimumInventoryLevel = pMinimumInventoryLevel.Text.ToInt(0);
-                            double MaximumInventoryLevel = pMaximumInventoryLevel.Text.ToInt(0);
+                            double MinimumInventoryLevel = 5;
+                            double MaximumInventoryLevel = 20;
 
                             if (hdfsetStyle.Value == "2")
                             {
@@ -412,7 +412,7 @@ namespace IM_PJ
                                 a = hdfsetStyle.Value.ToInt();
                             }
 
-                            int ShowHomePage = ddlShowHomePage.SelectedValue.ToInt(0);
+                            int ShowHomePage = 0;
                             var syncKiotViet = rdbSyncKiotViet.SelectedValue == "true";
                             var prodNew = new tbl_Product()
                             {

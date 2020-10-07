@@ -3,7 +3,7 @@
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link type="text/css" rel="stylesheet" href="Content/bootstrap-toggle.min.css" />
-    <link type="text/css" rel="stylesheet" href="App_Themes/Ann/css/pages/cron-job-product-status/cron-job-product-status.css?v=30092020" />
+    <link type="text/css" rel="stylesheet" href="App_Themes/Ann/css/pages/cron-job-product-status/cron-job-product-status.css?v=06102020" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
@@ -188,10 +188,10 @@
         </div>
 
         <script type="text/javascript" src="/Scripts/bootstrap-toggle.min.js"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=30092020"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/sync-product-v2.js?v=30092020"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/services/cron-job-product-status/cron-job-product-status-service.js?v=30092020"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/controllers/cron-job-product-status/cron-job-product-status-controller.js?v=30092020"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/pages/cron-job-product-status/cron-job-product-status.js?v=30092020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=06102020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/sync-product-v2.js?v=06102020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/services/cron-job-product-status/cron-job-product-status-service.js?v=06102020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/controllers/cron-job-product-status/cron-job-product-status-controller.js?v=06102020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/pages/cron-job-product-status/cron-job-product-status.js?v=06102020"></script>
     </main>
 </asp:Content>
