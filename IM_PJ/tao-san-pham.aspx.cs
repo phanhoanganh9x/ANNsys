@@ -615,7 +615,19 @@ namespace IM_PJ
                                         int stockstatus = itemElement[11].ToInt();
 
                                         HttpPostedFile postedFile = Request.Files["" + imageUpload + ""];
+
+                                        // Trường hợp chọn hình mặc định từ setup
+                                        if ((postedFile == null || postedFile.ContentLength == 0) && !String.IsNullOrEmpty(datavaluetext))
+                                        {
+                                            var variationValueNames = datavaluetext.Split('|').Where(x => !String.IsNullOrEmpty(x)).ToList();
+                                            var colorName = variationValueNames.FirstOrDefault();
+
+                                            if (!String.IsNullOrEmpty(colorName))
+                                                postedFile = Request.Files["" + colorName + ""];
+                                        }
+
                                         string image = "";
+
                                         if (postedFile != null && postedFile.ContentLength > 0)
                                         {
                                             var o = path + kq + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName), isFile: true);
