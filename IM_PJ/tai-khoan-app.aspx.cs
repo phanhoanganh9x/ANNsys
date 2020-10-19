@@ -28,16 +28,9 @@ namespace IM_PJ
                     var acc = AccountController.GetByUsername(username);
                     int agent = acc.AgentID.ToString().ToInt();
 
-                    if (acc != null)
+                    if (acc == null)
                     {
-                        if (acc.RoleID == 0 || acc.Username == "hotline")
-                        {
-
-                        }
-                        else
-                        {
-                            Response.Redirect("/trang-chu");
-                        }
+                        Response.Redirect("/trang-chu");
                     }
                 }
                 else

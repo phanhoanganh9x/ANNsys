@@ -1,4 +1,7 @@
-﻿#header .hd-left {
+﻿.variablevalue-item .imgpreview {
+    width: 50%;
+}
+#header .hd-left {
     height: 40px;
 }
 .item-website {
@@ -1608,6 +1611,9 @@ body {
     }
     .imgpreview {
         width: 50%;
+    }
+    .img-responsive {
+        max-width: 50%;
     }
 }
 

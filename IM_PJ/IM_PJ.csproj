@@ -532,6 +532,7 @@
       <DependentUpon>IMMode.edmx</DependentUpon>
       <LastGenOutput>IMMode.cs</LastGenOutput>
     </Content>
+    <Content Include="print-order-image-english.aspx" />
     <Content Include="SQL\05CREATE_STORE_PROCEDURE_ClearStock2.sql" />
     <Content Include="SQL\05CREATE_STORE_PROCEDURE_SyncStock1BasedOnStock2.sql" />
     <Content Include="SQL\Add_Quantity_COGS_Order.sql" />
@@ -1239,6 +1240,13 @@
     </Compile>
     <Compile Include="Models\ZaloIndustry.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="print-order-image-english.aspx.cs">
+      <DependentUpon>print-order-image-english.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="print-order-image-english.aspx.designer.cs">
+      <DependentUpon>print-order-image-english.aspx</DependentUpon>
     </Compile>
     <Compile Include="tai-khoan-app.aspx.cs">
       <DependentUpon>tai-khoan-app.aspx</DependentUpon>

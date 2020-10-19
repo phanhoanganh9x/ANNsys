@@ -54,35 +54,37 @@ namespace IM_PJ
         }
         public void LoadUser(tbl_Account acc = null)
         {
-            if (acc != null)
+            //if (acc != null)
+            //{
+            //    ddlUser.Items.Clear();
+            //    ddlUser.Items.Insert(0, new ListItem(acc.Username, acc.ID.ToString()));
+            //}
+            //else
+            //{
+
+            //}
+
+            var CreateBy = AccountController.GetAllByRoleID(2);
+            ddlUser.Items.Clear();
+            ddlUser.Items.Insert(0, new ListItem("Nhân viên phụ trách", ""));
+            // drop down list at update register modal
+            ddlUserModal.Items.Clear();
+            ddlUserModal.Items.Insert(0, new ListItem("Chọn nhân viên", "0"));
+            ddlUserCreateModal.Items.Insert(0, new ListItem("Chọn nhân viên", "0"));
+            if (CreateBy.Count > 0)
             {
-                ddlUser.Items.Clear();
-                ddlUser.Items.Insert(0, new ListItem(acc.Username, acc.ID.ToString()));
-            }
-            else
-            {
-                var CreateBy = AccountController.GetAllByRoleID(2);
-                ddlUser.Items.Clear();
-                ddlUser.Items.Insert(0, new ListItem("Nhân viên phụ trách", ""));
-                // drop down list at update register modal
-                ddlUserModal.Items.Clear();
-                ddlUserModal.Items.Insert(0, new ListItem("Chọn nhân viên", "0"));
-                ddlUserCreateModal.Items.Insert(0, new ListItem("Chọn nhân viên", "0"));
-                if (CreateBy.Count > 0)
+                foreach (var p in CreateBy)
                 {
-                    foreach (var p in CreateBy)
+                    if (p.Username != "hotline")
                     {
-                        if(p.Username != "hotline")
-                        {
-                            ListItem listitem = new ListItem(p.Username, p.ID.ToString());
-                            ddlUser.Items.Add(listitem);
-                            ddlUserModal.Items.Add(listitem);
-                            ddlUserCreateModal.Items.Add(listitem);
-                        }
+                        ListItem listitem = new ListItem(p.Username, p.ID.ToString());
+                        ddlUser.Items.Add(listitem);
+                        ddlUserModal.Items.Add(listitem);
+                        ddlUserCreateModal.Items.Add(listitem);
                     }
-                    ddlUser.DataBind();
-                    ddlUserModal.DataBind();
                 }
+                ddlUser.DataBind();
+                ddlUserModal.DataBind();
             }
         }
         public void LoadProvince()
@@ -157,10 +159,10 @@ namespace IM_PJ
 
                 var rs = RegisterController.Filter(TextSearch, ProvinceID, UserID, Status, Referer, Category, CreatedDate);
 
-                if(acc.RoleID != 0 && acc.Username != "hotline")
-                {
-                    rs = rs.Where(x => x.UserID == acc.ID).ToList();
-                }
+                //if(acc.RoleID != 0 && acc.Username != "hotline")
+                //{
+                //    rs = rs.Where(x => x.UserID == acc.ID).ToList();
+                //}
 
                 pagingall(rs);
 

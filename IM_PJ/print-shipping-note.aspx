@@ -205,19 +205,20 @@
         }
 
         function printIt() {
-            swal({
-                title: "Coi lại lần cuối nè",
-                text: "Phiếu gửi hàng đúng thông tin hết chưa và có gửi cho khách xem chưa?",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "Đúng rồi sếp! In sếp ơi..",
-                cancelButtonText: "Để em coi lại lần nữa..",
-                closeOnConfirm: true,
-                html: false
-            }, function () {
-                removeDiv();
-            });
+            removeDiv();
+            //swal({
+            //    title: "Coi lại lần cuối nè",
+            //    text: "Phiếu gửi hàng đúng thông tin hết chưa và có gửi cho khách xem chưa?",
+            //    type: "warning",
+            //    showCancelButton: true,
+            //    confirmButtonColor: "#DD6B55",
+            //    confirmButtonText: "Đúng rồi sếp! In sếp ơi..",
+            //    cancelButtonText: "Để em coi lại lần nữa..",
+            //    closeOnConfirm: true,
+            //    html: false
+            //}, function () {
+            //    removeDiv();
+            //});
         }
 
         function printError(shippingType) {

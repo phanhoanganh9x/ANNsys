@@ -17,7 +17,11 @@ namespace IM_PJ.Controllers
             {
                 foreach (var shipper in con.Shippers.ToList())
                 {
-                    data.Add(new ListItem(shipper.Name, shipper.ID.ToString()));
+                    if (shipper.Note != "False")
+                    {
+                        data.Add(new ListItem(shipper.Name, shipper.ID.ToString()));
+
+                    }
                 }
             }
 

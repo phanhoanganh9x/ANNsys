@@ -775,7 +775,7 @@ namespace IM_PJ
                 html.AppendLine("<p>" + product.ProductSKU + " - Sỉ " + product.ProductTitle + "</p>\r\n");
                 html.AppendLine("<p>📌 Giá sỉ: " + (product.Regular_Price).ToString() + "</p>\r\n");
                 html.AppendLine("<p>📌 Giá lẻ: " + (product.Retail_Price).ToString() + "</p>\r\n");
-
+                html.AppendLine("<p>📌 Wholesale price: $" + (Math.Round(Convert.ToDecimal(product.Regular_Price / 23100), 2)).ToString() + " USD</p>\r\n");
                 if (!string.IsNullOrEmpty(product.Materials))
                 {
                     html.AppendLine("<p>🔖 " + (product.CategoryID == 44 ? "" : "Chất liệu: ")  + product.Materials + "</p>\r\n");

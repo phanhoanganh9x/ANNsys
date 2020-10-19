@@ -180,8 +180,8 @@
         <asp:HiddenField ID="hdfTable" runat="server" />
     </main>
 
-    <script src="/App_Themes/Ann/js/copy-product-info-public.js?v=06102020"></script>
-    <script src="/App_Themes/Ann/js/download-product-image-public.js?v=06102020"></script>
+    <script src="/App_Themes/Ann/js/copy-product-info-public.js?v=19102020"></script>
+    <script src="/App_Themes/Ann/js/download-product-image-public.js?v=19102020"></script>
     <script>
         function postProductZaloShop(productSKU) {
             let titleAlert = "Đồng bộ Zalo Shop";

@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="print-order-image.aspx.cs" Inherits="IM_PJ.print_order_image" EnableSessionState="ReadOnly" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="print-order-image-english.aspx.cs" Inherits="IM_PJ.print_order_image_english" EnableSessionState="ReadOnly" %>
 
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -10,7 +10,7 @@
     <script type="text/javascript" src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
     <script type="text/javascript" src="/App_Themes/Ann/js/html2canvas.js"></script>
     <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=19102020"></script>
-    <title>Lấy ảnh đơn hàng</title>    
+    <title>Lấy ảnh đơn hàng Tiếng Anh</title>    
     <style>
         #old-order-note {
             background: #707070;

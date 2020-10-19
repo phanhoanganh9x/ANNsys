@@ -48,3 +48,8 @@ function copyInvoiceURL(orderID, customerID) {
     var copyText = "kiểm tra bill giúp em nha!\r\nbấm vào link này để xem bill:\r\nhttp://khachhangann.com/hoa-don/" + orderID + "/khach-hang/" + customerID;
     Clipboard.copy(copyText);
 }
+
+function copyInvoiceURLEnglish(orderID, customerID) {
+    var copyText = "Please check your invoice!\r\nClick to view:\r\nhttp://khachhangann.com/hoa-don/" + orderID + "/khach-hang/" + customerID;
+    Clipboard.copy(copyText);
+}
