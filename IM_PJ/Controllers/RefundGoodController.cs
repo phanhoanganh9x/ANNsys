@@ -910,9 +910,9 @@ namespace IM_PJ.Controllers
 
             var now = DateTime.Now;
 
-            if (now < new DateTime(year: 2020, month: 7, day: 1))
+            if (now < new DateTime(year: 2020, month: 10, day: 25))
                 return result;
-            if (now > new DateTime(year: 2020, month: 8, day: 31))
+            if (now > new DateTime(year: 2020, month: 12, day: 31))
                 return result;
             #endregion
 
