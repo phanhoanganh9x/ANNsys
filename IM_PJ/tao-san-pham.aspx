@@ -210,7 +210,6 @@
                             <div class="form-row">
                                 <div class="row-left">
                                     Nội dung chèn lên hình
-                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" ControlToValidate="txtImageCode" ForeColor="Red" ErrorMessage="(*)" Display="Dynamic" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                 </div>
                                 <div class="row-right">
                                     <asp:TextBox ID="txtImageCode" runat="server"  CssClass="form-control" placeholder="Nhập nội dung chèn lên hình ảnh. Để trống nếu không muốn chèn." TextMode="MultiLine" Rows="2"></asp:TextBox>
