@@ -603,9 +603,9 @@ namespace IM_PJ
                                         string[] itemElement = item.Split(';');
 
                                         string datanameid = itemElement[0];
-                                        string[] datavalueid = itemElement[1].Split('|');
-                                        string datanametext = itemElement[2];
-                                        string datavaluetext = itemElement[3];
+                                        var datavalueid = itemElement[1].Split('|');
+                                        var datanametext = itemElement[2].Split('|');
+                                        var datavaluetext = itemElement[3].Split('|');
                                         string productvariablesku = itemElement[4].Trim().ToUpper();
                                         string regularprice = itemElement[5];
                                         string costofgood = itemElement[6];
@@ -620,9 +620,9 @@ namespace IM_PJ
                                         HttpPostedFile postedFile = Request.Files["" + imageUpload + ""];
 
                                         // Trường hợp chọn hình mặc định từ setup
-                                        if ((postedFile == null || postedFile.ContentLength == 0) && !String.IsNullOrEmpty(datavaluetext))
+                                        if ((postedFile == null || postedFile.ContentLength == 0) && datavaluetext.Length > 0)
                                         {
-                                            var variationValueNames = datavaluetext.Split('|').Where(x => !String.IsNullOrEmpty(x)).ToList();
+                                            var variationValueNames = datavaluetext.Where(x => !String.IsNullOrEmpty(x)).ToList();
                                             var colorName = variationValueNames.FirstOrDefault();
 
                                             if (!String.IsNullOrEmpty(colorName))
@@ -677,15 +677,26 @@ namespace IM_PJ
                                             ProductVariableID = kq1.ToInt(0);
                                             color = datavalueid[0];
                                             size = datavalueid[1];
-                                            string[] Data = datanametext.Split('|');
-                                            string[] DataValue = datavaluetext.Split('|');
-                                            for (int k = 0; k < Data.Length - 2; k++)
+                                            var k = 0;
+
+                                            while (k < datavalueid.Length && !String.IsNullOrEmpty(datavalueid[k]))
                                             {
-                                                int variablevalueID = datavalueid[k].ToInt();
-                                                string variableName = Data[k];
-                                                string variableValueName = DataValue[k];
-                                                ProductVariableValueController.Insert(ProductVariableID, productvariablesku, variablevalueID,
-                                                        variableName, variableValueName, false, currentDate, username);
+                                                var variablevalueID = datavalueid[k].ToInt();
+                                                var variableName = datanametext[k];
+                                                var variableValueName = datavaluetext[k];
+
+                                                ProductVariableValueController.Insert(
+                                                    ProductVariableID,
+                                                    productvariablesku,
+                                                    variablevalueID,
+                                                    variableName,
+                                                    variableValueName,
+                                                    false,
+                                                    currentDate,
+                                                    username
+                                                );
+
+                                                k++;
                                             }
                                         }
                                         ProductVariableController.UpdateColorSize(ProductVariableID, color, size);
