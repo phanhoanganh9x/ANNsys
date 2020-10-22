@@ -84,17 +84,17 @@
             width: calc(100% - 100px);
         }
         .variable-name-select {
-            float: left; 
-            width: 30%; 
+            float: left;
+            width: 30%;
             padding-right: 15px;
         }
         .variable-value-select {
-            float: left; 
-            width: 30%; 
+            float: left;
+            width: 30%;
             padding-right: 15px;
         }
         .variable-button-select {
-            float: left; 
+            float: left;
             width: 30%;
             padding-right: 15px;
         }
@@ -194,6 +194,17 @@
                                 </div>
                                 <div class="row-right">
                                     <asp:TextBox ID="txtProductSKU" runat="server" CssClass="form-control sku-input" onblur="CheckSKU()" placeholder="Mã sản phẩm"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Chuẩn hóa hình ảnh
+                                </div>
+                                <div class="row-right">
+                                    <asp:RadioButtonList ID="rdbStandardImage" runat="server" RepeatDirection="Horizontal" TabIndex="6">
+                                        <asp:ListItem Value="true" Selected="True">Có</asp:ListItem>
+                                        <asp:ListItem Value="false">Không</asp:ListItem>
+                                    </asp:RadioButtonList>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -360,7 +371,7 @@
                                 <div class="row-right">
                                     <telerik:RadAsyncUpload Skin="Metro" runat="server" ID="ProductThumbnailImage" ChunkSize="0"
                                         Localization-Select="Chọn ảnh" AllowedFileExtensions=".jpeg,.jpg,.png"
-                                        MultipleFileSelection="Disabled" OnClientFileSelected="OnClientFileSelected1" 
+                                        MultipleFileSelection="Disabled" OnClientFileSelected="OnClientFileSelected1"
                                         MaxFileInputsCount="1">
                                     </telerik:RadAsyncUpload>
                                     <asp:Image runat="server" ID="ProductThumbnail" Width="200" />
@@ -426,7 +437,7 @@
                                     </div>
 
                                     <div class="variableselect">
-                                        <span id="selectvariabletitle">Các thuộc tính đã chọn: 
+                                        <span id="selectvariabletitle">Các thuộc tính đã chọn:
                                             <a href="javascript:;" onclick="generateVariable()" id="generateVariable" class="btn primary-btn fw-btn not-fullwidth"><i class="fa fa-file-o" aria-hidden="true"></i> Thiết lập biến thể</a></span>
                                     </div>
                                     <div class="generat-variable-content">
@@ -562,7 +573,7 @@
                     else if (categoryID == 12) {
                         cost = regularPrice - 40000;
                     }
-                    else 
+                    else
                     {
                         cost = regularPrice - 25000;
                     }
@@ -660,7 +671,7 @@
                     }
                 });
 
-                
+
             });
 
             function redirectTo(ID, SKU) {
@@ -885,7 +896,7 @@
                         swal("Thông báo", "Hãy chọn một giá trị của thuộc tính.", "error");
                         $("#<%=ddlVariableValue.ClientID%>").focus();
                     }
-                    
+
                 }
                 else {
                     swal("Thông báo", "Hãy chọn một thuộc tính sản phẩm.", "error");
@@ -1163,7 +1174,7 @@
                                         else {
                                             html += "                <img class='imgpreview' onclick='openUploadImage($(this))' src='/App_Themes/Ann/image/placeholder.png' />";
                                             html += "                <a href='javascript:;' onclick='deleteImageVariable($(this))' class='btn-delete hide'><i class='fa fa-times' aria-hidden='true'></i> Xóa hình</a>";
-                                        }   
+                                        }
                                         html += "            </div>";
                                         html += "            <div class='col-md-5'>";
                                         html += "                <div class='row margin-bottom-15'>";
@@ -1210,7 +1221,7 @@
                                         swal("Thông báo", "Đã tạo đầy đủ " + data.length + " biến thể sản phẩm trước đó", "info");
                                     }
                                 }
-                                    
+
                                 HoldOn.close();
 
                                 var userRole = $("#<%=hdfUserRole.ClientID%>").val();
@@ -1620,7 +1631,7 @@
                                     confirmButtonText: "Đúng rồi",
                                     html: true
                                 }, function (isConfirm) {
-                                    let selected = isConfirm ? 'true' : 'false'; 
+                                    let selected = isConfirm ? 'true' : 'false';
                                     let $rdbSyncKiotViet = $("#<%=rdbSyncKiotViet.ClientID%>").find("input[type='radio']");
 
                                     $.each($rdbSyncKiotViet, function (index, element) {

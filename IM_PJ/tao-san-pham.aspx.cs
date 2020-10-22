@@ -76,7 +76,7 @@ namespace IM_PJ
         /// <param name="fileName">Tên file hình ảnh</param>
         /// <param name="code">Nội dung muốn ghi lên hình</param>
         /// <returns></returns>
-        private void _drawCode(string fileName, string code)
+        private void _drawCode(string fileName, string code, bool isStandardImage = true)
         {
             #region Khởi tạo API
             var api = "http://ann-shop-dotnet-core.com/api/v1/image/draw-code";
@@ -90,7 +90,8 @@ namespace IM_PJ
                 string json = JsonConvert.SerializeObject(new
                 {
                     fileName = fileName,
-                    code = code
+                    code = code,
+                    isStandardImage = isStandardImage
                 });
 
                 streamWriter.Write(json);
@@ -499,8 +500,9 @@ namespace IM_PJ
                                         {
                                             var fileName = Path.GetFileName(o);
                                             var extension = Path.GetExtension(o);
+                                            var standardImage = rdbStandardImage.SelectedValue.ToBool();
 
-                                            _drawCode(fileName, txtImageCode.Text.Trim());
+                                            _drawCode(fileName, txtImageCode.Text.Trim(), standardImage);
 
                                             if (extension != IMAGE_EXTENSION)
                                                 o = o.Replace(extension, IMAGE_EXTENSION);
@@ -562,8 +564,9 @@ namespace IM_PJ
                                         {
                                             var fileName = Path.GetFileName(o);
                                             var extension = Path.GetExtension(o);
+                                            var standardImage = rdbStandardImage.SelectedValue.ToBool();
 
-                                            _drawCode(fileName, txtImageCode.Text.Trim());
+                                            _drawCode(fileName, txtImageCode.Text.Trim(), standardImage);
 
                                             if (extension != IMAGE_EXTENSION)
                                                 o = o.Replace(extension, IMAGE_EXTENSION);
@@ -640,8 +643,9 @@ namespace IM_PJ
                                                 {
                                                     var fileName = Path.GetFileName(o);
                                                     var extension = Path.GetExtension(o);
+                                                    var standardImage = rdbStandardImage.SelectedValue.ToBool();
 
-                                                    _drawCode(fileName, txtImageCode.Text.Trim());
+                                                    _drawCode(fileName, txtImageCode.Text.Trim(), standardImage);
 
                                                     if (extension != IMAGE_EXTENSION)
                                                         o = o.Replace(extension, IMAGE_EXTENSION);
