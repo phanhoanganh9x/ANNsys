@@ -314,7 +314,7 @@ namespace IM_PJ.Controllers
                 return ags;
             }
         }
-        
+
         //public static List<tbl_StockManager> GetByProductName(int AgentID,string ProductName)
         //{
         //    using (var dbe = new inventorymanagementEntities())
@@ -541,7 +541,7 @@ namespace IM_PJ.Controllers
                     .Where(x => x.ParentID == productID)
                     .Where(x => variableID == 0 || x.ProductVariableID == variableID)
                     .GroupBy(g => new { productID = g.ParentID.Value, variableID = g.ProductVariableID.Value })
-                    .Select(x => 
+                    .Select(x =>
                         new {
                             productID = x.Key.productID,
                             variableID = x.Key.variableID,
@@ -967,7 +967,7 @@ namespace IM_PJ.Controllers
             }
         }
 
-        public static List<GoodsReceiptReport> getGoodsReceiptReport(ProductFilterModel filter, 
+        public static List<GoodsReceiptReport> getGoodsReceiptReport(ProductFilterModel filter,
                                                                      ref PaginationMetadataModel page,
                                                                      ref int totalQuantityInput)
         {
@@ -1276,7 +1276,10 @@ namespace IM_PJ.Controllers
                         return false;
 
                     context.Entry(stock).State = System.Data.Entity.EntityState.Modified;
-                    stock.Quantity = stock.QuantityCurrent + stock.Quantity * (stock.Type == 1 ? 1 : -1);
+                    var quantity = stock.QuantityCurrent + stock.Quantity * (stock.Type == 1 ? 1 : -1);
+
+                    stock.QuantityCurrent = quantity.HasValue ? Math.Abs(quantity.Value) : 0;
+                    stock.Quantity = quantity.HasValue ? Math.Abs(quantity.Value) : 0;
                     stock.Type = 2;
                     stock.Status = 14;
                     stock.NoteID = "Xuất hết kho";
@@ -1332,6 +1335,7 @@ namespace IM_PJ.Controllers
                     context.Entry(stock).State = System.Data.Entity.EntityState.Modified;
                     stock.Type = 1;
                     stock.QuantityCurrent = 0;
+                    stock.Quantity = stock.Quantity.HasValue ? Math.Abs(stock.Quantity.Value) : 0;
                     stock.Status = 15;
                     stock.NoteID = "Phục hồi xuất hết kho";
                     stock.ModifiedBy = userName;
@@ -1721,7 +1725,7 @@ namespace IM_PJ.Controllers
                             transferDate = f.transferDate,
                         }
                     ).ToList();
-                
+
                 // Lấy thông tin số lượng nhận sản phẩm
                 subData = subData
                     .Join(
@@ -1748,7 +1752,7 @@ namespace IM_PJ.Controllers
                         }
                     )
                     .ToList();
-                
+
                 // Lấy thông tin số lượng hiện tại của sản phẩm
                 subData = subData
                     .Join(
