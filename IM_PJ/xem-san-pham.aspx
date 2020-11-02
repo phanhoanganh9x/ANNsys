@@ -65,6 +65,14 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
+                                    Slug
+                                </div>
+                                <div class="row-right">
+                                    <asp:Label ID="lbSlug" runat="server" CssClass="form-control"></asp:Label>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
                                     Danh mục
                                 </div>
                                 <div class="row-right parent">
@@ -179,6 +187,22 @@
                                 </div>
                                 <div class="row-right">
                                     <asp:Literal ID="imageGallery" runat="server"></asp:Literal>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Ảnh đại diện
+                                </div>
+                                <div class="row-right">
+                                    <asp:Literal ID="thumbnailImage" runat="server"></asp:Literal>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Ảnh đại diện sạch
+                                </div>
+                                <div class="row-right">
+                                    <asp:Literal ID="thumbnailImageClean" runat="server"></asp:Literal>
                                 </div>
                             </div>
                             <div class="form-row">
