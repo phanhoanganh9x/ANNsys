@@ -485,68 +485,91 @@ namespace IM_PJ
 
                             //Phần thêm ảnh đại diện sản phẩm
                             string path = "/uploads/images/";
+                            string ProductImageClean = "";
                             string ProductImage = "";
+
                             if (ProductThumbnailImage.UploadedFiles.Count > 0)
                             {
-                                foreach (UploadedFile f in ProductThumbnailImage.UploadedFiles)
+                                var file = ProductThumbnailImage.UploadedFiles[0];
+                                var avatarFile = path + kq + '-' + Slug.ConvertToSlug(Path.GetFileName(file.FileName), isFile: true);
+                                var avatarClearPath = path + kq + "-clean-" + Slug.ConvertToSlug(Path.GetFileName(file.FileName), isFile: true);
+
+                                if (ProductThumbnailImageClean.UploadedFiles.Count == 0)
                                 {
-                                    var o = path + kq + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
-                                    if (!File.Exists(Server.MapPath(o)))
+                                    if (!File.Exists(Server.MapPath(avatarClearPath)))
                                     {
-                                        f.SaveAs(Server.MapPath(o));
-
-                                        #region Draw Code
-                                        if (!String.IsNullOrEmpty(txtImageCode.Text.Trim()))
-                                        {
-                                            var fileName = Path.GetFileName(o);
-                                            var extension = Path.GetExtension(o);
-                                            var standardImage = rdbStandardImage.SelectedValue.ToBool();
-
-                                            _drawCode(fileName, txtImageCode.Text.Trim(), standardImage);
-
-                                            if (extension != IMAGE_EXTENSION)
-                                                o = o.Replace(extension, IMAGE_EXTENSION);
-                                        }
-                                        #endregion
-
-                                        #region Thumbnail
-                                        Thumbnail.create(Server.MapPath(o), 85, 113);
-                                        Thumbnail.create(Server.MapPath(o), 159, 212);
-                                        Thumbnail.create(Server.MapPath(o), 240, 320);
-                                        Thumbnail.create(Server.MapPath(o), 350, 467);
-                                        Thumbnail.create(Server.MapPath(o), 420, 420);
-                                        Thumbnail.create(Server.MapPath(o), 600, 0);
-                                        #endregion
+                                        file.SaveAs(Server.MapPath(avatarClearPath));
+                                        // Thumbnail
+                                        Thumbnail.create(Server.MapPath(avatarClearPath), 85, 113);
+                                        Thumbnail.create(Server.MapPath(avatarClearPath), 159, 212);
+                                        Thumbnail.create(Server.MapPath(avatarClearPath), 240, 320);
+                                        Thumbnail.create(Server.MapPath(avatarClearPath), 350, 467);
+                                        Thumbnail.create(Server.MapPath(avatarClearPath), 420, 420);
+                                        Thumbnail.create(Server.MapPath(avatarClearPath), 600, 0);
                                     }
 
-                                    ProductImage = Path.GetFileName(Server.MapPath(o));
+                                    ProductImageClean = Path.GetFileName(Server.MapPath(avatarClearPath));
+                                    ProductController.UpdateImageClean(kq.ToInt(), ProductImageClean);
                                 }
+
+                                if (!File.Exists(Server.MapPath(avatarFile)))
+                                {
+                                    if (String.IsNullOrEmpty(ProductImageClean))
+                                        file.SaveAs(Server.MapPath(avatarFile));
+                                    else
+                                        File.Copy(Server.MapPath(avatarClearPath), Server.MapPath(avatarFile));
+
+                                    #region Draw Code
+                                    if (!String.IsNullOrEmpty(txtImageCode.Text.Trim()))
+                                    {
+                                        var fileName = Path.GetFileName(avatarFile);
+                                        var extension = Path.GetExtension(avatarFile);
+                                        var standardImage = rdbStandardImage.SelectedValue.ToBool();
+
+                                        _drawCode(fileName, txtImageCode.Text.Trim(), standardImage);
+
+                                        if (extension != IMAGE_EXTENSION)
+                                            avatarFile = avatarFile.Replace(extension, IMAGE_EXTENSION);
+                                    }
+                                    #endregion
+
+                                    #region Thumbnail
+                                    Thumbnail.create(Server.MapPath(avatarFile), 85, 113);
+                                    Thumbnail.create(Server.MapPath(avatarFile), 159, 212);
+                                    Thumbnail.create(Server.MapPath(avatarFile), 240, 320);
+                                    Thumbnail.create(Server.MapPath(avatarFile), 350, 467);
+                                    Thumbnail.create(Server.MapPath(avatarFile), 420, 420);
+                                    Thumbnail.create(Server.MapPath(avatarFile), 600, 0);
+                                    #endregion
+                                }
+
+                                ProductImage = Path.GetFileName(Server.MapPath(avatarFile));
+                                ProductController.UpdateImage(kq.ToInt(), ProductImage);
                             }
-                            string updateImage = ProductController.UpdateImage(kq.ToInt(), ProductImage);
+
 
                             //Phần thêm ảnh đại diện sản phẩm sạch không có đóng dấu
-                            string ProductImageClean = "";
-                            if (ProductThumbnailImageClean.UploadedFiles.Count > 0)
+                            
+                            if (String.IsNullOrEmpty(ProductImageClean) && ProductThumbnailImageClean.UploadedFiles.Count > 0)
                             {
-                                foreach (UploadedFile f in ProductThumbnailImageClean.UploadedFiles)
-                                {
-                                    var o = path + kq + "-clean-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
-                                    if (!File.Exists(Server.MapPath(o)))
-                                    {
-                                        f.SaveAs(Server.MapPath(o));
-                                        // Thumbnail
-                                        Thumbnail.create(Server.MapPath(o), 85, 113);
-                                        Thumbnail.create(Server.MapPath(o), 159, 212);
-                                        Thumbnail.create(Server.MapPath(o), 240, 320);
-                                        Thumbnail.create(Server.MapPath(o), 350, 467);
-                                        Thumbnail.create(Server.MapPath(o), 420, 420);
-                                        Thumbnail.create(Server.MapPath(o), 600, 0);
-                                    }
+                                var file = ProductThumbnailImageClean.UploadedFiles[0];
+                                var avatarClearPath = path + kq + "-clean-" + Slug.ConvertToSlug(Path.GetFileName(file.FileName), isFile: true);
 
-                                    ProductImageClean = Path.GetFileName(Server.MapPath(o));
+                                if (!File.Exists(Server.MapPath(avatarClearPath)))
+                                {
+                                    file.SaveAs(Server.MapPath(avatarClearPath));
+                                    // Thumbnail
+                                    Thumbnail.create(Server.MapPath(avatarClearPath), 85, 113);
+                                    Thumbnail.create(Server.MapPath(avatarClearPath), 159, 212);
+                                    Thumbnail.create(Server.MapPath(avatarClearPath), 240, 320);
+                                    Thumbnail.create(Server.MapPath(avatarClearPath), 350, 467);
+                                    Thumbnail.create(Server.MapPath(avatarClearPath), 420, 420);
+                                    Thumbnail.create(Server.MapPath(avatarClearPath), 600, 0);
                                 }
+
+                                ProductImageClean = Path.GetFileName(Server.MapPath(avatarClearPath));
+                                ProductController.UpdateImageClean(kq.ToInt(), ProductImageClean);
                             }
-                            string updateImageClean = ProductController.UpdateImageClean(kq.ToInt(), ProductImageClean);
 
                             //Phần thêm thư viện ảnh sản phẩm
                             string IMG = "";

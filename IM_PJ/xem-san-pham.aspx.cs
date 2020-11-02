@@ -151,6 +151,7 @@ namespace IM_PJ
                 pContent.Text = p.ProductContent;
                 lblSKU.Text = p.ProductSKU;
                 txtOldSKU.Text = p.ProductSKU;
+                lbSlug.Text = p.Slug;
 
                 // Create order fileter
                 var filter = new ProductFilterModel() { search = p.ProductSKU };
@@ -192,6 +193,12 @@ namespace IM_PJ
 
                 // Hàng order
                 ddlPreOrder.SelectedValue = p.PreOrder ? "1" : "0";
+
+                // Ảnh đại diện
+                thumbnailImage.Text += "<ul class='image-gallery'><li><img src='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Normal) + "'><a href='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Source) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></li></ul>";
+
+                // Ảnh đại diện sạch
+                thumbnailImageClean.Text += "<ul class='image-gallery'><li><img src='" + Thumbnail.getURL(p.ProductImageClean, Thumbnail.Size.Normal) + "'><a href='" + Thumbnail.getURL(p.ProductImageClean, Thumbnail.Size.Source) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></li></ul>";
 
                 // thư viện ảnh
                 var image = ProductImageController.GetByProductID(id);

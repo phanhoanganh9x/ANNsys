@@ -40,6 +40,15 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.Label lbProductTitle;
         
         /// <summary>
+        /// lbSlug control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lbSlug;
+        
+        /// <summary>
         /// ddlCategory control.
         /// </summary>
         /// <remarks>
@@ -155,6 +164,24 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal imageGallery;
+        
+        /// <summary>
+        /// thumbnailImage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal thumbnailImage;
+        
+        /// <summary>
+        /// thumbnailImageClean control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal thumbnailImageClean;
         
         /// <summary>
         /// ltrEdit2 control.
