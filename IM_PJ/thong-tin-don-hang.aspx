@@ -1840,6 +1840,25 @@
                                 insertOrder();
                             }
                         }
+                        // Nếu đơn hàng hoàn tất và chưa chọn chành xe hoặc nơi nhận chành xe
+                        else if (excuteStatus == 2 && shippingType == 4) {
+                            let transportCompanyID = $("#<%=ddlTransportCompanyID.ClientID%>").val();
+                            let transportCompanySubID = $("#<%=ddlTransportCompanySubID.ClientID%>").val();
+                            if (transportCompanyID == 0) {
+                                $("#<%=ddlTransportCompanyID.ClientID%>").focus();
+                                swal("Thông báo", "Chưa chọn chành xe!", "warning");
+                            }
+                            else if (transportCompanySubID == 0) {
+                                $("#<%=ddlTransportCompanySubID.ClientID%>").focus();
+                                swal("Thông báo", "Chưa chọn nơi nhận của chành xe!", "warning");
+                            }
+                            else {
+                                deleteOrder();
+                                $("#<%=hdfOrderType.ClientID %>").val(ordertype);
+                                $("#<%=hdfListProduct.ClientID%>").val(list);
+                                insertOrder();
+                            }
+                        }
                         else {
                             // Nếu trạng thái không liên quan đến hủy thì xử lý..
                             deleteOrder();
