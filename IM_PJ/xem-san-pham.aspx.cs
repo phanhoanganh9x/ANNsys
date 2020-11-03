@@ -147,8 +147,21 @@ namespace IM_PJ
 
                 ltrEdit2.Text = ltrEdit1.Text;
                 lbProductTitle.Text = p.ProductTitle;
-                rdbSyncKiotViet.SelectedValue = p.SyncKiotViet ? "true" : "false";
-                pContent.Text = p.ProductContent;
+
+                string categoryName = "";
+                var category = CategoryController.GetByID(p.CategoryID.Value);
+                if (category != null)
+                {
+                    categoryName = " " + category.CategoryName.ToUpper();
+                }
+                pContent.Text = "<p>Xưởng sỉ " + p.ProductTitle + "</p>";
+                pContent.Text += "<p>Chất liệu: " + p.Materials + "</p>";
+                pContent.Text += "<p>" + p.ProductContent + "</p>";
+                pContent.Text += "<p>⚡⚡ KHO SỈ" + categoryName + " ANN ⚡⚡</p>";
+                pContent.Text += "<p>⭐ Zalo: 0971500506 - 0946500509 - 0946500504 - 0918569400</p>";
+                pContent.Text += "<p>⭐ Web: https://ann.com.vn </p>";
+
+
                 lblSKU.Text = p.ProductSKU;
                 txtOldSKU.Text = p.ProductSKU;
                 lbSlug.Text = p.Slug;
