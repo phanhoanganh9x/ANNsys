@@ -308,7 +308,19 @@ namespace IM_PJ
                     #endregion
 
                     ltrCopyInvoiceURL.Text = "<a href='javascript:;' onclick='copyInvoiceURL(" + order.ID + ", " + order.CustomerID + ")' title='Copy link hóa đơn' class='btn btn-violet h45-btn'>Copy link hóa đơn</a>";
-                    ltrEnglishInvoice.Text = "<a href='/print-order-image-english?id=" + order.ID + "&merge=0' title='Lấy ảnh đơn hàng Tiếng Anh' class='btn btn-orange h45-btn'>Ảnh Tiếng Anh</a>";
+                    
+                    #region Currencies Drop Down List
+                    ltrEnglishInvoice.Text += "<select id='dllCurrency' onchange='onChangeCurrency($(this).val())'>";
+                    ltrEnglishInvoice.Text += "    <option value='VND'>VND - Việt Nam Đồng</option>";
+                    ltrEnglishInvoice.Text += "    <option value='USD'>$ - US Dollar</option>";
+                    ltrEnglishInvoice.Text += "    <option value='AUD'>A$ - Australian Dollar</option>";
+                    ltrEnglishInvoice.Text += "    <option value='JPY'>¥ - Japanese Yen</option>";
+                    ltrEnglishInvoice.Text += "    <option value='SGD'>SGD - Singapore Dollar</option>";
+                    ltrEnglishInvoice.Text += "    <option value='MYR'>MYR - Malaysian Ringgit</option>";
+                    ltrEnglishInvoice.Text += "    <option value='TWD'>NT$ - TWD - Taiwan New Dollar</option>";
+                    ltrEnglishInvoice.Text += "</select>";
+                    #endregion
+
                     string error = "";
                     string Print = "";
 

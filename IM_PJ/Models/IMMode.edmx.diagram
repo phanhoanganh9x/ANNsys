@@ -80,6 +80,7 @@
         <EntityTypeShape EntityType="inventorymanagementModel.UserNotifyPromotion" Width="1.5" PointX="26.75" PointY="17.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.WebWordpress" Width="1.5" PointX="18.75" PointY="26.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.ZaloIndustry" Width="1.5" PointX="26.75" PointY="21.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.ExchangeRate" Width="1.5" PointX="0.75" PointY="27.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

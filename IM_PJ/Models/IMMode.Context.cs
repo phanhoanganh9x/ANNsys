@@ -100,5 +100,6 @@ namespace IM_PJ.Models
         public virtual DbSet<UserNotifyPromotion> UserNotifyPromotions { get; set; }
         public virtual DbSet<WebWordpress> WebWordpresses { get; set; }
         public virtual DbSet<ZaloIndustry> ZaloIndustries { get; set; }
+        public virtual DbSet<ExchangeRate> ExchangeRates { get; set; }
     }
 }

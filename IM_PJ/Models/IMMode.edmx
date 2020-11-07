@@ -216,6 +216,19 @@
           <Property Name="IsPicked" Type="bit" Nullable="false" />
           <Property Name="IsDelivered" Type="bit" Nullable="false" />
         </EntityType>
+        <EntityType Name="ExchangeRate">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CurrencyName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="CurrencyCode" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="SellingRate" Type="money" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="255" Nullable="false" />
+        </EntityType>
         <EntityType Name="Fee">
           <Key>
             <PropertyRef Name="UUID" />
@@ -666,6 +679,8 @@
           <Property Name="Slug" Type="nvarchar" MaxLength="100" />
           <Property Name="Icon" Type="nvarchar" MaxLength="255" />
           <Property Name="ZaloShop" Type="int" />
+          <Property Name="EnName" Type="nvarchar(max)" />
+          <Property Name="EnDescription" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="tbl_Config">
           <Key>
@@ -1006,6 +1021,7 @@
           <Property Name="PreOrder" Type="bit" Nullable="false" />
           <Property Name="Old_Price" Type="float" />
           <Property Name="SyncKiotViet" Type="bit" Nullable="false" />
+          <Property Name="EnName" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="tbl_ProductImage">
           <Key>
@@ -1251,6 +1267,7 @@
           <Property Name="ModifiedBy" Type="nvarchar(max)" />
           <Property Name="VariableValueText" Type="nvarchar(max)" />
           <Property Name="SKUText" Type="nvarchar(max)" />
+          <Property Name="EnVariableValue" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="tbl_WhiteDomain">
           <Key>
@@ -1336,6 +1353,7 @@
           <EntitySet Name="Delivery" EntityType="Self.Delivery" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DeliveryPostOffice" EntityType="Self.DeliveryPostOffice" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DeliverySaveAddress" EntityType="Self.DeliverySaveAddress" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ExchangeRate" EntityType="Self.ExchangeRate" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Fee" EntityType="Self.Fee" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FeeType" EntityType="Self.FeeType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GroupNotifyPromotion" EntityType="Self.GroupNotifyPromotion" Schema="dbo" store:Type="Tables" />
@@ -2064,6 +2082,8 @@
           <Property Name="Slug" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Icon" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="ZaloShop" Type="Int32" />
+          <Property Name="EnName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EnDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_Config">
           <Key>
@@ -2404,6 +2424,7 @@
           <Property Name="PreOrder" Type="Boolean" Nullable="false" />
           <Property Name="Old_Price" Type="Double" />
           <Property Name="SyncKiotViet" Type="Boolean" Nullable="false" />
+          <Property Name="EnName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_ProductImage">
           <Key>
@@ -2649,6 +2670,7 @@
           <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="VariableValueText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="SKUText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EnVariableValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_WhiteDomain">
           <Key>
@@ -2796,7 +2818,21 @@
           <EntitySet Name="UserNotifyPromotions" EntityType="Self.UserNotifyPromotion" />
           <EntitySet Name="WebWordpresses" EntityType="Self.WebWordpress" />
           <EntitySet Name="ZaloIndustries" EntityType="Self.ZaloIndustry" />
+          <EntitySet Name="ExchangeRates" EntityType="inventorymanagementModel.ExchangeRate" />
         </EntityContainer>
+        <EntityType Name="ExchangeRate">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CurrencyName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CurrencyCode" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="SellingRate" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -3489,6 +3525,8 @@
           <EntitySetMapping Name="tbl_Category">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Category">
               <MappingFragment StoreEntitySet="tbl_Category">
+                <ScalarProperty Name="EnDescription" ColumnName="EnDescription" />
+                <ScalarProperty Name="EnName" ColumnName="EnName" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
                 <ScalarProperty Name="CategoryDescription" ColumnName="CategoryDescription" />
@@ -3823,6 +3861,7 @@
           <EntitySetMapping Name="tbl_Product">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Product">
               <MappingFragment StoreEntitySet="tbl_Product">
+                <ScalarProperty Name="EnName" ColumnName="EnName" />
                 <ScalarProperty Name="SyncKiotViet" ColumnName="SyncKiotViet" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
@@ -4105,6 +4144,7 @@
           <EntitySetMapping Name="tbl_VariableValue">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_VariableValue">
               <MappingFragment StoreEntitySet="tbl_VariableValue">
+                <ScalarProperty Name="EnVariableValue" ColumnName="EnVariableValue" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="VariableID" ColumnName="VariableID" />
                 <ScalarProperty Name="VariableName" ColumnName="VariableName" />
@@ -4191,6 +4231,20 @@
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ExchangeRates">
+            <EntityTypeMapping TypeName="inventorymanagementModel.ExchangeRate">
+              <MappingFragment StoreEntitySet="ExchangeRate">
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="SellingRate" ColumnName="SellingRate" />
+                <ScalarProperty Name="CurrencyCode" ColumnName="CurrencyCode" />
+                <ScalarProperty Name="CurrencyName" ColumnName="CurrencyName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
