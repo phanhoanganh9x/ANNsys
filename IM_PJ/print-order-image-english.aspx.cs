@@ -79,7 +79,7 @@ namespace IM_PJ
             return categoryID;
         }
 
-        private void _printProduct(tbl_OrderDetail orderdetails, ref double TotalQuantity, ref double TotalOrder, ref string Print) {
+        private void _printProduct(List<tbl_OrderDetail> orderdetails, ref double TotalQuantity, ref double TotalOrder, ref string Print) {
             var t = 0;
             var print = 1;
 
@@ -88,7 +88,7 @@ namespace IM_PJ
                 TotalQuantity += Convert.ToDouble(item.Quantity);
 
                 var ProductType = Convert.ToInt32(item.ProductType);
-                var ItemPrice = Convert.ToDouble(Math.Ceiling(item.Price / currencyRate));
+                var ItemPrice = Convert.ToDouble(item.Price);
                 var SKU = item.SKU;
                 var ProductName = String.Empty;
                 var ProductImage = String.Empty;
@@ -136,7 +136,7 @@ namespace IM_PJ
                         {
                             if (String.IsNullOrEmpty(parent_product.EnName))
                             {
-                                var category = CategoryController.GetByID(product.CategoryID.Value);
+                                var category = CategoryController.GetByID(parent_product.CategoryID.Value);
 
                                 if (category == null)
                                     ProductName = SKU;
@@ -206,7 +206,7 @@ namespace IM_PJ
             }
         } 
 
-        private void _printProductGroup(tbl_OrderDetail orderdetails, ref double TotalQuantity, ref double TotalOrder, ref string Print)
+        private void _printProductGroup(List<tbl_OrderDetail> orderdetails, ref double TotalQuantity, ref double TotalOrder, ref string Print)
         {
             int t = 0;
             int print = 1;
@@ -290,7 +290,7 @@ namespace IM_PJ
             }
         }
 
-        private void _printBody(int mergeprint, tbl_OrderDetail orderdetails, ref double TotalQuantity, ref double TotalOrder, ref string Print)
+        private void _printBody(int mergeprint, List<tbl_OrderDetail> orderdetails, ref double TotalQuantity, ref double TotalOrder, ref string Print)
         {
             if (mergeprint == 0)
                 _printProduct(orderdetails, ref TotalQuantity, ref TotalOrder, ref Print);
@@ -307,7 +307,7 @@ namespace IM_PJ
             var currencyCode = Currency.USD;
 
             #region Lấy thông tin đơn hàng
-            if (String.IsNullOrEmpty(Request.QueryString["id"]))
+            if (!String.IsNullOrEmpty(Request.QueryString["id"]))
                 ID = Request.QueryString["id"].ToInt(0);
             
             if (ID <= 0)
@@ -326,8 +326,8 @@ namespace IM_PJ
             #endregion
 
             #region Thông tin tiền tệ
-            if (String.IsNullOrEmpty(Request.QueryString["currencyCode"]))
-                currencyCode = Request.QueryString["currencyCode"];
+            if (!String.IsNullOrEmpty(Request.QueryString["currencyCode"]))
+                currencyCode = Request.QueryString["currencyCode"].Trim();
 
             var currency = CurrencyController.getByCode(currencyCode);
 
@@ -338,7 +338,7 @@ namespace IM_PJ
             }
             #endregion
 
-            if (String.IsNullOrEmpty(Request.QueryString["merge"]))
+            if (!String.IsNullOrEmpty(Request.QueryString["merge"]))
                 mergeprint = Request.QueryString["merge"].ToInt(0);
             #endregion
                             
@@ -371,7 +371,18 @@ namespace IM_PJ
 
             #region Support buttons
             ltrCopyInvoiceURL.Text = "<a href='javascript:;' onclick='copyInvoiceURLEnglish(" + order.ID + ", " + order.CustomerID + ")' title='Copy link hóa đơn' class='btn btn-violet h45-btn'>Copy link hóa đơn</a>";
-            ltrEnglishInvoice.Text = "<a href='/print-order-image?id=" + order.ID + "&merge=0' title='Lấy ảnh đơn hàng Tiếng Việt' class='btn btn-orange h45-btn'>Ảnh Tiếng Việt</a>";
+
+            #region Currencies Drop Down List
+            ltrEnglishInvoice.Text += "<select id='dllCurrency' onchange='onChangeCurrency($(this).val())'>";
+            ltrEnglishInvoice.Text += "    <option value='VND'>VND - Việt Nam Đồng</option>";
+            ltrEnglishInvoice.Text += "    <option value='USD'>$ - US Dollar</option>";
+            ltrEnglishInvoice.Text += "    <option value='AUD'>A$ - Australian Dollar</option>";
+            ltrEnglishInvoice.Text += "    <option value='JPY'>¥ - Japanese Yen</option>";
+            ltrEnglishInvoice.Text += "    <option value='SGD'>SGD - Singapore Dollar</option>";
+            ltrEnglishInvoice.Text += "    <option value='MYR'>MYR - Malaysian Ringgit</option>";
+            ltrEnglishInvoice.Text += "    <option value='TWD'>NT$ - TWD - Taiwan New Dollar</option>";
+            ltrEnglishInvoice.Text += "</select>";
+            #endregion
             #endregion
 
             #region Thông tin đơn hơn    
@@ -381,7 +392,9 @@ namespace IM_PJ
             var TotalOrder = 0D;
             var orderdetails = OrderDetailController.GetByIDSortBySKU(ID)
                 .Select(x => {
-                    x.Price = Match.Ceiling(x.Price / currency.SellingRate);
+                    var price = x.Price.HasValue ? x.Price.Value : 0;
+
+                    x.Price = Math.Ceiling(price / Convert.ToDouble(currency.SellingRate));
                     
                     return x; 
                 })
@@ -481,16 +494,19 @@ namespace IM_PJ
             productPrint += "<td>" + string.Format("{0:N0}", TotalOrder) + "</td>";
             productPrint += "</tr>";
 
+            #region Thông tin triết khấu 
             double TotalPrice = TotalOrder;
 
             if (order.DiscountPerProduct > 0)
             {
-                var TotalDiscount = Convert.ToDouble(order.DiscountPerProduct) * Convert.ToDouble(TotalQuantity);
+                var discount = order.DiscountPerProduct.HasValue ? Math.Floor(order.DiscountPerProduct.Value / Convert.ToDouble(currency.SellingRate)) : 0;
+                var TotalDiscount = discount * TotalQuantity;
+
                 TotalOrder = TotalOrder - TotalDiscount;
                 TotalPrice = TotalPrice - TotalDiscount;
                 productPrint += "<tr>";
                 productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Discount per unit</td>";
-                productPrint += "<td>" + string.Format("{0:N0}", Convert.ToDouble(order.DiscountPerProduct)) + "</td>";
+                productPrint += String.Format("<td>{0:N0}</td>", discount);
                 productPrint += "</tr>";
                 productPrint += "<tr>";
                 productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Total discount</td>";
@@ -501,17 +517,21 @@ namespace IM_PJ
                 productPrint += "<td>" + string.Format("{0:N0}", TotalOrder) + "</td>";
                 productPrint += "</tr>";
             }
-            
+            #endregion
+
+            #region Thông tin đổi trả hàng
             if (order.RefundsGoodsID != null && order.RefundsGoodsID != 0)
             {
                 var refund = RefundGoodController.GetByID(Convert.ToInt32(order.RefundsGoodsID));
+
                 if (refund != null)
                 {
-                    TotalOrder = TotalOrder - Convert.ToDouble(refund.TotalPrice);
+                    var totalRefund = Math.Floor(Convert.ToDouble(refund.TotalPrice) / Convert.ToDouble(currency.SellingRate));
+                    TotalOrder = TotalOrder - totalRefund;
 
                     productPrint += "<tr>";
                     productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Return order (ID " + order.RefundsGoodsID + ")</td>";
-                    productPrint += "<td>-" + string.Format("{0:N0}", Convert.ToDouble(refund.TotalPrice)) + "</td>";
+                    productPrint += String.Format("<td>-{0:N0}</td>", totalRefund);
                     productPrint += "</tr>";
 
                     productPrint += "<tr>";
@@ -524,41 +544,55 @@ namespace IM_PJ
                     error += "Không tìm thấy đơn hàng đổi trả " + order.RefundsGoodsID.ToString();
                 }
             }
+            #endregion
 
-            if (Convert.ToDouble(order.FeeShipping) > 0)
+            #region Thông tin phí giao hàng
+            var feeShipping = Math.Ceiling(Convert.ToDouble(order.FeeShipping) / Convert.ToDouble(currency.SellingRate));
+
+            if (feeShipping > 0)
             {
-                TotalOrder = TotalOrder + Convert.ToDouble(order.FeeShipping);
-                TotalPrice = TotalPrice + Convert.ToDouble(order.FeeShipping);
+                TotalOrder = TotalOrder + feeShipping;
+                TotalPrice = TotalPrice + feeShipping;
                 productPrint += "<tr>";
                 productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Shipping</td>";
-                productPrint += "<td>" + string.Format("{0:N0}", Convert.ToDouble(order.FeeShipping)) + "</td>";
+                productPrint += String.Format("<td>{0:N0}</td>", feeShipping);
                 productPrint += "</tr>";
             }
+            #endregion
 
-            // Check fee
+            #region Thông tin phí khách
             var fees = FeeController.getFeeInfo(ID);
+
             foreach (var fee in fees)
             {
-                TotalOrder = TotalOrder + Convert.ToDouble(fee.Price);
-                TotalPrice = TotalPrice + Convert.ToDouble(fee.Price);
-                productPrint += "<tr>";
-                productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">" + fee.Name + "</td>";
-                productPrint += "<td>" + string.Format("{0:N0}", Convert.ToDouble(fee.Price)) + "</td>";
-                productPrint += "</tr>";
-            }
+                var feeOther = Math.Ceiling(Convert.ToDouble(fee.Price) / Convert.ToDouble(currency.SellingRate));
 
-            // Giảm giá
+                if (feeOther > 0)
+                {
+                    TotalOrder = TotalOrder + feeOther;
+                    TotalPrice = TotalPrice + feeOther;
+                    productPrint += "<tr>";
+                    productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">" + fee.Name + "</td>";
+                    productPrint += String.Format("<td>{0:N0}</td>", feeOther);
+                    productPrint += "</tr>";
+                }
+            }
+            #endregion
+
+            #region Thông tin giảm giá
             if (order.CouponID.HasValue && order.CouponID.Value > 0)
             {
                 var coupon = CouponController.getCoupon(order.CouponID.Value);
+                var couponValue = Convert.ToDouble(Math.Floor(coupon.Value / currency.SellingRate));
 
-                TotalOrder = TotalOrder - Convert.ToDouble(coupon.Value);
-                TotalPrice = TotalPrice - Convert.ToDouble(coupon.Value);
+                TotalOrder = TotalOrder - couponValue;
+                TotalPrice = TotalPrice - couponValue;
                 productPrint += "<tr>";
                 productPrint += String.Format("<td colspan='{0}' class='align-right'>Coupon code: {1}</td>", colspan, coupon.Code);
-                productPrint += String.Format("<td>-{0:N0}</td>", Convert.ToDouble(coupon.Value));
+                productPrint += String.Format("<td>-{0:N0}</td>", couponValue);
                 productPrint += "</tr>";
             }
+            #endregion
 
             if (TotalPrice != Convert.ToDouble(order.TotalPrice))
             {
