@@ -89,7 +89,73 @@
                     $(".guide").addClass("p-guide");
                 });
             }
+
+            initCurrency();
         });
+
+        function initCurrency() {
+            let currencyCode = 'USD';
+            let query = window.location.search.substr(1).split('&').filter(x => x);
+            let $dllCurrency = $("#dllCurrency");
+            
+            query.forEach((value, index) => {
+                if (value.match(/^currencyCode=.*$/g)) {
+                    currencyCode = value.split('=')[1] || '';
+                    return false;
+                }
+            });
+
+            if (currencyCode)
+                $dllCurrency.val(currencyCode);
+        }
+
+        function onChangeCurrency(currencyCode) {
+            let vndCode = "VND";
+            let usdCode = "USD";
+            let protocol = window.location.protocol;
+            let host = window.location.host;
+            let url = window.location.pathname.split('/').join('/');
+            let query = window.location.search.substr(1).split('&').filter(x => x);
+
+            if (currencyCode == vndCode) {
+                url = '/print-order-image';
+                query = query.filter(x => !x.match(/^currencyCode=.*$/g));
+            }
+            else {
+                url = '/print-order-image-english';
+
+                if (currencyCode == usdCode) {
+                    query = query.filter(x => !x.match(/^currencyCode=.*$/g));
+                }
+                else {
+                    let existCurrencyCode = false;
+
+                    query.forEach((value, index) => {
+                        if (value.match(/^currencyCode=.*$/g)) {
+                            existCurrencyCode = true;
+                            query[index] = `currencyCode=${currencyCode}`;
+                        }
+                    });
+
+                    if (!existCurrencyCode)
+                        query = [`currencyCode=${currencyCode}`, ...query];
+                }
+            }
+
+            let nextURL = `${protocol}//${host}${url}`;
+
+            if (query.length > 0)
+                nextURL = nextURL + '?' + query.join('&');
+
+            // This will create a new entry in the browser's history, reloading afterwards
+            window.location.href = nextURL;
+
+            // This will replace the current entry in the browser's history, reloading afterwards
+            window.location.assign(nextURL);
+
+            // This will replace the current entry in the browser's history, reloading afterwards
+            window.location.replace(nextURL);
+        }
     </script>
 </body>
 </html>

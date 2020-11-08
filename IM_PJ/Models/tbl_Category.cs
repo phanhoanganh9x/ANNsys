@@ -27,5 +27,7 @@ namespace IM_PJ.Models
         public string Slug { get; set; }
         public string Icon { get; set; }
         public Nullable<int> ZaloShop { get; set; }
+        public string EnName { get; set; }
+        public string EnDescription { get; set; }
     }
 }

@@ -49,5 +49,6 @@ namespace IM_PJ.Models
         public bool PreOrder { get; set; }
         public Nullable<double> Old_Price { get; set; }
         public bool SyncKiotViet { get; set; }
+        public string EnName { get; set; }
     }
 }

@@ -995,6 +995,7 @@
     <Compile Include="chuyen-kho.aspx.designer.cs">
       <DependentUpon>chuyen-kho.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Controllers\CurrencyController.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Models\Bank.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
@@ -1011,6 +1012,7 @@
     <Compile Include="Models\CheckWarehouseDetail.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Common\Currency.cs" />
     <Compile Include="Models\Common\Product\ProductCOGSModel.cs" />
     <Compile Include="Models\Common\Product\ProductVariationCOGSModel.cs" />
     <Compile Include="Models\Common\Refund\RefundFilterModel.cs" />
@@ -1036,6 +1038,9 @@
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DeliverySaveAddress.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ExchangeRate.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Fee.cs">
