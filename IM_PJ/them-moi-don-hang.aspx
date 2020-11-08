@@ -3,8 +3,8 @@
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script src="/App_Themes/Ann/js/search-customer.js?v=20200703145200"></script>
-    <script src="/App_Themes/Ann/js/search-product.js?v=19102020"></script>
-    <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=19102020"></script>
+    <script src="/App_Themes/Ann/js/search-product.js?v=02112020"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=02112020"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <style>
@@ -1210,7 +1210,7 @@
                 var fs = $("#<%=pFeeShip.ClientID%>").val();
                 var feeship = parseFloat(fs.replace(/\,/g, ''));
                 if (excuteStatus == 2) {
-                    if (shippingtype == 2 || shippingtype == 3 || shippingtype == 7) {
+                    if (shippingtype == 2 || shippingtype == 7 || shippingtype == 8 || shippingtype == 9) {
                         if (feeship == 0 && $("#<%=pFeeShip.ClientID%>").is(":disabled") == false) {
                             $("#<%=txtShippingFeeModal.ClientID%>").select();
                             swal({
@@ -1227,7 +1227,31 @@
                             checkAllValue = false;
                         }
                     }
+                    else if (shippingtype == 3 || shippingtype == 6) {
+                        swal({
+                            title: "Có vấn đề:",
+                            text: "Không <strong>Hoàn tất</strong> đơn ngay lúc này được! Hãy chọn trạng thái Đang xử lý đơn!",
+                            type: "warning",
+                            confirmButtonColor: "#DD6B55",
+                            confirmButtonText: "OK!!",
+                            html: true
+                        });
+                        checkAllValue = false;
+                    }
                     else if (shippingtype == 4) {
+                        let transportCompanyID = $("#<%=ddlTransportCompanyID.ClientID%>").val();
+                        let transportCompanySubID = $("#<%=ddlTransportCompanySubID.ClientID%>").val();
+                        if (transportCompanyID == 0) {
+                            $("#<%=ddlTransportCompanyID.ClientID%>").focus();
+                            swal("Thông báo", "Chưa chọn chành xe!", "warning");
+                            checkAllValue = false;
+                        }
+                        else if (transportCompanySubID == 0) {
+                            $("#<%=ddlTransportCompanySubID.ClientID%>").focus();
+                            swal("Thông báo", "Chưa chọn nơi nhận của chành xe!", "warning");
+                            checkAllValue = false;
+                        }
+
                         if (feeship == 0 && $("#<%=pFeeShip.ClientID%>").is(":disabled") == false) {
                             if (trans != 0 && transSub != 0) {
                                 var checkPrepay = checkPrepayTransport(trans, transSub);
@@ -1271,13 +1295,13 @@
                 var ds = $("#<%=pDiscount.ClientID%>").val();
                 var discount = parseFloat(ds.replace(/\,/g, ''));
 
-                if (discount > 15000 && $("#<%=hdfRoleID.ClientID%>").val() != 0) {
+                if (discount > 20000 && $("#<%=hdfRoleID.ClientID%>").val() != 0) {
                     checkAllValue = false;
                     $("#closeOrderInfo").click();
                     $("#<%=pDiscount.ClientID%>").select();
                     swal({
                         title: "Lạ vậy:",
-                        text: "Sao chiết khấu lại lớn hơn <strong>15.000đ</strong> nè?<br><br>Nếu có lý do thì báo chị Ngọc nha!",
+                        text: "Sao chiết khấu lại lớn hơn <strong>20.000đ</strong> nè?<br><br>Nếu có lý do thì báo chị Ngọc nha!",
                         type: "warning",
                         showCancelButton: false,
                         confirmButtonColor: "#DD6B55",

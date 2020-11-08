@@ -232,6 +232,12 @@ namespace IM_PJ
                         var shipto = TransportCompanyController.GetReceivePlaceForOrderList(company.ID, subID);
                         if (shipto != null && subID > 0)
                         {
+                            // Kiểm tra nhà xe trả cước trước
+                            if (shipto.Prepay == true && order.FeeShipping == "0")
+                            {
+                                error += "Chành xe này trả cước trước. Hãy nhập phí vận chuyển vào đơn hàng! Nếu muốn miễn phí cho khách thì trừ phí khác!";
+                            }
+
                             if (!String.IsNullOrEmpty(ProvinceName))
                             {
                                 CustomerAddress = "<span class='phone'>" + shipto.ShipTo.ToTitleCase() + " (" + ProvinceName + ")</span>";
@@ -286,6 +292,16 @@ namespace IM_PJ
                 else if (order.ShippingType == 7)
                 {
                     DeliveryInfo = String.Format("<p class='delivery'><strong>Viettel</strong></p>");
+                }
+                // Grab
+                else if (order.ShippingType == 8)
+                {
+                    DeliveryInfo = String.Format("<p class='delivery'><strong>Grab</strong></p>");
+                }
+                // AhaMove
+                else if (order.ShippingType == 9)
+                {
+                    DeliveryInfo = String.Format("<p class='delivery'><strong>AhaMove</strong></p>");
                 }
 
                 // Lấy tiền THU HỘ

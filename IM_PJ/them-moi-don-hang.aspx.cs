@@ -144,6 +144,8 @@ namespace IM_PJ
             shipType.Add(new ListItem("Nhân viên giao", "5"));
             shipType.Add(new ListItem("GHTK", "6"));
             shipType.Add(new ListItem("Viettel", "7"));
+            shipType.Add(new ListItem("Grab", "8"));
+            shipType.Add(new ListItem("AhaMove", "9"));
 
             ddlShippingType.Items.Clear();
             ddlShippingType.Items.AddRange(shipType.ToArray());

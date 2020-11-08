@@ -334,6 +334,14 @@ namespace NHST.Bussiness
             {
                 ret = "<span class='bg-blue-hoki'>Viettel</span>";
             }
+            else if (ShippingType == 8)
+            {
+                ret = "<span class='bg-grab'>Grab</span>";
+            }
+            else if (ShippingType == 9)
+            {
+                ret = "<span class='bg-ahamove'>AhaMove</span>";
+            }
             else
             {
                 ret = "<span class='bg-red'>Chưa xác định</span>";

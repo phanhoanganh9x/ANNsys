@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <link rel="stylesheet" href="App_Themes/Ann/css/pages/danh-sach-don-hang/danh-sach-don-hang.css?v=19102020" />
+    <link rel="stylesheet" href="App_Themes/Ann/css/pages/danh-sach-don-hang/danh-sach-don-hang.css?v=02112020" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
@@ -113,6 +113,8 @@
                                         <asp:ListItem Value="5" Text="Nhân viên giao"></asp:ListItem>
                                         <asp:ListItem Value="6" Text="GHTK"></asp:ListItem>
                                         <asp:ListItem Value="7" Text="Viettel"></asp:ListItem>
+                                        <asp:ListItem Value="8" Text="Grab"></asp:ListItem>
+                                        <asp:ListItem Value="9" Text="AhaMove"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
@@ -221,10 +223,10 @@
             </div>
         </div>
 
-        <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=19102020"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/services/danh-sach-don-hang/danh-sach-don-hang-service.js?v=19102020"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/controllers/danh-sach-don-hang/danh-sach-don-hang-controller.js?v=19102020"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-don-hang/danh-sach-don-hang.js?v=19102020"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=19102020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=02112020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/services/danh-sach-don-hang/danh-sach-don-hang-service.js?v=02112020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/controllers/danh-sach-don-hang/danh-sach-don-hang-controller.js?v=02112020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-don-hang/danh-sach-don-hang.js?v=02112020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=02112020"></script>
     </main>
 </asp:Content>

@@ -34,7 +34,7 @@ namespace IM_PJ.Models
         // Trạng thái chuyển khoản ( 1: Đã nhận tiền | 2: Chưa nhận tiền)
         public int transferStatus { get; set; } = 0;
         // Kiểu giao hàng ( 1: Lấy hàng trực tiếp | 2: Chuyển Bưu Điện | 3: Dịch vụ Proship | 4: Chuyển xe | 5: Nhân viên giao hàng
-        // 6: Giao hàng tiết kiệm | 7: Viettel )
+        // 6: Giao hàng tiết kiệm | 7: Viettel | 8: Grab | 9: AhaMove)
         public List<int> shippingType { get; set; } = new List<int>();
         // Chành xe
         public int transportCompany { get; set; } = 0;

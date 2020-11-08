@@ -55,7 +55,9 @@ namespace IM_PJ.Models
         TransferStation = 4,        // Chuyển xe
         Shipper = 5,                // Nhân viên giao
         DeliverySave = 6,           // Giao hàng tiết kiệm
-        Viettel = 7                 // Viettel
+        Viettel = 7,                // Viettel
+        Grab = 8,                   // Grab
+        AhaMove = 9,                // AhaMove
     }
 
     public enum DeliveryStatus

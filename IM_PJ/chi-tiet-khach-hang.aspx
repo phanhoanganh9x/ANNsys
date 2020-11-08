@@ -132,6 +132,8 @@
                                         <asp:ListItem Value="5" Text="Nhân viên giao"></asp:ListItem>
                                         <asp:ListItem Value="6" Text="GHTK"></asp:ListItem>
                                         <asp:ListItem Value="7" Text="Viettel"></asp:ListItem>
+                                        <asp:ListItem Value="8" Text="Grab"></asp:ListItem>
+                                        <asp:ListItem Value="9" Text="AhaMove"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                             </div>

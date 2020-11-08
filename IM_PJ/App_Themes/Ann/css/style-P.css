@@ -1194,6 +1194,24 @@ img {
     font-size: 12px;
     border-radius: 6px;
 }
+.bg-grab {
+    background-color: #00b14f;
+    color: #fff;
+    display: block;
+    padding: 5px 6px;
+    white-space: nowrap;
+    font-size: 12px;
+    border-radius: 6px;
+}
+.bg-ahamove {
+    background-color: #f76500;
+    color: #fff;
+    display: block;
+    padding: 5px 6px;
+    white-space: nowrap;
+    font-size: 12px;
+    border-radius: 6px;
+}
 .bg-proship {
     background-color: #29a7df;
     color: #fff;

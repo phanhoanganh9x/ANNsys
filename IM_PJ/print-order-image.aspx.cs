@@ -477,6 +477,18 @@ namespace IM_PJ
                             productPrint += "<td>" + string.Format("{0:N0}", Convert.ToDouble(order.FeeShipping)) + "</td>";
                             productPrint += "</tr>";
                         }
+                        else
+                        {
+                            // kiểm tra nhà xe trả cước trước
+                            var a = TransportCompanyController.GetReceivePlaceByID(order.TransportCompanyID.Value, order.TransportCompanySubID.Value);
+                            if (a != null)
+                            {
+                                if (a.Prepay == true)
+                                {
+                                    error += "Chành xe này trả cước trước. Hãy nhập phí vận chuyển vào đơn hàng! Nếu muốn miễn phí cho khách thì trừ phí khác!";
+                                }
+                            }
+                        }
 
                         // Check fee
                         var fees = FeeController.getFeeInfo(ID);

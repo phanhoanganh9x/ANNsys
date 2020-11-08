@@ -3,9 +3,9 @@
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script type="text/javascript" src="/App_Themes/Ann/js/search-customer.js?v=20200703145200"></script>
-    <script type="text/javascript" src="/App_Themes/Ann/js/search-product.js?v=19102020"></script>
-    <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=19102020"></script>
-    <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=19102020"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/search-product.js?v=02112020"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=02112020"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=02112020"></script>
     <style>
         .panel-post {
             margin-bottom: 20px;
@@ -545,6 +545,8 @@
                                             <asp:ListItem Value="5" Text="Nhân viên giao"></asp:ListItem>
                                             <asp:ListItem Value="6" Text="GHTK"></asp:ListItem>
                                             <asp:ListItem Value="7" Text="Viettel"></asp:ListItem>
+                                            <asp:ListItem Value="8" Text="Grab"></asp:ListItem>
+                                            <asp:ListItem Value="9" Text="AhaMove"></asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
                                 </div>
@@ -1265,6 +1267,16 @@
                     $(".transport-company").addClass("hide");
                 }
 
+                if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 8) {
+                    $(".shipping-code").addClass("hide");
+                    $(".transport-company").addClass("hide");
+                }
+
+                if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 9) {
+                    $(".shipping-code").addClass("hide");
+                    $(".transport-company").addClass("hide");
+                }
+
                 $("#<%=ddlShippingType.ClientID%>").change(function () {
                     var selected = $(this).find(":selected").val();
                     switch(selected) {
@@ -1347,6 +1359,32 @@
                             }
                             break;
                         case "7":
+                            $(".shipping-code").addClass("hide");
+                            $(".postal-delivery-type").addClass("hide");
+                            $(".transport-company").addClass("hide");
+                            $("#<%=ddlPostalDeliveryType.ClientID%>").val(1);
+                            $("#<%=ddlTransportCompanyID.ClientID%>").val(0);
+                            $("#<%=ddlTransportCompanySubID.ClientID%>").val(0);
+                            $("#getShipGHTK").addClass("hide");
+                            $(".weight-input").addClass("hide");
+                            if (roleID != 0) {
+                                $("#<%=ddlPaymentType.ClientID%> option[value='1']").remove();
+                            }
+                            break;
+                        case "8":
+                            $(".shipping-code").addClass("hide");
+                            $(".postal-delivery-type").addClass("hide");
+                            $(".transport-company").addClass("hide");
+                            $("#<%=ddlPostalDeliveryType.ClientID%>").val(1);
+                            $("#<%=ddlTransportCompanyID.ClientID%>").val(0);
+                            $("#<%=ddlTransportCompanySubID.ClientID%>").val(0);
+                            $("#getShipGHTK").addClass("hide");
+                            $(".weight-input").addClass("hide");
+                            if (roleID != 0) {
+                                $("#<%=ddlPaymentType.ClientID%> option[value='1']").remove();
+                            }
+                            break;
+                        case "9":
                             $(".shipping-code").addClass("hide");
                             $(".postal-delivery-type").addClass("hide");
                             $(".transport-company").addClass("hide");
@@ -1840,6 +1878,19 @@
                                 insertOrder();
                             }
                         }
+                        // Nếu đơn hàng hoàn tất và chưa chọn chành xe hoặc nơi nhận chành xe
+                        else if (excuteStatus == 2 && shippingType == 4) {
+                            let transportCompanyID = $("#<%=ddlTransportCompanyID.ClientID%>").val();
+                            let transportCompanySubID = $("#<%=ddlTransportCompanySubID.ClientID%>").val();
+                            if (transportCompanyID == 0) {
+                                $("#<%=ddlTransportCompanyID.ClientID%>").focus();
+                                swal("Thông báo", "Chưa chọn chành xe!", "warning");
+                            }
+                            else if (transportCompanySubID == 0) {
+                                $("#<%=ddlTransportCompanySubID.ClientID%>").focus();
+                                swal("Thông báo", "Chưa chọn nơi nhận của chành xe!", "warning");
+                            }
+                        }
                         else {
                             // Nếu trạng thái không liên quan đến hủy thì xử lý..
                             deleteOrder();
@@ -2006,16 +2057,16 @@
                     });
                 }
 
-                // kiểm tra chiết khấu lớn hơn 15k
+                // kiểm tra chiết khấu lớn hơn 20k
                 var ds = $("#<%=pDiscount.ClientID%>").val();
                 var discount = parseFloat(ds.replace(/\,/g, ''));
 
-                if (discount > 15000 && $("#<%=hdfRoleID.ClientID%>").val() != 0) {
+                if (discount > 20000 && $("#<%=hdfRoleID.ClientID%>").val() != 0) {
                     checkAllValue = false;
                     $("#<%=pDiscount.ClientID%>").focus();
                     swal({
                         title: "Lạ vậy:",
-                        text: "Sao chiết khấu lại lớn hơn <strong>15.000đ</strong> nè?<br><br>Nếu có lý do thì báo chị Ngọc nha!",
+                        text: "Sao chiết khấu lại lớn hơn <strong>20.000đ</strong> nè?<br><br>Nếu có lý do thì báo chị Ngọc nha!",
                         type: "warning",
                         showCancelButton: false,
                         confirmButtonColor: "#DD6B55",

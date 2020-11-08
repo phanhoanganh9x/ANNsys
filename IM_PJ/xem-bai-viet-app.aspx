@@ -82,5 +82,5 @@
             </div>
         </div>
     </main>
-    <script src="/App_Themes/Ann/js/sync-post.js?v=19102020"></script>
+    <script src="/App_Themes/Ann/js/sync-post.js?v=02112020"></script>
 </asp:Content>
