@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script type="text/javascript" src="/App_Themes/Ann/js/search-customer.js?v=20200703145200"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/search-customer.js?v=02112020"></script>
     <script type="text/javascript" src="/App_Themes/Ann/js/search-product.js?v=02112020"></script>
     <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=02112020"></script>
     <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=02112020"></script>
@@ -1889,6 +1889,12 @@
                             else if (transportCompanySubID == 0) {
                                 $("#<%=ddlTransportCompanySubID.ClientID%>").focus();
                                 swal("Thông báo", "Chưa chọn nơi nhận của chành xe!", "warning");
+                            }
+                            else {
+                                deleteOrder();
+                                $("#<%=hdfOrderType.ClientID %>").val(ordertype);
+                                $("#<%=hdfListProduct.ClientID%>").val(list);
+                                insertOrder();
                             }
                         }
                         else {
