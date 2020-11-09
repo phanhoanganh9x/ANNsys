@@ -396,7 +396,7 @@ namespace IM_PJ
                 .Select(x => {
                     var price = x.Price.HasValue ? x.Price.Value : 0;
 
-                    x.Price = Math.Ceiling(10e2 * price / currencyRate) * 10e-2;
+                    x.Price = Math.Ceiling(1e2 * price / currencyRate) * 1e-2;
                     
                     return x; 
                 })
@@ -504,7 +504,7 @@ namespace IM_PJ
                 var TotalDiscount = 0D;
                 var discount = order.DiscountPerProduct.HasValue ? order.DiscountPerProduct.Value : 0;
                 
-                discount = Math.Floor(10e2 * discount / currencyRate) * 10e-2;
+                discount = Math.Floor(1e2 * discount / currencyRate) * 1e-2;
                 TotalDiscount = discount * TotalQuantity;
                 TotalOrder = TotalOrder - TotalDiscount;
                 TotalPrice = TotalPrice - TotalDiscount;
@@ -532,7 +532,7 @@ namespace IM_PJ
                 {
                     var totalRefund = Convert.ToDouble(refund.TotalPrice);
                     
-                    totalRefund = Math.Floor(10e2 * totalRefund / currencyRate) * 10e-2;
+                    totalRefund = Math.Floor(1e2 * totalRefund / currencyRate) * 1e-2;
                     TotalOrder = TotalOrder - totalRefund;
 
                     productPrint += "<tr>";
@@ -555,7 +555,7 @@ namespace IM_PJ
             #region Thông tin phí giao hàng
             var feeShipping = Convert.ToDouble(order.FeeShipping);
             
-            feeShipping = Math.Ceiling(10e2 * feeShipping / currencyRate) * 10e-2;
+            feeShipping = Math.Ceiling(1e2 * feeShipping / currencyRate) * 1e-2;
 
             if (feeShipping > 0)
             {
@@ -575,7 +575,7 @@ namespace IM_PJ
             {
                 var feeOther = Convert.ToDouble(fee.Price);
 
-                feeOther = Math.Ceiling(10e2 * feeOther / currencyRate) * 10e-2;
+                feeOther = Math.Ceiling(1e2 * feeOther / currencyRate) * 1e-2;
 
                 if (feeOther > 0)
                 {
@@ -595,7 +595,7 @@ namespace IM_PJ
                 var coupon = CouponController.getCoupon(order.CouponID.Value);
                 var couponValue = Convert.ToDouble(coupon.Value);
 
-                couponValue = Math.Floor(10e2 * couponValue / currencyRate) * 10e-2;
+                couponValue = Math.Floor(1e2 * couponValue / currencyRate) * 1e-2;
                 TotalOrder = TotalOrder - couponValue;
                 TotalPrice = TotalPrice - couponValue;
                 productPrint += "<tr>";
