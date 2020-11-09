@@ -336,6 +336,8 @@ namespace IM_PJ
                 ltrPrintInvoice.Text = String.Format("Không tìm thấy tỉ giá tiền tệ của mã {0} này.", currencyCode);
                 return;
             }
+            
+            var currencyRate = Convert.ToDouble(currency.SellingRate);
             #endregion
 
             if (!String.IsNullOrEmpty(Request.QueryString["merge"]))
@@ -394,7 +396,7 @@ namespace IM_PJ
                 .Select(x => {
                     var price = x.Price.HasValue ? x.Price.Value : 0;
 
-                    x.Price = Math.Ceiling(price / Convert.ToDouble(currency.SellingRate));
+                    x.Price = Math.Ceiling(10e2 * price / currencyRate) * 10e-2;
                     
                     return x; 
                 })
@@ -499,9 +501,11 @@ namespace IM_PJ
 
             if (order.DiscountPerProduct > 0)
             {
-                var discount = order.DiscountPerProduct.HasValue ? Math.Floor(order.DiscountPerProduct.Value / Convert.ToDouble(currency.SellingRate)) : 0;
-                var TotalDiscount = discount * TotalQuantity;
-
+                var TotalDiscount = 0D;
+                var discount = order.DiscountPerProduct.HasValue ? order.DiscountPerProduct.Value : 0;
+                
+                discount = Math.Floor(10e2 * discount / currencyRate) * 10e-2;
+                TotalDiscount = discount * TotalQuantity;
                 TotalOrder = TotalOrder - TotalDiscount;
                 TotalPrice = TotalPrice - TotalDiscount;
                 productPrint += "<tr>";
@@ -526,7 +530,9 @@ namespace IM_PJ
 
                 if (refund != null)
                 {
-                    var totalRefund = Math.Floor(Convert.ToDouble(refund.TotalPrice) / Convert.ToDouble(currency.SellingRate));
+                    var totalRefund = Convert.ToDouble(refund.TotalPrice);
+                    
+                    totalRefund = Math.Floor(10e2 * totalRefund / currencyRate) * 10e-2;
                     TotalOrder = TotalOrder - totalRefund;
 
                     productPrint += "<tr>";
@@ -547,7 +553,9 @@ namespace IM_PJ
             #endregion
 
             #region Thông tin phí giao hàng
-            var feeShipping = Math.Ceiling(Convert.ToDouble(order.FeeShipping) / Convert.ToDouble(currency.SellingRate));
+            var feeShipping = Convert.ToDouble(order.FeeShipping);
+            
+            feeShipping = Math.Ceiling(10e2 * feeShipping / currencyRate) * 10e-2;
 
             if (feeShipping > 0)
             {
@@ -565,7 +573,9 @@ namespace IM_PJ
 
             foreach (var fee in fees)
             {
-                var feeOther = Math.Ceiling(Convert.ToDouble(fee.Price) / Convert.ToDouble(currency.SellingRate));
+                var feeOther = Convert.ToDouble(fee.Price);
+
+                feeOther = Math.Ceiling(10e2 * feeOther / currencyRate) * 10e-2;
 
                 if (feeOther > 0)
                 {
@@ -583,8 +593,9 @@ namespace IM_PJ
             if (order.CouponID.HasValue && order.CouponID.Value > 0)
             {
                 var coupon = CouponController.getCoupon(order.CouponID.Value);
-                var couponValue = Convert.ToDouble(Math.Floor(coupon.Value / currency.SellingRate));
+                var couponValue = Convert.ToDouble(coupon.Value);
 
+                couponValue = Math.Floor(10e2 * couponValue / currencyRate) * 10e-2;
                 TotalOrder = TotalOrder - couponValue;
                 TotalPrice = TotalPrice - couponValue;
                 productPrint += "<tr>";
