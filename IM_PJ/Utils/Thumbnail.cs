@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Web;
 
 namespace IM_PJ.Utils
 {
@@ -117,17 +115,11 @@ namespace IM_PJ.Utils
             {
                 var imageBytes = File.ReadAllBytes(path_file);
 
-                using (Stream stream = new MemoryStream(imageBytes))
-                using (Bitmap bmpImage = new Bitmap(stream))
-                {
-                    var thumb = bmpImage
-                        .Clone(resize, bmpImage.PixelFormat)
-                        .GetThumbnailImage(ideal_width, ideal_height, () => false, IntPtr.Zero);
-
+                using (var stream = new MemoryStream(imageBytes))
+                using (var bmpOrigin = new Bitmap(stream))
+                using (var bmpDist = bmpOrigin.Clone(resize, PixelFormat.Format32bppPArgb))
+                using (var thumb = bmpDist.GetThumbnailImage(ideal_width, ideal_height, () => false, IntPtr.Zero))
                     thumb.Save(path_thumb_1);
-                    // Dispose
-                    thumb.Dispose();
-                }
             }
             #endregion
 
