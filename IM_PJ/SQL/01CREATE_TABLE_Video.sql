@@ -9,11 +9,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE TABLE [dbo].[Video](
-	[VideoId] [nvarchar](50) NOT NULL,
-	[Url] [nvarchar](MAX) NULL,
+	[Id] [nvarchar](50) NOT NULL,
 	[Thumbnail] [nvarchar](MAX) NULL,
-	[Expiration] [timestamp] NULL,
-	[IsPublicVideo] AS IIF(ISNULL([IsProductVideo], 0) = 0 and ISNULL([IsPostVideo], 0) = 0, 1, 0),
+	[Url] [nvarchar](MAX) NULL,
+	[Height] [int] NULL,
+	[Width] [int] NULL,
+	[Expiration] [bigint] NOT NULL,
+	[IsPublicVideo] AS IIF(IsProductVideo = 0 and IsPostVideo = 0, CAST(1 as BIT), CAST(0 AS BIT)),
 	[IsProductVideo] [bit] NOT NULL,
 	[ProductId] [int] NULL,
 	[IsPostVideo] [bit] NOT NULL,
@@ -22,14 +24,15 @@ CREATE TABLE [dbo].[Video](
 	[CreatedDate] [datetime] NOT NULL,
 	[ModifiedBy] [nvarchar](50) NOT NULL,
 	[ModifiedDate] [datetime] NOT NULL,
+	[Timestamp] [timestamp] NOT NULL
  CONSTRAINT [PK_Video] PRIMARY KEY CLUSTERED 
 (
-	[VideoId] ASC
+	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
 
-ALTER TABLE [dbo].[Video] ADD  CONSTRAINT [DF_Video_Expiration]  DEFAULT (getdate()) FOR [Expiration]
+ALTER TABLE [dbo].[Video] ADD  CONSTRAINT [DF_Video_Expiration]  DEFAULT (0) FOR [Expiration]
 GO
 
 ALTER TABLE [dbo].[Video] ADD  CONSTRAINT [DF_Video_IsProductVideo]  DEFAULT (0) FOR [IsProductVideo]
@@ -49,3 +52,10 @@ GO
 
 ALTER TABLE [dbo].[Video] ADD  CONSTRAINT [DF_Video_ModifiedDate]  DEFAULT (getdate()) FOR [ModifiedDate]
 GO
+
+
+DELETE FROM [VIDEO]
+
+INSERT INTO [Video]([ID], [IsProductVideo], [IsPostVideo]) VALUES (N'5yP6pq8IMOw', 0, 0)
+INSERT INTO [Video]([ID], [IsProductVideo], [IsPostVideo]) VALUES (N'9xwazD5SyVg', 0, 1)
+INSERT INTO [Video]([ID], [IsProductVideo], [IsPostVideo]) VALUES (N'3EBG0NmfnUw', 1, 0)
