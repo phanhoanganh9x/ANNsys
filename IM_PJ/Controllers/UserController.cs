@@ -13,7 +13,7 @@ namespace IM_PJ.Controllers
 {
     public class UserController
     {
-        #region Select        
+        #region Select
         public static User getByPhone(string Phone)
         {
             using (var dbe = new inventorymanagementEntities())
@@ -82,9 +82,9 @@ namespace IM_PJ.Controllers
                     .Where(x => string.IsNullOrEmpty(Gender) || (!string.IsNullOrEmpty(Gender) && x.Gender == Gender))
                     .Where(x => string.IsNullOrEmpty(City) || (!string.IsNullOrEmpty(City) && x.City == City))
                     .Where(x => string.IsNullOrEmpty(CreatedDate) || (!string.IsNullOrEmpty(CreatedDate) && x.CreatedDate >= fromdate && x.CreatedDate <= todate));
-                    
 
-                
+
+
                 // Kiểm tra user đã trở thành khách hàng thân thân thiết chưa
                 result = users
                     .GroupJoin(
@@ -101,6 +101,7 @@ namespace IM_PJ.Controllers
                             Phone = parent.reg.Phone,
                             FullName = parent.reg.FullName,
                             Gender = parent.reg.Gender,
+                            Birthday = parent.reg.BirthDay,
                             Address = parent.reg.Address,
                             City = parent.reg.City,
                             Status = child != null ? 3 : parent.reg.ViewStatus.Value,
@@ -142,6 +143,7 @@ namespace IM_PJ.Controllers
             public string Phone { get; set; }
             public string FullName { get; set; }
             public string Gender { get; set; }
+            public DateTime? Birthday { get; set; }
             public string Address { get; set; }
             public string City { get; set; }
             public int Status { get; set; }
