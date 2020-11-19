@@ -10,10 +10,10 @@ GO
 
 CREATE TABLE [dbo].[Video](
 	[Id] [nvarchar](50) NOT NULL,
-	[Thumbnail] [nvarchar](MAX) NULL,
-	[Url] [nvarchar](MAX) NULL,
-	[Height] [int] NULL,
-	[Width] [int] NULL,
+	[Thumbnail] [nvarchar](MAX) NOT NULL,
+	[Url] [nvarchar](MAX) NOT NULL,
+	[Height] [int] NOT NULL,
+	[Width] [int] NOT NULL,
 	[Expiration] [bigint] NOT NULL,
 	[IsPublicVideo] AS IIF(IsProductVideo = 0 and IsPostVideo = 0, CAST(1 as BIT), CAST(0 AS BIT)),
 	[IsProductVideo] [bit] NOT NULL,
@@ -23,8 +23,7 @@ CREATE TABLE [dbo].[Video](
 	[CreatedBy] [nvarchar](50) NOT NULL,
 	[CreatedDate] [datetime] NOT NULL,
 	[ModifiedBy] [nvarchar](50) NOT NULL,
-	[ModifiedDate] [datetime] NOT NULL,
-	[Timestamp] [timestamp] NOT NULL
+	[ModifiedDate] [datetime] NOT NULL
  CONSTRAINT [PK_Video] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
@@ -52,10 +51,3 @@ GO
 
 ALTER TABLE [dbo].[Video] ADD  CONSTRAINT [DF_Video_ModifiedDate]  DEFAULT (getdate()) FOR [ModifiedDate]
 GO
-
-
-DELETE FROM [VIDEO]
-
-INSERT INTO [Video]([ID], [IsProductVideo], [IsPostVideo]) VALUES (N'5yP6pq8IMOw', 0, 0)
-INSERT INTO [Video]([ID], [IsProductVideo], [IsPostVideo]) VALUES (N'9xwazD5SyVg', 0, 1)
-INSERT INTO [Video]([ID], [IsProductVideo], [IsPostVideo]) VALUES (N'3EBG0NmfnUw', 1, 0)
