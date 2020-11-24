@@ -7,20 +7,41 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
+
+IF (EXISTS (SELECT NULL AS DUMMY 
+            FROM INFORMATION_SCHEMA.TABLES 
+            WHERE TABLE_SCHEMA = 'dbo' 
+            AND  TABLE_NAME = 'PreOrderDetail'))
+BEGIN
+    DROP TABLE [dbo].[PreOrderDetail]
+END
+GO
+
+IF (EXISTS (SELECT NULL AS DUMMY 
+            FROM INFORMATION_SCHEMA.TABLES 
+            WHERE TABLE_SCHEMA = 'dbo' 
+            AND  TABLE_NAME = 'PreOrder'))
+BEGIN
+    DROP TABLE [dbo].[PreOrder]
+END
+GO
+
 CREATE TABLE [dbo].[PreOrder](
 	[Id] [bigint] IDENTITY(1,1) NOT NULL,
-    [Avatar] [nvarchar](MAX) NULL,
     [Status] [int] NOT NULL,
-    [MethodDelivery] [int] NOT NULL,
+    [Avatar] [nvarchar](MAX) NULL,
+    [DeliveryAddressId] [bigint] NOT NULL,
+    [DeliveryMethod] [int] NOT NULL,
     [PaymentMethod] [int] NOT NULL,
-    [DeliveryAddressId] [bigint] NULL,
+    [CouponId] [int] NULL,
     [TotalQuantity] [int] NOT NULL,
-    [TotalCostOfGood] [money] NOT NULL,
+    [TotalCostOfGoods] [money] NOT NULL,
     [TotalPrice] [money] NOT NULL,
     [TotalDiscount] [money] NOT NULL,
     [ShipFee] [money] NOT NULL,
-    [Total] AS (ISNULL([TotalPrice], 0) - ISNULL([TotalDiscount], 0) + ISNULL([ShipFee], 0)),
-	[IsReceived] [bit] NOT NULL,
+    [CouponPrice] [money] NOT NULL,
+    [Total] AS (ISNULL([TotalPrice], 0) - ISNULL([TotalDiscount], 0) + ISNULL([ShipFee], 0) - ISNULL([CouponPrice], 0)),
+    [SourceOrdering] [nvarchar](100) NOT NULL,
 	[CreatedBy] [nvarchar](15) NOT NULL,
 	[CreatedDate] [datetime] NOT NULL,
 	[ModifiedBy] [nvarchar](15) NOT NULL,
@@ -33,13 +54,10 @@ CREATE TABLE [dbo].[PreOrder](
 ) ON [PRIMARY]
 GO
 
-ALTER TABLE [dbo].[PreOrder] ADD  CONSTRAINT [DF_PreOrder_Status]  DEFAULT (1) FOR [Status]
-GO
-
 ALTER TABLE [dbo].[PreOrder] ADD  CONSTRAINT [DF_PreOrder_TotalQuantity]  DEFAULT (0) FOR [TotalQuantity]
 GO
 
-ALTER TABLE [dbo].[PreOrder] ADD  CONSTRAINT [DF_PreOrder_TotalCostOfGood]  DEFAULT (0) FOR [TotalCostOfGood]
+ALTER TABLE [dbo].[PreOrder] ADD  CONSTRAINT [DF_PreOrder_TotalCostOfGoods]  DEFAULT (0) FOR [TotalCostOfGoods]
 GO
 
 ALTER TABLE [dbo].[PreOrder] ADD  CONSTRAINT [DF_PreOrder_TotalPrice]  DEFAULT (0) FOR [TotalPrice]
@@ -51,7 +69,7 @@ GO
 ALTER TABLE [dbo].[PreOrder] ADD  CONSTRAINT [DF_PreOrder_ShipFee]  DEFAULT (0) FOR [ShipFee]
 GO
 
-ALTER TABLE [dbo].[PreOrder] ADD  CONSTRAINT [DF_PreOrder_IsReceived]  DEFAULT (0) FOR [IsReceived]
+ALTER TABLE [dbo].[PreOrder] ADD  CONSTRAINT [DF_PreOrder_CouponPrice]  DEFAULT (0) FOR [CouponPrice]
 GO
 
 ALTER TABLE [dbo].[PreOrder] ADD  CONSTRAINT [DF_PreOrder_CreatedDate]  DEFAULT (getdate()) FOR [CreatedDate]
@@ -65,4 +83,11 @@ REFERENCES [dbo].[DeliveryAddress] ([Id])
 GO
 
 ALTER TABLE [dbo].[PreOrder] CHECK CONSTRAINT [FK_PreOrder_DeliveryAddress]
+GO
+
+ALTER TABLE [dbo].[PreOrder]  WITH CHECK ADD  CONSTRAINT [FK_PreOrder_Coupon] FOREIGN KEY([CouponId])
+REFERENCES [dbo].[Coupon] ([Id])
+GO
+
+ALTER TABLE [dbo].[PreOrder] CHECK CONSTRAINT [FK_PreOrder_Coupon]
 GO

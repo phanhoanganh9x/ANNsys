@@ -7,19 +7,30 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
+IF (EXISTS (SELECT NULL AS DUMMY 
+            FROM INFORMATION_SCHEMA.TABLES 
+            WHERE TABLE_SCHEMA = 'dbo' 
+            AND  TABLE_NAME = 'PreOrderDetail'))
+BEGIN
+    DROP TABLE [dbo].[PreOrderDetail]
+END
+GO
+
 CREATE TABLE [dbo].[PreOrderDetail](
 	[PreOrderId] [bigint] NOT NULL,
     [Id] [bigint] IDENTITY(1,1) NOT NULL,
     [ProductId] [int] NOT NULL,
-    [ProductVariationId] [int] NOT NULL,
+    [VariationId] [int] NOT NULL,
     [SKU] [nvarchar](MAX) NOT NULL,
+    [Name] [nvarchar](MAX) NULL,
     [Avatar] [nvarchar](MAX) NULL,
     [Color] [nvarchar](MAX) NULL,
     [Size] [nvarchar](MAX) NULL,
-    [CostOfGood] [money] NOT NULL,
+    [CostOfGoods] [money] NOT NULL,
     [Price] [money] NOT NULL,
+    [OldPrice] [money] NULL,
     [Quantity] [int] NOT NULL,
-    [TotalCostOfGood] AS (ISNULL([Quantity], 0) * ISNULL([CostOfGood], 0)),
+    [TotalCostOfGoods] AS (ISNULL([Quantity], 0) * ISNULL([CostOfGoods], 0)),
     [TotalPrice] AS (ISNULL([Quantity], 0) * ISNULL([Price], 0)),
 	[CreatedBy] [nvarchar](15) NOT NULL,
 	[CreatedDate] [datetime] NOT NULL,
@@ -34,7 +45,7 @@ CREATE TABLE [dbo].[PreOrderDetail](
 ) ON [PRIMARY]
 GO
 
-ALTER TABLE [dbo].[PreOrderDetail] ADD  CONSTRAINT [DF_PreOrderDetail_CostOfGood]  DEFAULT (0) FOR [CostOfGood]
+ALTER TABLE [dbo].[PreOrderDetail] ADD  CONSTRAINT [DF_PreOrderDetail_CostOfGoods]  DEFAULT (0) FOR [CostOfGoods]
 GO
 
 ALTER TABLE [dbo].[PreOrderDetail] ADD  CONSTRAINT [DF_PreOrderDetail_Price]  DEFAULT (0) FOR [Price]
@@ -64,7 +75,7 @@ GO
 ALTER TABLE [dbo].[PreOrderDetail] CHECK CONSTRAINT [FK_PreOrderDetail_Product]
 GO
 
-ALTER TABLE [dbo].[PreOrderDetail]  WITH CHECK ADD  CONSTRAINT [FK_PreOrderDetail_ProductVariation] FOREIGN KEY([ProductVariationId])
+ALTER TABLE [dbo].[PreOrderDetail]  WITH CHECK ADD  CONSTRAINT [FK_PreOrderDetail_ProductVariation] FOREIGN KEY([VariationId])
 REFERENCES [dbo].[tbl_ProductVariable] ([ID])
 GO
 
