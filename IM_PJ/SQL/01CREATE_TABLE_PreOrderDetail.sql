@@ -20,7 +20,7 @@ CREATE TABLE [dbo].[PreOrderDetail](
 	[PreOrderId] [bigint] NOT NULL,
     [Id] [bigint] IDENTITY(1,1) NOT NULL,
     [ProductId] [int] NOT NULL,
-    [VariationId] [int] NOT NULL,
+    [VariationId] [int] NULL,
     [SKU] [nvarchar](MAX) NOT NULL,
     [Name] [nvarchar](MAX) NULL,
     [Avatar] [nvarchar](MAX) NULL,
@@ -40,7 +40,7 @@ CREATE TABLE [dbo].[PreOrderDetail](
  CONSTRAINT [PK_PreOrderDetail] PRIMARY KEY CLUSTERED 
 (
     [PreOrderId] DESC,
-    [Id] DESC
+    [Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO

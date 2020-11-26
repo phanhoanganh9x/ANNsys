@@ -38,9 +38,8 @@ CREATE TABLE [dbo].[PreOrder](
     [TotalCostOfGoods] [money] NOT NULL,
     [TotalPrice] [money] NOT NULL,
     [TotalDiscount] [money] NOT NULL,
-    [ShipFee] [money] NOT NULL,
     [CouponPrice] [money] NOT NULL,
-    [Total] AS (ISNULL([TotalPrice], 0) - ISNULL([TotalDiscount], 0) + ISNULL([ShipFee], 0) - ISNULL([CouponPrice], 0)),
+    [Total] AS (ISNULL([TotalPrice], 0) - ISNULL([TotalDiscount], 0) - ISNULL([CouponPrice], 0)),
     [SourceOrdering] [nvarchar](100) NOT NULL,
 	[CreatedBy] [nvarchar](15) NOT NULL,
 	[CreatedDate] [datetime] NOT NULL,
@@ -64,9 +63,6 @@ ALTER TABLE [dbo].[PreOrder] ADD  CONSTRAINT [DF_PreOrder_TotalPrice]  DEFAULT (
 GO
 
 ALTER TABLE [dbo].[PreOrder] ADD  CONSTRAINT [DF_PreOrder_TotalDiscount]  DEFAULT (0) FOR [TotalDiscount]
-GO
-
-ALTER TABLE [dbo].[PreOrder] ADD  CONSTRAINT [DF_PreOrder_ShipFee]  DEFAULT (0) FOR [ShipFee]
 GO
 
 ALTER TABLE [dbo].[PreOrder] ADD  CONSTRAINT [DF_PreOrder_CouponPrice]  DEFAULT (0) FOR [CouponPrice]
