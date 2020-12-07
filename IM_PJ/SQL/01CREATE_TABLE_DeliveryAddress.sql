@@ -16,6 +16,7 @@ CREATE TABLE [dbo].[DeliveryAddress](
 	[DistrictId] [int] NOT NULL,
 	[WardId] [int] NOT NULL,
 	[IsDefault] [bit] NOT NULL,
+	[IsActive] [bit] NOT NULL,
 	[CreatedBy] [nvarchar](15) NOT NULL,
 	[CreatedDate] [datetime] NOT NULL,
 	[ModifiedBy] [nvarchar](15) NOT NULL,
@@ -28,6 +29,9 @@ CREATE TABLE [dbo].[DeliveryAddress](
 GO
 
 ALTER TABLE [dbo].[DeliveryAddress] ADD  CONSTRAINT [DF_DeliveryAddress_IsDefault]  DEFAULT (0) FOR [IsDefault]
+GO
+
+ALTER TABLE [dbo].[DeliveryAddress] ADD  CONSTRAINT [DF_DeliveryAddress_IsActive]  DEFAULT (0) FOR [IsActive]
 GO
 
 ALTER TABLE [dbo].[DeliveryAddress] ADD  CONSTRAINT [DF_DeliveryAddress_CreatedDate]  DEFAULT (getdate()) FOR [CreatedDate]
