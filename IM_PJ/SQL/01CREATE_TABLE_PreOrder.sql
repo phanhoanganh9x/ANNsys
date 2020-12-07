@@ -27,7 +27,7 @@ END
 GO
 
 CREATE TABLE [dbo].[PreOrder](
-	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+    [Id] [bigint] IDENTITY(1,1) NOT NULL,
     [Status] [int] NOT NULL,
     [Avatar] [nvarchar](MAX) NULL,
     [DeliveryAddressId] [bigint] NOT NULL,
@@ -41,14 +41,14 @@ CREATE TABLE [dbo].[PreOrder](
     [CouponPrice] [money] NOT NULL,
     [Total] AS (ISNULL([TotalPrice], 0) - ISNULL([TotalDiscount], 0) - ISNULL([CouponPrice], 0)),
     [SourceOrdering] [nvarchar](100) NOT NULL,
-	[CreatedBy] [nvarchar](15) NOT NULL,
-	[CreatedDate] [datetime] NOT NULL,
-	[ModifiedBy] [nvarchar](15) NOT NULL,
-	[ModifiedDate] [datetime] NOT NULL,
+    [CreatedBy] [nvarchar](15) NOT NULL,
+    [CreatedDate] [datetime] NOT NULL,
+    [ModifiedBy] [nvarchar](15) NOT NULL,
+    [ModifiedDate] [datetime] NOT NULL,
     [Timestamp] [timestamp] NOT NULL,
  CONSTRAINT [PK_PreOrder] PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+    [Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO

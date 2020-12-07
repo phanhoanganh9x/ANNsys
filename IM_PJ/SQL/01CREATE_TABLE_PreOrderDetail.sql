@@ -17,7 +17,7 @@ END
 GO
 
 CREATE TABLE [dbo].[PreOrderDetail](
-	[PreOrderId] [bigint] NOT NULL,
+    [PreOrderId] [bigint] NOT NULL,
     [Id] [bigint] IDENTITY(1,1) NOT NULL,
     [ProductId] [int] NOT NULL,
     [VariationId] [int] NULL,
@@ -32,10 +32,10 @@ CREATE TABLE [dbo].[PreOrderDetail](
     [Quantity] [int] NOT NULL,
     [TotalCostOfGoods] AS (ISNULL([Quantity], 0) * ISNULL([CostOfGoods], 0)),
     [TotalPrice] AS (ISNULL([Quantity], 0) * ISNULL([Price], 0)),
-	[CreatedBy] [nvarchar](15) NOT NULL,
-	[CreatedDate] [datetime] NOT NULL,
-	[ModifiedBy] [nvarchar](15) NOT NULL,
-	[ModifiedDate] [datetime] NOT NULL,
+    [CreatedBy] [nvarchar](15) NOT NULL,
+    [CreatedDate] [datetime] NOT NULL,
+    [ModifiedBy] [nvarchar](15) NOT NULL,
+    [ModifiedDate] [datetime] NOT NULL,
     [Timestamp] [timestamp] NOT NULL,
  CONSTRAINT [PK_PreOrderDetail] PRIMARY KEY CLUSTERED 
 (

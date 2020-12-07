@@ -19,19 +19,19 @@ GO
 
 CREATE TABLE [dbo].[ViewOrder](
     [Phone] [nvarchar](15) NOT NULL,
-	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+    [Id] [bigint] IDENTITY(1,1) NOT NULL,
     [Status] [int] NOT NULL,
     [PreOrderId] [bigint] NULL,
     [OrderId] [int] NULL,
-	[CreatedBy] [nvarchar](15) NOT NULL,
-	[CreatedDate] [datetime] NOT NULL,
-	[ModifiedBy] [nvarchar](15) NOT NULL,
-	[ModifiedDate] [datetime] NOT NULL,
+    [CreatedBy] [nvarchar](15) NOT NULL,
+    [CreatedDate] [datetime] NOT NULL,
+    [ModifiedBy] [nvarchar](15) NOT NULL,
+    [ModifiedDate] [datetime] NOT NULL,
     [Timestamp] [timestamp] NOT NULL,
  CONSTRAINT [PK_ViewOrder] PRIMARY KEY CLUSTERED 
 (
     [Phone]
-,	[Id] DESC
+,    [Id] DESC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
