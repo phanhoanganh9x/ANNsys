@@ -522,6 +522,7 @@
     <Content Include="bao-cao.aspx" />
     <Content Include="bv.aspx" />
     <Content Include="chuyen-kho.aspx" />
+    <Content Include="danh-sach-don-dat-hang.aspx" />
     <Content Include="Models\IMMode.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>IMMode.edmx</DependentUpon>
@@ -533,6 +534,13 @@
       <LastGenOutput>IMMode.cs</LastGenOutput>
     </Content>
     <Content Include="print-order-image-english.aspx" />
+    <Content Include="SQL\01CREATE_TABLE_DeliveryAddress.sql" />
+    <Content Include="SQL\01CREATE_TABLE_ExchangeRate.sql" />
+    <Content Include="SQL\01CREATE_TABLE_PreOrder.sql" />
+    <Content Include="SQL\01CREATE_TABLE_PreOrderDetail.sql" />
+    <Content Include="SQL\01CREATE_TABLE_Token.sql" />
+    <Content Include="SQL\01CREATE_TABLE_Video.sql" />
+    <Content Include="SQL\01CREATE_TABLE_ViewOrder.sql" />
     <Content Include="SQL\05CREATE_STORE_PROCEDURE_ClearStock2.sql" />
     <Content Include="SQL\05CREATE_STORE_PROCEDURE_SyncStock1BasedOnStock2.sql" />
     <Content Include="SQL\Add_Quantity_COGS_Order.sql" />
@@ -568,6 +576,7 @@
     <Content Include="san-pham.aspx" />
     <Content Include="sua-phien-kiem-kho.aspx" />
     <Content Include="thong-ke-chuyen-kho.aspx" />
+    <Content Include="thong-tin-don-dat-hang.aspx" />
     <Content Include="thuc-hien-kiem-kho.aspx" />
     <Content Include="chinh-sua-kho-2.aspx" />
     <Content Include="quan-ly-nhap-kho-2.aspx" />
@@ -996,6 +1005,13 @@
       <DependentUpon>chuyen-kho.aspx</DependentUpon>
     </Compile>
     <Compile Include="Controllers\CurrencyController.cs" />
+    <Compile Include="danh-sach-don-dat-hang.aspx.cs">
+      <DependentUpon>danh-sach-don-dat-hang.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="danh-sach-don-dat-hang.aspx.designer.cs">
+      <DependentUpon>danh-sach-don-dat-hang.aspx</DependentUpon>
+    </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Models\Bank.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
@@ -1398,6 +1414,13 @@
     </Compile>
     <Compile Include="thong-ke-chuyen-kho.aspx.designer.cs">
       <DependentUpon>thong-ke-chuyen-kho.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="thong-tin-don-dat-hang.aspx.cs">
+      <DependentUpon>thong-tin-don-dat-hang.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="thong-tin-don-dat-hang.aspx.designer.cs">
+      <DependentUpon>thong-tin-don-dat-hang.aspx</DependentUpon>
     </Compile>
     <Compile Include="thuc-hien-kiem-kho.aspx.cs">
       <DependentUpon>thuc-hien-kiem-kho.aspx</DependentUpon>
