@@ -1,4 +1,11 @@
-﻿.sale-icon {
+﻿.currency-select {
+    height: 40px;
+    margin-left: 15px;
+    border: 2px solid;
+    padding: 5px;
+    border-radius: 5px;
+}
+.sale-icon {
     background: #F44336;
     color: #fff;
     padding: 5px 6px;

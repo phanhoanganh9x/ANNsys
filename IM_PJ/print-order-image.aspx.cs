@@ -277,12 +277,30 @@ namespace IM_PJ
                 mergeprint = Request.QueryString["merge"].ToInt(0);
             }
 
+            string error = "";
+
             if (ID > 0)
             {
                 var order = OrderController.GetByID(ID);
                 
                 if (order != null)
                 {
+                    // kiểm tra nhà xe trả cước trước
+                    if (Convert.ToDouble(order.FeeShipping) == 0 && order.ShippingType == 4)
+                    {
+                        if (order.TransportCompanyID != null && order.TransportCompanySubID != null)
+                        {
+                            var a = TransportCompanyController.GetReceivePlaceByID(order.TransportCompanyID.Value, order.TransportCompanySubID.Value);
+                            if (a != null)
+                            {
+                                if (a.Prepay == true)
+                                {
+                                    error += "Chành xe này trả cước trước. Hãy nhập phí vận chuyển vào đơn hàng! Nếu muốn miễn phí cho khách thì trừ phí khác!";
+                                }
+                            }
+                        }
+                    }
+
                     #region Lấy ghi chú đơn hàng cũ
 
                     var oldOrders = OrderController.GetAllNoteByCustomerID(Convert.ToInt32(order.CustomerID), ID);
@@ -310,25 +328,24 @@ namespace IM_PJ
                     ltrCopyInvoiceURL.Text = "<a href='javascript:;' onclick='copyInvoiceURL(" + order.ID + ", " + order.CustomerID + ")' title='Copy link hóa đơn' class='btn btn-violet h45-btn'>Copy link hóa đơn</a>";
                     
                     #region Currencies Drop Down List
-                    ltrEnglishInvoice.Text += "<select id='dllCurrency' onchange='onChangeCurrency($(this).val())'>";
-                    ltrEnglishInvoice.Text += "    <option value='VND'>VND - Việt Nam Đồng</option>";
-                    ltrEnglishInvoice.Text += "    <option value='USD'>$ - US Dollar</option>";
-                    ltrEnglishInvoice.Text += "    <option value='AUD'>A$ - Australian Dollar</option>";
-                    ltrEnglishInvoice.Text += "    <option value='JPY'>¥ - Japanese Yen</option>";
-                    ltrEnglishInvoice.Text += "    <option value='SGD'>SGD - Singapore Dollar</option>";
-                    ltrEnglishInvoice.Text += "    <option value='MYR'>MYR - Malaysian Ringgit</option>";
-                    ltrEnglishInvoice.Text += "    <option value='TWD'>NT$ - TWD - Taiwan New Dollar</option>";
+                    ltrEnglishInvoice.Text += "<select class='currency-select' id='dllCurrency' onchange='onChangeCurrency($(this).val())'>";
+                    ltrEnglishInvoice.Text += "    <option value='VND'>VND - Việt Nam</option>";
+                    ltrEnglishInvoice.Text += "    <option value='USD'>USD - Mỹ</option>";
+                    ltrEnglishInvoice.Text += "    <option value='AUD'>AUD - Úc</option>";
+                    ltrEnglishInvoice.Text += "    <option value='JPY'>JPY - Nhật</option>";
+                    ltrEnglishInvoice.Text += "    <option value='SGD'>SGD - Singapore</option>";
+                    ltrEnglishInvoice.Text += "    <option value='MYR'>MYR - Malaysia</option>";
+                    ltrEnglishInvoice.Text += "    <option value='TWD'>TWD - Đài Loan</option>";
                     ltrEnglishInvoice.Text += "</select>";
                     #endregion
 
-                    string error = "";
+                    
                     string Print = "";
 
                     double TotalQuantity = 0;
                     double TotalOrder = 0;
 
                     var orderdetails = OrderDetailController.GetByIDSortBySKU(ID);
-
                     var numberOfOrders = OrderController.GetByCustomerID(Convert.ToInt32(order.CustomerID));
 
                     if (orderdetails.Count > 0)
@@ -338,23 +355,23 @@ namespace IM_PJ
                         string productPrint = "";
                         string shtml = "";
 
-                        productPrint += "<div class=\"body\">";
-                        productPrint += "<div class=\"table-1\">";
+                        productPrint += "<div class='body'>";
+                        productPrint += "<div class='table-1'>";
                         productPrint += "<h1>XÁC NHẬN ĐƠN HÀNG #" + order.ID + "</h1>";
-                        productPrint += "<div class=\"note\">";
+                        productPrint += "<div class='note'>";
                         productPrint += "<p>- Lưu ý, hình ảnh sản phẩm có thể hiển thị không đúng màu.</p>";
                         productPrint += "<p>- Quý khách vui lòng kiểm tra thuộc tính sản phẩm (Màu, Size).</p>";
                         productPrint += "<p>- Nếu có sai sót, quý khách vui lòng thông báo cho nhân viên.</p>";
                         productPrint += "</div>";
                         productPrint += "<table>";
                         productPrint += "<colgroup >";
-                        productPrint += "<col class=\"col-left\"/>";
-                        productPrint += "<col class=\"col-right\"/>";
+                        productPrint += "<col class='col-left' />";
+                        productPrint += "<col class='col-right' />";
                         productPrint += "</colgroup>";
                         productPrint += "<tbody>";
                         productPrint += "<tr>";
                         productPrint += "<td>Khách hàng</td>";
-                        productPrint += "<td class=\"customer-name\">" + order.CustomerName + "</td>";
+                        productPrint += "<td class='customer-name'>" + order.CustomerName + "</td>";
                         productPrint += "</tr>";
                         productPrint += "<tr>";
                         productPrint += "<td>Điện thoại</td>";
@@ -390,20 +407,20 @@ namespace IM_PJ
                         productPrint += "</tbody>";
                         productPrint += "</table>";
                         productPrint += "</div>";
-                        productPrint += "<div class=\"table-2\">";
+                        productPrint += "<div class='table-2'>";
                         productPrint += "<table>";
                         productPrint += "<colgroup>";
-                        productPrint += "<col class=\"order-item\" />";
+                        productPrint += "<col class='order-item' />";
 
                         if(mergeprint == 0)
                         {
-                            productPrint += "<col class=\"image\" />";
+                            productPrint += "<col class='image' />";
                         }
                         
-                        productPrint += "<col class=\"name\" />";
-                        productPrint += "<col class=\"quantity\" />";
-                        productPrint += "<col class=\"price\" />";
-                        productPrint += "<col class=\"subtotal\"/>";
+                        productPrint += "<col class='name' />";
+                        productPrint += "<col class='quantity' />";
+                        productPrint += "<col class='price' />";
+                        productPrint += "<col class='subtotal' />";
                         productPrint += "</colgroup>";
                         productPrint += "<thead>";
                         productPrint += "<th>#</th>";
@@ -428,11 +445,11 @@ namespace IM_PJ
                             colspan = "4";
                         }
 
-                        productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Số lượng</td>";
+                        productPrint += "<td colspan='" + colspan + "' class='align-right'>Số lượng</td>";
                         productPrint += "<td>" + TotalQuantity + "</td>";
                         productPrint += "</tr>";
                         productPrint += "<tr>";
-                        productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Thành tiền</td>";
+                        productPrint += "<td colspan='" + colspan + "' class='align-right'>Thành tiền</td>";
                         productPrint += "<td>" + string.Format("{0:N0}", TotalOrder) + "</td>";
                         productPrint += "</tr>";
 
@@ -444,15 +461,15 @@ namespace IM_PJ
                             TotalOrder = TotalOrder - TotalDiscount;
                             TotalPrice = TotalPrice - TotalDiscount;
                             productPrint += "<tr>";
-                            productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Chiết khấu mỗi cái</td>";
+                            productPrint += "<td colspan='" + colspan + "' class='align-right'>Chiết khấu mỗi cái</td>";
                             productPrint += "<td>" + string.Format("{0:N0}", Convert.ToDouble(order.DiscountPerProduct)) + "</td>";
                             productPrint += "</tr>";
                             productPrint += "<tr>";
-                            productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Trừ tổng chiết khấu</td>";
+                            productPrint += "<td colspan='" + colspan + "' class='align-right'>Trừ tổng chiết khấu</td>";
                             productPrint += "<td>-" + string.Format("{0:N0}", TotalDiscount) + "</td>";
                             productPrint += "</tr>";
                             productPrint += "<tr>";
-                            productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Sau chiết khấu</td>";
+                            productPrint += "<td colspan='" + colspan + "' class='align-right'>Sau chiết khấu</td>";
                             productPrint += "<td>" + string.Format("{0:N0}", TotalOrder) + "</td>";
                             productPrint += "</tr>";
                         }
@@ -465,12 +482,12 @@ namespace IM_PJ
                                 TotalOrder = TotalOrder - Convert.ToDouble(refund.TotalPrice);
 
                                 productPrint += "<tr>";
-                                productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Trừ hàng trả (đơn " + order.RefundsGoodsID + ")</td>";
+                                productPrint += "<td colspan='" + colspan + "' class='align-right'>Trừ hàng trả (đơn " + order.RefundsGoodsID + ")</td>";
                                 productPrint += "<td>-" + string.Format("{0:N0}", Convert.ToDouble(refund.TotalPrice)) + "</td>";
                                 productPrint += "</tr>";
 
                                 productPrint += "<tr>";
-                                productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Tổng tiền còn lại</td>";
+                                productPrint += "<td colspan='" + colspan + "' class='align-right'>Tổng tiền còn lại</td>";
                                 productPrint += "<td>" + string.Format("{0:N0}", TotalOrder) + "</td>";
                                 productPrint += "</tr>";
                             }
@@ -485,21 +502,9 @@ namespace IM_PJ
                             TotalOrder = TotalOrder + Convert.ToDouble(order.FeeShipping);
                             TotalPrice = TotalPrice + Convert.ToDouble(order.FeeShipping);
                             productPrint += "<tr>";
-                            productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Phí vận chuyển</td>";
+                            productPrint += "<td colspan='" + colspan + "' class='align-right'>Phí vận chuyển</td>";
                             productPrint += "<td>" + string.Format("{0:N0}", Convert.ToDouble(order.FeeShipping)) + "</td>";
                             productPrint += "</tr>";
-                        }
-                        else
-                        {
-                            // kiểm tra nhà xe trả cước trước
-                            var a = TransportCompanyController.GetReceivePlaceByID(order.TransportCompanyID.Value, order.TransportCompanySubID.Value);
-                            if (a != null)
-                            {
-                                if (a.Prepay == true)
-                                {
-                                    error += "Chành xe này trả cước trước. Hãy nhập phí vận chuyển vào đơn hàng! Nếu muốn miễn phí cho khách thì trừ phí khác!";
-                                }
-                            }
                         }
 
                         // Check fee
@@ -509,7 +514,7 @@ namespace IM_PJ
                             TotalOrder = TotalOrder + Convert.ToDouble(fee.Price);
                             TotalPrice = TotalPrice + Convert.ToDouble(fee.Price);
                             productPrint += "<tr>";
-                            productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">" + fee.Name + "</td>";
+                            productPrint += "<td colspan='" + colspan + "' class='align-right'>" + fee.Name + "</td>";
                             productPrint += "<td>" + string.Format("{0:N0}", Convert.ToDouble(fee.Price)) + "</td>";
                             productPrint += "</tr>";
                         }
@@ -533,8 +538,8 @@ namespace IM_PJ
                         }
 
                         productPrint += "<tr>";
-                        productPrint += "<td colspan=\"" + colspan + "\" class=\"strong align-right\">TỔNG CỘNG</td>";
-                        productPrint += "<td class=\"strong\">" + string.Format("{0:N0}", TotalOrder) + "</td>";
+                        productPrint += "<td colspan='" + colspan + "' class='strong align-right'>TỔNG CỘNG</td>";
+                        productPrint += "<td class='strong'>" + string.Format("{0:N0}", TotalOrder) + "</td>";
                         productPrint += "</tr>";
                         
                         
@@ -545,13 +550,13 @@ namespace IM_PJ
 
                         string dateOrder = string.Format("{0:dd/MM/yyyy HH:mm}", order.DateDone);
 
-                        shtml += "<div class=\"print-order-image\">";
-                        shtml += "<div class=\"all print print-0\">";
+                        shtml += "<div class='print-order-image'>";
+                        shtml += "<div class='all print print-0'>";
                         
 
                         if (numberOfOrders.Count < 4)
                         {
-                            shtml += "<div class=\"head\">";
+                            shtml += "<div class='head'>";
                             string address = "";
                             string phone = "";
                             var agent = AgentController.GetByID(Convert.ToInt32(order.AgentID));
@@ -574,17 +579,17 @@ namespace IM_PJ
                                 }
                             }
 
-                            shtml += "<div class=\"logo\"><img src=\"App_Themes/Ann/image/logo.png\" /></div>";
-                            shtml += "<div class=\"info\">";
+                            shtml += "<div class='logo'><img src=\"App_Themes/Ann/image/logo.png\" /></div>";
+                            shtml += "<div class='info'>";
 
-                            shtml += "<div class=\"ct\">";
-                            shtml += "<div class=\"ct-title\"></div>";
-                            shtml += "<div class=\"ct-detail\"> " + address + "</div>";
+                            shtml += "<div class='ct'>";
+                            shtml += "<div class='ct-title'></div>";
+                            shtml += "<div class='ct-detail'> " + address + "</div>";
                             shtml += "</div>";
 
-                            shtml += "<div class=\"ct\">";
-                            shtml += "<div class=\"ct-title\"> </div>";
-                            shtml += "<div class=\"ct-detail\"> " + phone + "</div>";
+                            shtml += "<div class='ct'>";
+                            shtml += "<div class='ct-title'> </div>";
+                            shtml += "<div class='ct-detail'> " + phone + "</div>";
                             shtml += "</div>";
 
                             shtml += "</div>";
@@ -606,6 +611,10 @@ namespace IM_PJ
                         {
                             ltrPrintInvoice.Text = shtml;
                         }
+                    }
+                    else
+                    {
+                        ltrPrintInvoice.Text = "Đơn hàng đang rỗng!";
                     }
                 }
                 else

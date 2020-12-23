@@ -80,6 +80,19 @@ namespace IM_PJ.Controllers
 
             }
         }
+        public static tbl_VariableValue GetEnNameByName(string variableValue)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                tbl_VariableValue ai = dbe.tbl_VariableValue.Where(a => a.VariableValue == variableValue).FirstOrDefault();
+                if (ai != null)
+                {
+                    return ai;
+                }
+                else return null;
+
+            }
+        }
         public static tbl_VariableValue GetByNameAndValue(string variableName, string variableValue)
         {
             using (var dbe = new inventorymanagementEntities())
