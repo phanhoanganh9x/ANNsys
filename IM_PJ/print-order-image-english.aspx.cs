@@ -85,14 +85,14 @@ namespace IM_PJ
 
             foreach (var item in orderdetails)
             {
-                TotalQuantity += item.Quantity.Value;
+                TotalQuantity += Convert.ToDouble(item.Quantity);
 
-                var ProductType = item.ProductType;
-                var ItemPrice = item.Price;
+                var ProductType = Convert.ToInt32(item.ProductType);
+                var ItemPrice = Convert.ToDouble(item.Price);
                 var SKU = item.SKU;
                 var ProductName = String.Empty;
                 var ProductImage = String.Empty;
-                var SubTotal = ItemPrice * item.Quantity;
+                var SubTotal = Convert.ToInt32(ItemPrice) * Convert.ToInt32(item.Quantity);
 
                 t++;
                 Print += "<tr>";
@@ -111,7 +111,7 @@ namespace IM_PJ
                             if (category == null)
                                 ProductName = SKU;
                             else
-                                ProductName = category.EnName;
+                                ProductName = String.Format("{0} - {1}", SKU, category.EnName);
                         }
                         else {
                             ProductName = product.EnName;
@@ -121,7 +121,7 @@ namespace IM_PJ
                             ProductImage = product.ProductImage;
 
                         Print += "<td><image src='" + Thumbnail.getURL(ProductImage, Thumbnail.Size.Large) + "' /></td> ";
-                        Print += "<td><strong>" + SKU + "</strong> - " + (product.Old_Price > 0 ? "<span class='sale-icon'>SALE</span> " : "") + ProductName + "</td> ";
+                        Print += "<td><strong>" + SKU + "</strong> - " + (product.Old_Price > 0 ? "<span class='sale-icon'>SALE</span> " : "") + PJUtils.Truncate(ProductName, 30) + "</td> ";
                     }
                 }
                 else
@@ -130,7 +130,7 @@ namespace IM_PJ
 
                     if (productvariable != null)
                     {
-                        var parent_product = ProductController.GetByID(productvariable.ProductID.Value);
+                        var parent_product = ProductController.GetByID(Convert.ToInt32(productvariable.ProductID));
                         
                         if (parent_product != null)
                         {
@@ -141,7 +141,7 @@ namespace IM_PJ
                                 if (category == null)
                                     ProductName = SKU;
                                 else
-                                    ProductName = category.EnName;
+                                    ProductName = String.Format("{0} - {1}", SKU, category.EnName);
                             }
                             else
                             {
@@ -155,42 +155,16 @@ namespace IM_PJ
                         }
 
                         Print += "<td id='" + parent_product.ProductSKU + "'><image src='" + Thumbnail.getURL(ProductImage, Thumbnail.Size.Large) + "' /></td>";
-                        Print += "<td><p><strong>" + SKU + "</strong>";
-                        Print += " - " + (parent_product.Old_Price > 0 ? "<span class='sale-icon'>SALE</span> " : "") + ProductName + "</p>";
-
-                        string variableDescription = item.ProductVariableDescrition.Replace("Màu", "Color").Replace("Mẫu", "Model");
-
-                        int pFrom = variableDescription.IndexOf("Color: ") + "Color: ".Length;
-                        int pTo = variableDescription.IndexOf("|");
-                        string vnColor = "";
-                        string enColor = "";
-                        if (pFrom > 0)
-                        {
-                            vnColor = variableDescription.Substring(pFrom, pTo - pFrom);
-                            if (vnColor != "")
-                            {
-                                var variable = VariableValueController.GetEnNameByName(vnColor);
-                                if (variable != null && !string.IsNullOrEmpty(variable.EnVariableValue))
-                                {
-                                    enColor = variable.EnVariableValue;
-                                }
-                                else
-                                {
-                                    enColor = vnColor;
-                                }
-                            }
-                        }
-
-                        Print += "<p class='variable'>" + variableDescription.Replace(vnColor, enColor).Replace("|", ". ") + "</p></td>";
+                        Print += "<td><p><strong>" + SKU + "</strong> - " + (parent_product.Old_Price > 0 ? "<span class='sale-icon'>SALE</span> " : "") + PJUtils.Truncate(ProductName, 30) + "</p><p class='variable'>" + item.ProductVariableDescrition.Replace("|", ". ") + "</p></td> ";
                     }
                 }
 
                 Print += "<td>" + item.Quantity + "</td>";
-                Print += "<td>" + string.Format("{0:0.00}", ItemPrice) + "</td>";
-                Print += "<td>" + string.Format("{0:0.00}", SubTotal) + "</td>";
+                Print += "<td>" + string.Format("{0:N0}", ItemPrice) + "</td>";
+                Print += "<td>" + string.Format("{0:N0}", SubTotal) + "</td>";
                 Print += "</tr>";
 
-                TotalOrder += SubTotal.Value;
+                TotalOrder += SubTotal;
 
                 if (t % 10 == 0)
                 {
@@ -245,22 +219,22 @@ namespace IM_PJ
                     Print += "<tr>";
                     Print += "<td>" + t + "</td>";
 
-                    double ItemPrice1 = orderdetails[i].Price.Value;
-                    int categoryID1 = _getCategory(orderdetails[i].SKU, orderdetails[i].ProductType.Value);
+                    double ItemPrice1 = Convert.ToDouble(orderdetails[i].Price);
+                    int categoryID1 = _getCategory(orderdetails[i].SKU, Convert.ToInt32(orderdetails[i].ProductType));
 
-                    double quantity = orderdetails[i].Quantity.Value;
+                    int quantity = Convert.ToInt32(orderdetails[i].Quantity);
 
                     for (int j = i + 1; j < orderdetails.Count; j++)
                     {
                         if (orderdetails[j] != null)
                         {
-                            int categoryID2 = _getCategory(orderdetails[j].SKU, orderdetails[j].ProductType.Value);
+                            int categoryID2 = _getCategory(orderdetails[j].SKU, Convert.ToInt32(orderdetails[j].ProductType));
 
-                            double ItemPrice2 = orderdetails[j].Price.Value;
+                            double ItemPrice2 = Convert.ToDouble(orderdetails[j].Price);
 
                             if (categoryID1 == categoryID2 && orderdetails[i].Price == orderdetails[j].Price)
                             {
-                                quantity += orderdetails[j].Quantity.Value;
+                                quantity += Convert.ToInt32(orderdetails[j].Quantity);
                                 orderdetails[j] = null;
                             }
                         }
@@ -270,8 +244,8 @@ namespace IM_PJ
                     double SubTotal = ItemPrice1 * quantity;
                     Print += "<td>" + category.CategoryName + " " + string.Format("{0:N0}", ItemPrice1) + "</td>";
                     Print += "<td>" + quantity + "</td>";
-                    Print += "<td>" + string.Format("{0:0.00}", ItemPrice1) + "</td>";
-                    Print += "<td>" + string.Format("{0:0.00}", SubTotal) + "</td>";
+                    Print += "<td>" + string.Format("{0:N0}", ItemPrice1) + "</td>";
+                    Print += "<td>" + string.Format("{0:N0}", SubTotal) + "</td>";
                     Print += "</tr>";
                     TotalOrder += SubTotal;
                     TotalQuantity += quantity;
@@ -342,7 +316,6 @@ namespace IM_PJ
                 return;
             }
 
-
             var order = OrderController.GetByID(ID);
 
             if (order == null)
@@ -351,23 +324,6 @@ namespace IM_PJ
                 return;
             }
             #endregion
-
-            // kiểm tra nhà xe trả cước trước
-            if (Convert.ToDouble(order.FeeShipping) == 0 && order.ShippingType == 4)
-            {
-                if (order.TransportCompanyID != null && order.TransportCompanySubID != null)
-                {
-                    var a = TransportCompanyController.GetReceivePlaceByID(order.TransportCompanyID.Value, order.TransportCompanySubID.Value);
-                    if (a != null)
-                    {
-                        if (a.Prepay == true)
-                        {
-                            ltrPrintInvoice.Text = "Chành xe này trả cước trước. Hãy nhập phí vận chuyển vào đơn hàng! Nếu muốn miễn phí cho khách thì trừ phí khác!";
-                            return;
-                        }
-                    }
-                }
-            }
 
             #region Thông tin tiền tệ
             if (!String.IsNullOrEmpty(Request.QueryString["currencyCode"]))
@@ -380,6 +336,8 @@ namespace IM_PJ
                 ltrPrintInvoice.Text = String.Format("Không tìm thấy tỉ giá tiền tệ của mã {0} này.", currencyCode);
                 return;
             }
+            
+            var currencyRate = Convert.ToDouble(currency.SellingRate);
             #endregion
 
             if (!String.IsNullOrEmpty(Request.QueryString["merge"]))
@@ -391,7 +349,7 @@ namespace IM_PJ
             var Print = String.Empty;
 
             #region Lấy ghi chú đơn hàng cũ
-            var oldOrders = OrderController.GetAllNoteByCustomerID(order.CustomerID.Value, ID);
+            var oldOrders = OrderController.GetAllNoteByCustomerID(Convert.ToInt32(order.CustomerID), ID);
             
             if (oldOrders.Count() > 1)
             {
@@ -417,14 +375,14 @@ namespace IM_PJ
             ltrCopyInvoiceURL.Text = "<a href='javascript:;' onclick='copyInvoiceURLEnglish(" + order.ID + ", " + order.CustomerID + ")' title='Copy link hóa đơn' class='btn btn-violet h45-btn'>Copy link hóa đơn</a>";
 
             #region Currencies Drop Down List
-            ltrEnglishInvoice.Text += "<select class='currency-select' id='dllCurrency' onchange='onChangeCurrency($(this).val())'>";
-            ltrEnglishInvoice.Text += "    <option value='VND'>VND - Việt Nam</option>";
-            ltrEnglishInvoice.Text += "    <option value='USD'>USD - Mỹ</option>";
-            ltrEnglishInvoice.Text += "    <option value='AUD'>AUD - Úc</option>";
-            ltrEnglishInvoice.Text += "    <option value='JPY'>JPY - Nhật</option>";
-            ltrEnglishInvoice.Text += "    <option value='SGD'>SGD - Singapore</option>";
-            ltrEnglishInvoice.Text += "    <option value='MYR'>MYR - Malaysia</option>";
-            ltrEnglishInvoice.Text += "    <option value='TWD'>TWD - Đài Loan</option>";
+            ltrEnglishInvoice.Text += "<select id='dllCurrency' onchange='onChangeCurrency($(this).val())'>";
+            ltrEnglishInvoice.Text += "    <option value='VND'>VND - Việt Nam Đồng</option>";
+            ltrEnglishInvoice.Text += "    <option value='USD'>$ - US Dollar</option>";
+            ltrEnglishInvoice.Text += "    <option value='AUD'>A$ - Australian Dollar</option>";
+            ltrEnglishInvoice.Text += "    <option value='JPY'>¥ - Japanese Yen</option>";
+            ltrEnglishInvoice.Text += "    <option value='SGD'>SGD - Singapore Dollar</option>";
+            ltrEnglishInvoice.Text += "    <option value='MYR'>MYR - Malaysian Ringgit</option>";
+            ltrEnglishInvoice.Text += "    <option value='TWD'>NT$ - TWD - Taiwan New Dollar</option>";
             ltrEnglishInvoice.Text += "</select>";
             #endregion
             #endregion
@@ -438,7 +396,7 @@ namespace IM_PJ
                 .Select(x => {
                     var price = x.Price.HasValue ? x.Price.Value : 0;
 
-                    x.Price = Math.Round(price / Convert.ToDouble(currency.SellingRate), 2);
+                    x.Price = Math.Ceiling(1e2 * price / currencyRate) * 1e-2;
                     
                     return x; 
                 })
@@ -451,7 +409,6 @@ namespace IM_PJ
             productPrint += "<div class=\"body\">";
             productPrint += "<div class=\"table-1\">";
             productPrint += "<h1>INVOICE #" + order.ID + "</h1>";
-            productPrint += "<h3>Currency: " + currencyCode + "</h3>";
             productPrint += "<div class=\"note\">";
             productPrint += "</div>";
             #endregion
@@ -464,7 +421,7 @@ namespace IM_PJ
             productPrint += "</colgroup>";
             productPrint += "<tbody>";
             productPrint += "<tr>";
-            productPrint += "<td>Customer</td>";
+            productPrint += "<td>Customer name</td>";
             productPrint += "<td class=\"customer-name\">" + order.CustomerName + "</td>";
             productPrint += "</tr>";
             productPrint += "<tr>";
@@ -515,7 +472,7 @@ namespace IM_PJ
             
             productPrint += "<th>Item</th>";
             productPrint += "<th>Qty</th>";
-            productPrint += "<th>Unit price</th>";
+            productPrint += "<th>Unit Price</th>";
             productPrint += "<th>Amount</th>";
             productPrint += "</thead>";
             productPrint += "<tbody>";
@@ -536,30 +493,32 @@ namespace IM_PJ
             productPrint += "</tr>";
             productPrint += "<tr>";
             productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Subtotal</td>";
-            productPrint += "<td>" + string.Format("{0:0.00}", TotalOrder) + "</td>";
+            productPrint += "<td>" + string.Format("{0:N0}", TotalOrder) + "</td>";
             productPrint += "</tr>";
 
-            #region Thông tin chiết khấu 
+            #region Thông tin triết khấu 
             double TotalPrice = TotalOrder;
 
             if (order.DiscountPerProduct > 0)
             {
-                var discount = order.DiscountPerProduct.HasValue ? Math.Round(order.DiscountPerProduct.Value / Convert.ToDouble(currency.SellingRate), 2) : 0;
-                var TotalDiscount = discount * TotalQuantity;
-
+                var TotalDiscount = 0D;
+                var discount = order.DiscountPerProduct.HasValue ? order.DiscountPerProduct.Value : 0;
+                
+                discount = Math.Floor(1e2 * discount / currencyRate) * 1e-2;
+                TotalDiscount = discount * TotalQuantity;
                 TotalOrder = TotalOrder - TotalDiscount;
                 TotalPrice = TotalPrice - TotalDiscount;
                 productPrint += "<tr>";
                 productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Discount per unit</td>";
-                productPrint += string.Format("<td>{0:0.00}</td>", discount);
+                productPrint += String.Format("<td>{0:N0}</td>", discount);
                 productPrint += "</tr>";
                 productPrint += "<tr>";
                 productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Total discount</td>";
-                productPrint += "<td>-" + string.Format("{0:0.00}", TotalDiscount) + "</td>";
+                productPrint += "<td>-" + string.Format("{0:N0}", TotalDiscount) + "</td>";
                 productPrint += "</tr>";
                 productPrint += "<tr>";
                 productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">After discount</td>";
-                productPrint += "<td>" + string.Format("{0:0.00}", TotalOrder) + "</td>";
+                productPrint += "<td>" + string.Format("{0:N0}", TotalOrder) + "</td>";
                 productPrint += "</tr>";
             }
             #endregion
@@ -567,21 +526,23 @@ namespace IM_PJ
             #region Thông tin đổi trả hàng
             if (order.RefundsGoodsID != null && order.RefundsGoodsID != 0)
             {
-                var refund = RefundGoodController.GetByID(order.RefundsGoodsID.Value);
+                var refund = RefundGoodController.GetByID(Convert.ToInt32(order.RefundsGoodsID));
 
                 if (refund != null)
                 {
-                    var totalRefund = Math.Round(Convert.ToDouble(refund.TotalPrice) / Convert.ToDouble(currency.SellingRate), 2);
+                    var totalRefund = Convert.ToDouble(refund.TotalPrice);
+                    
+                    totalRefund = Math.Floor(1e2 * totalRefund / currencyRate) * 1e-2;
                     TotalOrder = TotalOrder - totalRefund;
 
                     productPrint += "<tr>";
                     productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Return order (ID " + order.RefundsGoodsID + ")</td>";
-                    productPrint += string.Format("<td>-{0:0.00}</td>", totalRefund);
+                    productPrint += String.Format("<td>-{0:N0}</td>", totalRefund);
                     productPrint += "</tr>";
 
                     productPrint += "<tr>";
                     productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Total remaining</td>";
-                    productPrint += "<td>" + string.Format("{0:0.00}", TotalOrder) + "</td>";
+                    productPrint += "<td>" + string.Format("{0:N0}", TotalOrder) + "</td>";
                     productPrint += "</tr>";
                 }
                 else
@@ -592,7 +553,9 @@ namespace IM_PJ
             #endregion
 
             #region Thông tin phí giao hàng
-            var feeShipping = Math.Round(Convert.ToDouble(order.FeeShipping) / Convert.ToDouble(currency.SellingRate), 2);
+            var feeShipping = Convert.ToDouble(order.FeeShipping);
+            
+            feeShipping = Math.Ceiling(1e2 * feeShipping / currencyRate) * 1e-2;
 
             if (feeShipping > 0)
             {
@@ -600,17 +563,19 @@ namespace IM_PJ
                 TotalPrice = TotalPrice + feeShipping;
                 productPrint += "<tr>";
                 productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Shipping</td>";
-                productPrint += string.Format("<td>{0:0.00}</td>", feeShipping);
+                productPrint += String.Format("<td>{0:N0}</td>", feeShipping);
                 productPrint += "</tr>";
             }
             #endregion
 
-            #region Thông tin phí khác
+            #region Thông tin phí khách
             var fees = FeeController.getFeeInfo(ID);
 
             foreach (var fee in fees)
             {
-                var feeOther = Math.Round(Convert.ToDouble(fee.Price) / Convert.ToDouble(currency.SellingRate), 2);
+                var feeOther = Convert.ToDouble(fee.Price);
+
+                feeOther = Math.Ceiling(1e2 * feeOther / currencyRate) * 1e-2;
 
                 if (feeOther > 0)
                 {
@@ -618,7 +583,7 @@ namespace IM_PJ
                     TotalPrice = TotalPrice + feeOther;
                     productPrint += "<tr>";
                     productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">" + fee.Name + "</td>";
-                    productPrint += string.Format("<td>{0:0.00}</td>", feeOther);
+                    productPrint += String.Format("<td>{0:N0}</td>", feeOther);
                     productPrint += "</tr>";
                 }
             }
@@ -628,13 +593,14 @@ namespace IM_PJ
             if (order.CouponID.HasValue && order.CouponID.Value > 0)
             {
                 var coupon = CouponController.getCoupon(order.CouponID.Value);
-                var couponValue = Convert.ToDouble(Math.Round(coupon.Value / currency.SellingRate, 2));
+                var couponValue = Convert.ToDouble(coupon.Value);
 
+                couponValue = Math.Floor(1e2 * couponValue / currencyRate) * 1e-2;
                 TotalOrder = TotalOrder - couponValue;
                 TotalPrice = TotalPrice - couponValue;
                 productPrint += "<tr>";
                 productPrint += String.Format("<td colspan='{0}' class='align-right'>Coupon code: {1}</td>", colspan, coupon.Code);
-                productPrint += string.Format("<td>-{0:0.00}</td>", couponValue);
+                productPrint += String.Format("<td>-{0:N0}</td>", couponValue);
                 productPrint += "</tr>";
             }
             #endregion
@@ -646,7 +612,7 @@ namespace IM_PJ
 
             productPrint += "<tr>";
             productPrint += "<td colspan=\"" + colspan + "\" class=\"strong align-right\">TOTAL</td>";
-            productPrint += "<td class=\"strong\">" + string.Format("{0:0.00}", TotalOrder) + "</td>";
+            productPrint += "<td class=\"strong\">" + string.Format("{0:N0}", TotalOrder) + "</td>";
             productPrint += "</tr>";
             
             

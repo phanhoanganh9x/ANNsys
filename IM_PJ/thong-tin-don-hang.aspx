@@ -111,7 +111,7 @@
             table.shop_table_responsive > tbody > tr > td:nth-of-type(2) img {
                 width: 30%;
             }
-            
+
             table.shop_table_responsive > tbody > tr:nth-of-type(2n) td {
                 border-top: none;
                 border-bottom: none!important;
@@ -856,7 +856,7 @@
                 // original length
                 var original_len = input_val.length;
 
-                // initial caret position 
+                // initial caret position
                 var caret_pos = input.prop("selectionStart");
 
                 // check for decimal
@@ -1025,7 +1025,7 @@
                     parent.find("#feePrice").val(formatNumber(feeprice));
                     feeprice = parseInt(feeprice);
                 }
-                
+
                 fees.forEach((fee) => {
                     if(fee.UUID == id)
                     {
@@ -2047,7 +2047,7 @@
                         }
                     }
                 }
-                
+
                 // kiểm tra phí vận chuyển có nhỏ hơn 10k
                 if (feeship > 0 && feeship < 10000) {
                     checkAllValue = false;
@@ -2562,7 +2562,7 @@
 
                 preExcuteStatus = excuteStatus;
             };
-            
+
             function onChangeTransportCompany(transport) {
                 let transComID = transport.val();
                 $.ajax({

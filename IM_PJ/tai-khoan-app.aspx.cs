@@ -41,7 +41,7 @@ namespace IM_PJ
                 LoadCity();
             }
         }
-        
+
         public void LoadCity()
         {
             var pro = ProvinceController.GetAll();
@@ -93,7 +93,7 @@ namespace IM_PJ
                 }
 
                 txtSearch.Text = TextSearch;
-                
+
                 ddlCreatedDate.SelectedValue = CreatedDate.ToString();
                 ddlCity.SelectedValue = City;
 
@@ -135,6 +135,7 @@ namespace IM_PJ
             html.Append("    <th>Tên</th>");
             html.Append("    <th>Điện thoại</th>");
             html.Append("    <th>Giới tính</th>");
+            html.Append("    <th>Ngày sinh</th>");
             html.Append("    <th>Địa chỉ</th>");
             html.Append("    <th>Tỉnh</th>");
             html.Append("    <th>Trạng thái</th>");
@@ -159,7 +160,7 @@ namespace IM_PJ
                 if (ToRow >= TotalItems)
                     ToRow = TotalItems - 1;
 
-                
+
                 for (int i = FromRow; i < ToRow + 1; i++)
                 {
                     var item = acs[i];
@@ -184,6 +185,10 @@ namespace IM_PJ
                         gender = "Nữ";
                     }
                     html.Append("   <td data-title='Giới tính'><strong>" + gender + "</strong></td>");
+                    if (item.Birthday.HasValue)
+                        html.Append(String.Format("   <td data-title='Ngày sinh'>{0:dd/MM/yyyy}</td>", item.Birthday.Value));
+                    else
+                        html.Append("   <td data-title='Ngày sinh'></td>");
                     html.Append("   <td data-title='Địa chỉ'>" + item.Address + "</td>");
                     html.Append("   <td data-title='Tỉnh'>" + item.City + "</td>");
 
@@ -298,7 +303,7 @@ namespace IM_PJ
             {
                 startPageNumbersFrom = 1;
 
-                //As page numbers are starting at one, output an even number of pages.  
+                //As page numbers are starting at one, output an even number of pages.
                 stopPageNumbersAt = pagesToOutput;
             }
 
@@ -317,7 +322,7 @@ namespace IM_PJ
             }
             /******************End: Xác định startPageNumbersFrom & stopPageNumbersAt**********************/
 
-            //Các dấu ... chỉ những trang phía trước  
+            //Các dấu ... chỉ những trang phía trước
             if (startPageNumbersFrom > 1)
             {
                 output.Append("<li><a href=\"" + string.Format(GetPageUrl(currentPage - 1, pageUrl), startPageNumbersFrom - 1) + "\">&hellip;</a></li>");
@@ -336,7 +341,7 @@ namespace IM_PJ
                 }
             }
 
-            //Các dấu ... chỉ những trang tiếp theo  
+            //Các dấu ... chỉ những trang tiếp theo
             if (stopPageNumbersAt < pageCount)
             {
                 output.Append("<li><a href=\"" + string.Format(pageUrl, stopPageNumbersAt + 1) + "\">&hellip;</a></li>");
@@ -386,6 +391,6 @@ namespace IM_PJ
 
             Response.Redirect(request);
         }
-       
+
     }
 }
