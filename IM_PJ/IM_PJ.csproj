@@ -346,6 +346,7 @@
     <Content Include="App_Themes\Ann\css\HoldOn.css" />
     <Content Include="App_Themes\Ann\css\pages\chi-tiet-giam-gia\chi-tiet-giam-gia.css" />
     <Content Include="App_Themes\Ann\css\pages\cron-job-product-status\cron-job-product-status.css" />
+    <Content Include="App_Themes\Ann\css\pages\danh-sach-don-dat-hang\danh-sach-don-dat-hang.css" />
     <Content Include="App_Themes\Ann\css\pages\danh-sach-don-hang\danh-sach-don-hang.css" />
     <Content Include="App_Themes\Ann\css\pages\danh-sach-khach-giam-gia\danh-sach-khach-giam-gia.css" />
     <Content Include="App_Themes\Ann\css\pages\them-moi-giam-gia\them-moi-giam-gia.css" />
@@ -400,6 +401,7 @@
     <Content Include="App_Themes\Ann\js\controllers\chi-tiet-giam-gia\chi-tiet-giam-gia-controller.js" />
     <Content Include="App_Themes\Ann\js\controllers\common\search-customer-controller.js" />
     <Content Include="App_Themes\Ann\js\controllers\cron-job-product-status\cron-job-product-status-controller.js" />
+    <Content Include="App_Themes\Ann\js\controllers\danh-sach-don-dat-hang\danh-sach-don-dat-hang-controller.js" />
     <Content Include="App_Themes\Ann\js\controllers\danh-sach-don-hang\danh-sach-don-hang-controller.js" />
     <Content Include="App_Themes\Ann\js\controllers\danh-sach-khach-giam-gia\danh-sach-khach-giam-gia-controller.js" />
     <Content Include="App_Themes\Ann\js\controllers\danh-sach-nhom-khach-hang\danh-sach-nhom-khach-hang-controller.js" />
@@ -417,6 +419,7 @@
     <Content Include="App_Themes\Ann\js\models\common\order-model.js" />
     <Content Include="App_Themes\Ann\js\pages\chi-tiet-giam-gia\chi-tiet-giam-gia.js" />
     <Content Include="App_Themes\Ann\js\pages\cron-job-product-status\cron-job-product-status.js" />
+    <Content Include="App_Themes\Ann\js\pages\danh-sach-don-dat-hang\danh-sach-don-dat-hang.js" />
     <Content Include="App_Themes\Ann\js\pages\danh-sach-don-hang\danh-sach-don-hang.js" />
     <Content Include="App_Themes\Ann\js\pages\danh-sach-khach-giam-gia\danh-sach-khach-giam-gia.js" />
     <Content Include="App_Themes\Ann\js\pages\danh-sach-khach-hang\generate-coupon-for-customer.js" />
@@ -426,6 +429,7 @@
     <Content Include="App_Themes\Ann\js\services\common\search-customer-service.js" />
     <Content Include="App_Themes\Ann\js\services\common\utils-service.js" />
     <Content Include="App_Themes\Ann\js\services\cron-job-product-status\cron-job-product-status-service.js" />
+    <Content Include="App_Themes\Ann\js\services\danh-sach-don-dat-hang\danh-sach-don-dat-hang-service.js" />
     <Content Include="App_Themes\Ann\js\services\danh-sach-don-hang\danh-sach-don-hang-service.js" />
     <Content Include="App_Themes\Ann\js\services\danh-sach-khach-giam-gia\danh-sach-khach-giam-gia-service.js" />
     <Content Include="App_Themes\Ann\js\sync-post.js" />
