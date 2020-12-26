@@ -17,107 +17,110 @@
             maxQuantity: null,
             staff: null
         }
-        this.agination = {
+        this.pagination = {
             pageSize: 30,
             page: 1
         }
+
+        this.service = new PreOrderService();
     }
 
+    setFilter(search) {
+        let queryParams = search.replace(/^\?&?/g, '') || "";
+
+        if (!queryParams)
+            return;
+
+        queryParams.split('&')
+            .filter(x => x)
+            .forEach(function(item) {
+                let query = item.split("=") || [];
+
+                if (query.length == 2)
+                {
+                    let key = query[0];
+                    let value = query[1];
+
+                    // Datetime picker
+                    if (key == "fromDate")
+                    {
+                        value = unescape(value);
+                        value = value.split(" ")[0] || null;
+
+                        if (value != null)
+                            this.filter.fromDate = value;
+                    }
+
+                    if (key == "toDate")
+                    {
+                        value = unescape(value);
+                        value = value.split(" ")[0] || null;
+
+                        if (value != null)
+                            this.filter.toDate = value;
+                    }
+
+                    // Order Status
+                    if (key == "orderStatus")
+                        if (value)
+                            this.filter.orderStatus = +value || 0;
+
+                    // Search
+                    if (key == "search")
+                        if (value)
+                            this.filter.search = value;
+
+                    // Search Type
+                    if (key == "searchType")
+                        if (value)
+                            this.filter.searchType = +value || 0;
+
+                    // Discount
+                    if (key == "hasDiscount")
+                        if (value)
+                            this.filter.hasDiscount = +value || 0;
+
+                    // Payment Method
+                    if (key == "paymentMethod")
+                        if (value)
+                            this.filter.paymentMethod = +value || 0;
+
+                    // Delivery Method
+                    if (key == "deliveryMethod")
+                        if (value)
+                            this.filter.deliveryMethod = +value || 0;
+
+                    // Coupon
+                    if (key == "hasCoupon")
+                        if (value)
+                            this.filter.hasCoupon = +value || 0;
+
+                    // Quantity
+                    if (key == "quantityFilter")
+                        if (value)
+                            this.filter.quantityFilter = +value || 0;
+
+                    if (key == "quantity")
+                        if (value)
+                            this.filter.quantity = +value || 0;
+
+                    if (key == "minQuantity")
+                        if (value)
+                            this.filter.minQuantity = +value || 0;
+
+                    if (key == "maxQuantity")
+                        if (value)
+                            this.filter.maxQuantity = +value || 0;
+
+                    // Staff
+                    if (key == "staff")
+                        if (value)
+                            this.filter.staff = value;
+                }
+            });
+    }
 
     getPreOrders() {
-
+        return this.service.getPreOrders(this.filter, this.pagination)
     }
-
-    getQueryParam(url, query) {
-        let expr = "[\\?&]" + query.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]") + "=([^&#]*)";
-        let regex = new RegExp(expr);
-        let results = regex.exec(url);
-
-        if (results)
-            return results[1];
-        else
-            return false;
-    };
-
-    searchOrder() {
-        document.querySelector("[id$='_btnSearch']").click();
-    };
-
-    openFeeInfoModal(tbodyDOM, orderID) {
-        window.HoldOn.open();
-        OrderListService.openFeeInfoModal(orderID)
-            .then(data => {
-                let feeTotal = 0;
-
-                data.forEach((item) => {
-                    feeTotal += item.FeePrice;
-                    tbodyDOM.innerHTML += this._createFeeInfoHTML(item);
-                });
-                tbodyDOM.innerHTML += this._createFeeInfoHTML({ "FeeTypeName": "Tổng", "FeePrice": feeTotal }, true);
-            })
-            .catch(err => {
-                console.log(err);
-                setTimeout(() => {
-                    swal("Thông báo", "Có lỗi trong quá trình lấy thông tin phí", "error");
-                }, 500);
-            })
-            .finally(() => {
-                window.HoldOn.close();
-            });
-    };
-
-    _createFeeInfoHTML(fee, is_total) {
-        if (!is_total) {
-            is_total = false;
-        }
-        let addHTML = "";
-
-        if (is_total) {
-
-            addHTML += "<tr class='info'>";
-            addHTML += "    <td style='text-align: right'>" + fee.FeeTypeName + "</td>";
-            addHTML += "    <td>" + UtilsService.formatThousands(fee.FeePrice) + "</td>";
-            addHTML += "</tr>";
-        }
-        else {
-            addHTML += "<tr>";
-            addHTML += "    <td>" + fee.FeeTypeName + "</td>";
-            addHTML += "    <td>" + UtilsService.formatThousands(fee.FeePrice) + "</td>";
-            addHTML += "</tr>";
-        }
-
-        return addHTML;
-    }
-
-    changeFinishStatusOrder(orderStatusDOM, orderID) {
-        window.HoldOn.open();
-        OrderListService.changeFinishStatusOrder(orderID)
-            .then(data => {
-                if (data) {
-                    orderStatusDOM.classList.remove("bg-green");
-                    orderStatusDOM.classList.add("bg-yellow");
-                    orderStatusDOM.removeAttribute("style");
-                    orderStatusDOM.innerText = 'Đang xử lý';
-                    orderStatusDOM.removeAttribute("onclick");
-
-                    setTimeout(() => {
-                        swal("Thông báo", "Đơn đã chuyển thành trạng thái đang xử lý", "success");
-                    }, 500);
-                }
-                else {
-                    setTimeout(() => {
-                        swal("Thông báo", "Có lỗi trong quá trình lấy thông tin phí", "error");
-                    }, 500);
-                }
-            })
-            .catch(err => {
-                console.log(err);
-                setTimeout(() => {
-                    swal("Thông báo", "Quá trình chuyển đổi trạng thái đơn hàng đã có vấn đề", "error");
-                }, 500);
-            })
-            .finally(() => {
-                window.HoldOn.close();
-            });
-    };
 };

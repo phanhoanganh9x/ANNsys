@@ -92,16 +92,19 @@ namespace IM_PJ
             }
             else
             {
-                var CreateBy = AccountController.GetAllNotSearch().Where(x => x.RoleID == 0 || x.RoleID == 2).ToList();
+                var CreateBy = AccountController
+                    .GetAllNotSearch()
+                    .Where(x => x.RoleID == 0 || x.RoleID == 2)
+                    .ToList();
+                
                 ddlCreatedBy.Items.Clear();
                 ddlCreatedBy.Items.Insert(0, new ListItem("Nhân viên tạo đơn", ""));
+                
                 if (CreateBy.Count > 0)
                 {
                     foreach (var p in CreateBy)
-                    {
-                        ListItem listitem = new ListItem(p.Username, p.Username);
-                        ddlCreatedBy.Items.Add(listitem);
-                    }
+                        ddlCreatedBy.Items.Add(new ListItem(p.Username, p.Username));
+                    
                     ddlCreatedBy.DataBind();
                 }
             }
