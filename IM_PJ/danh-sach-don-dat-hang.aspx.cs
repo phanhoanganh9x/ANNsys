@@ -20,61 +20,70 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
+                #region Check Author
                 if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["usernameLoginSystem"].Value;
+                    var username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
 
                     if (acc != null)
                     {
-                        LoadShipper();
-                        LoadTransportCompany();
-                        if (acc.RoleID == 0)
-                        {
-                            LoadCreatedBy();
-                        }
-                        else if (acc.RoleID == 2)
-                        {
-                            LoadCreatedBy(acc);
-                        }
+                        var allowRole = new List<int>() { 0, 2 };
+
+                        if (allowRole.Where(x => x == acc.RoleID).Any())
+                            _initPage(acc);
                         else
-                        {
                             Response.Redirect("/trang-chu");
-                        }
                     }
+                    else
+                        Response.Redirect("/dang-nhap");
                 }
                 else
-                {
                     Response.Redirect("/dang-nhap");
-                }
-                LoadData();
             }
         }
-        public void LoadShipper()
-        {
-            var shipper = ShipperController.getDropDownList();
-            shipper[0].Text = "Shipper";
-            ddlShipperFilter.Items.Clear();
-            ddlShipperFilter.Items.AddRange(shipper.ToArray());
-            ddlShipperFilter.DataBind();
 
-        }
-        public void LoadTransportCompany()
+        #region Private
+        /// <summary>
+        /// Cài đặt datetime picker fromDate và toDate
+        /// </summary>
+        private void _initDatetimePicker()
         {
-            var TransportCompany = TransportCompanyController.GetTransportCompany();
-            ddlTransportCompany.Items.Clear();
-            ddlTransportCompany.Items.Insert(0, new ListItem("Chành xe", "0"));
-            if (TransportCompany.Count > 0)
-            {
-                foreach (var p in TransportCompany)
-                {
-                    ListItem listitem = new ListItem(p.CompanyName.ToTitleCase(), p.ID.ToString());
-                    ddlTransportCompany.Items.Add(listitem);
-                }
-                ddlTransportCompany.DataBind();
-            }
+            // ẩn sản phẩm theo thời gian
+            var dateConfig = new DateTime(2019, 12, 15);
+            var config = ConfigController.GetByTop1();
+
+            if (config.ViewAllOrders == 1)
+                dateConfig = new DateTime(2018, 6, 22);
+            else if (config.ViewAllReports == 0)
+                dateConfig = DateTime.Now.AddMonths(-2);
+
+            #region Cài đặt fromDate
+            var fromDate = dateConfig;
+            var queryFromDate = Request.QueryString["fromDate"];
+
+            if (!String.IsNullOrEmpty(queryFromDate))
+                fromDate = Convert.ToDateTime(queryFromDate);
+
+            rOrderFromDate.SelectedDate = fromDate;
+            rOrderFromDate.MinDate = dateConfig;
+            rOrderFromDate.MaxDate = DateTime.Now;
+            #endregion
+
+            #region Cài đặt toDate
+            var toDate = DateTime.Now;
+            var queryToDate = Request.QueryString["toDate"];
+
+            if (!String.IsNullOrEmpty(queryToDate))
+                toDate = Convert.ToDateTime(queryToDate).AddDays(1).AddMinutes(-1);
+
+            rOrderToDate.SelectedDate = toDate;
+            rOrderToDate.MinDate = dateConfig;
+            rOrderToDate.MaxDate = DateTime.Now;
+            #endregion
         }
-        public void LoadCreatedBy(tbl_Account acc = null)
+
+        private void _initCreatedBy(tbl_Account acc = null)
         {
             if (acc != null)
             {
@@ -97,235 +106,13 @@ namespace IM_PJ
                 }
             }
         }
-        public void LoadData()
+
+        private void _initPage(tbl_Account acc)
         {
-            string username = Request.Cookies["usernameLoginSystem"].Value;
-            var acc = AccountController.GetByUsername(username);
-            if (acc != null)
-            {
-                // ẩn sản phẩm theo thời gian
-                DateTime year = new DateTime(2019, 12, 15);
-
-                var config = ConfigController.GetByTop1();
-
-                if (config.ViewAllOrders == 1)
-                {
-                    year = new DateTime(2018, 6, 22);
-                }
-
-                if (config.ViewAllReports == 0)
-                {
-                    year = DateTime.Now.AddMonths(-2);
-                }
-
-                DateTime DateConfig = year;
-
-                DateTime OrderFromDate = DateConfig;
-                DateTime OrderToDate = DateTime.Now;
-
-                if (!String.IsNullOrEmpty(Request.QueryString["orderfromdate"]))
-                {
-                    OrderFromDate = Convert.ToDateTime(Request.QueryString["orderfromdate"]);
-                }
-
-                if (!String.IsNullOrEmpty(Request.QueryString["ordertodate"]))
-                {
-                    OrderToDate = Convert.ToDateTime(Request.QueryString["ordertodate"]).AddDays(1).AddMinutes(-1);
-                }
-
-                rOrderFromDate.SelectedDate = OrderFromDate;
-                rOrderFromDate.MinDate = DateConfig;
-                rOrderFromDate.MaxDate = DateTime.Now;
-
-                rOrderToDate.SelectedDate = OrderToDate;
-                rOrderToDate.MinDate = DateConfig;
-                rOrderToDate.MaxDate = DateTime.Now;
-
-                int OrderType = 0;
-                int PaymentStatus = 0;
-                var ExcuteStatus = new List<int>() {1, 2, 3};
-                int PaymentType = 0;
-                var ShippingType = new List<int>();
-                string Discount = "";
-                string OtherFee = "";
-                string OrderNote = "";
-                string TextSearch = "";
-                string CreatedBy = "";
-                int TransportCompany = 0;
-                int ShipperID = 0;
-                int Page = 1;
-
-                // add filter quantity
-                string Quantity = "";
-                int QuantityFrom = 0;
-                int QuantityTo = 0;
-                // add filter seach type
-                int SearchType = 0;
-                // Trạng thái mã giảm giá
-                int CouponStatus = 0;
-
-                if (Request.QueryString["textsearch"] != null)
-                {
-                    TextSearch = Request.QueryString["textsearch"].Trim();
-                }
-                if (Request.QueryString["searchtype"] != null)
-                {
-                    SearchType = Request.QueryString["searchtype"].ToInt(0);
-                }
-                if (Request.QueryString["ordertype"] != null)
-                {
-                    OrderType = Request.QueryString["ordertype"].ToInt(0);
-                }
-                if (Request.QueryString["paymentstatus"] != null)
-                {
-                    PaymentStatus = Request.QueryString["paymentstatus"].ToInt(0);
-                }
-                if (Request.QueryString["excutestatus"] != null)
-                {
-                    ExcuteStatus.Clear();
-                    ExcuteStatus.Add(Request.QueryString["excutestatus"].ToInt(0));
-                }
-                if (Request.QueryString["paymenttype"] != null)
-                {
-                    PaymentType = Request.QueryString["paymenttype"].ToInt(0);
-                }
-                if (Request.QueryString["shippingtype"] != null)
-                {
-                    ShippingType.Add(Request.QueryString["shippingtype"].ToInt(0));
-                }
-                if (Request.QueryString["discount"] != null)
-                {
-                    Discount = Request.QueryString["discount"].ToString();
-                }
-                if (Request.QueryString["otherfee"] != null)
-                {
-                    OtherFee = Request.QueryString["otherfee"].ToString();
-                }
-                if (Request.QueryString["ordernote"] != null)
-                {
-                    OrderNote = Request.QueryString["ordernote"].ToString();
-                }
-                if (Request.QueryString["createdby"] != null)
-                {
-                    CreatedBy = Request.QueryString["createdby"];
-                }
-                if (Request.QueryString["transportcompany"] != null)
-                {
-                    TransportCompany = Request.QueryString["transportcompany"].ToInt(0);
-                }
-                if (Request.QueryString["shipperid"] != null)
-                {
-                    ShipperID = Request.QueryString["shipperid"].ToInt(0);
-                }
-
-                if (Request.QueryString["Page"] != null)
-                {
-                    Page = Request.QueryString["Page"].ToInt();
-                }
-
-                // add filter quantity
-                if (Request.QueryString["quantityfilter"] != null)
-                {
-                    Quantity = Request.QueryString["quantityfilter"];
-
-                    if (Quantity == "greaterthan")
-                    {
-                        QuantityFrom = Request.QueryString["quantity"].ToInt();
-                    }
-                    else if (Quantity == "lessthan")
-                    {
-                        QuantityTo = Request.QueryString["quantity"].ToInt();
-                    }
-                    else if (Quantity == "between")
-                    {
-                        QuantityFrom = Request.QueryString["quantitymin"].ToInt();
-                        QuantityTo = Request.QueryString["quantitymax"].ToInt();
-                    }
-                }
-                // Drop download có / không mã giảm giá
-                if (Request.QueryString["couponstatus"] != null)
-                    CouponStatus = Request.QueryString["couponstatus"].ToInt(0);
-
-                txtSearchOrder.Text = TextSearch;
-                ddlSearchType.SelectedValue = SearchType.ToString();
-                ddlOrderType.SelectedValue = OrderType.ToString();
-                ddlExcuteStatus.SelectedValue = ExcuteStatus.Count() > 1 ? "0" : ExcuteStatus.FirstOrDefault().ToString();
-                ddlPaymentStatus.SelectedValue = PaymentStatus.ToString();
-                ddlPaymentType.SelectedValue = PaymentType.ToString();
-                ddlShippingType.SelectedValue = ShippingType.Count() > 0 ? ShippingType.FirstOrDefault().ToString() : "0";
-                ddlDiscount.SelectedValue = Discount;
-                ddlOtherFee.SelectedValue = OtherFee;
-                ddlOrderNote.SelectedValue = OrderNote;
-                ddlCreatedBy.SelectedValue = CreatedBy;
-                ddlTransportCompany.SelectedValue = TransportCompany.ToString();
-                ddlShipperFilter.SelectedValue = ShipperID.ToString();
-
-                // add filter quantity
-                ddlQuantityFilter.SelectedValue = Quantity;
-                if (Quantity == "greaterthan")
-                {
-                    txtQuantity.Text = QuantityFrom.ToString();
-                    txtQuantityMin.Text = "0";
-                    txtQuantityMax.Text = "0";
-                }
-                else if (Quantity == "lessthan")
-                {
-                    txtQuantity.Text = QuantityTo.ToString();
-                    txtQuantityMin.Text = "0";
-                    txtQuantityMax.Text = "0";
-                }
-                else if (Quantity == "between")
-                {
-                    txtQuantity.Text = "0";
-                    txtQuantityMin.Text = QuantityFrom.ToString();
-                    txtQuantityMax.Text = QuantityTo.ToString();
-                }
-
-                // Drop download có / không mã giảm giá
-                ddlCouponStatus.SelectedValue = CouponStatus.ToString();
-
-                if (acc.RoleID != 0)
-                {
-                    CreatedBy = acc.Username;
-                    ddlCreatedBy.Enabled = false;
-                }
-
-                // Create order fileter
-                var filter = new OrderFilterModel()
-                {
-                    search = TextSearch,
-                    searchType = SearchType,
-                    orderType = OrderType,
-                    excuteStatus = ExcuteStatus,
-                    paymentStatus = PaymentStatus,
-                    paymentType = PaymentType,
-                    shippingType = ShippingType,
-                    discount = Discount,
-                    otherFee = OtherFee,
-                    quantity = Quantity,
-                    quantityFrom = QuantityFrom,
-                    quantityTo = QuantityTo,
-                    orderCreatedBy = CreatedBy,
-                    orderFromDate = OrderFromDate,
-                    orderToDate = OrderToDate,
-                    transportCompany = TransportCompany,
-                    shipper = ShipperID,
-                    orderNote = OrderNote,
-                    couponStatus = CouponStatus
-                };
-                // Create pagination
-                var page = new PaginationMetadataModel()
-                {
-                    currentPage = Page
-                };
-                List<OrderList> rs = new List<OrderList>();
-                rs = OrderController.Filter(filter, ref page);
-
-                pagingall(rs, page);
-
-                ltrNumberOfOrder.Text = page.totalCount.ToString();
-            }
+            _initDatetimePicker();
+            _initCreatedBy(acc.RoleID == 2 ? acc : null);
         }
+        #endregion
 
         #region Paging
         public void pagingall(List<OrderList> acs, PaginationMetadataModel page)
@@ -527,8 +314,6 @@ namespace IM_PJ
                 }
             }
             html.AppendLine("</tbody>");
-
-            ltrList.Text = html.ToString();
         }
 
         private int PageCount;
@@ -654,123 +439,5 @@ namespace IM_PJ
             return output.ToString();
         }
         #endregion
-
-        protected void btnSearch_Click(object sender, EventArgs e)
-        {
-            string search = txtSearchOrder.Text.Trim();
-            string request = "/danh-sach-don-hang?";
-
-            if (ddlSearchType.SelectedValue != "")
-            {
-                request += "&searchtype=" + ddlSearchType.SelectedValue;
-            }
-
-            if (search != "")
-            {
-                request += "&textsearch=" + search;
-            }
-
-            if(ddlOrderType.SelectedValue != "")
-            {
-                request += "&ordertype=" + ddlOrderType.SelectedValue;
-            }
-
-            if (ddlPaymentStatus.SelectedValue != "")
-            {
-                request += "&paymentstatus=" + ddlPaymentStatus.SelectedValue;
-            }
-
-            if (ddlExcuteStatus.SelectedValue != "")
-            {
-                request += "&excutestatus=" + ddlExcuteStatus.SelectedValue;
-            }
-
-            if (ddlPaymentType.SelectedValue != "")
-            {
-                request += "&paymenttype=" + ddlPaymentType.SelectedValue;
-            }
-
-            if (ddlShippingType.SelectedValue != "")
-            {
-                request += "&shippingtype=" + ddlShippingType.SelectedValue;
-            }
-
-            if (ddlDiscount.SelectedValue != "")
-            {
-                request += "&discount=" + ddlDiscount.SelectedValue;
-            }
-
-            if (ddlOtherFee.SelectedValue != "")
-            {
-                request += "&otherfee=" + ddlOtherFee.SelectedValue;
-            }
-
-            if (ddlOrderNote.SelectedValue != "")
-            {
-                request += "&ordernote=" + ddlOrderNote.SelectedValue;
-            }
-
-            if (ddlCreatedBy.SelectedValue != "")
-            {
-                request += "&createdby=" + ddlCreatedBy.SelectedValue;
-            }
-
-            if (rOrderFromDate.SelectedDate.HasValue)
-            {
-                request += "&orderfromdate=" + rOrderFromDate.SelectedDate.ToString();
-            }
-
-            if (rOrderToDate.SelectedDate.HasValue)
-            {
-                request += "&ordertodate=" + rOrderToDate.SelectedDate.ToString();
-            }
-
-            if (ddlQuantityFilter.SelectedValue != "")
-            {
-                if (ddlQuantityFilter.SelectedValue == "greaterthan" || ddlQuantityFilter.SelectedValue == "lessthan")
-                {
-                    request += "&quantityfilter=" + ddlQuantityFilter.SelectedValue;
-                    request += "&quantity=" + (String.IsNullOrEmpty(txtQuantity.Text) ? "0" : txtQuantity.Text);
-                }
-
-                if (ddlQuantityFilter.SelectedValue == "between")
-                {
-                    request += "&quantityfilter=" + ddlQuantityFilter.SelectedValue;
-                    request += "&quantitymin=" + (String.IsNullOrEmpty(txtQuantityMin.Text) ? "0" : txtQuantityMin.Text);
-                    request += "&quantitymax=" + (String.IsNullOrEmpty(txtQuantityMax.Text) ? "0" : txtQuantityMax.Text);
-                }
-            }
-            if (ddlTransportCompany.SelectedValue != "0")
-            {
-                request += "&transportcompany=" + ddlTransportCompany.SelectedValue;
-            }
-            if (ddlShipperFilter.SelectedValue != "0")
-            {
-                request += "&shipperid=" + ddlShipperFilter.SelectedValue;
-            }
-            // Drop downlist có / không mã giảm giá
-            if (ddlCouponStatus.SelectedValue != "0")
-                request += "&couponstatus=" + ddlCouponStatus.SelectedValue;
-
-            Response.Redirect(request);
-        }
-
-        [WebMethod]
-        public static string getFeeInfo(int orderID)
-        {
-            return FeeController.getFeesJSON(orderID);
-        }
-
-        [WebMethod]
-        public static tbl_Order changeFinishStatusOrder(int orderID)
-        {
-            string username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
-            var acc = AccountController.GetByUsername(username);
-
-            if (acc == null)
-                throw new Exception("Vui lòng đăng nhập lại!");
-
-            return OrderController.UpdateExcuteStatus(orderID, (int)ExcuteStatus.Doing, acc.Username);
-        }
     }
 }
