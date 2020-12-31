@@ -425,6 +425,7 @@
     <Content Include="App_Themes\Ann\js\pages\danh-sach-khach-hang\generate-coupon-for-customer.js" />
     <Content Include="App_Themes\Ann\js\pages\danh-sach-nhom-khach-hang\danh-sach-nhom-khach-hang.js" />
     <Content Include="App_Themes\Ann\js\pages\them-moi-giam-gia\them-moi-giam-gia.js" />
+    <Content Include="App_Themes\Ann\js\services\common\order-service.js" />
     <Content Include="App_Themes\Ann\js\services\common\product-service.js" />
     <Content Include="App_Themes\Ann\js\services\common\search-customer-service.js" />
     <Content Include="App_Themes\Ann\js\services\common\utils-service.js" />
@@ -444,6 +445,7 @@
     <Content Include="App_Themes\Ann\js\search-customer.js" />
     <Content Include="App_Themes\Ann\js\copy-product-info.js" />
     <Content Include="App_Themes\Ann\js\search-product.js" />
+    <Content Include="App_Themes\Ann\js\utils\string-format.js" />
     <Content Include="App_Themes\Ann\scss\style.css" />
     <Content Include="App_Themes\Ann\scss\style.min.css" />
     <Content Include="App_Themes\NewUI\css\bootstrap-editable.css" />

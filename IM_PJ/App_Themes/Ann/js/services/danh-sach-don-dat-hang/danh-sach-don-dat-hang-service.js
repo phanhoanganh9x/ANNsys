@@ -14,7 +14,9 @@
         if (filter.toDate)
             queryParams += '&toDate=' + filter.toDate;
         // Order Status
-        if (filter.orderStatus)
+        if (filter.orderStatus == 0)
+            queryParams += '&orderStatus=0'
+        else if (filter.orderStatus)
             queryParams += '&orderStatus=' + filter.orderStatus;
         // Search
         if (filter.search)
@@ -26,7 +28,7 @@
         }
         // Discount
         if (filter.hasDiscount)
-            queryParams += '&hasDiscount=' + filter.hasDiscount;
+            queryParams += '&hasDiscount=' + Boolean(filter.hasDiscount);
         // Payment Method
         if (filter.paymentMethod)
             queryParams += '&paymentMethod=' + filter.paymentMethod;
@@ -35,22 +37,27 @@
             queryParams += '&deliveryMethod=' + filter.deliveryMethod;
         // Coupon
         if (filter.hasCoupon)
-            queryParams += '&hasCoupon=' + filter.hasCoupon;
+            queryParams += '&hasCoupon=' + Boolean(filter.hasCoupon);
         // Quantity
         if (filter.quantityFilter)
         {
-            queryParams += '&quantityFilter=' + filter.quantityFilter;
-
-            if (filter.quantityFilter in [1, 2])
+            if (filter.quantityFilter == 1 || filter.quantityFilter == 2)
             {
                 if (filter.quantity)
+                {
+                    queryParams += '&quantityFilter=' + filter.quantityFilter;
                     queryParams += '&quantity=' + filter.quantity;
+                }
             }
-            else {
-                if (filter.minQuantity)
-                    queryParams += '&minQuantity=' + filter.minQuantity;
-                if (filter.maxQuantity)
-                    queryParams += '&maxQuantity=' + filter.maxQuantity;
+            else if (filter.quantityFilter == 3) {
+                if (filter.minQuantity || filter.maxQuantity) {
+                    queryParams += '&quantityFilter=' + filter.quantityFilter;
+
+                    if (filter.minQuantity)
+                        queryParams += '&minQuantity=' + filter.minQuantity;
+                    if (filter.maxQuantity)
+                        queryParams += '&maxQuantity=' + filter.maxQuantity;
+                }
             }
         }
         // Staff
@@ -65,7 +72,7 @@
 
     getPreOrders(filter, pagination) {
         let url = this.backendDomain + this.api + '/orders';
-        let queryParams = _generateQueryParams(filter, pagination);
+        let queryParams = this._generateQueryParams(filter, pagination);
 
         if (queryParams)
             url += '?' + queryParams;
@@ -76,7 +83,7 @@
                 url: url,
                 contentType: 'application/json; charset=utf-8',
                 success: (response) => {
-                    reslove(JSON.parse(response));
+                    reslove(response);
                 },
                 error: err => {
                     reject(err);
