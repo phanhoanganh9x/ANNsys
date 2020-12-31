@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <link rel="stylesheet" href="App_Themes/Ann/css/pages/danh-sach-don-dat-hang/danh-sach-don-dat-hang.css?v=202012251556" />
+    <link rel="stylesheet" href="App_Themes/Ann/css/pages/danh-sach-don-dat-hang/danh-sach-don-dat-hang.css?v=202012311648" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
@@ -67,10 +67,10 @@
                         <div class="filter-control">
                             <div class="row">
                                 <div class="col-md-1 col-xs-6">
-                                    <asp:DropDownList ID="ddlCouponStatus" runat="server" CssClass="form-control" onchange="onChange_ddlQuantityFilter(this)">
-                                        <asp:ListItem Value="0" Text="Coupon"></asp:ListItem>
+                                    <asp:DropDownList ID="ddlCouponStatus" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="" Text="Coupon"></asp:ListItem>
                                         <asp:ListItem Value="1" Text="Có"></asp:ListItem>
-                                        <asp:ListItem Value="2" Text="Không"></asp:ListItem>
+                                        <asp:ListItem Value="0" Text="Không"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
@@ -117,29 +117,29 @@
                         </div>
                     </div>
                     <div class="panel-table clear">
-                        <%--<div class="panel-footer clear">
+                        <div class="panel-footer clear">
                             <div class="pagination">
-                                <%this.DisplayHtmlStringPaging1();%>
                             </div>
-                        </div>--%>
-                        <div class="responsive-table">
-                            <table class="table table-checkable table-product table-new-product shop_table_responsive">
-                                <%--<asp:Literal ID="ltrList" runat="server" EnableViewState="false"></asp:Literal>--%>
-                            </table>
                         </div>
-                        <%--<div class="panel-footer clear">
+                        <div class="responsive-table">
+                            <table id="tbPreOrder" class="table table-checkable table-product table-new-product shop_table_responsive"></table>
+                        </div>
+                        <div class="panel-footer clear">
                             <div class="pagination">
-                                <%this.DisplayHtmlStringPaging1();%>
                             </div>
-                        </div>--%>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <asp:HiddenField ID="hdRole" runat="server"/>
         </div>
 
+        <script type="text/javascript" src="/App_Themes/Ann/js/utils/string-format.js?v=202012311648"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=02112020"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/services/danh-sach-don-hang/danh-sach-don-hang-service.js?v=02112020"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/controllers/danh-sach-don-hang/danh-sach-don-hang-controller.js?v=02112020"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-don-hang/danh-sach-don-hang.js?v=02112020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/services/common/order-service.js?v=202012311648"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/services/danh-sach-don-dat-hang/danh-sach-don-dat-hang-service.js?v=202012311648"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/controllers/danh-sach-don-dat-hang/danh-sach-don-dat-hang-controller.js?v=202012311648"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-don-dat-hang/danh-sach-don-dat-hang.js?v=202012311648"></script>
     </main>
 </asp:Content>
