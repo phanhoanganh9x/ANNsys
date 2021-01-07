@@ -152,7 +152,7 @@ namespace IM_PJ.Controllers
         }
 
         #endregion
-        #region Select        
+        #region Select
         public static List<tbl_RefundGoods> GetAll(string s)
         {
             using (var dbe = new inventorymanagementEntities())
@@ -910,9 +910,9 @@ namespace IM_PJ.Controllers
 
             var now = DateTime.Now;
 
-            if (now < new DateTime(year: 2020, month: 10, day: 25))
+            if (now < new DateTime(year: 2021, month: 1, day: 8))
                 return result;
-            if (now > new DateTime(year: 2020, month: 12, day: 31))
+            if (now > new DateTime(year: 2021, month: 2, day: 7))
                 return result;
             #endregion
 
@@ -931,7 +931,7 @@ namespace IM_PJ.Controllers
             public double TotalRevenue { get; set; }
             public double TotalCost { get; set; }
             public double TotalRefundFee { get; set; }
-            
+
         }
         public class RefundOrder
         {
