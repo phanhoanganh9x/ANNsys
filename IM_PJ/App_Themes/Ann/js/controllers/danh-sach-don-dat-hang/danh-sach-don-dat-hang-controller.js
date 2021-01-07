@@ -1,5 +1,6 @@
 ﻿class PreOrderController {
     constructor() {
+        this.role = null;
         this.filter = {
             searchOrder: 1, // preOrder
             fromDate: null,
@@ -86,7 +87,7 @@
             // Discount
             if (key == "hasDiscount")
             {
-                if (value == 0)
+                if (value == "0")
                     this.filter.hasDiscount = 0;
                 else if (value)
                     this.filter.hasDiscount = +value || null;
@@ -130,7 +131,7 @@
 
             // Staff
             if (key == "staff")
-                if (value)
+                if (this.role == 0 && value)
                     this.filter.staff = value;
 
             // Page
