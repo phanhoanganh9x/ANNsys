@@ -13,8 +13,6 @@ using System.Web.Script.Serialization;
 using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using static IM_PJ.Controllers.DiscountCustomerController;
-using static IM_PJ.pos;
 
 namespace IM_PJ
 {
@@ -22,54 +20,72 @@ namespace IM_PJ
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            ScriptManager.GetCurrent(this).AsyncPostBackTimeout = 600;
-
             if (!IsPostBack)
             {
                 if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["usernameLoginSystem"].Value;
+                    var username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
+
                     if (acc != null)
                     {
-
-                        hdSession.Value = "1";
-
-                        var agent = acc.AgentID;
-                        if (agent == 1)
-                        {
-                            hdfIsMain.Value = "1";
-                        }
+                        if (acc.RoleID == 0 || acc.RoleID == 2)
+                            _initPage(acc);
                         else
-                        {
-                            hdfIsMain.Value = "0";
-                        }
-
-                        if (acc.RoleID == 0)
-                        {
-                            hdfUsernameCurrent.Value = acc.Username;
-                            LoadCreatedBy();
-                        }
-                        else if (acc.RoleID == 2)
-                        {
-                            hdfUsername.Value = acc.Username;
-                            hdfUsernameCurrent.Value = acc.Username;
-                            LoadCreatedBy(acc);
-                        }
-                        else
-                        {
                             Response.Redirect("/trang-chu");
-                        }
                     }
+                    else
+                        Response.Redirect("/dang-nhap");
                 }
                 else
-                {
                     Response.Redirect("/dang-nhap");
-                }
-                LoadTransportCompany();
-                LoadData();
             }
         }
+
+        #region Private
+        /// <summary>
+        /// Cài đặt bộ lọc nhân viên phụ trách
+        /// </summary>
+        /// <param name="acc"></param>
+        private void _initCreatedBy(tbl_Account acc = null)
+        {
+            hdRole.Value = acc == null ? "0" : acc.RoleID.ToString();
+
+            if (acc != null)
+            {
+                ddlCreatedBy.Enabled = false;
+                ddlCreatedBy.Items.Clear();
+                ddlCreatedBy.Items.Insert(0, new ListItem(acc.Username, acc.Username));
+            }
+            else
+            {
+                var items = AccountController
+                    .GetAllNotSearch()
+                    .Where(x => x.RoleID == 0 || x.RoleID == 2)
+                    .Select(x => new ListItem(x.Username, x.Username))
+                    .ToArray();
+
+                ddlCreatedBy.Enabled = true;
+                ddlCreatedBy.Items.Clear();
+                ddlCreatedBy.Items.Insert(0, new ListItem("Nhân viên tạo đơn", ""));
+                ddlCreatedBy.Items.AddRange(items);
+                ddlCreatedBy.DataBind();
+
+
+                var staff = Request.QueryString["staff"];
+                if (!String.IsNullOrEmpty(staff))
+                    for (int i = 0; i < ddlCreatedBy.Items.Count; i++)
+                        if (ddlCreatedBy.Items[i].Value == staff)
+                            ddlCreatedBy.SelectedIndex = i;
+            }
+        }
+
+        private void _initPage(tbl_Account acc)
+        {
+            _initCreatedBy(acc.RoleID == 2 ? acc : null);
+        }
+        #endregion
+
         public void LoadCreatedBy(tbl_Account acc = null)
         {
             if (acc != null)

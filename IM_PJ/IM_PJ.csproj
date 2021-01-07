@@ -350,6 +350,7 @@
     <Content Include="App_Themes\Ann\css\pages\danh-sach-don-hang\danh-sach-don-hang.css" />
     <Content Include="App_Themes\Ann\css\pages\danh-sach-khach-giam-gia\danh-sach-khach-giam-gia.css" />
     <Content Include="App_Themes\Ann\css\pages\them-moi-giam-gia\them-moi-giam-gia.css" />
+    <Content Include="App_Themes\Ann\css\pages\thong-tin-don-dat-hang\thong-tin-don-dat-hang.css" />
     <Content Include="App_Themes\Ann\css\print-delivery.css" />
     <Content Include="App_Themes\Ann\css\print-return-order-image.css" />
     <Content Include="App_Themes\Ann\css\print-order-image.css" />

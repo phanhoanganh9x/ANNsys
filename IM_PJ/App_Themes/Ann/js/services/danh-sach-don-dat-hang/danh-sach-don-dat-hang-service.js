@@ -27,7 +27,9 @@
                 queryParams += '&searchType=' + filter.searchType;
         }
         // Discount
-        if (filter.hasDiscount)
+        if (filter.hasDiscount == 0)
+            queryParams += '&hasDiscount=false';
+        else if (filter.hasDiscount)
             queryParams += '&hasDiscount=' + Boolean(filter.hasDiscount);
         // Payment Method
         if (filter.paymentMethod)
@@ -36,7 +38,9 @@
         if (filter.deliveryMethod)
             queryParams += '&deliveryMethod=' + filter.deliveryMethod;
         // Coupon
-        if (filter.hasCoupon)
+        if (filter.hasCoupon == 0)
+            queryParams += '&hasCoupon=false';
+        else if (filter.hasCoupon)
             queryParams += '&hasCoupon=' + Boolean(filter.hasCoupon);
         // Quantity
         if (filter.quantityFilter)

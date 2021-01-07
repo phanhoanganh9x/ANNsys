@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <link rel="stylesheet" href="App_Themes/Ann/css/pages/danh-sach-don-dat-hang/danh-sach-don-dat-hang.css?v=202012311648" />
+    <link rel="stylesheet" href="App_Themes/Ann/css/pages/danh-sach-don-dat-hang/danh-sach-don-dat-hang.css?v=202101051418" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
@@ -135,11 +135,11 @@
             <asp:HiddenField ID="hdRole" runat="server"/>
         </div>
 
-        <script type="text/javascript" src="/App_Themes/Ann/js/utils/string-format.js?v=202012311648"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/utils/string-format.js?v=202101051418"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=02112020"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/services/common/order-service.js?v=202012311648"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/services/danh-sach-don-dat-hang/danh-sach-don-dat-hang-service.js?v=202012311648"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/controllers/danh-sach-don-dat-hang/danh-sach-don-dat-hang-controller.js?v=202012311648"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-don-dat-hang/danh-sach-don-dat-hang.js?v=202012311648"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/services/common/order-service.js?v=202101051418"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/services/danh-sach-don-dat-hang/danh-sach-don-dat-hang-service.js?v=202101051418"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/controllers/danh-sach-don-dat-hang/danh-sach-don-dat-hang-controller.js?v=202101051418"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-don-dat-hang/danh-sach-don-dat-hang.js?v=202101051418"></script>
     </main>
 </asp:Content>

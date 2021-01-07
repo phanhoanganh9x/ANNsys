@@ -4,12 +4,22 @@ let controller = new PreOrderController();
 
 
 document.addEventListener("DOMContentLoaded", function (event) {
+    _initRole();
     _initQueryParams();
     _initQuantity();
     _initPreOrderTable();
 });
 
 // #region Private
+function _initRole() {
+    let roleDOM = document.querySelector("[id$='_hdRole']");
+
+    if (roleDOM.value == "0")
+        controller.role = 0;
+    else if (roleDOM.value)
+        controller.role = +roleDOM.value || null;
+}
+
 function _initQueryParams() {
     let search = window.location.search;
 
@@ -183,7 +193,7 @@ function _updateFilter() {
     // Staff
     let staffDOM = document.querySelector("[id$='_ddlCreatedBy']");
 
-    if (staffDOM.value)
+    if (controller.role == 0 && staffDOM.value)
         controller.filter.staff = staffDOM.value;
     else
         controller.filter.staff = null;
@@ -266,16 +276,17 @@ function _createPaginationHTML(pagination, pageNumberDisplay) {
 function _loadPagination() {
     let pageNumberDisplay = 6;
     let paginationDOM = document.querySelectorAll(".pagination");
+    let html = "";
+
+    if (controller.pagination.totalPages > 1)
+        html = _createPaginationHTML(controller.pagination, pageNumberDisplay);
 
     paginationDOM.forEach(function (element) {
-        let html = _createPaginationHTML(controller.pagination, pageNumberDisplay);
-
         element.innerHTML = html;
     })
 }
 
 function _createPreOrderTableHTML(data) {
-    let roleDOM = document.querySelector("[id$='_hdRole']");
     let html = "";
 
     html += "<thead>";
@@ -290,7 +301,7 @@ function _createPreOrderTableHTML(data) {
     html += "        <th>Giao hàng</th>";
     html += "         <th>Tổng tiền</th>";
 
-    if (roleDOM.value == "0")
+    if (controller.role == 0)
         html += "         <th>Nhân viên</th>";
 
     html += "         <th>Ngày tạo</th>";
@@ -301,7 +312,7 @@ function _createPreOrderTableHTML(data) {
 
     if (data.length == 0)
     {
-        if (roleDOM.value == "0")
+        if (controller.role == 0)
             html += "    <tr><td colspan='12'>Không tìm thấy đơn hàng...</td></tr>";
         else
             html += "    <tr><td colspan='11'>Không tìm thấy đơn hàng...</td></tr>";
@@ -333,7 +344,7 @@ function _createPreOrderTableHTML(data) {
             html += "        <td class='payment-type' data-title='Kiểu thanh toán'>" + orderService.generatePaymentMethodHTML(item.paymentMethod.key) + "</td>";
             html += "        <td class='shipping-type' data-title='Giao hàng'>" + orderService.generateDeliveryMethodHTML(item.deliveryMethod.key) + "</td>";
 
-            if (roleDOM.value == "0")
+            if (controller.role == 0)
             {
                 html += "        <td data-title='Tổng tiền'>";
                 html += "           <strong>" + UtilsService.formatThousands(item.price, ',') + "</strong>";
@@ -349,9 +360,9 @@ function _createPreOrderTableHTML(data) {
                 html += "        </td>";
             }
 
-            if (roleDOM.value == "0")
+            if (controller.role == 0)
                 if (item.staff)
-                    html += "        <td data-title='Nhân viên'>" + item.staff.name + "</td>";
+                    html += "        <td data-title='Nhân viên'>" + item.staff + "</td>";
                 else
                     html += "        <td data-title='Nhân viên'></td>";
 
@@ -411,7 +422,7 @@ function _loadPreOrderTable() {
 // #region Public
 function onKeyUp_txtSearchOrder(event) {
     if (event.keyCode === 13)
-        onClickSearchPreOrder;
+        onClickSearchPreOrder();
 }
 
 function onClickSearchPreOrder() {
@@ -485,20 +496,4 @@ function onClick_Pagination(page) {
             HoldOn.close();
         });
 }
-
-function onClick_spFinishStatusOrder(self, orderID) {
-    swal({
-        title: "Xác nhận",
-        text: 'Bạn muốn chuyển trạng thái đơn là đang xử lý, phải không?',
-        type: "warning",
-        showCancelButton: true,
-        closeOnConfirm: true,
-        cancelButtonText: "Để em xem lại...",
-        confirmButtonText: "Đúng rồi sếp!",
-    }, function (confirm) {
-        if (confirm) {
-            controller.changeFinishStatusOrder(self, orderID);
-        }
-    });
-};
 // #endregion
