@@ -15,16 +15,17 @@ CREATE TABLE [dbo].[Video](
 	[Height] [int] NOT NULL,
 	[Width] [int] NOT NULL,
 	[Expiration] [bigint] NOT NULL,
-	[IsPublicVideo] AS IIF(IsProductVideo = 0 and IsPostVideo = 0, CAST(1 as BIT), CAST(0 AS BIT)),
+	[IsPublicVideo] AS ISNULL(IIF(IsProductVideo = 0 and IsPostVideo = 0, CAST(1 as BIT), CAST(0 AS BIT)), 0),
 	[IsProductVideo] [bit] NOT NULL,
 	[ProductId] [int] NULL,
 	[IsPostVideo] [bit] NOT NULL,
 	[PostId] [int] NULL,
+	[IsActive] [bit] NOT NULL,
 	[CreatedBy] [nvarchar](50) NOT NULL,
 	[CreatedDate] [datetime] NOT NULL,
 	[ModifiedBy] [nvarchar](50) NOT NULL,
 	[ModifiedDate] [datetime] NOT NULL
- CONSTRAINT [PK_Video] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_Video] PRIMARY KEY CLUSTERED
 (
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
@@ -38,6 +39,9 @@ ALTER TABLE [dbo].[Video] ADD  CONSTRAINT [DF_Video_IsProductVideo]  DEFAULT (0)
 GO
 
 ALTER TABLE [dbo].[Video] ADD  CONSTRAINT [DF_Video_IsPostVideo]  DEFAULT (0) FOR [IsPostVideo]
+GO
+
+ALTER TABLE [dbo].[Video] ADD  CONSTRAINT [DF_Video_IsActive]  DEFAULT (1) FOR [IsActive]
 GO
 
 ALTER TABLE [dbo].[Video] ADD  CONSTRAINT [DF_Video_CreatedBy]  DEFAULT (N'admin') FOR [CreatedBy]
