@@ -28,7 +28,7 @@
             totalPages: 1,
         }
 
-        this.service = new PreOrderService();
+        this._service = new PreOrderService();
     }
 
     setFilter(search) {
@@ -215,6 +215,6 @@
     }
 
     getPreOrders() {
-        return this.service.getPreOrders(this.filter, this.pagination)
+        return this._service.getPreOrders(this.filter, this.pagination)
     }
 };

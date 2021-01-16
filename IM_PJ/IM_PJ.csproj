@@ -399,6 +399,7 @@
     <Content Include="App_Themes\Ann\js\bootstrap.min.js" />
     <Content Include="App_Themes\Ann\js\Chart.min.js" />
     <Content Include="App_Themes\Ann\js\chartjs.min.js" />
+    <Content Include="App_Themes\Ann\js\controllers\thong-tin-don-dat-hang\thong-tin-don-dat-hang-controller.js" />
     <Content Include="App_Themes\Ann\js\controllers\chi-tiet-giam-gia\chi-tiet-giam-gia-controller.js" />
     <Content Include="App_Themes\Ann\js\controllers\common\search-customer-controller.js" />
     <Content Include="App_Themes\Ann\js\controllers\cron-job-product-status\cron-job-product-status-controller.js" />
@@ -418,6 +419,7 @@
     <Content Include="App_Themes\Ann\js\models\common\customer-model.js" />
     <Content Include="App_Themes\Ann\js\models\common\discount-group-model.js" />
     <Content Include="App_Themes\Ann\js\models\common\order-model.js" />
+    <Content Include="App_Themes\Ann\js\pages\thong-tin-don-dat-hang\thong-tin-don-dat-hang.js" />
     <Content Include="App_Themes\Ann\js\pages\chi-tiet-giam-gia\chi-tiet-giam-gia.js" />
     <Content Include="App_Themes\Ann\js\pages\cron-job-product-status\cron-job-product-status.js" />
     <Content Include="App_Themes\Ann\js\pages\danh-sach-don-dat-hang\danh-sach-don-dat-hang.js" />
@@ -426,6 +428,7 @@
     <Content Include="App_Themes\Ann\js\pages\danh-sach-khach-hang\generate-coupon-for-customer.js" />
     <Content Include="App_Themes\Ann\js\pages\danh-sach-nhom-khach-hang\danh-sach-nhom-khach-hang.js" />
     <Content Include="App_Themes\Ann\js\pages\them-moi-giam-gia\them-moi-giam-gia.js" />
+    <Content Include="App_Themes\Ann\js\services\thong-tin-don-dat-hang\thong-tin-don-dat-hang-service.js" />
     <Content Include="App_Themes\Ann\js\services\common\order-service.js" />
     <Content Include="App_Themes\Ann\js\services\common\product-service.js" />
     <Content Include="App_Themes\Ann\js\services\common\search-customer-service.js" />
@@ -548,6 +551,7 @@
     <Content Include="SQL\01CREATE_TABLE_Token.sql" />
     <Content Include="SQL\01CREATE_TABLE_Video.sql" />
     <Content Include="SQL\01CREATE_TABLE_ViewOrder.sql" />
+    <Content Include="SQL\05CREATE_STORE_PROCEDURE_ClearCronJobsql.sql" />
     <Content Include="SQL\05CREATE_STORE_PROCEDURE_ClearStock2.sql" />
     <Content Include="SQL\05CREATE_STORE_PROCEDURE_SyncStock1BasedOnStock2.sql" />
     <Content Include="SQL\Add_Quantity_COGS_Order.sql" />
