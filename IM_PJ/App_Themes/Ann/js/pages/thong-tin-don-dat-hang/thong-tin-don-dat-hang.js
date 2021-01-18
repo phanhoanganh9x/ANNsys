@@ -395,6 +395,17 @@ function _initPreOrderStatus(data) {
     }
 }
 
+function _initBtnCreateOrder(role) {
+    let btnCreateOrderDOM = document.querySelectorAll('.btn-create-order');
+
+    btnCreateOrderDOM.forEach(function (element) {
+        if (role == 4)
+            element.classList.add('hidden');
+        else
+            element.classList.remove('hidden');
+    });
+}
+
 function _initPage() {
     HoldOn.open();
 
@@ -412,6 +423,25 @@ function _initPage() {
                     window.location.replace(url);
                 });
 
+            // Kiểm tra xem đơn hàng này có được phép xem không
+            if (data.customer && data.customer.staff) {
+                if (controller.role != 0) {
+                    let staffDOM = document.querySelector('[id$="_ddlCreatedBy"]');
+
+                    if (staffDOM.value != data.customer.staff)
+                        return swal({
+                            title: 'error',
+                            text: 'Đơn đặt hàng #' + controller.preOrderId + ' là của nhân viên #' + data.customer.staff,
+                            type: 'error',
+                            showCloseButton: true,
+                            html: true,
+                        }, function () {
+                            let url = window.location.origin + '/danh-sach-don-dat-hang';
+                            window.location.replace(url);
+                        });
+                }
+            }
+
             _initHeader(data);
             if (data.customer)
                 _initCustomer(data.customer);
@@ -420,17 +450,18 @@ function _initPage() {
             if (data.details && data.details.length > 0)
                 _initBody(data.details);
             _initFooter(data);
-            _initPreOrderStatus(data)
+            _initPreOrderStatus(data);
+            _initBtnCreateOrder(data.role);
 
             HoldOn.close();
         })
         .catch(function (e) {
             HoldOn.close();
-            let message = 'Đã có lỗi xảy ra trong quá trình lấy thông tin đơn đặt hàng #' + controller.preOrderId + '.';
+            console.log(e);
 
             return swal({
                 title: 'Error',
-                text: message,
+                text: 'Đã có lỗi xảy ra trong quá trình lấy thông tin đơn đặt hàng #' + controller.preOrderId + '.',
                 type: 'error',
                 showCloseButton: true,
                 html: true,
@@ -438,6 +469,72 @@ function _initPage() {
                 let url = window.location.origin + '/danh-sach-don-dat-hang';
                 window.location.replace(url);
             });
+        });
+}
+// #endregion
+
+// #region Public
+function createOrder() {
+    HoldOn.open();
+    let staffDOM = document.querySelector('[id$="_ddlCreatedBy"]');
+
+    if (!staffDOM.value) {
+        HoldOn.close();
+
+        return swal({
+            title: 'Error',
+            text: 'Vui lòng chọn nhân viên xử lý đơn hàng',
+            type: 'error',
+            showCloseButton: true,
+            html: true,
+        });
+    }
+
+    controller.createOrder(staffDOM.value)
+        .then(function (response) {
+            HoldOn.close();
+
+            if (response.success)
+                return swal({
+                    title: 'Thành Công',
+                    text: 'Đơn đặt hàng #' + controller.preOrderId + ' này đã được chuyển thành đơn hàng #' + response.data + '.',
+                    type: 'success',
+                    showCloseButton: true,
+                    html: true,
+                }, function () {
+                    let url = window.location.origin + '/thong-tin-don-hang?id=' + response.data;
+                    window.location.replace(url);
+                });
+            else {
+                return swal({
+                    title: 'Error',
+                    text: response.message,
+                    type: 'error',
+                    showCloseButton: true,
+                    html: true,
+                });
+            }
+        })
+        .catch(function (e) {
+            HoldOn.close();
+            console.log(e);
+
+            if (e.status == 400)
+                return swal({
+                    title: 'Error',
+                    text: e.reresponseJSON.message,
+                    type: 'error',
+                    showCloseButton: true,
+                    html: true,
+                });
+            else
+                return swal({
+                    title: 'Error',
+                    text: 'Đã có lỗi xảy ra trong quá trình lấy thông tin tạo đơn hàng.',
+                    type: 'error',
+                    showCloseButton: true,
+                    html: true,
+                });
         });
 }
 // #endregion

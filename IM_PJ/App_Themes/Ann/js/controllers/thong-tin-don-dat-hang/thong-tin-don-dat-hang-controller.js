@@ -38,4 +38,8 @@
     getPreOrder() {
         return this._service.getPreOrder(this.preOrderId);
     }
+
+    createOrder(staff) {
+        return this._service.createOrder(this.preOrderId, staff);
+    }
 }

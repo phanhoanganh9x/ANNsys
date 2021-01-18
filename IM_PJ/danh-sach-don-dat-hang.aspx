@@ -31,7 +31,7 @@
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlExcuteStatus" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="" Text="Xử lý"></asp:ListItem>
-                                        <asp:ListItem Value="0" Text="Chờ tiếp nhận"></asp:ListItem>
+                                        <asp:ListItem Value="0" Text="Chờ tiếp nhận" Selected="True"></asp:ListItem>
                                         <asp:ListItem Value="3" Text="Đã hủy"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>

@@ -112,10 +112,6 @@ namespace IM_PJ
                 }
             }
         }
-
-        protected void btnOrder_Click(object sender, EventArgs e)
-        {
-        }
         #endregion
     }
 }

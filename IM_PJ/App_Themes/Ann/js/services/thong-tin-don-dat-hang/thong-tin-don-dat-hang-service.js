@@ -27,4 +27,22 @@
             });
         });
     };
+
+    createOrder(preOrderId, staff) {
+        let url = this.backendDomain + this.api + '/pre-order/' + preOrderId + '/order?staff=' + staff;
+
+        return new Promise((reslove, reject) => {
+            $.ajax({
+                method: 'Post',
+                url: url,
+                contentType: 'application/json; charset=utf-8',
+                success: (response) => {
+                    reslove(response);
+                },
+                error: err => {
+                    reject(err);
+                }
+            });
+        });
+    };
 }
