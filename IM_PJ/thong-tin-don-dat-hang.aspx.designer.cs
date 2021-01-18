@@ -40,15 +40,6 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.DropDownList ddlCreatedBy;
 
         /// <summary>
-        /// btnOrder control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnOrder;
-
-        /// <summary>
         /// hdRole control.
         /// </summary>
         /// <remarks>
@@ -56,15 +47,6 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdRole;
-
-        /// <summary>
-        /// rAjax control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Telerik.Web.UI.RadAjaxManager rAjax;
 
         /// <summary>
         /// sc control.

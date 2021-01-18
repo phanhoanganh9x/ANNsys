@@ -308,8 +308,7 @@
                                 </div>
                                 <div class="panel-post">
                                     <div class="post-table-links clear">
-                                        <a href="javascript:;" class="btn link-btn" id="payall" style="background-color: #f87703; float: right" title="Tạo đơn hàng" onclick="payAll()"><i class="fa fa-floppy-o"></i> Tạo đơn hàng</a>
-                                        <asp:Button ID="btnOrder" runat="server" OnClick="btnOrder_Click" Style="display: none" />
+                                        <a href="javascript:;" class="btn link-btn btn-create-order hidden" style="background-color: #f87703; float: right" title="Tạo đơn hàng" onclick="createOrder()"><i class="fa fa-floppy-o"></i> Tạo đơn hàng</a>
                                     </div>
                                 </div>
                             </div>
@@ -323,7 +322,7 @@
                         <div class="panel-buttonbar">
                             <div class="panel-post">
                                 <div class="post-table-links clear">
-                                    <a href="javascript:;" class="btn link-btn" style="background-color: #f87703; float: right" title="Tạo đơn hàng" onclick="payAll()"><i class="fa fa-floppy-o"></i> Tạo đơn hàng</a>
+                                    <a href="javascript:;" class="btn link-btn btn-create-order hidden" style="background-color: #f87703; float: right" title="Tạo đơn hàng" onclick="createOrder()"><i class="fa fa-floppy-o"></i> Tạo đơn hàng</a>
                                 </div>
                             </div>
                         </div>
@@ -334,15 +333,7 @@
             <asp:HiddenField ID="hdRole" runat="server" />
         </main>
     </asp:Panel>
-    <telerik:RadAjaxManager ID="rAjax" runat="server">
-        <AjaxSettings>
-            <telerik:AjaxSetting AjaxControlID="btnOrder">
-                <UpdatedControls>
-                    <telerik:AjaxUpdatedControl ControlID="parent" LoadingPanelID="rxLoading"></telerik:AjaxUpdatedControl>
-                </UpdatedControls>
-            </telerik:AjaxSetting>
-        </AjaxSettings>
-    </telerik:RadAjaxManager>
+
     <telerik:RadScriptBlock ID="sc" runat="server">
         <script type="text/javascript" src="/App_Themes/Ann/js/utils/string-format.js?v=202101081451"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=202101081451"></script>

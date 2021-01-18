@@ -66,9 +66,23 @@ namespace IM_PJ
             var orderStatus = Request.QueryString["orderStatus"];
 
             if (!String.IsNullOrEmpty(orderStatus))
+            {
                 for (int i = 0; i < ddlExcuteStatus.Items.Count; i++)
                     if (ddlExcuteStatus.Items[i].Value == orderStatus)
                         ddlExcuteStatus.SelectedIndex = i;
+            }
+            else
+            {
+                var url = HttpContext.Current.Request.Url;
+                var query = url.Query;
+
+                if (!String.IsNullOrEmpty(query))
+                    query += "&orderStatus=0";
+                else
+                    query += "?orderStatus=0";
+
+                Response.Redirect(url.AbsolutePath + query);
+            }
         }
 
         /// <summary>
