@@ -428,6 +428,7 @@
     <Content Include="App_Themes\Ann\js\pages\danh-sach-khach-hang\generate-coupon-for-customer.js" />
     <Content Include="App_Themes\Ann\js\pages\danh-sach-nhom-khach-hang\danh-sach-nhom-khach-hang.js" />
     <Content Include="App_Themes\Ann\js\pages\them-moi-giam-gia\them-moi-giam-gia.js" />
+    <Content Include="App_Themes\Ann\js\delivery-address.js" />
     <Content Include="App_Themes\Ann\js\services\thong-tin-don-dat-hang\thong-tin-don-dat-hang-service.js" />
     <Content Include="App_Themes\Ann\js\services\common\order-service.js" />
     <Content Include="App_Themes\Ann\js\services\common\product-service.js" />

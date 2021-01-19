@@ -144,13 +144,13 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Họ tên</label>
-                                            <input type="text" id="txtRecipientFullName" class="form-control capitalize" placeholder="Họ tên thật của khách (F2)" disabled="disabled"/>
+                                            <input type="text" id="txtRecipientFullName" class="form-control capitalize" placeholder="Họ tên người nhận hàng" disabled="disabled"/>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Điện thoại</label>
-                                            <input type="text" id="txtRecipientPhone" class="form-control" placeholder="Số điện thoại khách hàng" disabled="disabled"/>
+                                            <input type="text" id="txtRecipientPhone" class="form-control" placeholder="Số điện thoại người nhận hàng" disabled="disabled"/>
                                         </div>
                                     </div>
                                 </div>

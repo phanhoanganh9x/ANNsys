@@ -90,7 +90,7 @@
                 text-align: right!important;
             }
             table.shop_table_responsive thead {
-	            display: none;
+                display: none;
             }
             table.shop_table_responsive > tbody > tr > td:nth-of-type(1):before {
                 content: "#";
@@ -118,11 +118,11 @@
                 background: #fff;
             }
             table.shop_table_responsive > tbody > tr > td:first-child {
-	            border-left: none;
+                border-left: none;
                 padding-left: 20px;
             }
             table.shop_table_responsive > tbody > tr > td:last-child {
-	            border-right: none;
+                border-right: none;
                 padding-left: 20px;
                 height: 60px;
                 text-align: right!important;
@@ -131,7 +131,7 @@
                 border-bottom: none!important;
             }
             table.shop_table_responsive > tbody > tr > td {
-	            height: 40px;
+                height: 40px;
             }
             table.shop_table_responsive > tbody > tr > td.sku-item:before {
                 content: "Mã";
@@ -174,11 +174,11 @@
                 float: right;
             }
             table.shop_table_responsive tbody td {
-	            background-color: #f8f8f8;
-	            display: block;
-	            text-align: right;
-	            border: none;
-	            padding: 20px;
+                background-color: #f8f8f8;
+                display: block;
+                text-align: right;
+                border: none;
+                padding: 20px;
             }
             table.shop_table_responsive > tbody > tr.tr-more-info > td {
                 height: initial;
@@ -193,10 +193,10 @@
                 content: none;
             }
             table.shop_table_responsive tbody td:before {
-	            font-weight: 700;
-	            float: left;
-	            text-transform: uppercase;
-	            font-size: 14px;
+                font-weight: 700;
+                float: left;
+                text-transform: uppercase;
+                font-size: 14px;
             }
             table.shop_table_responsive tbody td:empty {
                 display: none;
@@ -356,6 +356,57 @@
                                 <div class="row">
                                     <div class="col-md-12 discount-info">
                                         <br /><asp:Literal ID="ltrDiscountInfo" runat="server"></asp:Literal>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="deliveryAddress" class="row">
+                    <div class="col-md-12">
+                        <div class="panel panelborderheading">
+                            <div class="panel-heading clear">
+                                <h3 class="page-title left not-margin-bot">Thông tin nhận hàng</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Họ tên</label>
+                                            <input type="text" id="txtRecipientFullName" class="form-control capitalize" placeholder="Họ tên người nhận hàng"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Điện thoại</label>
+                                            <input type="text" id="txtRecipientPhone" class="form-control" placeholder="Số điện thoại người nhận hàng"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Tỉnh thành</label>
+                                            <select id="ddlRecipientProvince" class="form-control"></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Quận huyện</label>
+                                            <select id="ddlRecipientDistrict" class="form-control"></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Phường xã</label>
+                                            <select id="ddlRecipientWard" class="form-control"></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Địa chỉ</label>
+                                            <input type="text" id="txtRecipientAddress" class="form-control capitalize" placeholder="Địa chỉ khách hàng" disabled="disabled"/>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
