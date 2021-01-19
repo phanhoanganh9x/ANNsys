@@ -176,7 +176,7 @@ namespace IM_PJ
                     // hidden OrderID
                     hdOrderInfoID.Value = ID.ToString();
 
-                    
+
 
                     int AgentID = Convert.ToInt32(order.AgentID);
                     txtPhone.Text = order.CustomerPhone;
@@ -261,7 +261,7 @@ namespace IM_PJ
                     double totalPriceNotDiscount = Convert.ToDouble(order.TotalPriceNotDiscount);
 
                     hdfcheckR.Value = "";
-                    
+
                     int totalrefund = 0;
                     if (order.RefundsGoodsID > 0)
                     {
@@ -271,7 +271,7 @@ namespace IM_PJ
                             totalrefund = Convert.ToInt32(re.TotalPrice);
                             hdfcheckR.Value = order.RefundsGoodsID.ToString() + "," + re.TotalPrice;
                         }
-                       
+
                         ltrtotalpricedetail.Text = string.Format("{0:N0}", totalPrice - totalrefund);
 
                         ltrTotalPriceRefund.Text = string.Format("-{0:N0}", totalrefund);
@@ -567,7 +567,7 @@ namespace IM_PJ
                     hdfOtherFees.Value = FeeController.getFeesJSON(ID);
 
                     ltrTotalAfterCK.Text = string.Format("{0:N0}", (Convert.ToDouble(order.TotalPriceNotDiscount) - Convert.ToDouble(order.TotalDiscount)));
-                    
+
                     ltrCreateBy.Text = order.CreatedBy;
                     ltrCreateDate.Text = order.CreatedDate.ToString();
                     ltrDateDone.Text = "Chưa hoàn tất";
@@ -1221,7 +1221,7 @@ namespace IM_PJ
                                     #region kiểm tra sản phẩm này đã có trong đơn chưa?
                                     var od = OrderDetailController.GetByID(OrderDetailID);
 
-                                    if (od != null) 
+                                    if (od != null)
                                     {
                                         #region nếu sản phẩm này có trong đơn có rồi thì chỉnh sửa
                                         double quantityOld = Convert.ToDouble(od.Quantity);
