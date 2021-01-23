@@ -81,6 +81,23 @@
         <EntityTypeShape EntityType="inventorymanagementModel.WebWordpress" Width="1.5" PointX="18.75" PointY="26.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.ZaloIndustry" Width="1.5" PointX="26.75" PointY="21.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.ExchangeRate" Width="1.5" PointX="0.75" PointY="27.75" />
+        <EntityTypeShape EntityType="inventorymanagementModel.DeliveryAddress" Width="1.5" PointX="13" PointY="32.5" />
+        <EntityTypeShape EntityType="inventorymanagementModel.PreOrder" Width="1.5" PointX="21.25" PointY="28.625" />
+        <EntityTypeShape EntityType="inventorymanagementModel.PreOrderDetail" Width="1.5" PointX="29" PointY="19.75" />
+        <EntityTypeShape EntityType="inventorymanagementModel.Token" Width="1.5" PointX="7.375" PointY="27.75" />
+        <EntityTypeShape EntityType="inventorymanagementModel.Video" Width="1.5" PointX="9.375" PointY="27.75" />
+        <EntityTypeShape EntityType="inventorymanagementModel.ViewOrder" Width="1.5" PointX="25.5" PointY="27.75" />
+        <AssociationConnector Association="inventorymanagementModel.FK_PreOrder_Coupon" />
+        <AssociationConnector Association="inventorymanagementModel.FK_DeliveryAddress_District" />
+        <AssociationConnector Association="inventorymanagementModel.FK_DeliveryAddress_Province" />
+        <AssociationConnector Association="inventorymanagementModel.FK_DeliveryAddress_Ward" />
+        <AssociationConnector Association="inventorymanagementModel.FK_PreOrder_DeliveryAddress" />
+        <AssociationConnector Association="inventorymanagementModel.FK_tbl_Order_DeliveryAddress" />
+        <AssociationConnector Association="inventorymanagementModel.FK_PreOrderDetail_PreOrder" />
+        <AssociationConnector Association="inventorymanagementModel.FK_ViewOrder_PreOrder" />
+        <AssociationConnector Association="inventorymanagementModel.FK_PreOrderDetail_Product" />
+        <AssociationConnector Association="inventorymanagementModel.FK_PreOrderDetail_ProductVariation" />
+        <AssociationConnector Association="inventorymanagementModel.FK_ViewOrder_tbl_Order" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

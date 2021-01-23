@@ -524,7 +524,7 @@ namespace IM_PJ
                             #endregion
 
                             // Cập nhật lại sô lượng và giá vố vào đơn hàng
-                            OrderController.updateQuantityCOGS(OrderID);
+                            OrderController.updateAvatarQuantityCOGS(OrderID);
                             // Cập nhật lại thông tin kho hàng
                             StockManagerController.Insert(stockManager);
 

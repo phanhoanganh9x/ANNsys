@@ -1,14 +1,28 @@
 // show popup
-function showPopup(content, col = 8) {
-    var obj = $('body');
+function showPopup(content, col) {
+    if (!col)
+        col = 8;
+
+    let obj = $('body');
+
     $(obj).attr('onkeydown', 'keyclose_ms(event)');
-    var bg = "<div id='bg_popup'></div>";
-    var fr = "<div id='pupip' class=\"columns-container1\"><div class=\"container\" id=\"columns\"><div class='row'><div class=\"center_column col-xs-12 col-sm-" + col + "\" id=\"popup_content\"><a onclick='closePopup()' class='close_message'></a>";
-    fr += "     <div class=\"content-popup scrollbar\">";
+
+    let bg = '<div id="bg_popup"></div>';
+    let fr = '';
+
+    fr += '<div id="pupip" class="columns-container1">';
+    fr += '    <div class="container" id="columns">';
+    fr += '        <div class="row">';
+    fr += '            <div class="center_column col-xs-12 col-sm-' + col + '" id="popup_content">';
+    fr += '                <a onclick="closePopup()" class="close_message"></a>';
+    fr += '                <div class="content-popup scrollbar">';
     fr += content;
-    fr += "     </div>";
-    fr += "   </div>";
-    fr += "</div></div></div>";
+    fr += '                </div>';
+    fr += '            </div>';
+    fr += '         </div>'
+    fr += '     </div>';
+    fr += '</div>';
+
     $(bg).appendTo($(obj)).show().animate({
         "opacity": 0.7
     }, 0);

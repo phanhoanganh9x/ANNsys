@@ -33,5 +33,6 @@ namespace IM_PJ.Models
         public Nullable<bool> IsCount { get; set; }
         public decimal CostOfGood { get; set; }
         public Nullable<double> TotalCostOfGood { get; set; }
+        public byte[] Timestamp { get; set; }
     }
 }

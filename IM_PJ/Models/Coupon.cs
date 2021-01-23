@@ -14,6 +14,12 @@ namespace IM_PJ.Models
     
     public partial class Coupon
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Coupon()
+        {
+            this.PreOrders = new HashSet<PreOrder>();
+        }
+    
         public int ID { get; set; }
         public string Code { get; set; }
         public decimal Value { get; set; }
@@ -26,5 +32,8 @@ namespace IM_PJ.Models
         public decimal PriceMin { get; set; }
         public string Name { get; set; }
         public string Publish { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PreOrder> PreOrders { get; set; }
     }
 }
