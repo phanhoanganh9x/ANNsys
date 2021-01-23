@@ -78,7 +78,7 @@ namespace IM_PJ
         }
         public void LoadData()
         {
-            
+
             // Fix bug, case setting value for pDiscount on HTML but don't change value
             pDiscount.Value = 1;
             pFeeShip.Value = 1;
@@ -157,7 +157,7 @@ namespace IM_PJ
             trans[0].Text = "Chọn chành xe";
 
             ddlTransportCompanyID.Items.Clear();
-            
+
             ddlTransportCompanyID.Items.AddRange(trans.ToArray());
             ddlTransportCompanyID.DataBind();
             ddlTransportCompanyID.SelectedIndex = 0;
@@ -428,7 +428,7 @@ namespace IM_PJ
                         }
 
                         OrderDetailController.Insert(orderDetails);
-                        OrderController.updateQuantityCOGS(OrderID);
+                        OrderController.updateAvatarQuantityCOGS(OrderID);
                         StockManagerController.Insert(stockManager);
 
                         string refund = hdSession.Value;

@@ -14,6 +14,12 @@ namespace IM_PJ.Models
     
     public partial class tbl_Order
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public tbl_Order()
+        {
+            this.ViewOrders = new HashSet<ViewOrder>();
+        }
+    
         public int ID { get; set; }
         public Nullable<int> AgentID { get; set; }
         public Nullable<int> OrderType { get; set; }
@@ -61,5 +67,12 @@ namespace IM_PJ.Models
         public Nullable<double> Weight { get; set; }
         public int TotalQuantity { get; set; }
         public decimal TotalCostOfGood { get; set; }
+        public string Avatar { get; set; }
+        public Nullable<long> DeliveryAddressId { get; set; }
+        public byte[] Timestamp { get; set; }
+    
+        public virtual DeliveryAddress DeliveryAddress { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ViewOrder> ViewOrders { get; set; }
     }
 }

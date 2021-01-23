@@ -1062,6 +1062,9 @@
     <Compile Include="Models\Delivery.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DeliveryAddress.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\DeliveryPostOffice.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
@@ -1125,6 +1128,12 @@
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PostWordpress.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PreOrder.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PreOrderDetail.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductTag.cs">
@@ -1262,10 +1271,19 @@
     <Compile Include="Models\tbl_WhiteDomain.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Token.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\User.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\UserNotifyPromotion.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Video.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ViewOrder.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\WebWordpress.cs">

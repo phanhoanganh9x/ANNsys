@@ -168,6 +168,7 @@ namespace IM_PJ.Controllers
                     orderOld.CouponID = data.CouponID;
                     orderOld.CouponValue = data.CouponValue;
                     orderOld.Weight = data.Weight;
+                    orderOld.DeliveryAddressId = data.DeliveryAddressId;
                     con.SaveChanges();
 
                     return orderOld;
@@ -239,8 +240,8 @@ namespace IM_PJ.Controllers
             }
         }
         #endregion
-        
-        public static tbl_Order updateQuantityCOGS(int orderID)
+
+        public static tbl_Order updateAvatarQuantityCOGS(int orderID, string avatar = "")
         {
             using (var con = new inventorymanagementEntities())
             {
@@ -257,7 +258,7 @@ namespace IM_PJ.Controllers
                         Quantity = x.Quantity.HasValue ? x.Quantity.Value : 0,
                         TotalCostOfGood = x.TotalCostOfGood.HasValue ? x.TotalCostOfGood.Value : 0
                     })
-                    .ToList()
+                    .AsEnumerable()
                     .GroupBy(g => 1)
                     .Select(x => new
                     {
@@ -266,16 +267,12 @@ namespace IM_PJ.Controllers
                     })
                     .SingleOrDefault();
 
-                if (updatedData != null)
-                {
-                    order.TotalQuantity = updatedData.totalQuantity;
-                    order.TotalCostOfGood = Convert.ToDecimal(updatedData.totalCOGS);
-                    con.SaveChanges();
+                order.Avatar = String.IsNullOrEmpty(avatar) ? null : avatar;
+                order.TotalQuantity = updatedData == null ? 0 : updatedData.totalQuantity;
+                order.TotalCostOfGood = updatedData == null ? 0 : Convert.ToDecimal(updatedData.totalCOGS);
+                con.SaveChanges();
 
-                    return order;
-                }
-
-                return null;
+                return order;
             }
         }
         #endregion
