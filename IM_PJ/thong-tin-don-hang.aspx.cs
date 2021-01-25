@@ -1185,10 +1185,10 @@ namespace IM_PJ
 
                                     #region Cập nhật avatar cho đơn hàng
                                     if (String.IsNullOrEmpty(orderAvatar))
-                                        orderAvatar = ProductImageOrigin;
+                                        orderAvatar = AnnImage.extractImage(ProductImageOrigin);
                                     #endregion
 
-                                        #region Xử lý với trạng thái của đơn hàng đã hủy
+                                    #region Xử lý với trạng thái của đơn hàng đã hủy
                                     if (ExcuteStatusOld == 3)
                                     {
                                         var orderDetail = OrderDetailController.GetByID(OrderDetailID);
