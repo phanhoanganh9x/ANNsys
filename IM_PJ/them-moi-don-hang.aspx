@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Thêm mới đơn hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="them-moi-don-hang.aspx.cs" Inherits="IM_PJ.them_moi_don_hang" EnableSessionState="ReadOnly" EnableEventValidation="false"%>
+﻿<%@ Page Title="Thêm mới đơn hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="them-moi-don-hang.aspx.cs" Inherits="IM_PJ.them_moi_don_hang" EnableSessionState="ReadOnly" EnableEventValidation="false" %>
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -20,7 +20,7 @@
                         <div class="panel panelborderheading">
                             <div class="panel-heading clear">
                                 <h3 class="page-title left not-margin-bot">Thông tin khách hàng</h3>
-                                <a href="javascript:;" class="search-customer" onclick="searchCustomer()"><i class="fa fa-search" aria-hidden="true"></i> Tìm khách hàng (F1)</a>
+                                <a href="javascript:;" class="search-customer" onclick="searchCustomer()"><i class="fa fa-search" aria-hidden="true"></i>Tìm khách hàng (F1)</a>
                             </div>
                             <div class="panel-body">
                                 <div class="row">
@@ -92,6 +92,58 @@
                         </div>
                     </div>
                 </div>
+                <div id="deliveryAddress" class="row">
+                    <div class="col-md-12">
+                        <div class="panel panelborderheading">
+                            <div class="panel-heading clear">
+                                <h3 class="page-title left not-margin-bot">Thông tin nhận hàng</h3>
+                                <a href="javascript:;" class="search-customer" onclick="showDeliveryAddresses()"><i class="fa fa-search" aria-hidden="true"></i>Danh sách nhận hàng</a>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Họ tên</label>
+                                            <asp:TextBox ID="txtRecipientFullName" runat="server" CssClass="form-control capitalize" placeholder="Họ tên người nhận hàng"></asp:TextBox>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Điện thoại</label>
+                                            <asp:TextBox ID="txtRecipientPhone" runat="server" CssClass="form-control" placeholder="Số điện thoại người nhận hàng"></asp:TextBox>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Tỉnh thành</label>
+                                            <asp:DropDownList ID="ddlRecipientProvince" runat="server" CssClass="form-control"></asp:DropDownList>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Quận huyện</label>
+                                            <asp:DropDownList ID="ddlRecipientDistrict" runat="server" CssClass="form-control"></asp:DropDownList>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Phường xã</label>
+                                            <asp:DropDownList ID="ddlRecipientWard" runat="server" CssClass="form-control"></asp:DropDownList>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Địa chỉ</label>
+                                            <asp:TextBox ID="txtRecipientAddress" runat="server" CssClass="form-control capitalize" placeholder="Địa chỉ khách hàng"></asp:TextBox>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-12">
                         <div class="panel-post">
@@ -138,7 +190,7 @@
                                 <div class="post-row clear">
                                     <div class="left">Chiết khấu</div>
                                     <div class="right totalDiscount">
-                                        <a href="javascript:;" class="btn btn-feeship link-btn" onclick="refreshDiscount()"><i class="fa fa-refresh" aria-hidden="true"></i> Tính lại</a>
+                                        <a href="javascript:;" class="btn btn-feeship link-btn" onclick="refreshDiscount()"><i class="fa fa-refresh" aria-hidden="true"></i>Tính lại</a>
                                         <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull input-discount" Skin="MetroTouch"
                                             ID="pDiscount" MinValue="0" NumberFormat-GroupSizes="3" Value="0" NumberFormat-DecimalDigits="0"
                                             oninput="countTotal()" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
@@ -152,7 +204,7 @@
                                 <div class="post-row clear">
                                     <div class="left">Phí vận chuyển</div>
                                     <div class="right totalDiscount">
-                                        <a class="btn btn-feeship link-btn" href="javascript:;" id="calfeeship" onclick="calFeeShip()"><i class="fa fa-check-square-o" aria-hidden="true"></i> Miễn phí</a>
+                                        <a class="btn btn-feeship link-btn" href="javascript:;" id="calfeeship" onclick="calFeeShip()"><i class="fa fa-check-square-o" aria-hidden="true"></i>Miễn phí</a>
                                         <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull input-feeship" Skin="MetroTouch"
                                             ID="pFeeShip" MinValue="0" NumberFormat-GroupSizes="3" Value="0" NumberFormat-DecimalDigits="0"
                                             oninput="countTotal()" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
@@ -163,9 +215,9 @@
                                 <div class="post-row clear coupon">
                                     <div class="left">Mã giảm giá</div>
                                     <div class="right">
-                                        <a id="btnGenerateCouponG25" class="btn btn-coupon btn-violet" title="Kiểm tra mã giảm giá G25" onclick="couponG25()"><i class="fa fa-gift"></i> G25</a>
-                                        <a id="btnOpenCouponModal" class="btn btn-coupon btn-violet" title="Nhập mã giảm giá" onclick="openCouponModal()"><i class="fa fa-gift"></i> Nhập mã</a>
-                                        <a href="javascript:;" id="btnRemoveCouponCode" class="btn btn-coupon link-btn hide" onclick="removeCoupon()"><i class="fa fa-times" aria-hidden="true"></i> Xóa</a>
+                                        <a id="btnGenerateCouponG25" class="btn btn-coupon btn-violet" title="Kiểm tra mã giảm giá G25" onclick="couponG25()"><i class="fa fa-gift"></i>G25</a>
+                                        <a id="btnOpenCouponModal" class="btn btn-coupon btn-violet" title="Nhập mã giảm giá" onclick="openCouponModal()"><i class="fa fa-gift"></i>Nhập mã</a>
+                                        <a href="javascript:;" id="btnRemoveCouponCode" class="btn btn-coupon link-btn hide" onclick="removeCoupon()"><i class="fa fa-times" aria-hidden="true"></i>Xóa</a>
                                         <asp:TextBox ID="txtCouponValue" runat="server" CssClass="form-control text-right width-notfull input-coupon" value="0" disabled="disabled"></asp:TextBox>
                                     </div>
                                 </div>
@@ -179,8 +231,8 @@
                                     </div>
                                     <div class="right">
                                         <a href="javascript:;" class="find2 hide btn btn-return-order link-btn"></a>
-                                        <a href="javascript:;" class="find3 hide btn btn-return-order link-btn btn-edit-fee" onclick="searchReturnOrder()"><i class="fa fa-refresh" aria-hidden="true"></i> Chọn đơn khác</a>
-                                        <a href="javascript:;" class="find3 hide btn btn-feeship link-btn" onclick="deleteReturnOrder()"><i class="fa fa-times" aria-hidden="true"></i> Xóa</a>
+                                        <a href="javascript:;" class="find3 hide btn btn-return-order link-btn btn-edit-fee" onclick="searchReturnOrder()"><i class="fa fa-refresh" aria-hidden="true"></i>Chọn đơn khác</a>
+                                        <a href="javascript:;" class="find3 hide btn btn-feeship link-btn" onclick="deleteReturnOrder()"><i class="fa fa-times" aria-hidden="true"></i>Xóa</a>
                                         <span class="totalpriceorderrefund"></span>
                                     </div>
                                 </div>
@@ -189,11 +241,11 @@
                                     <div class="right totalpricedetail"></div>
                                 </div>
                                 <div class="post-table-links clear">
-                                    <a href="javascript:;" class="btn link-btn" id="payall" style="background-color: #f87703; float: right" title="Hoàn tất đơn hàng" onclick="payAll()"><i class="fa fa-floppy-o"></i> Xác nhận</a>
+                                    <a href="javascript:;" class="btn link-btn" id="payall" style="background-color: #f87703; float: right" title="Hoàn tất đơn hàng" onclick="payAll()"><i class="fa fa-floppy-o"></i>Xác nhận</a>
                                     <asp:Button ID="btnOrder" runat="server" OnClick="btnOrder_Click" Style="display: none" />
-                                    <a href="javascript:;" class="btn link-btn" style="background-color: #ffad00; float: right;" title="Nhập đơn hàng đổi trả" onclick="searchReturnOrder()"><i class="fa fa-refresh"></i> Đổi trả</a>
-                                    <a id="feeNewStatic" href="#feeModal" class="btn link-btn" style="background-color: #607D8B; float: right;" title="Thêm phí khác vào đơn hàng" data-toggle="modal" data-backdrop='static'><i class="fa fa-plus"></i> Thêm phí khác</a>
-                                    <a href="javascript:;" class="btn link-btn" style="background-color: #F44336; float: right;" title="Xóa tất cả sản phẩm" onclick="deleteProduct()"><i class="fa fa-times" aria-hidden="true"></i> Làm lại</a>
+                                    <a href="javascript:;" class="btn link-btn" style="background-color: #ffad00; float: right;" title="Nhập đơn hàng đổi trả" onclick="searchReturnOrder()"><i class="fa fa-refresh"></i>Đổi trả</a>
+                                    <a id="feeNewStatic" href="#feeModal" class="btn link-btn" style="background-color: #607D8B; float: right;" title="Thêm phí khác vào đơn hàng" data-toggle="modal" data-backdrop='static'><i class="fa fa-plus"></i>Thêm phí khác</a>
+                                    <a href="javascript:;" class="btn link-btn" style="background-color: #F44336; float: right;" title="Xóa tất cả sản phẩm" onclick="deleteProduct()"><i class="fa fa-times" aria-hidden="true"></i>Làm lại</a>
                                 </div>
                             </div>
                         </div>
@@ -206,10 +258,10 @@
                         <div class="panel-buttonbar">
                             <div class="panel-post">
                                 <div class="post-table-links clear row">
-                                    <a href="javascript:;" class="btn link-btn" style="background-color: #f87703; float: right" title="Hoàn tất đơn hàng" onclick="payAll()"><i class="fa fa-floppy-o"></i> Xác nhận</a>
-                                    <a href="javascript:;" class="btn link-btn" style="background-color: #ffad00; float: right;" title="Nhập đơn hàng đổi trả" onclick="searchReturnOrder()"><i class="fa fa-refresh"></i> Đổi trả</a>
-                                    <a id="feeNewDynamic" href="#feeModal" class="btn link-btn" style="background-color: #607D8B; float: right;" title="Thêm phí khác vào đơn hàng" data-toggle="modal" data-backdrop='static'><i class="fa fa-plus"></i> Thêm phí khác</a>
-                                    <a href="javascript:;" class="btn link-btn" style="background-color: #F44336; float: right;" title="Xóa tất cả sản phẩm" onclick="deleteProduct()"><i class="fa fa-times" aria-hidden="true"></i> Làm lại</a>
+                                    <a href="javascript:;" class="btn link-btn" style="background-color: #f87703; float: right" title="Hoàn tất đơn hàng" onclick="payAll()"><i class="fa fa-floppy-o"></i>Xác nhận</a>
+                                    <a href="javascript:;" class="btn link-btn" style="background-color: #ffad00; float: right;" title="Nhập đơn hàng đổi trả" onclick="searchReturnOrder()"><i class="fa fa-refresh"></i>Đổi trả</a>
+                                    <a id="feeNewDynamic" href="#feeModal" class="btn link-btn" style="background-color: #607D8B; float: right;" title="Thêm phí khác vào đơn hàng" data-toggle="modal" data-backdrop='static'><i class="fa fa-plus"></i>Thêm phí khác</a>
+                                    <a href="javascript:;" class="btn link-btn" style="background-color: #F44336; float: right;" title="Xóa tất cả sản phẩm" onclick="deleteProduct()"><i class="fa fa-times" aria-hidden="true"></i>Làm lại</a>
                                 </div>
                             </div>
                         </div>
@@ -248,6 +300,16 @@
             <asp:HiddenField ID="hdfProvinceID" runat="server" />
             <asp:HiddenField ID="hdfDistrictID" runat="server" />
             <asp:HiddenField ID="hdfWardID" runat="server" />
+
+            <!-- Biến đăng ký địa chỉ nhận hàng -->
+            <asp:HiddenField ID="hdfDeliveryAddressId" runat="server" />
+            <asp:HiddenField ID="hdfRecipientFullName" runat="server" />
+            <asp:HiddenField ID="hdfRecipientPhone" runat="server" />
+            <asp:HiddenField ID="hdfRecipientProvinceId" runat="server" />
+            <asp:HiddenField ID="hdfRecipientDistrictId" runat="server" />
+            <asp:HiddenField ID="hdfRecipientWardId" runat="server" />
+            <asp:HiddenField ID="hdfRecipientAddress" runat="server" />
+            <!-- Biến đăng ký địa chỉ nhận hàng -->
 
             <!-- Fee Modal -->
             <div class="modal fade" id="feeModal" role="dialog">
@@ -366,7 +428,7 @@
                                 <div class="col-md-4 text-align-left">
                                     Chành xe
                                 </div>
-                                <div class="col-md-8" >
+                                <div class="col-md-8">
                                     <asp:DropDownList ID="ddlTransportCompanyID" runat="server" CssClass="form-control customerlist select2" Height="40px" Width="100%" onchange="onChangeTransportCompany($(this))"></asp:DropDownList>
                                 </div>
                             </div>
@@ -433,7 +495,9 @@
                                 </div>
                             </div>
                             <div id="errorCoupon" class="row form-group hide">
-                                <div class="col-xs-12 text-align-left text-danger"><p></p></div>
+                                <div class="col-xs-12 text-align-left text-danger">
+                                    <p></p>
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -469,7 +533,8 @@
             right: 0%;
             margin: 0 auto;
         }
-        *.select2-container.select2-container--default.select2-container--open{
+
+        *.select2-container.select2-container--default.select2-container--open {
             z-index: 99991;
         }
     </style>
@@ -484,7 +549,7 @@
     </telerik:RadAjaxManager>
     <telerik:RadScriptBlock ID="sc" runat="server">
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-
+        <script type="text/javascript" src="App_Themes/Ann/js/delivery-address.js?v=202101211340"></script>
         <script type="text/javascript">
             "use strict";
 
@@ -497,108 +562,106 @@
             // check data before close page or refresh page
             window.onbeforeunload = function () {
                 if ($(".product-result").length > 0 || $("#<%=txtPhone.ClientID%>").val() != "" || $("#<%= txtFullname.ClientID%>").val() != "")
-                        return "You're leaving the site.";
+                    return "You're leaving the site.";
             };
 
-            var feetype = [];
-            var fees = [];
+                var feetype = [];
+                var fees = [];
 
-            class FeeType {
-                constructor(ID, Name, IsNegativeFee)
-                {
-                    this.ID = ID;
-                    this.Name = Name;
-                    this.IsNegativeFee = IsNegativeFee;
-                }
-            }
-
-            class Fee {
-                constructor(UUID, FeeTypeID, FeeTypeName, FeePrice)
-                {
-                    this.UUID = UUID;
-                    this.FeeTypeID = FeeTypeID;
-                    this.FeeTypeName = FeeTypeName;
-                    this.FeePrice = FeePrice;
+                class FeeType {
+                    constructor(ID, Name, IsNegativeFee) {
+                        this.ID = ID;
+                        this.Name = Name;
+                        this.IsNegativeFee = IsNegativeFee;
+                    }
                 }
 
-                stringJSON() {
-                    return JSON.stringify(this);
-                }
-            }
-
-            function formatNumber(n) {
-                // format number 1000000 to 1,234,567
-                return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-            }
-
-            function formatCurrency(input, blur) {
-                // appends $ to value, validates decimal side
-                // and puts cursor back in right position.
-
-                // get input value
-                var input_val = input.val();
-
-                // don't validate empty input
-                if (input_val === "") { return; }
-
-                // original length
-                var original_len = input_val.length;
-
-                // initial caret position 
-                var caret_pos = input.prop("selectionStart");
-
-                // check for decimal
-                if (input_val.indexOf(".") >= 0) {
-
-                    // get position of first decimal
-                    // this prevents multiple decimals from
-                    // being entered
-                    var decimal_pos = input_val.indexOf(".");
-
-                    // split number by decimal point
-                    var left_side = input_val.substring(0, decimal_pos);
-                    var right_side = input_val.substring(decimal_pos);
-
-                    // add commas to left side of number
-                    left_side = formatNumber(left_side);
-
-                    // validate right side
-                    right_side = formatNumber(right_side);
-
-                    // On blur make sure 2 numbers after decimal
-                    if (blur === "blur") {
-                        right_side += "00";
+                class Fee {
+                    constructor(UUID, FeeTypeID, FeeTypeName, FeePrice) {
+                        this.UUID = UUID;
+                        this.FeeTypeID = FeeTypeID;
+                        this.FeeTypeName = FeeTypeName;
+                        this.FeePrice = FeePrice;
                     }
 
-                    // Limit decimal to only 2 digits
-                    right_side = right_side.substring(0, 2);
-
-                    // join number by .
-                    input_val = left_side;
-
-                } else {
-                    // no decimal entered
-                    // add commas to number
-                    // remove all non-digits
-                    input_val = formatNumber(input_val);
-                    input_val = input_val;
+                    stringJSON() {
+                        return JSON.stringify(this);
+                    }
                 }
 
-                // send updated string to input
-                input.val(input_val);
+                function formatNumber(n) {
+                    // format number 1000000 to 1,234,567
+                    return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                }
 
-                // put caret back in the right position
-                var updated_len = input_val.length;
-                caret_pos = updated_len - original_len + caret_pos;
-                input[0].setSelectionRange(caret_pos, caret_pos);
-            }
+                function formatCurrency(input, blur) {
+                    // appends $ to value, validates decimal side
+                    // and puts cursor back in right position.
 
-            // Load Fee Modal
-            function loadFeeModel(obj, is_new) {
-                if (is_new === undefined)
-                    is_new = false;
+                    // get input value
+                    var input_val = input.val();
 
-                let idDOM = $("#<%=hdfUUID.ClientID%>");
+                    // don't validate empty input
+                    if (input_val === "") { return; }
+
+                    // original length
+                    var original_len = input_val.length;
+
+                    // initial caret position 
+                    var caret_pos = input.prop("selectionStart");
+
+                    // check for decimal
+                    if (input_val.indexOf(".") >= 0) {
+
+                        // get position of first decimal
+                        // this prevents multiple decimals from
+                        // being entered
+                        var decimal_pos = input_val.indexOf(".");
+
+                        // split number by decimal point
+                        var left_side = input_val.substring(0, decimal_pos);
+                        var right_side = input_val.substring(decimal_pos);
+
+                        // add commas to left side of number
+                        left_side = formatNumber(left_side);
+
+                        // validate right side
+                        right_side = formatNumber(right_side);
+
+                        // On blur make sure 2 numbers after decimal
+                        if (blur === "blur") {
+                            right_side += "00";
+                        }
+
+                        // Limit decimal to only 2 digits
+                        right_side = right_side.substring(0, 2);
+
+                        // join number by .
+                        input_val = left_side;
+
+                    } else {
+                        // no decimal entered
+                        // add commas to number
+                        // remove all non-digits
+                        input_val = formatNumber(input_val);
+                        input_val = input_val;
+                    }
+
+                    // send updated string to input
+                    input.val(input_val);
+
+                    // put caret back in the right position
+                    var updated_len = input_val.length;
+                    caret_pos = updated_len - original_len + caret_pos;
+                    input[0].setSelectionRange(caret_pos, caret_pos);
+                }
+
+                // Load Fee Modal
+                function loadFeeModel(obj, is_new) {
+                    if (is_new === undefined)
+                        is_new = false;
+
+                    let idDOM = $("#<%=hdfUUID.ClientID%>");
                 let feeTypeDOM = $("#<%=ddlFeeType.ClientID%>");
                 let feePriceDOM = $("#<%=txtFeePrice.ClientID%>");
 
@@ -606,8 +669,7 @@
                 idDOM.val("");
                 feeTypeDOM.val(0);
                 feePriceDOM.val("");
-                if (!is_new)
-                {
+                if (!is_new) {
                     let parent = obj.parent();
                     if (parent.attr("id"))
                         idDOM.val(parent.attr("id"));
@@ -617,19 +679,16 @@
                         feePriceDOM.val(formatNumber(parent.data("price").toString()));
                 }
 
-                if (feeTypeDOM.val() == "0")
-                {
+                if (feeTypeDOM.val() == "0") {
                     feePriceDOM.val("");
                     feePriceDOM.attr("disabled", true);
                 }
-                else
-                {
+                else {
                     feePriceDOM.removeAttr("disabled");
                 }
             }
 
-            function openFeeUpdateModal(obj)
-            {
+            function openFeeUpdateModal(obj) {
                 loadFeeModel(obj);
                 $('#feeModal').modal({ show: 'true', backdrop: 'static' });
             }
@@ -660,8 +719,7 @@
                 return addHTML;
             }
 
-            function addFeeNew()
-            {
+            function addFeeNew() {
                 let id = $("#<%=hdfUUID.ClientID%>").val();
                 let feeid = $("#<%=ddlFeeType.ClientID%>").val();
                 let feename = $("#<%=ddlFeeType.ClientID%> :selected").text();
@@ -683,8 +741,7 @@
             }
 
             // Update Fee
-            function updateFee()
-            {
+            function updateFee() {
                 let id = $("#<%=hdfUUID.ClientID%>").val();
                 if (!id) return;
 
@@ -704,20 +761,17 @@
                 parent.data("feeprice", feeprice);
 
                 parent.find("span.otherfee-name").html(feename);
-                if (isNegative)
-                {
+                if (isNegative) {
                     parent.find("#feePrice").val("-" + formatNumber(feeprice));
                     feeprice = parseInt(feeprice) * (-1);
                 }
-                else
-                {
+                else {
                     parent.find("#feePrice").val(formatNumber(feeprice));
                     feeprice = parseInt(feeprice);
                 }
 
                 fees.forEach((fee) => {
-                    if(fee.UUID == id)
-                    {
+                    if (fee.UUID == id) {
                         fee.FeeTypeID = feeid;
                         fee.FeeTypeName = feename;
                         fee.FeePrice = feeprice;
@@ -745,7 +799,7 @@
                 _onChangeReceiverAddress();
 
                 init();
-                
+
 
                 // search Product by SKU
                 $("#txtSearch").keydown(function (event) {
@@ -776,13 +830,11 @@
                 // event change drop down list
                 $("#<%=ddlFeeType.ClientID%>").change(e => {
                     let feePriceDOM = $("#<%=txtFeePrice.ClientID%>");
-                    if (e.target.value == "0")
-                    {
+                    if (e.target.value == "0") {
                         feePriceDOM.val("");
                         feePriceDOM.attr("disabled", true);
                     }
-                    else
-                    {
+                    else {
                         feePriceDOM.removeAttr("disabled");
                         feePriceDOM.focus();
                     }
@@ -799,26 +851,23 @@
                     let id = $("#<%=hdfUUID.ClientID%>").val();
                     let price = $("#<%=txtFeePrice.ClientID%>").val().replace(/\,/g, '');
 
-                    if (!(price && parseInt(price) >= 1000 && parseInt(price) % 1000 == 0))
-                    {
+                    if (!(price && parseInt(price) >= 1000 && parseInt(price) % 1000 == 0)) {
                         swal({
                             title: "Thông báo",
                             text: "Có nhập sai số tiền không đó",
                             type: "error",
                             html: true,
-                        }, function() {
+                        }, function () {
                             $("#<%=txtFeePrice.ClientID%>").focus();
                         });
                         return;
                     }
 
-                    if (!id)
-                    {
+                    if (!id) {
                         $("#<%=hdfUUID.ClientID%>").val(uuid.v4());
                         addFeeNew();
                     }
-                    else
-                    {
+                    else {
                         updateFee();
                     }
 
@@ -869,10 +918,10 @@
             // order of item list
             var orderItem = 0;
 
-            
+
 
             // key press F1 - F4
-            $(document).keydown(function(e) {
+            $(document).keydown(function (e) {
                 if (e.which == 112) { //F1 Search Customer
                     searchCustomer();
                     return false;
@@ -889,8 +938,7 @@
 
             // cal fee ship
             function calFeeShip() {
-                if ($("#<%=pFeeShip.ClientID%>").is(":disabled"))
-                {
+                if ($("#<%=pFeeShip.ClientID%>").is(":disabled")) {
                     $("#<%=pFeeShip.ClientID%>").prop('disabled', false).css("background-color", "#fff").focus();
                     $("#calfeeship").html("Miễn phí").css("background-color", "#F44336");
                 }
@@ -921,11 +969,9 @@
 
                 // Format CreateDate
                 var matchs = refundGood.CreatedDate.match(/\d+/g);
-                if (matchs)
-                {
+                if (matchs) {
                     let date = new Date(parseInt(matchs[0]));
-                    if (date)
-                    {
+                    if (date) {
                         createdDate = date.format("yyyy-MM-dd");
                     }
                 }
@@ -943,12 +989,10 @@
             function searchReturnOrder() {
                 let customerID = $("#<%=hdfCustomerID.ClientID%>").val();
 
-                if (isBlank(customerID))
-                {
+                if (isBlank(customerID)) {
                     swal("Thông báo", "Đây là khách hàng mới mà ^_^", "info");
                 }
-                else
-                {
+                else {
                     let modalDOM = $("#orderReturnModal");
                     let customerName = $("#<%=txtFullname.ClientID%>").val();
 
@@ -965,8 +1009,7 @@
                         success: (response) => {
                             if (response.d) {
                                 let data = JSON.parse(response.d);
-                                if (data.length == 0)
-                                {
+                                if (data.length == 0) {
                                     swal({
                                         title: 'Thông báo',
                                         text: 'Khách hàng này không có đơn đổi trả hoặc đã được trừ tiền!',
@@ -979,8 +1022,7 @@
                                         if (confirm) createReturnOrder(customerID);
                                     });
                                 }
-                                else
-                                {
+                                else {
                                     data.forEach((item) => {
                                         modalDOM.find("tbody[id='orderReturn']").append(createOrderReturnHTML(item))
                                     });
@@ -998,11 +1040,9 @@
 
             // get return order
             function getReturnOrder(refundGood) {
-                if (refundGood)
-                {
+                if (refundGood) {
                     let totalPrice = $("#<%=hdfTotalPrice.ClientID%>").val();
-                    if (totalPrice)
-                    {
+                    if (totalPrice) {
                         totalPrice = parseFloat(totalPrice) - refundGood.TotalPrice;
                         if (totalPrice < 0) {
                             totalPrice = "-" + formatNumber(totalPrice.toString());
@@ -1011,8 +1051,7 @@
                             totalPrice = formatNumber(totalPrice.toString());
                         }
                     }
-                    else
-                    {
+                    else {
                         totalPrice = "-" + formatNumber(refundGood.TotalPrice.toString());
                     }
 
@@ -1073,23 +1112,19 @@
                 var district = $("#<%=ddlDistrict.ClientID%>").val();
                 var ward = $("#<%=ddlWard.ClientID%>").val();
 
-                if (name === "")
-                {
+                if (name === "") {
                     $("#<%= txtFullname.ClientID%>").focus();
                     swal("Thông báo", "Hãy nhập tên khách hàng!", "error");
                 }
-                else if (phone === "")
-                {
+                else if (phone === "") {
                     $("#<%= txtPhone.ClientID%>").focus();
                     swal("Thông báo", "Hãy nhập số điện thoại khách hàng!", "error");
                 }
-                else if (nick === "")
-                {
+                else if (nick === "") {
                     $("#<%= txtNick.ClientID%>").focus();
                     swal("Thông báo", "Hãy nhập Nick đặt hàng của khách hàng!", "error");
                 }
-                else if (facebooklink === "" && $("#<%= hdfUsernameCurrent.ClientID%>").val() == "nhom_facebook")
-                {
+                else if (facebooklink === "" && $("#<%= hdfUsernameCurrent.ClientID%>").val() == "nhom_facebook") {
                     $("#<%= txtFacebook.ClientID%>").focus();
                     swal("Thông báo", "Hãy nhập link Facebook của khách này!", "error");
                 }
@@ -1141,13 +1176,11 @@
                         }
                     });
                 }
-                else if (address === "")
-                {
+                else if (address === "") {
                     $("#<%= txtAddress.ClientID%>").focus();
                     swal("Thông báo", "Hãy nhập địa chỉ khách hàng!", "error");
                 }
-                else if ($(".product-result").length == 0)
-                {
+                else if ($(".product-result").length == 0) {
                     $("#txtSearch").focus();
                     swal("Thông báo", "Hãy nhập sản phẩm!", "error");
                 }
@@ -1156,7 +1189,7 @@
                     var list = "";
                     var count = 0;
                     var ordertype = $(".customer-type").val();
-                    $(".product-result").each(function() {
+                    $(".product-result").each(function () {
                         var id = $(this).attr("data-productid");
                         var sku = $(this).attr("data-sku");
                         var producttype = $(this).attr("data-producttype");
@@ -1171,32 +1204,29 @@
                         var quantityInstock = parseFloat($(this).attr("data-quantityinstock"));
                         var productvariableid = $(this).attr("data-productvariableid");
 
-                        if (quantity > 0)
-                        {
+                        if (quantity > 0) {
                             list += id + "," + sku + "," + producttype + "," + productvariablename + "," + productvariablevalue + "," + quantity + "," +
                                 productname + "," + productimageorigin + "," + productvariablesave + "," + price + "," + productvariablesave + "," + productvariableid + ";";
                             count++;
                         }
                     });
-                    if (count > 0)
-                    {
+                    if (count > 0) {
                         $("#<%=hdfOrderType.ClientID %>").val(ordertype);
                         $("#<%=hdfListProduct.ClientID%>").val(list);
 
                         $("#orderInfoModal").modal({ show: 'true', backdrop: 'static' });
                     }
-                    else
-                    {
+                    else {
                         $("#txtSearch").focus();
                         swal("Thông báo", "Hãy nhập sản phẩm!", "error");
                     }
                 }
-            }
+}
 
-            // insert order
-            function insertOrder() {
+// insert order
+function insertOrder() {
 
-                let excuteStatus = $("#<%=ddlExcuteStatus.ClientID%>").val();
+    let excuteStatus = $("#<%=ddlExcuteStatus.ClientID%>").val();
                 let payType = $("#<%=ddlPaymentType.ClientID%>").val();
                 let bank = $("#<%=ddlBank.ClientID%>").val();
                 let shippingtype = $("#<%=ddlShippingType.ClientID%>").val();
@@ -1248,9 +1278,9 @@
                         }
                         else if (transportCompanySubID == 0) {
                             $("#<%=ddlTransportCompanySubID.ClientID%>").focus();
-                            swal("Thông báo", "Chưa chọn nơi nhận của chành xe!", "warning");
-                            checkAllValue = false;
-                        }
+                                swal("Thông báo", "Chưa chọn nơi nhận của chành xe!", "warning");
+                                checkAllValue = false;
+                            }
 
                         if (feeship == 0 && $("#<%=pFeeShip.ClientID%>").is(":disabled") == false) {
                             if (trans != 0 && transSub != 0) {
@@ -1273,12 +1303,12 @@
                             }
                         }
                     }
-                }
-                
+        }
 
-                if (feeship > 0 && feeship < 10000) {
-                    checkAllValue = false;
-                    $("#<%=txtShippingFeeModal.ClientID%>").select();
+
+        if (feeship > 0 && feeship < 10000) {
+            checkAllValue = false;
+            $("#<%=txtShippingFeeModal.ClientID%>").select();
                     swal({
                         title: "Lạ vậy:",
                         text: "Sao phí vận chuyển lại nhỏ hơn <strong>10.000đ</strong> nè?<br><br>Xem lại nha!",
@@ -1403,11 +1433,10 @@
             function getAllPrice(is_payAll_call) {
                 if (is_payAll_call === undefined)
                     is_payAll_call = false;
-                if ($(".product-result").length > 0)
-                {
+                if ($(".product-result").length > 0) {
                     let totalprice = 0;
                     let productquantity = 0;
-                    $(".product-result").each(function() {
+                    $(".product-result").each(function () {
                         let price = parseFloat($(this).find(".gia-san-pham").attr("data-price"));
                         let quantity = parseFloat($(this).find(".in-quantity").val());
                         let total = price * quantity;
@@ -1437,14 +1466,12 @@
                     var listck = ChietKhau.split('|');
                     for (var i = 0; i < listck.length - 1; i++) {
                         var item = listck[i].split('-');
-                        if (i < listck.length - 2)
-                        {
+                        if (i < listck.length - 2) {
                             var item2 = listck[i + 1].split('-');
                             if (productquantity > (parseFloat(item[0]) - 1) && productquantity <= (parseFloat(item2[0]) - 1))
                                 amount = parseFloat(item[1]);
                         }
-                        else
-                        {
+                        else {
                             if (productquantity > (parseFloat(item[0]) - 1))
                                 amount = parseFloat(item[1]);
                         }
@@ -1452,9 +1479,8 @@
 
                     // Nếu dùng bằng tay để chỉnh chiết khấu
                     if (is_payAll_call === true)
-                        amount = parseInt($("#<%=pDiscount.ClientID%>").val().replace(/\,/g,''));
-                    else
-                    {
+                        amount = parseInt($("#<%=pDiscount.ClientID%>").val().replace(/\,/g, ''));
+                    else {
                         // Nếu khách hàng năm trong nhóm chiết khấu và đạt số lượng yêu cầu không
                         if (isDiscount && productquantity >= quantityRequirement)
                             amount = amount >= amountdiscount ? amount : amountdiscount;
@@ -1506,8 +1532,7 @@
                     $(".totalpricedetail").html(formatThousands((totalmoney - refund), ","));
                     $("#<%=hdfTongTienConLai.ClientID%>").val(totalmoney - refund);
                 }
-                else
-                {
+                else {
                     $(".totalproductQuantity").html(formatThousands(0, ',') + " cái");
                     $(".totalpriceorder").html(formatThousands(0, ','));
                     $(".totalpriceorderall").html(formatThousands(0, ','));
@@ -1522,19 +1547,16 @@
 
             // check empty
             function notEmpty() {
-                if ($("#<%=pDiscount.ClientID%>").val() == '')
-                {
+                if ($("#<%=pDiscount.ClientID%>").val() == '') {
                     var dis = 0;
                     $("#<%=pDiscount.ClientID%>").val(formatThousands(dis, ','));
                 }
-                if ($("#<%=pFeeShip.ClientID%>").val() == '')
-                {
+                if ($("#<%=pFeeShip.ClientID%>").val() == '') {
                     var fee = 0;
                     $("#<%=pFeeShip.ClientID%>").val(formatThousands(fee, ','));
                 }
                 fees.forEach((item) => {
-                    if (item.price == "")
-                    {
+                    if (item.price == "") {
                         item.FeePrice = 0;
                         $("#" + item.UUID).val(0);
                     }
@@ -1579,20 +1601,17 @@
             // get product price
             function getProductPrice(obj) {
                 var customertype = obj.val();
-                if ($(".product-result").length > 0)
-                {
+                if ($(".product-result").length > 0) {
                     var totalprice = 0;
-                    $(".product-result").each(function() {
+                    $(".product-result").each(function () {
                         var giasi = $(this).attr("data-giabansi");
                         var giale = $(this).attr("data-giabanle");
-                        if (customertype == 1)
-                        {
+                        if (customertype == 1) {
                             if (giale == 0)
                                 giale = giasi;
                             $(this).find(".gia-san-pham").attr("data-price", giale).html(formatThousands(giale, ','));
                         }
-                        else
-                        {
+                        else {
                             $(this).find(".gia-san-pham").attr("data-price", giasi).html(formatThousands(giasi, ','));
                         }
                     });
@@ -1603,18 +1622,14 @@
             // press key
             function keypress(e) {
                 var keypressed = null;
-                if (window.event)
-                {
+                if (window.event) {
                     keypressed = window.event.keyCode; //IE
                 }
-                else
-                {
+                else {
                     keypressed = e.which; //NON-IE, Standard
                 }
-                if (keypressed < 48 || keypressed > 57)
-                {
-                    if (keypressed == 8 || keypressed == 127)
-                    {
+                if (keypressed < 48 || keypressed > 57) {
+                    if (keypressed == 8 || keypressed == 127) {
                         return;
                     }
                     return false;
@@ -1622,7 +1637,7 @@
             }
 
             // format price
-            var formatThousands = function(n, dp) {
+            var formatThousands = function (n, dp) {
                 var s = '' + (Math.floor(n)),
                     d = n % 1,
                     i = s.length,
@@ -1634,24 +1649,20 @@
                     (d ? '.' + Math.round(d * Math.pow(10, dp || 2)) : '');
             };
 
-            function updateShippingFeeFromModal()
-            {
+            function updateShippingFeeFromModal() {
                 let newValue = +$("#<%=txtShippingFeeModal.ClientID%>").val() || 0;
                 let shippingFeeDOM = $("#<%=pFeeShip.ClientID%>");
                 shippingFeeDOM.val(newValue);
                 getAllPrice();
             }
-            function onchangePaymentType(payType)
-            {
+            function onchangePaymentType(payType) {
                 $("#<%=ddlBank.ClientID%>").val(0);
 
                 // Khác hình thức chuyển khoản
-                if (payType.val() != 2)
-                {
+                if (payType.val() != 2) {
                     $("#bankModal").attr("hidden", true);
                 }
-                else
-                {
+                else {
                     $("#bankModal").removeAttr("hidden");
                 }
             }
@@ -1668,8 +1679,7 @@
                 tranSubContainerDOM.html("Chọn nơi nhận");
 
                 // Khác hình thức chuyển xe
-                if (shipType.val() != 4)
-                {
+                if (shipType.val() != 4) {
                     $("#transportModal").attr("hidden", true);
                     $("#transportSubModal").attr("hidden", true);
                 }
@@ -1680,10 +1690,8 @@
 
             }
 
-            function onChangeTransportCompany(transport, selected)
-            {
-                if (selected == undefined)
-                {
+            function onChangeTransportCompany(transport, selected) {
+                if (selected == undefined) {
                     selected = "0";
                 }
 
@@ -1691,19 +1699,17 @@
                 $.ajax({
                     url: "/them-moi-don-hang.aspx/getTransportSub",
                     type: "POST",
-                    data: JSON.stringify({'transComID': transComID}),
+                    data: JSON.stringify({ 'transComID': transComID }),
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     success: function (msg) {
                         let data = JSON.parse(msg.d);
-                        if (data)
-                        {
+                        if (data) {
                             let tranSubName = "Chọn nơi nhận";
                             let tranSubDOM = $("#<%=ddlTransportCompanySubID.ClientID%>");
                             tranSubDOM.html("")
                             data.forEach((item) => {
-                                if (selected == item.key)
-                                {
+                                if (selected == item.key) {
                                     tranSubName = item.value;
                                 }
                                 tranSubDOM.append("<option value='" + item.key + "'>" + item.value + "</option>")
@@ -1714,11 +1720,10 @@
                             tranSubContainerDOM.attr("title", tranSubName);
                             tranSubContainerDOM.html(tranSubName);
 
-                            if (selected == "0")
-                            {
-                                setTimeout(function() {
+                            if (selected == "0") {
+                                setTimeout(function () {
                                     $("#<%=ddlTransportCompanySubID.ClientID%>").select2("open");
-                                }, 200);  
+                                }, 200);
                             }
                         }
                     },
@@ -1728,8 +1733,7 @@
                 });
             }
 
-            function suggestBank(customerID)
-            {
+            function suggestBank(customerID) {
                 $.ajax({
                     url: "/them-moi-don-hang.aspx/getTransferLast",
                     type: "POST",
@@ -1739,12 +1743,10 @@
                     success: function (response) {
                         let data = JSON.parse(response.d);
                         let banksDOM = $("#<%=ddlBank.ClientID%>");
-                        if (data)
-                        {
+                        if (data) {
                             banksDOM.val(data.value);
                         }
-                        else
-                        {
+                        else {
                             banksDOM.val(0);
                         }
                     },
@@ -1869,7 +1871,7 @@
                     swal("Thông báo", "Vui lòng cho phép cửa sổ bật lên cho trang web này", "error");
                 }
             };
-            
+
             function openCouponModal() {
                 let customerID = +document.querySelector('[id$="_hdfCustomerID"]').value || 0;
                 let productNumber = +document.querySelector('[id$="_hdfTotalQuantity"]').value || 0;

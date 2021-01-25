@@ -76,6 +76,60 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.TextBox txtAddress;
         
         /// <summary>
+        /// txtRecipientFullName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtRecipientFullName;
+        
+        /// <summary>
+        /// txtRecipientPhone control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtRecipientPhone;
+        
+        /// <summary>
+        /// ddlRecipientProvince control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlRecipientProvince;
+        
+        /// <summary>
+        /// ddlRecipientDistrict control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlRecipientDistrict;
+        
+        /// <summary>
+        /// ddlRecipientWard control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlRecipientWard;
+        
+        /// <summary>
+        /// txtRecipientAddress control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtRecipientAddress;
+        
+        /// <summary>
         /// pDiscount control.
         /// </summary>
         /// <remarks>
@@ -389,6 +443,69 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdfWardID;
+        
+        /// <summary>
+        /// hdfDeliveryAddressId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdfDeliveryAddressId;
+        
+        /// <summary>
+        /// hdfRecipientFullName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdfRecipientFullName;
+        
+        /// <summary>
+        /// hdfRecipientPhone control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdfRecipientPhone;
+        
+        /// <summary>
+        /// hdfRecipientProvinceId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdfRecipientProvinceId;
+        
+        /// <summary>
+        /// hdfRecipientDistrictId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdfRecipientDistrictId;
+        
+        /// <summary>
+        /// hdfRecipientWardId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdfRecipientWardId;
+        
+        /// <summary>
+        /// hdfRecipientAddress control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdfRecipientAddress;
         
         /// <summary>
         /// hdfUUID control.
