@@ -141,28 +141,51 @@ namespace IM_PJ
                         error += "<p>Không tìm thấy đơn hàng đổi trả " + order.RefundsGoodsID.ToString() + " (có thể đã bị xóa khi làm lại đơn đổi trả). Thêm lại đơn hàng đổi trả nhé!</p>";
                     }
                 }
-                var customer = CustomerController.GetByID(order.CustomerID.Value);
 
+                var customer = CustomerController.GetByID(order.CustomerID.Value);
+                string CustomerAddress = String.Empty;
                 string addressDetail = "";
                 string ProvinceName = "";
-                if (customer.ProvinceID.HasValue)
+
+                if (order.DeliveryAddressId.HasValue)
                 {
-                    var Province = ProvinceController.GetByID(customer.ProvinceID.Value);
-                    addressDetail = ", " + Province.Name;
-                    ProvinceName = Province.Name;
-                }
-                if (customer.DistrictId.HasValue)
-                {
-                    var District = ProvinceController.GetByID(customer.DistrictId.Value);
-                    addressDetail = ", " + District.Name + addressDetail;
-                }
-                if (customer.WardId.HasValue && customer.WardId.Value > 0)
-                {
+                    var deliveryAddress = DeliveryController.getDeliveryAddressById(order.DeliveryAddressId.Value);
+                    var Province = ProvinceController.GetByID(deliveryAddress.ProvinceId);
+                    var District = ProvinceController.GetByID(deliveryAddress.DistrictId);
                     var Ward = ProvinceController.GetByID(customer.WardId.Value);
+
+                    ProvinceName = Province.Name;
+                    addressDetail = ", " + Province.Name;
+                    addressDetail = ", " + District.Name + addressDetail;
                     addressDetail = ", " + Ward.Name + addressDetail;
+
+                    CustomerAddress = order.CustomerAddress.ToTitleCase() + addressDetail;
                 }
-                
-                string CustomerAddress = order.CustomerAddress.ToTitleCase() + addressDetail;
+                else
+                {
+                    if (customer.ProvinceID.HasValue)
+                    {
+                        var Province = ProvinceController.GetByID(customer.ProvinceID.Value);
+
+                        ProvinceName = Province.Name;
+                        addressDetail = ", " + Province.Name;
+                    }
+                    if (customer.DistrictId.HasValue)
+                    {
+                        var District = ProvinceController.GetByID(customer.DistrictId.Value);
+
+                        addressDetail = ", " + District.Name + addressDetail;
+                    }
+                    if (customer.WardId.HasValue && customer.WardId.Value > 0)
+                    {
+                        var Ward = ProvinceController.GetByID(customer.WardId.Value);
+
+                        addressDetail = ", " + Ward.Name + addressDetail;
+                    }
+
+                    CustomerAddress = order.CustomerAddress.ToTitleCase() + addressDetail;
+                }
+                 
                 string DeliveryInfo = "";
                 string ShippingFeeInfo = "";
                 string ShipperFeeInfo = "";

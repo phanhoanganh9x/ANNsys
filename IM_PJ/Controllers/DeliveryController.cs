@@ -467,6 +467,18 @@ namespace IM_PJ.Controllers
             }
         }
 
+        public static DeliveryAddress getDeliveryAddressById(long deliveryAddressId)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var deliveryAddress = con.DeliveryAddresses
+                    .Where(x => x.Id == deliveryAddressId)
+                    .SingleOrDefault();
+
+                return deliveryAddress;
+            }
+        }
+
         public class TransportInfo
         {
             public int TransportID { get; set; }
