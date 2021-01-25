@@ -82,13 +82,13 @@
                                     </div>
                                     <div class="panel-body">
                                         <div class="row">
-                                            <div class="col-md-3">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Họ tên</label>
                                                     <asp:TextBox ID="txtRecipientFullName" runat="server" CssClass="form-control capitalize" placeholder="Họ tên người nhận hàng"></asp:TextBox>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Điện thoại</label>
                                                     <asp:TextBox ID="txtRecipientPhone" runat="server" CssClass="form-control" placeholder="Số điện thoại người nhận hàng"></asp:TextBox>
@@ -96,25 +96,27 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-3">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Tỉnh thành</label>
                                                     <asp:DropDownList ID="ddlRecipientProvince" runat="server" CssClass="form-control"></asp:DropDownList>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Quận huyện</label>
                                                     <asp:DropDownList ID="ddlRecipientDistrict" runat="server" CssClass="form-control"></asp:DropDownList>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3">
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Phường xã</label>
                                                     <asp:DropDownList ID="ddlRecipientWard" runat="server" CssClass="form-control"></asp:DropDownList>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Địa chỉ</label>
                                                     <asp:TextBox ID="txtRecipientAddress" runat="server" CssClass="form-control capitalize" placeholder="Địa chỉ khách hàng"></asp:TextBox>
@@ -689,6 +691,9 @@
 
                 _initReceiverAddress();
                 _onChangeReceiverAddress();
+
+                // Thông tin địa chỉ nhận hàng
+                initDeliveryAddress();
 
                 // Init Page
                 $("#<%=pDiscount.ClientID%>").val(0);

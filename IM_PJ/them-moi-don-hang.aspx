@@ -798,6 +798,9 @@
                 _initReceiverAddress();
                 _onChangeReceiverAddress();
 
+                // Thông tin địa chỉ nhận hàng
+                initDeliveryAddress();
+
                 init();
 
 
