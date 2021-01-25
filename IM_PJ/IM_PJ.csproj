@@ -2278,6 +2278,7 @@
     <Compile Include="DeliveryHandler.ashx.cs">
       <DependentUpon>DeliveryHandler.ashx</DependentUpon>
     </Compile>
+    <Compile Include="Utils\AnnImage.cs" />
     <Compile Include="Utils\Log.cs" />
     <Compile Include="Utils\Thumbnail.cs" />
     <Compile Include="Utils\UnSign.cs" />
