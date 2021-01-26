@@ -193,7 +193,7 @@ function _updateFilter() {
     // Staff
     let staffDOM = document.querySelector("[id$='_ddlCreatedBy']");
 
-    if (controller.role == 0 && staffDOM.value)
+    if (staffDOM.value)
         controller.filter.staff = staffDOM.value;
     else
         controller.filter.staff = null;

@@ -296,9 +296,9 @@ namespace IM_PJ
         private void _initPage(tbl_Account acc)
         {
             _initSearch();
+            _initDatetimePicker();
             _initOrderStatus();
             _initDiscount();
-            _initDatetimePicker();
             _initCoupon();
             _initPaymentMethod();
             _initDeliveryMethod();
