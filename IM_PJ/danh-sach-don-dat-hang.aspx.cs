@@ -245,6 +245,30 @@ namespace IM_PJ
                 ddlCreatedBy.Enabled = false;
                 ddlCreatedBy.Items.Clear();
                 ddlCreatedBy.Items.Insert(0, new ListItem(acc.Username, acc.Username));
+
+                
+                var staff = Request.QueryString["staff"];
+
+                if (String.IsNullOrEmpty(staff))
+                {
+                    var url = HttpContext.Current.Request.Url;
+                    var query = url.Query;
+
+                    if (!String.IsNullOrEmpty(query))
+                        query += "&staff=" + acc.Username;
+                    else
+                        query += "?staff=0" + acc.Username;
+
+                    Response.Redirect(url.AbsolutePath + query);
+                }
+                else if (staff != acc.Username)
+                {
+                    var url = HttpContext.Current.Request.Url;
+                    var query = url.Query;
+
+                    query = query.Replace("staff=" + staff, "staff=" + acc.Username);
+                    Response.Redirect(url.AbsolutePath + query);
+                }
             }
             else
             {

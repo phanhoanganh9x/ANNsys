@@ -131,7 +131,7 @@
 
             // Staff
             if (key == "staff")
-                if (this.role == 0 && value)
+                if (value)
                     this.filter.staff = value;
 
             // Page
