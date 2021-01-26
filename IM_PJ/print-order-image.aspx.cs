@@ -491,15 +491,18 @@ namespace IM_PJ
                         }
                         else
                         {
-                            // kiểm tra nhà xe trả cước trước
-                            var a = TransportCompanyController.GetReceivePlaceByID(order.TransportCompanyID.Value, order.TransportCompanySubID.Value);
-                            if (a != null)
+                            if (order.ShippingType == (int)DeliveryType.TransferStation)
                             {
-                                if (a.Prepay == true)
+                                var a = TransportCompanyController.GetReceivePlaceByID(order.TransportCompanyID.Value, order.TransportCompanySubID.Value);
+                                if (a != null)
                                 {
-                                    error += "Chành xe này trả cước trước. Hãy nhập phí vận chuyển vào đơn hàng! Nếu muốn miễn phí cho khách thì trừ phí khác!";
+                                    if (a.Prepay == true)
+                                    {
+                                        error += "Chành xe này trả cước trước. Hãy nhập phí vận chuyển vào đơn hàng! Nếu muốn miễn phí cho khách thì trừ phí khác!";
+                                    }
                                 }
                             }
+                            
                         }
 
                         // Check fee
