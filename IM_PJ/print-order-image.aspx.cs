@@ -282,7 +282,7 @@ namespace IM_PJ
             if (ID > 0)
             {
                 var order = OrderController.GetByID(ID);
-                
+
                 if (order != null)
                 {
                     // kiểm tra nhà xe trả cước trước
@@ -326,7 +326,7 @@ namespace IM_PJ
                     #endregion
 
                     ltrCopyInvoiceURL.Text = "<a href='javascript:;' onclick='copyInvoiceURL(" + order.ID + ", " + order.CustomerID + ")' title='Copy link hóa đơn' class='btn btn-violet h45-btn'>Copy link hóa đơn</a>";
-                    
+
                     #region Currencies Drop Down List
                     ltrEnglishInvoice.Text += "<select class='currency-select' id='dllCurrency' onchange='onChangeCurrency($(this).val())'>";
                     ltrEnglishInvoice.Text += "    <option value='VND'>VND - Việt Nam</option>";
@@ -339,7 +339,7 @@ namespace IM_PJ
                     ltrEnglishInvoice.Text += "</select>";
                     #endregion
 
-                    
+
                     string Print = "";
 
                     double TotalQuantity = 0;
@@ -382,7 +382,7 @@ namespace IM_PJ
                         string date = string.Format("{0:dd/MM/yyyy HH:mm}", order.CreatedDate);
                         productPrint += "<td>" + date + "</td>";
                         productPrint += "</tr>";
-                        
+
                         if (!string.IsNullOrEmpty(order.DateDone.ToString()))
                         {
                             productPrint += "<tr>";
@@ -390,7 +390,7 @@ namespace IM_PJ
                             string datedone = string.Format("{0:dd/MM/yyyy HH:mm}", order.DateDone);
                             productPrint += "<td>" + datedone + "</td>";
                         }
-                            
+
                         productPrint += "</tr>";
                         productPrint += "<tr>";
                         productPrint += "<td>Nhân viên</td>";
@@ -416,7 +416,7 @@ namespace IM_PJ
                         {
                             productPrint += "<col class='image' />";
                         }
-                        
+
                         productPrint += "<col class='name' />";
                         productPrint += "<col class='quantity' />";
                         productPrint += "<col class='price' />";
@@ -429,7 +429,7 @@ namespace IM_PJ
                         {
                             productPrint += "<th>Hình ảnh</th>";
                         }
-                        
+
                         productPrint += "<th>Sản phẩm</th>";
                         productPrint += "<th>SL</th>";
                         productPrint += "<th>Giá</th>";
@@ -473,7 +473,7 @@ namespace IM_PJ
                             productPrint += "<td>" + string.Format("{0:N0}", TotalOrder) + "</td>";
                             productPrint += "</tr>";
                         }
-                        
+
                         if (order.RefundsGoodsID != null && order.RefundsGoodsID != 0)
                         {
                             var refund = RefundGoodController.GetByID(Convert.ToInt32(order.RefundsGoodsID));
@@ -505,6 +505,21 @@ namespace IM_PJ
                             productPrint += "<td colspan='" + colspan + "' class='align-right'>Phí vận chuyển</td>";
                             productPrint += "<td>" + string.Format("{0:N0}", Convert.ToDouble(order.FeeShipping)) + "</td>";
                             productPrint += "</tr>";
+                        }
+                        else
+                        {
+                            if (order.ShippingType == (int)DeliveryType.TransferStation)
+                            {
+                                var a = TransportCompanyController.GetReceivePlaceByID(order.TransportCompanyID.Value, order.TransportCompanySubID.Value);
+                                if (a != null)
+                                {
+                                    if (a.Prepay == true)
+                                    {
+                                        error += "Chành xe này trả cước trước. Hãy nhập phí vận chuyển vào đơn hàng! Nếu muốn miễn phí cho khách thì trừ phí khác!";
+                                    }
+                                }
+                            }
+
                         }
 
                         // Check fee
@@ -541,8 +556,8 @@ namespace IM_PJ
                         productPrint += "<td colspan='" + colspan + "' class='strong align-right'>TỔNG CỘNG</td>";
                         productPrint += "<td class='strong'>" + string.Format("{0:N0}", TotalOrder) + "</td>";
                         productPrint += "</tr>";
-                        
-                        
+
+
                         productPrint += "</tbody>";
                         productPrint += "</table>";
                         productPrint += "</div>";
@@ -552,7 +567,7 @@ namespace IM_PJ
 
                         shtml += "<div class='print-order-image'>";
                         shtml += "<div class='all print print-0'>";
-                        
+
 
                         if (numberOfOrders.Count < 4)
                         {
@@ -596,7 +611,7 @@ namespace IM_PJ
                             shtml += "</div>";
                         }
 
-                        
+
 
                         shtml += productPrint;
 
