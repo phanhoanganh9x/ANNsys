@@ -400,6 +400,10 @@ function selectCustomer() {
                     }
                     $("input[id$='_hdfCustomerID']").val(id);
                     $("input[id$='_hdfUsernameCurrent']").val(createdby);
+
+                    if (typeof getDeliveryAddressDefault(phone) === 'function')
+                        getDeliveryAddressDefault(phone);
+
                     swal.close();
                 }
                 else {
@@ -446,6 +450,10 @@ function selectCustomer() {
 
             $("input[id$='_hdfCustomerID']").val(id);
             $("input[id$='_hdfUsernameCurrent']").val(createdby);
+
+            if (typeof getDeliveryAddressDefault(phone) === 'function')
+                getDeliveryAddressDefault(phone);
+
             swal.close();
 
             // Trường hợp là them-moi-don-hang page 
@@ -706,6 +714,10 @@ function ajaxCheckCustomer() {
                                             $("input[id$='_hdfCustomerID']").val(data.ID);
                                             $("input[id$='_hdfUsernameCurrent']").val(data.CreatedBy);
                                             selectCustomerDetail(data);
+
+                                            if (typeof getDeliveryAddressDefault(phone) === 'function')
+                                                getDeliveryAddressDefault(phone);
+
                                             $("#txtSearch").focus();
                                         }
                                         else {
@@ -735,6 +747,10 @@ function ajaxCheckCustomer() {
                             if (confirm) {
                                 $("input[id$='_hdfCustomerID']").val(data.ID);
                                 selectCustomerDetail(data);
+
+                                if (typeof getDeliveryAddressDefault(phone) === 'function')
+                                    getDeliveryAddressDefault(phone);
+
                                 $("#txtSearch").focus();
                             }
                             else {

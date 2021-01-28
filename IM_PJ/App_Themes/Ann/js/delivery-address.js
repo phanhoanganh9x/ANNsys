@@ -2,6 +2,27 @@
 
 // #region Private
 // #region Service
+// #region Create
+function _createDeliveryAddresses(deliveryAddress) {
+    return new Promise(function (reslove, reject) {
+        $.ajax({
+            method: 'POST',
+            url: '/api/v1/delivery/address',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify(deliveryAddress),
+            dataType: 'json',
+            success: function (data, textStatus, xhr) {
+                reslove(data);
+            },
+            error: function (xhr, textStatus, err) {
+                reject(err);
+            }
+        });
+    });
+}
+// #endregion
+
+// #region Get
 function _getDeliveryAddress(deliveryAddressId) {
     return new Promise(function (reslove, reject) {
         $.ajax({
@@ -32,14 +53,11 @@ function _getDeliveryAddresses(phone) {
     });
 }
 
-function _createDeliveryAddresses(deliveryAddress) {
+function _getDeliveryAddressesDefault(phone) {
     return new Promise(function (reslove, reject) {
         $.ajax({
-            method: 'POST',
-            url: '/api/v1/delivery/address',
-            contentType: 'application/json; charset=UTF-8',
-            data: JSON.stringify(deliveryAddress),
-            dataType: 'json',
+            method: 'GET',
+            url: "api/v1/customer/" + phone + "/address-default",
             success: function (data, textStatus, xhr) {
                 reslove(data);
             },
@@ -49,6 +67,8 @@ function _createDeliveryAddresses(deliveryAddress) {
         });
     });
 }
+
+// #endregion
 // #endregion
 
 // #region Page
@@ -193,6 +213,7 @@ function _initDeliveryAddress(data) {
 
     // Danh sách tỉnh / thành phố
     let newProvinceOption = new Option(data.provinceName, data.provinceId, false, false);
+
     $("select[id$='_ddlRecipientProvince']").find("option").remove();
     $("select[id$='_ddlRecipientProvince']").append(newProvinceOption).trigger('change');
     $("input[id$='_hdfRecipientProvinceId']").val(data.provinceId);
@@ -200,6 +221,7 @@ function _initDeliveryAddress(data) {
 
     // Danh sách quận / huyện
     let newDistrictOption = new Option(data.districtName, data.districtId, false, false);
+
     $("select[id$='_ddlRecipientDistrict']").removeAttr('disabled');
     $("select[id$='_ddlRecipientDistrict']").removeAttr('readonly');
     $("select[id$='_ddlRecipientDistrict']").find("option").remove();
@@ -209,16 +231,84 @@ function _initDeliveryAddress(data) {
 
     // Danh sách phường / xã
     let newWardOption = new Option(data.wardName, data.wardId, false, false);
+
     $("select[id$='_ddlRecipientWard']").removeAttr('disabled');
     $("select[id$='_ddlRecipientWard']").removeAttr('readonly');
     $("select[id$='_ddlRecipientWard']").find("option").remove();
     $("select[id$='_ddlRecipientWard']").append(newWardOption).trigger('change');
     $("input[id$='_hdfRecipientWardId']").val(data.wardId);
 
+    // Địa chỉ
     if (data.address) {
         $("input[id$='_txtRecipientAddress']").val(data.address);
         $("input[id$='_hdfOldRecipientAddress']").val(data.address);
         $("input[id$='_hdfRecipientAddress']").val(data.address);
+    }
+}
+
+function _initDeliveryAddressByCustomer() {
+    // Họ tên người nhận hàng
+    let $txtName = $("input[id$='_txtFullname']");
+
+    if ($txtName.val()) {
+        $("input[id$='_txtRecipientFullName']").val($txtName.val());
+        $("input[id$='_hdfRecipientFullName']").val($txtName.val());
+    }
+
+    // SĐT người nhận
+    let $txtPhone = $("input[id$='_txtPhone']");
+
+    if ($txtPhone.val()) {
+        $("input[id$='_txtRecipientPhone']").val($txtPhone.val())
+        $("input[id$='_hdfRecipientPhone']").val($txtPhone.val());
+    }
+
+    // Danh sách tỉnh / thành phố
+    let $ddlProvince = $("select[id$='_ddlProvince']");
+
+    if ((+$ddlProvince.val() || 0) > 0) {
+        let newProvinceOption = new Option($ddlProvince.text().trim(), +$ddlProvince.val(), false, false);
+
+        $("select[id$='_ddlRecipientProvince']").find("option").remove();
+        $("select[id$='_ddlRecipientProvince']").append(newProvinceOption).trigger('change');
+        $("input[id$='_hdfRecipientProvinceId']").val(+$ddlProvince.val());
+        _disabledRecipientDistrict(false, +$ddlProvince.val());
+
+        // Danh sách quận / huyện
+        let $ddlDistrict = $("select[id$='_ddlDistrict']");
+
+        if ((+$ddlDistrict.val() || 0) > 0) {
+            let newDistrictOption = new Option($ddlDistrict.text().trim(), +$ddlDistrict.val(), false, false);
+
+            $("select[id$='_ddlRecipientDistrict']").removeAttr('disabled');
+            $("select[id$='_ddlRecipientDistrict']").removeAttr('readonly');
+            $("select[id$='_ddlRecipientDistrict']").find("option").remove();
+            $("select[id$='_ddlRecipientDistrict']").append(newDistrictOption).trigger('change');
+            $("input[id$='_hdfRecipientDistrictId']").val(+$ddlDistrict.val());
+            _disabledRecipientWard(false, +$ddlDistrict.val());
+
+            // Danh sách phường / xã
+            let $ddlWard = $("select[id$='_ddlWard']");
+            
+            if ((+$ddlWard.val() || 0) > 0) {
+                let newWardOption = new Option($ddlWard.text().trim(), +$ddlDistrict.val(), false, false);
+                $("select[id$='_ddlRecipientWard']").removeAttr('disabled');
+                $("select[id$='_ddlRecipientWard']").removeAttr('readonly');
+                $("select[id$='_ddlRecipientWard']").find("option").remove();
+                $("select[id$='_ddlRecipientWard']").append(newWardOption).trigger('change');
+                $("input[id$='_hdfRecipientWardId']").val(+$ddlDistrict.val());
+            }
+        }
+    }
+    
+
+    // Địa chỉ
+    let $txtAddress = $("input[id$='_txtAddress']");
+
+    if ($txtAddress.val()) {
+        $("input[id$='_txtRecipientAddress']").val($txtAddress.val());
+        $("input[id$='_hdfOldRecipientAddress']").val($txtAddress.val());
+        $("input[id$='_hdfRecipientAddress']").val($txtAddress.val());
     }
 }
 
@@ -522,5 +612,15 @@ function updateDeliveryAddress(phone) {
     return new Promise(function (reslove, reject) {
         reslove(true);
     });
+}
+
+function getDeliveryAddressDefault(phone) {
+    _getDeliveryAddressesDefault(phone)
+        .then(function (data) {
+            _initDeliveryAddress(data);
+        })
+        .catch(function (err) {
+            _initDeliveryAddressByCustomer()
+        });
 }
 // #endregion
