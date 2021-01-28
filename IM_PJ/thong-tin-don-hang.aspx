@@ -295,7 +295,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Điện thoại</label>
-                                            <asp:TextBox ID="txtPhone" CssClass="form-control" onblur="ajaxCheckCustomer()" runat="server" Enabled="false" placeholder="Số điện thoại khách hàng" autocomplete="off"></asp:TextBox>
+                                            <asp:TextBox ID="txtPhone" CssClass="form-control" onblur="ajaxCheckCustomer()" runat="server" Enabled="false" placeholder="Số điện thoại" autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -344,7 +344,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Địa chỉ</label>
-                                            <asp:TextBox ID="txtAddress" CssClass="form-control capitalize" runat="server" Enabled="true" placeholder="Địa chỉ khách hàng" autocomplete="off"></asp:TextBox>
+                                            <asp:TextBox ID="txtAddress" CssClass="form-control capitalize" runat="server" Enabled="true" placeholder="Địa chỉ" autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
                                 </div>
@@ -366,21 +366,21 @@
                     <div class="col-md-12">
                         <div class="panel panelborderheading">
                             <div class="panel-heading clear">
-                                <h3 class="page-title left not-margin-bot">Thông tin nhận hàng</h3>
-                                <a href="javascript:;" class="search-customer" onclick="showDeliveryAddresses()"><i class="fa fa-search" aria-hidden="true"></i> Danh sách nhận hàng</a>
+                                <h3 class="page-title left not-margin-bot">Địa chỉ nhận hàng</h3>
+                                <a href="javascript:;" class="search-customer" onclick="showDeliveryAddresses()"><i class="fa fa-search" aria-hidden="true"></i> Tìm địa chỉ</a>
                             </div>
                             <div class="panel-body">
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Họ tên</label>
-                                            <asp:TextBox ID="txtRecipientFullName" runat="server" CssClass="form-control capitalize" placeholder="Họ tên người nhận hàng"></asp:TextBox>
+                                            <asp:TextBox ID="txtRecipientFullName" runat="server" CssClass="form-control capitalize" autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Điện thoại</label>
-                                            <asp:TextBox ID="txtRecipientPhone" runat="server" CssClass="form-control" placeholder="Số điện thoại người nhận hàng"></asp:TextBox>
+                                            <asp:TextBox ID="txtRecipientPhone" runat="server" CssClass="form-control" autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
                                 </div>
@@ -406,7 +406,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Địa chỉ</label>
-                                            <asp:TextBox ID="txtRecipientAddress" runat="server" CssClass="form-control capitalize" placeholder="Địa chỉ khách hàng"></asp:TextBox>
+                                            <asp:TextBox ID="txtRecipientAddress" runat="server" CssClass="form-control capitalize" autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
                                 </div>
