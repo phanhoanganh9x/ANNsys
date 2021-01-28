@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Danh sách nhận hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="danh-sach-nhan-hang.aspx.cs" Inherits="IM_PJ.danh_sach_nhan_hang" %>
+﻿<%@ Page Title="Sổ địa chỉ khách hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="danh-sach-nhan-hang.aspx.cs" Inherits="IM_PJ.danh_sach_nhan_hang" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -6,7 +6,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="page-title left">Danh sách nhận hàng</h3>
+                    <h3 class="page-title left">Sổ địa chỉ khách hàng</h3>
                     <%--<div class="right above-list-btn">
                         <a href="/tao-lenh-chuyen-hang" class="h45-btn btn" style="background-color: #ff3f4c">Tạo lệnh chuyển hàng</a>
                     </div>--%>

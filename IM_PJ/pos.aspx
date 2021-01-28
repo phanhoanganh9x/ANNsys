@@ -20,7 +20,7 @@
                         <div class="panel panelborderheading">
                             <div class="panel-heading clear">
                                 <h3 class="page-title left not-margin-bot">Khách hàng</h3>
-                                <a href="javascript:;" class="search-customer" onclick="searchCustomer()" title="Tìm khách hàng"><i class="fa fa-search" aria-hidden="true"></i>Tìm (F1)</a>
+                                <a href="javascript:;" class="search-customer" onclick="searchCustomer()" title="Tìm khách hàng"><i class="fa fa-search" aria-hidden="true"></i> Tìm</a>
                                 <a href="javascript:;" class="change-user" onclick="changeUser()" title="Tính tiền giúp nhân viên khác"><i class="fa fa-user" aria-hidden="true"></i></a>
                                 <a href="/danh-sach-don-hang" class="change-user" target="_blank" title="Danh sách đơn hàng"><i class="fa fa-list-ul" aria-hidden="true"></i></a>
                             </div>
@@ -29,7 +29,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Họ tên</label>
-                                            <asp:TextBox ID="txtFullname" CssClass="form-control capitalize" runat="server" placeholder="(F2)" autocomplete="off"></asp:TextBox>
+                                            <asp:TextBox ID="txtFullname" CssClass="form-control capitalize" runat="server" autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -77,21 +77,21 @@
                             <div class="col-md-12">
                                 <div class="panel panelborderheading">
                                     <div class="panel-heading clear">
-                                        <h3 class="page-title left not-margin-bot">Thông tin nhận hàng</h3>
-                                        <a href="javascript:;" class="search-customer" onclick="showDeliveryAddresses()"><i class="fa fa-search" aria-hidden="true"></i>Danh sách nhận hàng</a>
+                                        <h3 class="page-title left not-margin-bot">Địa chỉ giao hàng</h3>
+                                        <a href="javascript:;" class="search-customer" onclick="showDeliveryAddresses()"><i class="fa fa-search" aria-hidden="true"></i> Tìm</a>
                                     </div>
                                     <div class="panel-body">
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Họ tên</label>
-                                                    <asp:TextBox ID="txtRecipientFullName" runat="server" CssClass="form-control capitalize" placeholder="Họ tên người nhận hàng"></asp:TextBox>
+                                                    <asp:TextBox ID="txtRecipientFullName" runat="server" CssClass="form-control capitalize" autocomplete="off"></asp:TextBox>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Điện thoại</label>
-                                                    <asp:TextBox ID="txtRecipientPhone" runat="server" CssClass="form-control" placeholder="Số điện thoại người nhận hàng"></asp:TextBox>
+                                                    <asp:TextBox ID="txtRecipientPhone" runat="server" CssClass="form-control" autocomplete="off"></asp:TextBox>
                                                 </div>
                                             </div>
                                         </div>
@@ -119,7 +119,7 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Địa chỉ</label>
-                                                    <asp:TextBox ID="txtRecipientAddress" runat="server" CssClass="form-control capitalize" placeholder="Địa chỉ khách hàng"></asp:TextBox>
+                                                    <asp:TextBox ID="txtRecipientAddress" runat="server" CssClass="form-control capitalize" autocomplete="off"></asp:TextBox>
                                                 </div>
                                             </div>
                                         </div>
@@ -202,13 +202,13 @@
                                 <div class="right totalGuestChange"></div>
                             </div>
                             <div class="post-table-links clear">
-                                <a href="javascript:;" class="btn link-btn" style="background-color: #ffad00" onclick="searchReturnOrder()" title="Nhập đơn hàng đổi trả"><i class="fa fa-refresh"></i>Đổi trả</a>
-                                <a href="javascript:;" class="btn link-btn" style="background-color: #00a2b7" onclick="showShipping()" title="Nhập phí vận chuyển"><i class="fa fa-truck"></i>Ship</a>
-                                <a href="javascript:;" class="btn link-btn" style="background-color: #453288" onclick="showDiscount()" title="Nhập chiết khấu mỗi cái"><i class="fa fa-tag"></i>Chiết khấu</a>
-                                <a id="feeNewStatic" href="#feeModal" class="btn link-btn" style="background-color: #607D8B;" data-toggle="modal" data-backdrop='static' title="Thêm phí khác vào đơn hàng"><i class="fa fa-plus"></i>Phí</a>
+                                <a href="javascript:;" class="btn link-btn" style="background-color: #ffad00" onclick="searchReturnOrder()" title="Nhập đơn hàng đổi trả"><i class="fa fa-refresh"></i> Đổi trả</a>
+                                <a href="javascript:;" class="btn link-btn" style="background-color: #00a2b7" onclick="showShipping()" title="Nhập phí vận chuyển"><i class="fa fa-truck"></i> Ship</a>
+                                <a href="javascript:;" class="btn link-btn" style="background-color: #453288" onclick="showDiscount()" title="Nhập chiết khấu mỗi cái"><i class="fa fa-tag"></i> Chiết khấu</a>
+                                <a id="feeNewStatic" href="#feeModal" class="btn link-btn" style="background-color: #607D8B;" data-toggle="modal" data-backdrop='static' title="Thêm phí khác vào đơn hàng"><i class="fa fa-plus"></i> Phí</a>
                             </div>
                             <div class="post-table-links clear">
-                                <a href="javascript:;" class="btn link-btn btn-complete-order" onclick="payAll()" title="Hoàn tất đơn hàng"><i class="fa fa-floppy-o"></i>Thanh toán (F9)</a>
+                                <a href="javascript:;" class="btn link-btn btn-complete-order" onclick="payAll()" title="Hoàn tất đơn hàng"><i class="fa fa-floppy-o"></i> Thanh toán (F9)</a>
                                 <asp:Button ID="btnOrder" runat="server" OnClick="btnOrder_Click" Style="display: none" />
                             </div>
                         </div>
