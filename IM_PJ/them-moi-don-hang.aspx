@@ -553,8 +553,175 @@
         <script type="text/javascript">
             "use strict";
 
+            // #region Private
+            function _checkOrderStatus() {
+                let excuteStatus = $("#<%=ddlExcuteStatus.ClientID%>").val();
+
+                // Trạng thái hoàn tất đơn hàng
+                if (excuteStatus == 2) {
+                    let shippingType = $("#<%=ddlShippingType.ClientID%>").val();
+
+                    // 2: Bưu điện | 7: Viettel | 8: Grab | 9: AhaMove
+                    if (shippingType == 2 || shippingType == 7 || shippingType == 8 || shippingType == 9) {
+                        let $feeShip = $("#<%=pFeeShip.ClientID%>");
+                        let feeShip = parseFloat($feeShip.val().replace(/\,/g, ''));
+
+                        // Miễn phí ship
+                        if (feeShip == 0 && $feeShip.is(":disabled") == false) {
+                            $("#<%=txtShippingFeeModal.ClientID%>").select();
+                            swal({
+                                title: "Có vấn đề:",
+                                text: "Chưa nhập phí vận chuyển!<br><br>Hỏng lẻ miễn phí vận chuyển luôn?",
+                                type: "warning",
+                                showCancelButton: true,
+                                confirmButtonColor: "#DD6B55",
+                                confirmButtonText: "Để em tính phí!!",
+                                closeOnConfirm: false,
+                                cancelButtonText: "Để em bấm nút miễn phí (cẩn thận)",
+                                html: true
+                            });
+
+                            return false;
+                        }
+                    }
+                    // 3: Proship | 6: GHTK
+                    else if (shippingType == 3 || shippingType == 6) {
+                        swal({
+                            title: "Có vấn đề:",
+                            text: "Không <strong>Hoàn tất</strong> đơn ngay lúc này được! Hãy chọn trạng thái Đang xử lý đơn!",
+                            type: "warning",
+                            confirmButtonColor: "#DD6B55",
+                            confirmButtonText: "OK!!",
+                            html: true
+                        });
+
+                        return false;
+                    }
+                    // 4: Chuyển xe
+                    else if (shippingType == 4) {
+                        let $transportCompany = $("#<%=ddlTransportCompanyID.ClientID%>");
+                        let $transportCompanySub = $("#<%=ddlTransportCompanySubID.ClientID%>");
+                        let $feeShip = $("#<%=pFeeShip.ClientID%>");
+                        let feeShip = parseFloat($feeShip.val().replace(/\,/g, ''));
+
+                        // Chành xe
+                        if ($transportCompany.val() == 0) {
+                            $transportCompany.focus();
+                            swal("Thông báo", "Chưa chọn chành xe!", "warning");
+
+                            return false;
+                        }
+                        // Nơi nhận
+                        else if ($transportCompanySub.val() == 0) {
+                            $transportCompanySub.focus();
+                            swal("Thông báo", "Chưa chọn nơi nhận của chành xe!", "warning");
+
+                            return false;
+                        }
+                        // Miễn phí ship
+                        else if (feeShip == 0 && $feeShip.is(":disabled") == false) {
+                            let checkPrepay = checkPrepayTransport($transportCompany.val(), $transportCompanySub.val());
+
+                            if (checkPrepay == 1) {
+                                $("#<%=txtShippingFeeModal.ClientID%>").select();
+                                swal({
+                                    title: "Coi nè:",
+                                    text: "Chưa nhập phí vận chuyển do nhà xe này <strong>trả cước trước</strong>!<br><br>Hay là miễn phí vận chuyển luôn?",
+                                    type: "warning",
+                                    showCancelButton: true,
+                                    confirmButtonColor: "#DD6B55",
+                                    confirmButtonText: "Để em nhập phí!!",
+                                    closeOnConfirm: false,
+                                    cancelButtonText: "Để em coi lại..",
+                                    html: true
+                                });
+
+                                return false;
+                            }
+                        }
+                    }
+                }
+
+                return true;
+            }
+            
+            function _checkFeeShip() {
+                let $feeShip = $("#<%=pFeeShip.ClientID%>");
+                let feeShip = parseFloat($feeShip.val().replace(/\,/g, ''));
+
+                if (feeShip > 0 && feeShip < 10000) {
+                    $("#<%=txtShippingFeeModal.ClientID%>").select();
+                    swal({
+                        title: "Lạ vậy:",
+                        text: "Sao phí vận chuyển lại nhỏ hơn <strong>10.000đ</strong> nè?<br><br>Xem lại nha!",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Để em xem lại!!",
+                        html: true
+                    });
+
+                    return false;
+                }
+
+                return true;
+            }
+
+            function _checkDiscount() {
+                let $discount = $("#<%=pDiscount.ClientID%>");
+                let discount = parseFloat($discount.val().replace(/\,/g, ''));
+                let $role = $("#<%=hdfRoleID.ClientID%>");
+
+                if (discount > 20000 && $role.val() != 0) {
+                    $("#closeOrderInfo").click();
+                    $discount.select();
+                    swal({
+                        title: "Lạ vậy:",
+                        text: "Sao chiết khấu lại lớn hơn <strong>20.000đ</strong> nè?<br><br>Nếu có lý do thì báo chị Ngọc nha!",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Để em xem lại!!",
+                        html: true
+                    });
+
+                    return false;
+                }
+
+                return true;
+            }
+
+            function _checkValidation() {
+                
+                let payType = $("#<%=ddlPaymentType.ClientID%>").val();
+                let bank = $("#<%=ddlBank.ClientID%>").val();
+                
+               
+                // Kiểm tra trạng thái đơn hàng
+                if (!_checkOrderStatus())
+                    return false;
+
+                // Kiểm tra phí giao hàng
+                if (!_checkFeeShip())
+                    return false;
+
+                // Kiểm tra chiết khấu
+                if (!_checkDiscount())
+                    return false;
+
+                return true;
+            }
+
+            function _updateDeliveryAddress() {
+                // Cập nhật thông tin địa chỉ giao hàng
+                let $phone = $("#<%=txtPhone.ClientID%>");
+
+                return updateDeliveryAddress($phone.val());
+            }
+            // #endregin
+
             function redirectTo(ID) {
-                HoldOn.open();
+                HoldOn.close();
                 window.onbeforeunload = null;
                 window.location.href = "/thong-tin-don-hang?id=" + ID;
             }
@@ -1224,136 +1391,29 @@
                         swal("Thông báo", "Hãy nhập sản phẩm!", "error");
                     }
                 }
-}
+            }
 
-// insert order
-function insertOrder() {
+            // insert order
+            function insertOrder() {
+                HoldOn.open();
 
-    let excuteStatus = $("#<%=ddlExcuteStatus.ClientID%>").val();
-                let payType = $("#<%=ddlPaymentType.ClientID%>").val();
-                let bank = $("#<%=ddlBank.ClientID%>").val();
-                let shippingtype = $("#<%=ddlShippingType.ClientID%>").val();
-                let trans = $("#<%=ddlTransportCompanyID.ClientID%>").val();
-                let transSub = $("#<%=ddlTransportCompanySubID.ClientID%>").val();
+                if (!_checkValidation()) {
+                    HoldOn.close();
+                    return;
+                }
+                
+                Promise.all([_updateDeliveryAddress()])
+                    .then(function () {
+                        window.onbeforeunload = null;
 
-                var checkAllValue = true;
-
-                // check shipping fee
-
-                var fs = $("#<%=pFeeShip.ClientID%>").val();
-                var feeship = parseFloat(fs.replace(/\,/g, ''));
-                if (excuteStatus == 2) {
-                    if (shippingtype == 2 || shippingtype == 7 || shippingtype == 8 || shippingtype == 9) {
-                        if (feeship == 0 && $("#<%=pFeeShip.ClientID%>").is(":disabled") == false) {
-                            $("#<%=txtShippingFeeModal.ClientID%>").select();
-                            swal({
-                                title: "Có vấn đề:",
-                                text: "Chưa nhập phí vận chuyển!<br><br>Hỏng lẻ miễn phí vận chuyển luôn?",
-                                type: "warning",
-                                showCancelButton: true,
-                                confirmButtonColor: "#DD6B55",
-                                confirmButtonText: "Để em tính phí!!",
-                                closeOnConfirm: false,
-                                cancelButtonText: "Để em bấm nút miễn phí (cẩn thận)",
-                                html: true
-                            });
-                            checkAllValue = false;
-                        }
-                    }
-                    else if (shippingtype == 3 || shippingtype == 6) {
-                        swal({
-                            title: "Có vấn đề:",
-                            text: "Không <strong>Hoàn tất</strong> đơn ngay lúc này được! Hãy chọn trạng thái Đang xử lý đơn!",
-                            type: "warning",
-                            confirmButtonColor: "#DD6B55",
-                            confirmButtonText: "OK!!",
-                            html: true
-                        });
-                        checkAllValue = false;
-                    }
-                    else if (shippingtype == 4) {
-                        let transportCompanyID = $("#<%=ddlTransportCompanyID.ClientID%>").val();
-                        let transportCompanySubID = $("#<%=ddlTransportCompanySubID.ClientID%>").val();
-                        if (transportCompanyID == 0) {
-                            $("#<%=ddlTransportCompanyID.ClientID%>").focus();
-                            swal("Thông báo", "Chưa chọn chành xe!", "warning");
-                            checkAllValue = false;
-                        }
-                        else if (transportCompanySubID == 0) {
-                            $("#<%=ddlTransportCompanySubID.ClientID%>").focus();
-                                swal("Thông báo", "Chưa chọn nơi nhận của chành xe!", "warning");
-                                checkAllValue = false;
-                            }
-
-                        if (feeship == 0 && $("#<%=pFeeShip.ClientID%>").is(":disabled") == false) {
-                            if (trans != 0 && transSub != 0) {
-                                var checkPrepay = checkPrepayTransport(trans, transSub);
-                                if (checkPrepay == 1) {
-                                    $("#<%=txtShippingFeeModal.ClientID%>").select();
-                                    swal({
-                                        title: "Coi nè:",
-                                        text: "Chưa nhập phí vận chuyển do nhà xe này <strong>trả cước trước</strong>!<br><br>Hay là miễn phí vận chuyển luôn?",
-                                        type: "warning",
-                                        showCancelButton: true,
-                                        confirmButtonColor: "#DD6B55",
-                                        confirmButtonText: "Để em nhập phí!!",
-                                        closeOnConfirm: false,
-                                        cancelButtonText: "Để em coi lại..",
-                                        html: true
-                                    });
-                                    checkAllValue = false;
-                                }
-                            }
-                        }
-                    }
-        }
-
-
-        if (feeship > 0 && feeship < 10000) {
-            checkAllValue = false;
-            $("#<%=txtShippingFeeModal.ClientID%>").select();
-                    swal({
-                        title: "Lạ vậy:",
-                        text: "Sao phí vận chuyển lại nhỏ hơn <strong>10.000đ</strong> nè?<br><br>Xem lại nha!",
-                        type: "warning",
-                        showCancelButton: false,
-                        confirmButtonColor: "#DD6B55",
-                        confirmButtonText: "Để em xem lại!!",
-                        html: true
+                        let $transportCompanySub = $("#<%=ddlTransportCompanySubID.ClientID%>");
+                        $("#<%=hdfTransportCompanySubID.ClientID%>").val($transportCompanySub.val());
+                        $("#closeOrderInfo").click();
+                        $("#<%=btnOrder.ClientID%>").click();
+                    })
+                    .catch(function (err) {
+                        HoldOn.close();
                     });
-                }
-
-                // check discount
-
-                var ds = $("#<%=pDiscount.ClientID%>").val();
-                var discount = parseFloat(ds.replace(/\,/g, ''));
-
-                if (discount > 20000 && $("#<%=hdfRoleID.ClientID%>").val() != 0) {
-                    checkAllValue = false;
-                    $("#closeOrderInfo").click();
-                    $("#<%=pDiscount.ClientID%>").select();
-                    swal({
-                        title: "Lạ vậy:",
-                        text: "Sao chiết khấu lại lớn hơn <strong>20.000đ</strong> nè?<br><br>Nếu có lý do thì báo chị Ngọc nha!",
-                        type: "warning",
-                        showCancelButton: false,
-                        confirmButtonColor: "#DD6B55",
-                        confirmButtonText: "Để em xem lại!!",
-                        html: true
-                    });
-                }
-
-                if (checkAllValue == true) {
-                    window.onbeforeunload = null;
-
-                    $("#<%=hdfTransportCompanySubID.ClientID%>").val(transSub);
-
-                    $("#closeOrderInfo").click();
-
-                    HoldOn.open();
-                    $("#<%=btnOrder.ClientID%>").click();
-                }
-
             }
 
             function checkPrepayTransport(ID, SubID) {
