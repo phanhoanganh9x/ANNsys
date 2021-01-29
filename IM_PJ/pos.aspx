@@ -464,6 +464,240 @@
         <script type="text/javascript" src="App_Themes/Ann/js/delivery-address.js?v=202101211340"></script>
         <script type="text/javascript">
             "use strict";
+            // #region Private
+            function _checkCutomer() {
+                // Họ tên khách hàng
+                let $name = $("#<%=txtFullname.ClientID%>");
+
+                if ($name.val() === "") {
+                    $name.focus();
+                    swal("Thông báo", "Hãy nhập tên khách hàng!", "error");
+
+                    return false;
+                }
+                
+                // SĐT khách hàng
+                let $phone = $("#<%=txtPhone.ClientID%>");
+                
+                if ($phone.val() === "") {
+                    $phone.focus();
+                    swal("Thông báo", "Hãy nhập số điện thoại khách hàng!", "error");
+
+                    return false;
+                }
+                
+                // Tỉnh / thành phố
+                let $province = $("#<%=ddlProvince.ClientID%>");
+
+                if ((+$province.val() || 0) === 0) {
+                    swal({
+                        title: "Thông báo",
+                        text: "Chưa chọn tỉnh thành",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonText: "Để em xem lại!!",
+                        closeOnConfirm: false,
+                        html: true
+                    }, function (isConfirm) {
+                        if (isConfirm) {
+                            sweetAlert.close();
+                            $province.select2('open');
+                        }
+                    });
+
+                    return false;
+                }
+                
+                // Quận / huyện
+                let $district = $("#<%=ddlDistrict.ClientID%>");
+
+                if ((+$district.val() || 0) === 0) {
+                    swal({
+                        title: "Thông báo",
+                        text: "Chưa chọn quận huyện",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonText: "Để em xem lại!!",
+                        closeOnConfirm: false,
+                        html: true
+                    }, function (isConfirm) {
+                        if (isConfirm) {
+                            sweetAlert.close();
+                            $district.select2('open');
+                        }
+                    });
+
+                    return false;
+                }
+                
+                // Phường / xã
+                let $ward = $("#<%=ddlWard.ClientID%>");
+
+                if ((+$ward.val() || 0) === 0) {
+                    swal({
+                        title: "Thông báo",
+                        text: "Chưa chọn phường xã",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonText: "Để em xem lại!!",
+                        closeOnConfirm: false,
+                        html: true
+                    }, function (isConfirm) {
+                        if (isConfirm) {
+                            sweetAlert.close();
+                            $ward.select2('open');
+                        }
+                    });
+
+                    return false;
+                }
+                
+                // Địa chỉ
+                let $address = $("#<%=txtAddress.ClientID%>");
+
+                if ($address.val() === "") {
+                    $address.focus();
+                    swal("Thông báo", "Hãy nhập địa chỉ khách hàng!", "error");
+
+                    return false;
+                }
+
+                return true;
+            }
+
+            function _checkOrderEmty() {
+                if ($(".product-result").length == 0) {
+                    $("#txtSearch").focus();
+                    swal("Thông báo", "Hãy nhập sản phẩm!", "error");
+
+                    return false;
+                }
+
+                return true;
+            }
+
+            function _checkFeeShip() {
+                let $feeship = $("#<%=pFeeShip.ClientID%>");
+                let feeship = parseFloat($feeship.val().replace(/\,/g, ''));
+
+                if (feeship > 0 && feeship < 10000) {
+                    $feeship.focus();
+                    swal({
+                        title: "Lạ vậy:",
+                        text: "Sao phí vận chuyển lại nhỏ hơn <strong>10.000đ</strong> nè?<br><br>Xem lại nha!",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Để em xem lại!!",
+                        html: true
+                    });
+
+                    return false;
+                }
+
+                return true;
+            }
+
+            function _checkDiscount() {
+                // check discount
+                let $discount = $("#<%=pDiscount.ClientID%>");
+                let discount = parseFloat($discount.val().replace(/\,/g, ''));
+
+                if (discount > 20000 && $("#<%=hdfRoleID.ClientID%>").val() != 0) {
+                    $discount.focus();
+                    swal({
+                        title: "Lạ vậy:",
+                        text: "Sao chiết khấu lại lớn hơn <strong>20.000đ</strong> nè?<br><br>Nếu có lý do thì báo chị Ngọc nha!",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Để em xem lại!!",
+                        html: true
+                    });
+
+                    return false;
+                }
+
+                return true;
+            }
+
+            function _insertOrder() {
+                let orderDetails = "";
+                let ordertype = $(".customer-type").val();
+
+                orderDetails += '{ "productPOS" : ['
+
+                $(".product-result").each(function () {
+                    let productID = $(this).attr("data-productid");
+                    let productVariableID = $(this).attr("data-productvariableid");
+                    let sku = $(this).attr("data-sku");
+                    let producttype = $(this).attr("data-producttype");
+                    let productvariablename = $(this).attr("data-productvariablename");
+                    let productvariablevalue = $(this).attr("data-productvariablevalue");
+                    let quantity = $(this).find(".in-quantity").val();
+                    let productname = $(this).attr("data-productname");
+                    let productimageorigin = $(this).attr("data-productimageorigin");
+                    let productvariable = $(this).attr("data-productvariable");
+                    let price = $(this).find(".gia-san-pham").attr("data-price");
+                    let productvariablesave = $(this).attr("data-productvariablesave");
+
+                    if (quantity > 0) {
+                        let order = new OrderDetail(
+                                productID
+                                , productVariableID
+                                , sku
+                                , producttype
+                                , productvariablename
+                                , productvariablevalue
+                                , quantity
+                                , productname
+                                , productimageorigin
+                                , price
+                                , productvariablesave
+                        );
+
+                        orderDetails += order.stringJSON() + ",";
+                    }
+                });
+
+                orderDetails = orderDetails.replace(/.$/, "") + "]}";
+
+                $("#<%=hdfOrderType.ClientID %>").val(ordertype);
+                $("#<%=hdfListProduct.ClientID%>").val(orderDetails);
+                $(".totalquantity").addClass("hide");
+            }
+
+            function _checkValidation() {
+                // Kiểm tra thông tin khách hàng
+                if (!_checkCutomer())
+                    return false;
+
+                // Kiểm tra thông tin nhận hàng
+                if (!checkDeliveryAddressValidation())
+                    return false;
+               
+                // Kiểm tra đơn hàng là đơn rỗng không
+                if (!_checkOrderEmty())
+                    return false;
+
+                // Kiểm tra phí giao hàng
+                if (!_checkFeeShip())
+                    return false;
+
+                // Kiểm tra triết khấu
+                if (!_checkDiscount())
+                    return false;
+
+                return true;
+            }
+
+            function _updateDeliveryAddress() {
+                // Cập nhật thông tin địa chỉ giao hàng
+                let $phone = $("#<%=txtPhone.ClientID%>");
+
+                return updateDeliveryAddress($phone.val());
+            }
+            // #endregion
 
             // Fee Type
             class FeeType {
@@ -1225,175 +1459,19 @@
                 }
             }
 
-            // insert order
-            function insertOrder() {
-
-                var checkAllValue = true;
-
-                // check shipping fee
-
-                var fs = $("#<%=pFeeShip.ClientID%>").val();
-                var feeship = parseFloat(fs.replace(/\,/g, ''));
-
-                if (feeship > 0 && feeship < 10000) {
-                    checkAllValue = false;
-                    $("#<%=pFeeShip.ClientID%>").focus();
-                    swal({
-                        title: "Lạ vậy:",
-                        text: "Sao phí vận chuyển lại nhỏ hơn <strong>10.000đ</strong> nè?<br><br>Xem lại nha!",
-                        type: "warning",
-                        showCancelButton: false,
-                        confirmButtonColor: "#DD6B55",
-                        confirmButtonText: "Để em xem lại!!",
-                        html: true
-                    });
-                }
-
-                // check discount
-                var ds = $("#<%=pDiscount.ClientID%>").val();
-                var discount = parseFloat(ds.replace(/\,/g, ''));
-
-                if (discount > 20000 && $("#<%=hdfRoleID.ClientID%>").val() != 0) {
-                    checkAllValue = false;
-                    $("#<%=pDiscount.ClientID%>").focus();
-                    swal({
-                        title: "Lạ vậy:",
-                        text: "Sao chiết khấu lại lớn hơn <strong>20.000đ</strong> nè?<br><br>Nếu có lý do thì báo chị Ngọc nha!",
-                        type: "warning",
-                        showCancelButton: false,
-                        confirmButtonColor: "#DD6B55",
-                        confirmButtonText: "Để em xem lại!!",
-                        html: true
-                    });
-                }
-
-                return checkAllValue;
-
-            }
-
             // pay order on click button
             function payAll() {
-                var phone = $("#<%=txtPhone.ClientID%>").val();
-                var name = $("#<%=txtFullname.ClientID%>").val();
-                var address = $("#<%=txtAddress.ClientID%>").val();
-                var province = $("#<%=ddlProvince.ClientID%>").val();
-                var district = $("#<%=ddlDistrict.ClientID%>").val();
-                var ward = $("#<%=ddlWard.ClientID%>").val();
-
-                if (name === "") {
-                    $("#<%= txtFullname.ClientID%>").focus();
-                    swal("Thông báo", "Hãy nhập tên khách hàng!", "error");
-                }
-                else if (phone === "") {
-                    $("#<%= txtPhone.ClientID%>").focus();
-                    swal("Thông báo", "Hãy nhập số điện thoại khách hàng!", "error");
-                }
-                else if (province === "0" || province === null || province === "") {
-                    swal({
-                        title: "Thông báo",
-                        text: "Chưa chọn tỉnh thành",
-                        type: "warning",
-                        showCancelButton: false,
-                        confirmButtonText: "Để em xem lại!!",
-                        closeOnConfirm: false,
-                        html: true
-                    }, function (isConfirm) {
-                        if (isConfirm) {
-                            sweetAlert.close();
-                            $("#<%=ddlProvince.ClientID%>").select2('open');
-                        }
-                    });
-                }
-                else if (district === "0" || district === null || district === "") {
-                    swal({
-                        title: "Thông báo",
-                        text: "Chưa chọn quận huyện",
-                        type: "warning",
-                        showCancelButton: false,
-                        confirmButtonText: "Để em xem lại!!",
-                        closeOnConfirm: false,
-                        html: true
-                    }, function (isConfirm) {
-                        if (isConfirm) {
-                            sweetAlert.close();
-                            $("#<%=ddlDistrict.ClientID%>").select2('open');
-                        }
-                    });
-                }
-                else if (ward === "0" || ward === null || ward === "") {
-                    swal({
-                        title: "Thông báo",
-                        text: "Chưa chọn phường xã",
-                        type: "warning",
-                        showCancelButton: false,
-                        confirmButtonText: "Để em xem lại!!",
-                        closeOnConfirm: false,
-                        html: true
-                    }, function (isConfirm) {
-                        if (isConfirm) {
-                            sweetAlert.close();
-                            $("#<%=ddlWard.ClientID%>").select2('open');
-                        }
-                    });
-                }
-                else if (address === "") {
-                    $("#<%= txtAddress.ClientID%>").focus();
-                    swal("Thông báo", "Hãy nhập địa chỉ khách hàng!", "error");
-                }
-                else if ($(".product-result").length == 0) {
-                    $("#txtSearch").focus();
-                    swal("Thông báo", "Hãy nhập sản phẩm!", "error");
-                }
-                else {
-                    let orderDetails = "";
-                    let ordertype = $(".customer-type").val();
-
-                    orderDetails += '{ "productPOS" : ['
-
-                    $(".product-result").each(function () {
-                        let productID = $(this).attr("data-productid");
-                        let productVariableID = $(this).attr("data-productvariableid");
-                        let sku = $(this).attr("data-sku");
-                        let producttype = $(this).attr("data-producttype");
-                        let productvariablename = $(this).attr("data-productvariablename");
-                        let productvariablevalue = $(this).attr("data-productvariablevalue");
-                        let quantity = $(this).find(".in-quantity").val();
-                        let productname = $(this).attr("data-productname");
-                        let productimageorigin = $(this).attr("data-productimageorigin");
-                        let productvariable = $(this).attr("data-productvariable");
-                        let price = $(this).find(".gia-san-pham").attr("data-price");
-                        let productvariablesave = $(this).attr("data-productvariablesave");
-
-                        if (quantity > 0) {
-                            let order = new OrderDetail(
-                                    productID
-                                    , productVariableID
-                                    , sku
-                                    , producttype
-                                    , productvariablename
-                                    , productvariablevalue
-                                    , quantity
-                                    , productname
-                                    , productimageorigin
-                                    , price
-                                    , productvariablesave
-                            );
-
-                            orderDetails += order.stringJSON() + ",";
-                        }
-                    });
-
-                    orderDetails = orderDetails.replace(/.$/, "") + "]}";
-
-                    $("#<%=hdfOrderType.ClientID %>").val(ordertype);
-                    $("#<%=hdfListProduct.ClientID%>").val(orderDetails);
-                    $(".totalquantity").addClass("hide");
-
-                    if (insertOrder() == true) {
+                if (!_checkValidation())
+                    return;
+                
+                Promise.all([_updateDeliveryAddress()])
+                    .then(function () {
+                        _insertOrder();
                         showConfirmOrder();
-                    }
-                }
-}
+                    })
+                    .catch(function (err) {
+                    });
+            }
 
 // count guest change
 function countGuestChange() {
