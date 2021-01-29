@@ -691,11 +691,9 @@
                 return true;
             }
 
-            function _checkValidation() {
-                
-                let payType = $("#<%=ddlPaymentType.ClientID%>").val();
-                let bank = $("#<%=ddlBank.ClientID%>").val();
-                
+            function _checkValidation() {            
+                if (!checkDeliveryAddressValidation())
+                    return false;
                
                 // Kiểm tra trạng thái đơn hàng
                 if (!_checkOrderStatus())
