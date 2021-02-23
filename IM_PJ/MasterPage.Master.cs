@@ -44,6 +44,7 @@ namespace IM_PJ
                         ltrMenu.Text += "<li><a href='/trang-chu'><span class='icon-menu icon-home'></span>Trang chủ</a></li>";
                         ltrMenu.Text += "<li><a target='_blank' href='/pos'><span class='icon-menu icon-order'></span>Máy tính tiền</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-don-hang'><span class='icon-menu icon-order'></span>Đơn hàng</a></li>";
+                        ltrMenu.Text += "<li><a href='/danh-sach-don-dat-hang'><span class='icon-menu icon-order'></span>Đơn online</a></li>";
                         if (config.ViewAllReports == 1)
                         {
                             ltrMenu.Text += "<li><a href='/danh-sach-chuyen-khoan'><span class='icon-menu icon-order'></span>Chuyển khoản</a></li>";
@@ -105,11 +106,12 @@ namespace IM_PJ
                         ltrMenu.Text += "<li><a href='/thuc-hien-kiem-kho'><span class='icon-menu icon-product'></span>Kiểm kho</a></li>";
                         ltrMenu.Text += "<li><a href='/thong-tin-kiem-kho'><span class='icon-menu icon-product'></span>Xem kiểm kho</a></li>";
                     }
-                    else if (role == 2) //Nhân viên bán hàng 
+                    else if (role == 2) //Nhân viên bán hàng
                     {
                         ltrMenu.Text += "<li><a href='/trang-chu'><span class='icon-menu icon-home'></span>Trang chủ</a></li>";
                         ltrMenu.Text += "<li><a target='_blank' href='/pos'><span class='icon-menu icon-order'></span>Máy tính tiền</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-don-hang'><span class='icon-menu icon-order'></span>Đơn hàng</a></li>";
+                        ltrMenu.Text += "<li><a href='/danh-sach-don-dat-hang'><span class='icon-menu icon-order'></span>Đơn online</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-don-tra-hang'><span class='icon-menu icon-order'></span>Đổi trả hàng</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-don-hang-chuyen-hoan'><span class='icon-menu icon-order'></span>Chuyển hoàn</a></li>";
                         ltrMenu.Text += "<li><a href='/tat-ca-san-pham'><span class='icon-menu icon-lib'></span>Sản phẩm</a></li>";

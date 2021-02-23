@@ -1,6 +1,5 @@
 ﻿class PreOrderService {
     constructor() {
-        this.backendDomain = 'http://ann-shop-dotnet-core.com';
         this.api = '/api/v1';
     }
 
@@ -75,7 +74,7 @@
     }
 
     getPreOrders(filter, pagination) {
-        let url = this.backendDomain + this.api + '/orders';
+        let url = this.api + '/orders';
         let queryParams = this._generateQueryParams(filter, pagination);
 
         if (queryParams)
