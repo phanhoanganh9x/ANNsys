@@ -19,23 +19,89 @@ namespace IM_PJ.Controllers
 {
     public class OrderController
     {
+        #region Private
+        private static ViewOrder _createViewOrderByOrder(tbl_Order order)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var now = DateTime.Now;
+                var user = con.tbl_Customer
+                    .Where(x => x.ID == order.CustomerID)
+                    .SingleOrDefault();
+                var item = new ViewOrder()
+                {
+                    Phone = user.CustomerPhone,
+                    Status = order.ExcuteStatus.HasValue ? order.ExcuteStatus.Value : (int)ExcuteStatus.Doing,
+                    OrderId = order.ID,
+                    CreatedBy = order.CreatedBy,
+                    CreatedDate = now,
+                    ModifiedBy = order.CreatedBy,
+                    ModifiedDate = now
+                };
+
+                con.Entry(item).State = System.Data.Entity.EntityState.Added;
+                con.ViewOrders.Add(item);
+                con.SaveChanges();
+
+                return item;
+            }
+        }
+
+        private static ViewOrder _updateViewOrderByOrder(tbl_Order order)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var item = con.ViewOrders
+                    .Where(x => x.OrderId.HasValue)
+                    .Where(x => x.OrderId == order.ID)
+                    .SingleOrDefault();
+
+                if (item == null)
+                    return null;
+
+                con.Entry(item).State = System.Data.Entity.EntityState.Modified;
+                item.Status = order.ExcuteStatus.HasValue ? order.ExcuteStatus.Value : (int)ExcuteStatus.Doing;
+                item.ModifiedBy = String.IsNullOrEmpty(order.ModifiedBy) ? order.CreatedBy : order.ModifiedBy;
+                item.ModifiedDate = DateTime.Now;
+                con.SaveChanges();
+
+                return item;
+            }
+        }
+        #endregion
+
         #region CRUD
         public static tbl_Order Insert(tbl_Order data)
         {
             using (var con = new inventorymanagementEntities())
             {
+                #region Khởi tạo thông tin đơn hàng
+                con.Entry(data).State = System.Data.Entity.EntityState.Added;
                 con.tbl_Order.Add(data);
                 con.SaveChanges();
+                #endregion
+
+                #region Khởi tạo thông tin danh sách đơn hàng
+                _createViewOrderByOrder(data);
+                #endregion
 
                 return data;
             }
         }
+
         public static tbl_Order InsertOnSystem(tbl_Order data)
         {
             using (var dbe = new inventorymanagementEntities())
             {
+                #region Khởi tạo thông tin đơn hàng
+                dbe.Entry(data).State = System.Data.Entity.EntityState.Added;
                 dbe.tbl_Order.Add(data);
                 dbe.SaveChanges();
+                #endregion
+
+                #region Khởi tạo thông tin danh sách đơn hàng
+                _createViewOrderByOrder(data);
+                #endregion
 
                 return data;
             }
@@ -46,31 +112,40 @@ namespace IM_PJ.Controllers
         {
             using (var dbe = new inventorymanagementEntities())
             {
-                var ui = dbe.tbl_Order.Where(x => x.ID == ID).FirstOrDefault();
-                if (ui != null)
-                {
-                    ui.RefundsGoodsID = RefundsGoodsID;
-                    ui.ModifiedDate = DateTime.Now;
-                    ui.ModifiedBy = created;
-                    int i = dbe.SaveChanges();
-                    return i;
-                }
-                return 0;
+                var ui = dbe.tbl_Order
+                    .Where(x => x.ID == ID)
+                    .SingleOrDefault();
+
+                if (ui == null)
+                    return 0;
+
+                dbe.Entry(ui).State = System.Data.Entity.EntityState.Modified;
+                ui.RefundsGoodsID = RefundsGoodsID;
+                ui.ModifiedDate = DateTime.Now;
+                ui.ModifiedBy = created;
+                var i = dbe.SaveChanges();
+
+                return i;
             }
         }
+
         public static int DeleteOrderRefund(int RefundsGoodsID)
         {
             using (var dbe = new inventorymanagementEntities())
             {
-                var ui = dbe.tbl_Order.Where(x => x.RefundsGoodsID == RefundsGoodsID).FirstOrDefault();
-                if (ui != null)
-                {
-                    ui.RefundsGoodsID = null;
-                    ui.ModifiedDate = DateTime.Now;
-                    int i = dbe.SaveChanges();
-                    return ui.ID;
-                }
-                return 0;
+                var ui = dbe.tbl_Order
+                    .Where(x => x.RefundsGoodsID == RefundsGoodsID)
+                    .FirstOrDefault();
+
+                if (ui == null)
+                    return 0;
+
+                dbe.Entry(ui).State = System.Data.Entity.EntityState.Modified;
+                ui.RefundsGoodsID = null;
+                ui.ModifiedDate = DateTime.Now;
+                var i = dbe.SaveChanges();
+
+                return ui.ID;
             }
         }
         #endregion
@@ -132,47 +207,58 @@ namespace IM_PJ.Controllers
         {
             using (var con = new inventorymanagementEntities())
             {
-                var orderOld = con.tbl_Order.Where(o => o.ID == data.ID).FirstOrDefault();
-                if (orderOld != null)
-                {
-                    orderOld.OrderType = data.OrderType;
-                    orderOld.AdditionFee = data.AdditionFee;
-                    orderOld.DisCount = data.DisCount;
-                    orderOld.CustomerID = data.CustomerID;
-                    orderOld.CustomerName = data.CustomerName;
-                    orderOld.CustomerPhone = data.CustomerPhone;
-                    orderOld.CustomerAddress = data.CustomerAddress;
-                    orderOld.CustomerEmail = data.CustomerEmail;
-                    orderOld.TotalPrice = data.TotalPrice;
-                    orderOld.TotalPriceNotDiscount = data.TotalPriceNotDiscount;
-                    orderOld.PaymentStatus = data.PaymentStatus;
-                    orderOld.ExcuteStatus = data.ExcuteStatus;
-                    orderOld.DiscountPerProduct = data.DiscountPerProduct;
-                    orderOld.TotalDiscount = data.TotalDiscount;
-                    orderOld.FeeShipping = data.FeeShipping;
-                    orderOld.GuestPaid = data.GuestPaid;
-                    orderOld.GuestChange = data.GuestChange;
-                    orderOld.ModifiedDate = data.ModifiedDate;
-                    orderOld.CreatedBy = data.CreatedBy;
-                    orderOld.ModifiedBy = data.ModifiedBy;
-                    orderOld.PaymentType = data.PaymentType;
-                    orderOld.ShippingType = data.ShippingType;
-                    orderOld.OrderNote = data.OrderNote;
-                    orderOld.DateDone = data.DateDone;
-                    orderOld.ShippingCode = data.ShippingCode;
-                    orderOld.TransportCompanyID = data.TransportCompanyID;
-                    orderOld.TransportCompanySubID = data.TransportCompanySubID;
-                    orderOld.OtherFeeName = data.OtherFeeName;
-                    orderOld.OtherFeeValue = data.OtherFeeValue;
-                    orderOld.PostalDeliveryType = data.PostalDeliveryType;
-                    orderOld.CouponID = data.CouponID;
-                    orderOld.CouponValue = data.CouponValue;
-                    orderOld.Weight = data.Weight;
-                    con.SaveChanges();
+                var orderOld = con.tbl_Order
+                    .Where(o => o.ID == data.ID)
+                    .SingleOrDefault();
 
-                    return orderOld;
-                }
-                return null;
+                if (orderOld == null)
+                    return null;
+
+                #region Cập thông tin đơn hàng
+                con.Entry(orderOld).State = System.Data.Entity.EntityState.Modified;
+
+                orderOld.OrderType = data.OrderType;
+                orderOld.AdditionFee = data.AdditionFee;
+                orderOld.DisCount = data.DisCount;
+                orderOld.CustomerID = data.CustomerID;
+                orderOld.CustomerName = data.CustomerName;
+                orderOld.CustomerPhone = data.CustomerPhone;
+                orderOld.CustomerAddress = data.CustomerAddress;
+                orderOld.CustomerEmail = data.CustomerEmail;
+                orderOld.TotalPrice = data.TotalPrice;
+                orderOld.TotalPriceNotDiscount = data.TotalPriceNotDiscount;
+                orderOld.PaymentStatus = data.PaymentStatus;
+                orderOld.ExcuteStatus = data.ExcuteStatus;
+                orderOld.DiscountPerProduct = data.DiscountPerProduct;
+                orderOld.TotalDiscount = data.TotalDiscount;
+                orderOld.FeeShipping = data.FeeShipping;
+                orderOld.GuestPaid = data.GuestPaid;
+                orderOld.GuestChange = data.GuestChange;
+                orderOld.ModifiedDate = data.ModifiedDate;
+                orderOld.CreatedBy = data.CreatedBy;
+                orderOld.ModifiedBy = data.ModifiedBy;
+                orderOld.PaymentType = data.PaymentType;
+                orderOld.ShippingType = data.ShippingType;
+                orderOld.OrderNote = data.OrderNote;
+                orderOld.DateDone = data.DateDone;
+                orderOld.ShippingCode = data.ShippingCode;
+                orderOld.TransportCompanyID = data.TransportCompanyID;
+                orderOld.TransportCompanySubID = data.TransportCompanySubID;
+                orderOld.OtherFeeName = data.OtherFeeName;
+                orderOld.OtherFeeValue = data.OtherFeeValue;
+                orderOld.PostalDeliveryType = data.PostalDeliveryType;
+                orderOld.CouponID = data.CouponID;
+                orderOld.CouponValue = data.CouponValue;
+                orderOld.Weight = data.Weight;
+                orderOld.DeliveryAddressId = data.DeliveryAddressId;
+                con.SaveChanges();
+                #endregion
+
+                #region Cập nhật thông tin danh sách đơn hàng
+                _updateViewOrderByOrder(orderOld);
+                #endregion
+
+                return orderOld;
             }
         }
 
@@ -181,16 +267,24 @@ namespace IM_PJ.Controllers
         {
             using (var con = new inventorymanagementEntities())
             {
-                var order = con.tbl_Order.Where(x => x.ID == orderID).FirstOrDefault();
+                #region Cập nhật thông tin đơn hàng
+                var order = con.tbl_Order
+                    .Where(x => x.ID == orderID)
+                    .SingleOrDefault();
 
-                if (order != null)
-                {
-                    order.ExcuteStatus = status;
-                    order.ModifiedDate = DateTime.Now;
-                    order.ModifiedBy = CreatedBy;
+                if (order == null)
+                    return null;
 
-                    con.SaveChanges();
-                }
+                con.Entry(order).State = System.Data.Entity.EntityState.Modified;
+                order.ExcuteStatus = status;
+                order.ModifiedDate = DateTime.Now;
+                order.ModifiedBy = CreatedBy;
+                con.SaveChanges();
+                #endregion
+
+                #region Cập nhật thông tin danh sách đơn hàng
+                _updateViewOrderByOrder(order);
+                #endregion
 
                 return order;
             }
@@ -200,20 +294,30 @@ namespace IM_PJ.Controllers
         {
             using (var db = new inventorymanagementEntities())
             {
-                var ui = db.tbl_Order.Where(x => x.ID == ID).FirstOrDefault();
-                if (ui != null)
-                {
-                    ui.ExcuteStatus = 3;
-                    ui.TotalPrice = "0";
-                    ui.TotalDiscount = 0;
-                    ui.TotalPriceNotDiscount = "0";
-                    ui.GuestChange = 0;
-                    ui.ModifiedDate = DateTime.Now;
-                    ui.ModifiedBy = CreatedBy;
-                    int i = db.SaveChanges();
-                    return i;
-                }
-                return 0;
+                #region Cập nhật thông tin đơn hàng
+                var ui = db.tbl_Order
+                    .Where(x => x.ID == ID)
+                    .SingleOrDefault();
+
+                if (ui == null)
+                    return 0;
+
+                db.Entry(ui).State = System.Data.Entity.EntityState.Modified;
+                ui.ExcuteStatus = 3;
+                ui.TotalPrice = "0";
+                ui.TotalDiscount = 0;
+                ui.TotalPriceNotDiscount = "0";
+                ui.GuestChange = 0;
+                ui.ModifiedDate = DateTime.Now;
+                ui.ModifiedBy = CreatedBy;
+                int i = db.SaveChanges();
+                #endregion
+
+                #region Cập nhật thông tin danh sách đơn hàng
+                _updateViewOrderByOrder(ui);
+                #endregion
+
+                return i;
             }
         }
 
@@ -221,30 +325,42 @@ namespace IM_PJ.Controllers
         {
             using (var db = new inventorymanagementEntities())
             {
-                var ui = db.tbl_Order.Where(x => x.ID == ID).FirstOrDefault();
-                if (ui != null)
-                {
-                    if (ui.ExcuteStatus != 4)
-                    {
-                        ui.ModifiedDate = DateTime.Now;
-                    }
-                    ui.ModifiedBy = CreatedBy;
-                    ui.PaymentStatus = 1;
-                    ui.ExcuteStatus = 4;
-                    ui.OrderNote = OrderNote;
-                    int i = db.SaveChanges();
-                    return true;
-                }
-                return false;
+                #region Cập nhật thông tin đơn hàng
+                var ui = db.tbl_Order
+                    .Where(x => x.ID == ID)
+                    .SingleOrDefault();
+
+                if (ui == null)
+                    return false;
+
+                db.Entry(ui).State = System.Data.Entity.EntityState.Modified;
+                ui.ModifiedBy = CreatedBy;
+                ui.PaymentStatus = 1;
+                ui.ExcuteStatus = 4;
+                ui.OrderNote = OrderNote;
+
+                if (ui.ExcuteStatus != 4)
+                    ui.ModifiedDate = DateTime.Now;
+
+                db.SaveChanges();
+                #endregion
+
+                #region Cập nhật thông tin danh sách đơn hàng
+                _updateViewOrderByOrder(ui);
+                #endregion
+
+                return true;
             }
         }
         #endregion
-        
-        public static tbl_Order updateQuantityCOGS(int orderID)
+
+        public static tbl_Order updateAvatarQuantityCOGS(int orderID, string avatar = "")
         {
             using (var con = new inventorymanagementEntities())
             {
-                var order = con.tbl_Order.Where(x => x.ID == orderID).SingleOrDefault();
+                var order = con.tbl_Order
+                    .Where(x => x.ID == orderID)
+                    .SingleOrDefault();
 
                 if (order == null)
                     return null;
@@ -257,7 +373,7 @@ namespace IM_PJ.Controllers
                         Quantity = x.Quantity.HasValue ? x.Quantity.Value : 0,
                         TotalCostOfGood = x.TotalCostOfGood.HasValue ? x.TotalCostOfGood.Value : 0
                     })
-                    .ToList()
+                    .AsEnumerable()
                     .GroupBy(g => 1)
                     .Select(x => new
                     {
@@ -266,16 +382,13 @@ namespace IM_PJ.Controllers
                     })
                     .SingleOrDefault();
 
-                if (updatedData != null)
-                {
-                    order.TotalQuantity = updatedData.totalQuantity;
-                    order.TotalCostOfGood = Convert.ToDecimal(updatedData.totalCOGS);
-                    con.SaveChanges();
+                con.Entry(order).State = System.Data.Entity.EntityState.Modified;
+                order.Avatar = String.IsNullOrEmpty(avatar) ? null : avatar;
+                order.TotalQuantity = updatedData == null ? 0 : updatedData.totalQuantity;
+                order.TotalCostOfGood = updatedData == null ? 0 : Convert.ToDecimal(updatedData.totalCOGS);
+                con.SaveChanges();
 
-                    return order;
-                }
-
-                return null;
+                return order;
             }
         }
         #endregion

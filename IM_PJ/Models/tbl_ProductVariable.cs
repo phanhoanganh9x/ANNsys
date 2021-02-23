@@ -14,6 +14,12 @@ namespace IM_PJ.Models
     
     public partial class tbl_ProductVariable
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public tbl_ProductVariable()
+        {
+            this.PreOrderDetails = new HashSet<PreOrderDetail>();
+        }
+    
         public int ID { get; set; }
         public Nullable<int> ProductID { get; set; }
         public string ParentSKU { get; set; }
@@ -36,5 +42,8 @@ namespace IM_PJ.Models
         public Nullable<double> MaximumInventoryLevel { get; set; }
         public Nullable<int> SupplierID { get; set; }
         public string SupplierName { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PreOrderDetail> PreOrderDetails { get; set; }
     }
 }

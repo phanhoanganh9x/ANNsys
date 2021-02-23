@@ -1,0 +1,227 @@
+﻿.panel-post {
+    margin-bottom: 20px;
+}
+
+#old-order-note ul {
+    margin-left: 15px;
+}
+
+#old-order-note a {
+    color: #ff8400;
+}
+
+.search-product-content {
+    background: #fff;
+}
+
+#txtSearch {
+    width: 100%;
+}
+
+#popup_content2 {
+    min-height: 10px;
+    position: fixed;
+    background-color: #fff;
+    top: 15%;
+    z-index: 9999;
+    left: 0;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    padding: 20px;
+    right: 0%;
+    margin: 0 auto;
+}
+
+.pad {
+    padding-bottom: 15px;
+}
+
+.pad10 {
+    padding-right: 10px;
+}
+
+.padinfo {
+    padding-bottom: 15px;
+}
+
+.disable {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+table.shop_table_responsive > tbody > tr:nth-of-type(2n+1) td {
+    border-bottom: solid 1px #e1e1e1 !important;
+}
+
+.coupon .right {
+    display: flex;
+}
+
+@media (max-width: 769px) {
+    label {
+        margin-bottom: 0;
+    }
+
+    .btn {
+        width: 100% !important;
+        float: left;
+        margin-bottom: 10px;
+        margin-left: 0;
+    }
+
+    .search-box {
+        width: 70%;
+    }
+
+    .table-sale-order .order-item,
+    .table-sale-order .image-item,
+    .table-sale-order .image-item,
+    .table-sale-order .name-item,
+    .table-sale-order .sku-item,
+    .table-sale-order .variable-item,
+    .table-sale-order .price-item,
+    .table-sale-order .quantity-item,
+    .table-sale-order .total-item,
+    .table-sale-order .trash-item {
+        width: 100%;
+        text-align: right !important;
+    }
+
+    table.shop_table_responsive thead {
+        display: none;
+    }
+
+    table.shop_table_responsive > tbody > tr > td:nth-of-type(1):before {
+        content: "#";
+        font-size: 20px;
+        margin-right: 2px;
+    }
+
+    table.shop_table_responsive > tbody > tr > td:nth-of-type(1) {
+        text-align: left !important;
+        font-size: 20px;
+        font-weight: bold;
+        height: 50px;
+    }
+
+    table.shop_table_responsive > tbody > tr > td:nth-of-type(2) {
+        height: auto;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+        table.shop_table_responsive > tbody > tr > td:nth-of-type(2) img {
+            width: 30%;
+        }
+
+    table.shop_table_responsive > tbody > tr:nth-of-type(2n) td {
+        border-top: none;
+        border-bottom: none !important;
+        background: #fff;
+    }
+
+    table.shop_table_responsive > tbody > tr > td:first-child {
+        border-left: none;
+        padding-left: 20px;
+    }
+
+    table.shop_table_responsive > tbody > tr > td:last-child {
+        border-right: none;
+        padding-left: 20px;
+        height: 60px;
+        text-align: right !important;
+    }
+
+    table.shop_table_responsive > tbody > tr:nth-of-type(2n+1) td {
+        border-bottom: none !important;
+    }
+
+    table.shop_table_responsive > tbody > tr > td {
+        height: 40px;
+    }
+
+        table.shop_table_responsive > tbody > tr > td.sku-item:before {
+            content: "Mã";
+        }
+
+        table.shop_table_responsive > tbody > tr > td.variable-item {
+            height: 60px;
+        }
+
+            table.shop_table_responsive > tbody > tr > td.variable-item:before {
+                content: "Thuộc tính";
+            }
+
+        table.shop_table_responsive > tbody > tr > td.price-item:before {
+            content: "Giá bán";
+        }
+
+        table.shop_table_responsive > tbody > tr > td.quantity-item:before {
+            content: "Số lượng";
+        }
+
+        table.shop_table_responsive > tbody > tr > td.soluong:before {
+            content: "Kho";
+        }
+
+        table.shop_table_responsive > tbody > tr > td.total-item:before {
+            content: "Thành tiền";
+        }
+
+        table.shop_table_responsive > tbody > tr > td.quantity-item {
+            height: 60px;
+        }
+
+            table.shop_table_responsive > tbody > tr > td.quantity-item input {
+                width: 50%;
+                float: right;
+            }
+
+        table.shop_table_responsive > tbody > tr > td.soluong {
+            height: 40px;
+        }
+
+    table.shop_table_responsive .bg-bronze,
+    table.shop_table_responsive .bg-red,
+    table.shop_table_responsive .bg-blue,
+    table.shop_table_responsive .bg-yellow,
+    table.shop_table_responsive .bg-black,
+    table.shop_table_responsive .bg-green {
+        display: initial;
+        float: right;
+    }
+
+    table.shop_table_responsive tbody td {
+        background-color: #f8f8f8;
+        display: block;
+        text-align: right;
+        border: none;
+        padding: 20px;
+    }
+
+    table.shop_table_responsive > tbody > tr.tr-more-info > td {
+        height: initial;
+    }
+
+        table.shop_table_responsive > tbody > tr.tr-more-info > td span {
+            display: block;
+            text-align: left;
+            margin-bottom: 10px;
+            margin-right: 0;
+        }
+
+        table.shop_table_responsive > tbody > tr.tr-more-info > td:nth-child(2):before {
+            content: none;
+        }
+
+    table.shop_table_responsive tbody td:before {
+        font-weight: 700;
+        float: left;
+        text-transform: uppercase;
+        font-size: 14px;
+    }
+
+    table.shop_table_responsive tbody td:empty {
+        display: none;
+    }
+}

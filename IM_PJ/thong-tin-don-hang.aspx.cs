@@ -70,6 +70,19 @@ namespace IM_PJ
                 LoadData();
             }
         }
+
+        #region Private
+        /// <summary>
+        /// Cài đặt thông tin địa chỉ nhận hàng
+        /// </summary>
+        /// <param name="deliveryAddressId"></param>
+        private void _initDeliveryAddress(long? deliveryAddressId)
+        {
+            if (deliveryAddressId.HasValue)
+                hdfDeliveryAddressId.Value = deliveryAddressId.Value.ToString();
+        }
+        #endregion
+
         public void LoadCreatedBy(tbl_Account acc = null)
         {
             if (acc != null)
@@ -176,7 +189,7 @@ namespace IM_PJ
                     // hidden OrderID
                     hdOrderInfoID.Value = ID.ToString();
 
-                    
+
 
                     int AgentID = Convert.ToInt32(order.AgentID);
                     txtPhone.Text = order.CustomerPhone;
@@ -261,7 +274,7 @@ namespace IM_PJ
                     double totalPriceNotDiscount = Convert.ToDouble(order.TotalPriceNotDiscount);
 
                     hdfcheckR.Value = "";
-                    
+
                     int totalrefund = 0;
                     if (order.RefundsGoodsID > 0)
                     {
@@ -271,7 +284,7 @@ namespace IM_PJ
                             totalrefund = Convert.ToInt32(re.TotalPrice);
                             hdfcheckR.Value = order.RefundsGoodsID.ToString() + "," + re.TotalPrice;
                         }
-                       
+
                         ltrtotalpricedetail.Text = string.Format("{0:N0}", totalPrice - totalrefund);
 
                         ltrTotalPriceRefund.Text = string.Format("-{0:N0}", totalrefund);
@@ -567,7 +580,7 @@ namespace IM_PJ
                     hdfOtherFees.Value = FeeController.getFeesJSON(ID);
 
                     ltrTotalAfterCK.Text = string.Format("{0:N0}", (Convert.ToDouble(order.TotalPriceNotDiscount) - Convert.ToDouble(order.TotalDiscount)));
-                    
+
                     ltrCreateBy.Text = order.CreatedBy;
                     ltrCreateDate.Text = order.CreatedDate.ToString();
                     ltrDateDone.Text = "Chưa hoàn tất";
@@ -631,6 +644,9 @@ namespace IM_PJ
                     {
                         ltrPrint.Text += "<a target='_blank' href='https://proship.vn/quan-ly-van-don/?isInvoiceFilter=1&generalInfo=" + order.ShippingCode + "' class='btn primary-btn btn-proship fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-file-text-o' aria-hidden='true'></i> Xem đơn Proship</a>";
                     }
+
+                    // Cài đặt thông tin địa chỉ giao hàng
+                    _initDeliveryAddress(order.DeliveryAddressId);
                 }
             }
         }
@@ -966,6 +982,9 @@ namespace IM_PJ
                             var couponIDOld = order.CouponID.HasValue ? order.CouponID.Value : 0;
                             var couponValue = hdfCouponValue.Value.ToDecimal(0);
 
+                            // Cập nhật địa chỉ giao hàng
+                            var deliveryAddressId = Convert.ToInt64(hdfDeliveryAddressId.Value);
+
                             #region Tạo dữ liệu cập nhật Order
                             var orderNew = new tbl_Order()
                             {
@@ -1002,7 +1021,8 @@ namespace IM_PJ
                                 PostalDeliveryType = PostalDeliveryType,
                                 CouponID = couponID,
                                 CouponValue = couponValue,
-                                Weight = Weight
+                                Weight = Weight,
+                                DeliveryAddressId = deliveryAddressId
                             };
                             #endregion
 
@@ -1126,15 +1146,17 @@ namespace IM_PJ
                             {
                                 #region Xử lý OrderDetail
                                 #region Cập nhật từng dòng chi tiết đơn hàng
-                                string list = hdfListProduct.Value;
+                                var orderAvatar = String.Empty;
+                                var list = hdfListProduct.Value;
                                 var items = list.Split(';').Where(x => !String.IsNullOrEmpty(x)).ToList();
 
                                 if (items.Count > 0 && ExcuteStatus == 1)
                                     items.Reverse();
 
-                                foreach (var item in items)
+                                for (var i = 0; i < items.Count; i++)
                                 {
                                     #region Lấy thông tin chi tiết của đơn hàng
+                                    var item = items.ElementAt(i);
                                     string[] itemValue = item.Split(',');
 
                                     int ProductID = itemValue[0].ToInt();
@@ -1159,6 +1181,11 @@ namespace IM_PJ
                                     double Price = Convert.ToDouble(itemValue[9]);
                                     string ProductVariableSave = itemValue[10];
                                     int OrderDetailID = itemValue[11].ToInt(0);
+                                    #endregion
+
+                                    #region Cập nhật avatar cho đơn hàng
+                                    if (String.IsNullOrEmpty(orderAvatar))
+                                        orderAvatar = AnnImage.extractImage(ProductImageOrigin);
                                     #endregion
 
                                     #region Xử lý với trạng thái của đơn hàng đã hủy
@@ -1221,9 +1248,9 @@ namespace IM_PJ
                                     #region kiểm tra sản phẩm này đã có trong đơn chưa?
                                     var od = OrderDetailController.GetByID(OrderDetailID);
 
-                                    if (od != null) 
+                                    #region nếu sản phẩm này có trong đơn có rồi thì chỉnh sửa
+                                    if (od != null)
                                     {
-                                        #region nếu sản phẩm này có trong đơn có rồi thì chỉnh sửa
                                         double quantityOld = Convert.ToDouble(od.Quantity);
 
                                         if (quantityOld > Quantity)
@@ -1281,11 +1308,11 @@ namespace IM_PJ
 
                                         // cập nhật số lượng sản phẩm trong đơn hàng
                                         OrderDetailController.UpdateQuantity(OrderDetailID, Quantity, Price, currentDate, username);
-                                        #endregion
                                     }
+                                    #endregion
+                                    #region nếu sản phẩm này chưa có trong đơn thì thêm vào
                                     else
                                     {
-                                        #region nếu sản phẩm này chưa có trong đơn thì thêm vào
                                         OrderDetailController.Insert(AgentID, OrderID, SKU, ProductID, ProductVariableID, ProductVariableSave, Quantity, Price, 1, 0, ProductType, currentDate, username, true);
 
                                         StockManagerController.Insert(
@@ -1308,13 +1335,13 @@ namespace IM_PJ
                                                 MoveProID = 0,
                                                 ParentID = parentID,
                                             });
-                                        #endregion
                                     }
+                                    #endregion
+                                    #endregion
                                 }
                                 #endregion
-                                #endregion
 
-                                OrderController.updateQuantityCOGS(OrderID);
+                                OrderController.updateAvatarQuantityCOGS(OrderID, orderAvatar);
                                 #endregion
 
                                 // update stockmanager createdby nếu đổi nhân viên phụ trách

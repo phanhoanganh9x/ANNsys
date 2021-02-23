@@ -20,7 +20,7 @@
                         <div class="panel panelborderheading">
                             <div class="panel-heading clear">
                                 <h3 class="page-title left not-margin-bot">Khách hàng</h3>
-                                <a href="javascript:;" class="search-customer" onclick="searchCustomer()" title="Tìm khách hàng"><i class="fa fa-search" aria-hidden="true"></i> Tìm (F1)</a>
+                                <a href="javascript:;" class="search-customer" onclick="searchCustomer()" title="Tìm khách hàng"><i class="fa fa-search" aria-hidden="true"></i> Tìm</a>
                                 <a href="javascript:;" class="change-user" onclick="changeUser()" title="Tính tiền giúp nhân viên khác"><i class="fa fa-user" aria-hidden="true"></i></a>
                                 <a href="/danh-sach-don-hang" class="change-user" target="_blank" title="Danh sách đơn hàng"><i class="fa fa-list-ul" aria-hidden="true"></i></a>
                             </div>
@@ -29,7 +29,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Họ tên</label>
-                                            <asp:TextBox ID="txtFullname" CssClass="form-control capitalize" runat="server" placeholder="(F2)" autocomplete="off"></asp:TextBox>
+                                            <asp:TextBox ID="txtFullname" CssClass="form-control capitalize" runat="server" autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -73,6 +73,60 @@
                                 </div>
                             </div>
                         </div>
+                        <div id="deliveryAddress" class="row">
+                            <div class="col-md-12">
+                                <div class="panel panelborderheading">
+                                    <div class="panel-heading clear">
+                                        <h3 class="page-title left not-margin-bot">Địa chỉ giao hàng</h3>
+                                        <a href="javascript:;" class="search-customer" onclick="showDeliveryAddresses()"><i class="fa fa-search" aria-hidden="true"></i> Tìm</a>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Họ tên</label>
+                                                    <asp:TextBox ID="txtRecipientFullName" runat="server" CssClass="form-control capitalize" autocomplete="off"></asp:TextBox>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Điện thoại</label>
+                                                    <asp:TextBox ID="txtRecipientPhone" runat="server" CssClass="form-control" autocomplete="off"></asp:TextBox>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Tỉnh thành</label>
+                                                    <asp:DropDownList ID="ddlRecipientProvince" runat="server" CssClass="form-control"></asp:DropDownList>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Quận huyện</label>
+                                                    <asp:DropDownList ID="ddlRecipientDistrict" runat="server" CssClass="form-control"></asp:DropDownList>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Phường xã</label>
+                                                    <asp:DropDownList ID="ddlRecipientWard" runat="server" CssClass="form-control"></asp:DropDownList>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Địa chỉ</label>
+                                                    <asp:TextBox ID="txtRecipientAddress" runat="server" CssClass="form-control capitalize" autocomplete="off"></asp:TextBox>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="panel-post">
                             <div class="post-row clear totalquantity">
                                 <div class="left">Số lượng</div>
@@ -109,7 +163,7 @@
                             <div class="post-row clear coupon">
                                 <div class="left">Mã giảm giá</div>
                                 <div class="right">
-                                    <a id="btnGenerateCouponG25" class="btn btn-coupon btn-violet" title="Kiểm tra mã giảm giá G25" onclick="couponG25()"><i class="fa fa-gift"></i> G25</a>
+                                    <a id="btnGenerateCouponG25" class="btn btn-coupon btn-violet" title="Kiểm tra mã giảm giá G25" onclick="couponG25()"><i class="fa fa-gift"></i>G25</a>
                                     <a id="btnOpenCouponModal" class="btn btn-coupon btn-violet" title="Nhập mã giảm giá" onclick="openCouponModal()"><i class="fa fa-gift"></i></a>
                                     <a href="javascript:;" id="btnRemoveCouponCode" class="btn btn-coupon link-btn hide" onclick="removeCoupon()"><i class="fa fa-times" aria-hidden="true"></i></a>
                                     <asp:TextBox ID="txtCouponValue" runat="server" CssClass="form-control text-right width-notfull input-coupon" value="0" disabled="disabled"></asp:TextBox>
@@ -227,6 +281,16 @@
             <asp:HiddenField ID="hdfDistrictID" runat="server" />
             <asp:HiddenField ID="hdfWardID" runat="server" />
 
+            <!-- Biến đăng ký địa chỉ nhận hàng -->
+            <asp:HiddenField ID="hdfDeliveryAddressId" runat="server" />
+            <asp:HiddenField ID="hdfRecipientFullName" runat="server" />
+            <asp:HiddenField ID="hdfRecipientPhone" runat="server" />
+            <asp:HiddenField ID="hdfRecipientProvinceId" runat="server" />
+            <asp:HiddenField ID="hdfRecipientDistrictId" runat="server" />
+            <asp:HiddenField ID="hdfRecipientWardId" runat="server" />
+            <asp:HiddenField ID="hdfRecipientAddress" runat="server" />
+            <!-- Biến đăng ký địa chỉ nhận hàng -->
+
             <!-- Modal -->
             <div class="modal fade" id="feeModal" role="dialog">
                 <div class="modal-dialog">
@@ -328,7 +392,9 @@
                                 </div>
                             </div>
                             <div id="errorCoupon" class="row form-group hide">
-                                <div class="col-xs-12 text-align-left text-danger"><p></p></div>
+                                <div class="col-xs-12 text-align-left text-danger">
+                                    <p></p>
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -379,12 +445,11 @@
             padding-right: 5px;
         }
 
-        @media (min-width: 992px){
+        @media (min-width: 992px) {
             .container {
                 width: 100%;
             }
         }
-        
     </style>
     <telerik:RadAjaxManager ID="rAjax" runat="server">
         <AjaxSettings>
@@ -396,11 +461,243 @@
         </AjaxSettings>
     </telerik:RadAjaxManager>
     <telerik:RadScriptBlock ID="sc" runat="server">
-
-        
-
+        <script type="text/javascript" src="App_Themes/Ann/js/delivery-address.js?v=202101211340"></script>
         <script type="text/javascript">
             "use strict";
+            // #region Private
+            function _checkCutomer() {
+                // Họ tên khách hàng
+                let $name = $("#<%=txtFullname.ClientID%>");
+
+                if ($name.val() === "") {
+                    $name.focus();
+                    swal("Thông báo", "Hãy nhập tên khách hàng!", "error");
+
+                    return false;
+                }
+                
+                // SĐT khách hàng
+                let $phone = $("#<%=txtPhone.ClientID%>");
+                
+                if ($phone.val() === "") {
+                    $phone.focus();
+                    swal("Thông báo", "Hãy nhập số điện thoại khách hàng!", "error");
+
+                    return false;
+                }
+                
+                // Tỉnh / thành phố
+                let $province = $("#<%=ddlProvince.ClientID%>");
+
+                if ((+$province.val() || 0) === 0) {
+                    swal({
+                        title: "Thông báo",
+                        text: "Chưa chọn tỉnh thành",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonText: "Để em xem lại!!",
+                        closeOnConfirm: false,
+                        html: true
+                    }, function (isConfirm) {
+                        if (isConfirm) {
+                            sweetAlert.close();
+                            $province.select2('open');
+                        }
+                    });
+
+                    return false;
+                }
+                
+                // Quận / huyện
+                let $district = $("#<%=ddlDistrict.ClientID%>");
+
+                if ((+$district.val() || 0) === 0) {
+                    swal({
+                        title: "Thông báo",
+                        text: "Chưa chọn quận huyện",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonText: "Để em xem lại!!",
+                        closeOnConfirm: false,
+                        html: true
+                    }, function (isConfirm) {
+                        if (isConfirm) {
+                            sweetAlert.close();
+                            $district.select2('open');
+                        }
+                    });
+
+                    return false;
+                }
+                
+                // Phường / xã
+                let $ward = $("#<%=ddlWard.ClientID%>");
+
+                if ((+$ward.val() || 0) === 0) {
+                    swal({
+                        title: "Thông báo",
+                        text: "Chưa chọn phường xã",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonText: "Để em xem lại!!",
+                        closeOnConfirm: false,
+                        html: true
+                    }, function (isConfirm) {
+                        if (isConfirm) {
+                            sweetAlert.close();
+                            $ward.select2('open');
+                        }
+                    });
+
+                    return false;
+                }
+                
+                // Địa chỉ
+                let $address = $("#<%=txtAddress.ClientID%>");
+
+                if ($address.val() === "") {
+                    $address.focus();
+                    swal("Thông báo", "Hãy nhập địa chỉ khách hàng!", "error");
+
+                    return false;
+                }
+
+                return true;
+            }
+
+            function _checkOrderEmty() {
+                if ($(".product-result").length == 0) {
+                    $("#txtSearch").focus();
+                    swal("Thông báo", "Hãy nhập sản phẩm!", "error");
+
+                    return false;
+                }
+
+                return true;
+            }
+
+            function _checkFeeShip() {
+                let $feeship = $("#<%=pFeeShip.ClientID%>");
+                let feeship = parseFloat($feeship.val().replace(/\,/g, ''));
+
+                if (feeship > 0 && feeship < 10000) {
+                    $feeship.focus();
+                    swal({
+                        title: "Lạ vậy:",
+                        text: "Sao phí vận chuyển lại nhỏ hơn <strong>10.000đ</strong> nè?<br><br>Xem lại nha!",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Để em xem lại!!",
+                        html: true
+                    });
+
+                    return false;
+                }
+
+                return true;
+            }
+
+            function _checkDiscount() {
+                // check discount
+                let $discount = $("#<%=pDiscount.ClientID%>");
+                let discount = parseFloat($discount.val().replace(/\,/g, ''));
+
+                if (discount > 20000 && $("#<%=hdfRoleID.ClientID%>").val() != 0) {
+                    $discount.focus();
+                    swal({
+                        title: "Lạ vậy:",
+                        text: "Sao chiết khấu lại lớn hơn <strong>20.000đ</strong> nè?<br><br>Nếu có lý do thì báo chị Ngọc nha!",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Để em xem lại!!",
+                        html: true
+                    });
+
+                    return false;
+                }
+
+                return true;
+            }
+
+            function _insertOrder() {
+                let orderDetails = "";
+                let ordertype = $(".customer-type").val();
+
+                orderDetails += '{ "productPOS" : ['
+
+                $(".product-result").each(function () {
+                    let productID = $(this).attr("data-productid");
+                    let productVariableID = $(this).attr("data-productvariableid");
+                    let sku = $(this).attr("data-sku");
+                    let producttype = $(this).attr("data-producttype");
+                    let productvariablename = $(this).attr("data-productvariablename");
+                    let productvariablevalue = $(this).attr("data-productvariablevalue");
+                    let quantity = $(this).find(".in-quantity").val();
+                    let productname = $(this).attr("data-productname");
+                    let productimageorigin = $(this).attr("data-productimageorigin");
+                    let productvariable = $(this).attr("data-productvariable");
+                    let price = $(this).find(".gia-san-pham").attr("data-price");
+                    let productvariablesave = $(this).attr("data-productvariablesave");
+
+                    if (quantity > 0) {
+                        let order = new OrderDetail(
+                                productID
+                                , productVariableID
+                                , sku
+                                , producttype
+                                , productvariablename
+                                , productvariablevalue
+                                , quantity
+                                , productname
+                                , productimageorigin
+                                , price
+                                , productvariablesave
+                        );
+
+                        orderDetails += order.stringJSON() + ",";
+                    }
+                });
+
+                orderDetails = orderDetails.replace(/.$/, "") + "]}";
+
+                $("#<%=hdfOrderType.ClientID %>").val(ordertype);
+                $("#<%=hdfListProduct.ClientID%>").val(orderDetails);
+                $(".totalquantity").addClass("hide");
+            }
+
+            function _checkValidation() {
+                // Kiểm tra thông tin khách hàng
+                if (!_checkCutomer())
+                    return false;
+
+                // Kiểm tra thông tin nhận hàng
+                if (!checkDeliveryAddressValidation())
+                    return false;
+               
+                // Kiểm tra đơn hàng là đơn rỗng không
+                if (!_checkOrderEmty())
+                    return false;
+
+                // Kiểm tra phí giao hàng
+                if (!_checkFeeShip())
+                    return false;
+
+                // Kiểm tra triết khấu
+                if (!_checkDiscount())
+                    return false;
+
+                return true;
+            }
+
+            function _updateDeliveryAddress() {
+                // Cập nhật thông tin địa chỉ giao hàng
+                let $phone = $("#<%=txtPhone.ClientID%>");
+
+                return updateDeliveryAddress($phone.val());
+            }
+            // #endregion
 
             // Fee Type
             class FeeType {
@@ -511,8 +808,7 @@
                 idDOM.val("");
                 feeTypeDOM.val(0);
                 feePriceDOM.val("");
-                if (!is_new)
-                {
+                if (!is_new) {
                     let parent = obj.parent();
                     if (parent.attr("id"))
                         idDOM.val(parent.attr("id"));
@@ -522,19 +818,16 @@
                         feePriceDOM.val(formatNumber(parent.data("price").toString()));
                 }
 
-                if (feeTypeDOM.val() == "0")
-                {
+                if (feeTypeDOM.val() == "0") {
                     feePriceDOM.val("");
                     feePriceDOM.attr("disabled", true);
                 }
-                else
-                {
+                else {
                     feePriceDOM.removeAttr("disabled");
                 }
             }
 
-            function openFeeUpdateModal(obj)
-            {
+            function openFeeUpdateModal(obj) {
                 loadFeeModel(obj);
                 $('#feeModal').modal({ show: 'true', backdrop: 'static' });
             }
@@ -543,8 +836,7 @@
             function createFeeHTML(fee) {
                 let addHTML = "";
 
-                if (fee)
-                {
+                if (fee) {
                     let negative = fee.FeePrice > 0 ? "" : "-";
 
                     addHTML += "<div id='" + fee.UUID + "' class='post-row clear otherfee' data-feeid='" + fee.FeeTypeID + "' data-price='" + fee.FeePrice + "'>";
@@ -566,8 +858,7 @@
                 return addHTML;
             }
 
-            function addFeeNew()
-            {
+            function addFeeNew() {
                 let id = $("#<%=hdfUUID.ClientID%>").val();
                 let feeid = $("#<%=ddlFeeType.ClientID%>").val();
                 let feename = $("#<%=ddlFeeType.ClientID%> :selected").text();
@@ -589,8 +880,7 @@
             }
 
             // Update Fee
-            function updateFee()
-            {
+            function updateFee() {
                 let id = $("#<%=hdfUUID.ClientID%>").val();
                 if (!id) return;
 
@@ -618,10 +908,9 @@
                     parent.find("#feePrice").val(formatNumber(feeprice));
                     feeprice = parseInt(feeprice);
                 }
-                
+
                 fees.forEach((fee) => {
-                    if(fee.UUID == id)
-                    {
+                    if (fee.UUID == id) {
                         fee.FeeTypeID = feeid;
                         fee.FeeTypeName = feename;
                         fee.FeePrice = feeprice;
@@ -636,6 +925,9 @@
 
                 _initReceiverAddress();
                 _onChangeReceiverAddress();
+
+                // Thông tin địa chỉ nhận hàng
+                initDeliveryAddress();
 
                 // Init Page
                 $("#<%=pDiscount.ClientID%>").val(0);
@@ -684,13 +976,11 @@
                 // event change drop down list
                 $("#<%=ddlFeeType.ClientID%>").change(e => {
                     let feePriceDOM = $("#<%=txtFeePrice.ClientID%>");
-                    if (e.target.value == "0")
-                    {
+                    if (e.target.value == "0") {
                         feePriceDOM.val("");
                         feePriceDOM.attr("disabled", true);
                     }
-                    else
-                    {
+                    else {
                         feePriceDOM.removeAttr("disabled");
                         feePriceDOM.focus();
                     }
@@ -707,26 +997,23 @@
                     let id = $("#<%=hdfUUID.ClientID%>").val();
                     let price = $("#<%=txtFeePrice.ClientID%>").val().replace(/\,/g, '');
 
-                    if (!(price && parseInt(price) >= 1000 && parseInt(price) % 1000 == 0))
-                    {
+                    if (!(price && parseInt(price) >= 1000 && parseInt(price) % 1000 == 0)) {
                         swal({
                             title: "Thông báo",
                             text: "Có nhập sai số tiền không đó",
                             type: "error",
                             html: true,
-                        }, function() {
+                        }, function () {
                             $("#<%=txtFeePrice.ClientID%>").focus();
                         });
                         return;
                     }
 
-                    if (!id)
-                    {
+                    if (!id) {
                         $("#<%=hdfUUID.ClientID%>").val(uuid.v4());
                         addFeeNew();
                     }
-                    else
-                    {
+                    else {
                         updateFee();
                     }
 
@@ -742,7 +1029,7 @@
                     else {
                         let currentUser = $("#<%=hdfUsernameCurrent.ClientID%>").val();
                         let mainUser = $("#<%=hdfUsername.ClientID%>").val();
-                        if(currentUser != mainUser){
+                        if (currentUser != mainUser) {
                             createReturnOrder(customerID, currentUser);
                         }
                         else {
@@ -761,7 +1048,7 @@
             $(".search-product-content").height($(window).height() - 150);
 
             // search Product by SKU
-            $("#txtSearch").keydown(function(event) {
+            $("#txtSearch").keydown(function (event) {
                 if (event.which === 13) {
                     searchProduct();
                     event.preventDefault();
@@ -772,11 +1059,11 @@
             // check data before close page or refresh page
             window.onbeforeunload = function () {
                 if ($(".product-result").length > 0 || $("#<%=txtPhone.ClientID%>").val() != "" || $("#<%= txtFullname.ClientID%>").val() != "")
-                        return "You're leaving the site.";
+                    return "You're leaving the site.";
             };
 
             // key press F1 - F4
-            $(document).keydown(function(e) {
+            $(document).keydown(function (e) {
                 if (e.which == 112) { //F1 Search Customer
                     searchCustomer();
                     return false;
@@ -796,7 +1083,7 @@
             });
 
             // quickly input change
-            $("#<%=pGuestPaid.ClientID%>").keydown(function(e) {
+            $("#<%=pGuestPaid.ClientID%>").keydown(function (e) {
                 if (e.which == 13) {
                     var value = $("#<%=pGuestPaid.ClientID%>").val() + "000";
                     $("#<%=pGuestPaid.ClientID%>").val(value);
@@ -921,8 +1208,7 @@
                         success: (response) => {
                             if (response.d) {
                                 let data = JSON.parse(response.d);
-                                if (data.length == 0)
-                                {
+                                if (data.length == 0) {
                                     swal({
                                         title: 'Thông báo',
                                         text: 'Khách hàng này không có đơn đổi trả hoặc đã được trừ tiền!',
@@ -932,12 +1218,11 @@
                                         cancelButtonText: "Để em xem lại...",
                                         confirmButtonText: "Tạo đơn hàng đổi trả",
                                     }, function (confirm) {
-                                        
-                                        if (confirm)
-                                        {
+
+                                        if (confirm) {
                                             let currentUser = $("#<%=hdfUsernameCurrent.ClientID%>").val();
                                             let mainUser = $("#<%=hdfUsername.ClientID%>").val();
-                                            if(currentUser != mainUser){
+                                            if (currentUser != mainUser) {
                                                 createReturnOrder(customerID, currentUser);
                                             }
                                             else {
@@ -946,8 +1231,7 @@
                                         }
                                     });
                                 }
-                                else
-                                {
+                                else {
                                     data.forEach((item) => {
                                         modalDOM.find("tbody[id='orderReturn']").append(createOrderReturnHTML(item))
                                     });
@@ -965,11 +1249,9 @@
 
             // get return order
             function getReturnOrder(refundGood) {
-                if (refundGood)
-                {
+                if (refundGood) {
                     let totalPrice = $("#<%=hdfTotalPrice.ClientID%>").val();
-                    if (totalPrice)
-                    {
+                    if (totalPrice) {
                         totalPrice = parseFloat(totalPrice) - refundGood.TotalPrice;
                         if (totalPrice < 0) {
                             totalPrice = "-" + formatNumber(totalPrice.toString());
@@ -978,8 +1260,7 @@
                             totalPrice = formatNumber(totalPrice.toString());
                         }
                     }
-                    else
-                    {
+                    else {
                         totalPrice = "-" + formatNumber(refundGood.TotalPrice.toString());
                     }
 
@@ -1086,8 +1367,7 @@
 
             function handleErrorSubmit() {
                 HoldOn.close();
-                if ($("#<%=hdStatusPage.ClientID%>").val() === "Submit")
-                {
+                if ($("#<%=hdStatusPage.ClientID%>").val() === "Submit") {
                     swal({
                         title: "Lỗi trong qua trình thánh toán",
                         text: "Xảy ra lỗi khi xác nhận đơn hàng.\nHãy nhấn lại nút thanh toán",
@@ -1109,12 +1389,10 @@
                     closePopup();
                     HoldOn.open();
                     $("#<%=hdStatusPage.ClientID%>").val("Submit");
-                    try
-                    {
+                    try {
                         $("#<%=btnOrder.ClientID%>").click();
                     }
-                    finally
-                    {
+                    finally {
                         setTimeout(handleErrorSubmit, 60000);
                     }
                 }
@@ -1181,181 +1459,25 @@
                 }
             }
 
-            // insert order
-            function insertOrder() {
-
-                var checkAllValue = true;
-
-                // check shipping fee
-
-                var fs = $("#<%=pFeeShip.ClientID%>").val();
-                var feeship = parseFloat(fs.replace(/\,/g, ''));
-                
-                if (feeship > 0 && feeship < 10000) {
-                    checkAllValue = false;
-                    $("#<%=pFeeShip.ClientID%>").focus();
-                    swal({
-                        title: "Lạ vậy:",
-                        text: "Sao phí vận chuyển lại nhỏ hơn <strong>10.000đ</strong> nè?<br><br>Xem lại nha!",
-                        type: "warning",
-                        showCancelButton: false,
-                        confirmButtonColor: "#DD6B55",
-                        confirmButtonText: "Để em xem lại!!",
-                        html: true
-                    });
-                }
-
-                // check discount
-                var ds = $("#<%=pDiscount.ClientID%>").val();
-                var discount = parseFloat(ds.replace(/\,/g, ''));
-
-                if (discount > 20000 && $("#<%=hdfRoleID.ClientID%>").val() != 0) {
-                    checkAllValue = false;
-                    $("#<%=pDiscount.ClientID%>").focus();
-                    swal({
-                        title: "Lạ vậy:",
-                        text: "Sao chiết khấu lại lớn hơn <strong>20.000đ</strong> nè?<br><br>Nếu có lý do thì báo chị Ngọc nha!",
-                        type: "warning",
-                        showCancelButton: false,
-                        confirmButtonColor: "#DD6B55",
-                        confirmButtonText: "Để em xem lại!!",
-                        html: true
-                    });
-                }
-
-                return checkAllValue;
-
-            }
-
             // pay order on click button
             function payAll() {
-                var phone = $("#<%=txtPhone.ClientID%>").val();
-                var name = $("#<%=txtFullname.ClientID%>").val();
-                var address = $("#<%=txtAddress.ClientID%>").val();
-                var province = $("#<%=ddlProvince.ClientID%>").val();
-                var district = $("#<%=ddlDistrict.ClientID%>").val();
-                var ward = $("#<%=ddlWard.ClientID%>").val();
-
-                if (name === "") {
-                    $("#<%= txtFullname.ClientID%>").focus();
-                    swal("Thông báo", "Hãy nhập tên khách hàng!", "error");
-                }
-                else if (phone === "") {
-                    $("#<%= txtPhone.ClientID%>").focus();
-                    swal("Thông báo", "Hãy nhập số điện thoại khách hàng!", "error");
-                }
-                else if (province === "0" || province === null || province === "") {
-                    swal({
-                        title: "Thông báo",
-                        text: "Chưa chọn tỉnh thành",
-                        type: "warning",
-                        showCancelButton: false,
-                        confirmButtonText: "Để em xem lại!!",
-                        closeOnConfirm: false,
-                        html: true
-                    }, function (isConfirm) {
-                        if (isConfirm) {
-                            sweetAlert.close();
-                            $("#<%=ddlProvince.ClientID%>").select2('open');
-                        }
-                    });
-                }
-                else if (district === "0" || district === null || district === "") {
-                    swal({
-                        title: "Thông báo",
-                        text: "Chưa chọn quận huyện",
-                        type: "warning",
-                        showCancelButton: false,
-                        confirmButtonText: "Để em xem lại!!",
-                        closeOnConfirm: false,
-                        html: true
-                    }, function (isConfirm) {
-                        if (isConfirm) {
-                            sweetAlert.close();
-                            $("#<%=ddlDistrict.ClientID%>").select2('open');
-                        }
-                    });
-                }
-                else if (ward === "0" || ward === null || ward === "") {
-                    swal({
-                        title: "Thông báo",
-                        text: "Chưa chọn phường xã",
-                        type: "warning",
-                        showCancelButton: false,
-                        confirmButtonText: "Để em xem lại!!",
-                        closeOnConfirm: false,
-                        html: true
-                    }, function (isConfirm) {
-                        if (isConfirm) {
-                            sweetAlert.close();
-                            $("#<%=ddlWard.ClientID%>").select2('open');
-                        }
-                    });
-                }
-                else if (address === "") {
-                    $("#<%= txtAddress.ClientID%>").focus();
-                    swal("Thông báo", "Hãy nhập địa chỉ khách hàng!", "error");
-                }
-                else if ($(".product-result").length == 0) {
-                    $("#txtSearch").focus();
-                    swal("Thông báo", "Hãy nhập sản phẩm!", "error");
-                }
-                else {
-                    let orderDetails = "";
-                    let ordertype = $(".customer-type").val();
-
-                    orderDetails += '{ "productPOS" : ['
-
-                    $(".product-result").each(function () {
-                        let productID = $(this).attr("data-productid");
-                        let productVariableID = $(this).attr("data-productvariableid");
-                        let sku = $(this).attr("data-sku");
-                        let producttype = $(this).attr("data-producttype");
-                        let productvariablename = $(this).attr("data-productvariablename");
-                        let productvariablevalue = $(this).attr("data-productvariablevalue");
-                        let quantity = $(this).find(".in-quantity").val();
-                        let productname = $(this).attr("data-productname");
-                        let productimageorigin = $(this).attr("data-productimageorigin");
-                        let productvariable = $(this).attr("data-productvariable");
-                        let price = $(this).find(".gia-san-pham").attr("data-price");
-                        let productvariablesave = $(this).attr("data-productvariablesave");
-
-                        if (quantity > 0) {
-                            let order = new OrderDetail(
-                                    productID
-                                    , productVariableID
-                                    , sku
-                                    , producttype
-                                    , productvariablename
-                                    , productvariablevalue
-                                    , quantity
-                                    , productname
-                                    , productimageorigin
-                                    , price
-                                    , productvariablesave
-                            );
-
-                            orderDetails += order.stringJSON() + ",";
-                        }
-                    });
-
-                    orderDetails = orderDetails.replace(/.$/, "") + "]}";
-
-                    $("#<%=hdfOrderType.ClientID %>").val(ordertype);
-                    $("#<%=hdfListProduct.ClientID%>").val(orderDetails);
-                    $(".totalquantity").addClass("hide");
-
-                    if (insertOrder() == true) {
+                if (!_checkValidation())
+                    return;
+                
+                Promise.all([_updateDeliveryAddress()])
+                    .then(function () {
+                        _insertOrder();
                         showConfirmOrder();
-                    }
-                }
+                    })
+                    .catch(function (err) {
+                    });
             }
 
-            // count guest change
-            function countGuestChange() {
-                notEmpty();
-                var totalrefund = 0;
-                if (parseFloat($("#<%=hdfDonHangTra.ClientID%>").val()) > 0) {
+// count guest change
+function countGuestChange() {
+    notEmpty();
+    var totalrefund = 0;
+    if (parseFloat($("#<%=hdfDonHangTra.ClientID%>").val()) > 0) {
                     totalrefund = parseFloat($("#<%=hdfDonHangTra.ClientID%>").val());
                 }
                 var gp1 = $("#<%=pGuestPaid.ClientID%>").val();
@@ -1393,7 +1515,7 @@
 
                     var totalprice = 0;
                     var productquantity = 0;
-                    $(".product-result").each(function() {
+                    $(".product-result").each(function () {
                         var price = parseFloat($(this).find(".gia-san-pham").attr("data-price"));
                         var quantity = parseFloat($(this).find(".in-quantity").val());
 
@@ -1513,8 +1635,7 @@
                     $("#<%=pGuestPaid.ClientID%>").val(formatThousands(pain, ','));
                 }
                 fees.forEach((item) => {
-                    if (item.price == "")
-                    {
+                    if (item.price == "") {
                         item.FeePrice = 0;
                         $("#" + item.UUID).val(0);
                     }
@@ -1529,7 +1650,7 @@
                 notEmpty();
                 var dis = $("#<%=pDiscount.ClientID%>").val();
                 var fs = $("#<%=pFeeShip.ClientID%>").val();
-                
+
 
                 var discount = parseFloat(dis.replace(/\,/g, ''));
                 var feeship = parseFloat(fs.replace(/\,/g, ''));
@@ -1566,7 +1687,7 @@
                 var customertype = obj.val();
                 if ($(".product-result").length > 0) {
                     var totalprice = 0;
-                    $(".product-result").each(function() {
+                    $(".product-result").each(function () {
                         var giasi = $(this).attr("data-giabansi");
                         var giale = $(this).attr("data-giabanle");
                         if (customertype == 1) {
@@ -1598,7 +1719,7 @@
             }
 
             // format price
-            var formatThousands = function(n, dp) {
+            var formatThousands = function (n, dp) {
                 var s = '' + (Math.floor(n)),
                     d = n % 1,
                     i = s.length,
@@ -1629,14 +1750,14 @@
                 let customerID = +document.querySelector('[id$="_hdfCustomerID"]').value || 0;
                 let productNumber = +document.querySelector('[id$="_hdfTotalQuantity"]').value || 0;
 
-                if (!customerID) 
+                if (!customerID)
                     return swal("Thông báo", "Chưa nhập thông tin khách hàng!", "warning");
 
                 if (!productNumber) {
                     $("#txtSearch").focus();
                     return swal("Thông báo", "Chưa nhập sản phẩm!", "warning");
                 }
-                    
+
 
                 let couponModalDOM = $('#couponModal');
                 let codeDOM = couponModalDOM.find("[id$='_txtCouponCode']");
@@ -1648,8 +1769,7 @@
                 if (codeDOM)
                     codeDOM.val('');
 
-                if (errorDOM)
-                {
+                if (errorDOM) {
                     errorDOM.addClass('hide');
                     errorDOM.find('p').html('');
                 }
@@ -1688,7 +1808,7 @@
 
                     return;
                 }
-                
+
                 $.ajax({
                     type: "POST",
                     url: "/pos.aspx/getCoupon",
@@ -1697,7 +1817,7 @@
                     dataType: "json",
                     success: (respon) => {
                         let data = JSON.parse(respon.d);
-                            
+
                         if (data) {
                             if (!data.status) {
                                 errorDOM.classList.remove('hide');

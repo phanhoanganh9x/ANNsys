@@ -1,5 +1,6 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Utils;
 using MB.Extensions;
 using NHST.Bussiness;
 using System;
@@ -78,7 +79,7 @@ namespace IM_PJ
         }
         public void LoadData()
         {
-            
+
             // Fix bug, case setting value for pDiscount on HTML but don't change value
             pDiscount.Value = 1;
             pFeeShip.Value = 1;
@@ -157,7 +158,7 @@ namespace IM_PJ
             trans[0].Text = "Chọn chành xe";
 
             ddlTransportCompanyID.Items.Clear();
-            
+
             ddlTransportCompanyID.Items.AddRange(trans.ToArray());
             ddlTransportCompanyID.DataBind();
             ddlTransportCompanyID.SelectedIndex = 0;
@@ -278,6 +279,9 @@ namespace IM_PJ
                     var couponID = hdfCouponID.Value.ToInt(0);
                     var couponValue = hdfCouponValue.Value.ToDecimal(0);
 
+                    // Cập nhật địa chỉ giao hàng
+                    var deliveryAddressId = Convert.ToInt64(hdfDeliveryAddressId.Value);
+
                     var orderNew = new tbl_Order()
                     {
                         AgentID = AgentID,
@@ -310,7 +314,8 @@ namespace IM_PJ
                         OtherFeeValue = 0,
                         PostalDeliveryType = 1,
                         CouponID = couponID,
-                        CouponValue = couponValue
+                        CouponValue = couponValue,
+                        DeliveryAddressId = deliveryAddressId
                     };
 
                     if (!String.IsNullOrEmpty(datedone))
@@ -354,6 +359,7 @@ namespace IM_PJ
 
                     if (OrderID > 0)
                     {
+                        var orderAvatar = String.Empty;
                         var orderDetails = new List<tbl_OrderDetail>();
                         var stockManager = new List<tbl_StockManager>();
                         string list = hdfListProduct.Value;
@@ -361,8 +367,10 @@ namespace IM_PJ
                         if (items.Count > 0)
                             items.Reverse();
 
-                        foreach (var item in items)
+                        for (var i = 0; i < items.Count; i++)
                         {
+                            #region Lấy thông tin chi tiết của đơn hàng
+                            var item = items.ElementAt(i);
                             string[] itemValue = item.Split(',');
 
                             int ProductID = itemValue[0].ToInt();
@@ -386,7 +394,14 @@ namespace IM_PJ
                             string ProductVariable = itemValue[8];
                             double Price = Convert.ToDouble(itemValue[9]);
                             string ProductVariableSave = itemValue[10];
+                            #endregion
 
+                            #region Cập nhật avatar cho đơn hàng
+                            if (String.IsNullOrEmpty(orderAvatar))
+                                orderAvatar = AnnImage.extractImage(ProductImageOrigin);
+                            #endregion
+
+                            #region Khởi tạo chi tiết đơn hàng
                             orderDetails.Add(new tbl_OrderDetail()
                             {
                                 AgentID = AgentID,
@@ -425,10 +440,11 @@ namespace IM_PJ
                                     MoveProID = 0,
                                     ParentID = parentID,
                                 });
+                            #endregion
                         }
 
                         OrderDetailController.Insert(orderDetails);
-                        OrderController.updateQuantityCOGS(OrderID);
+                        OrderController.updateAvatarQuantityCOGS(OrderID, orderAvatar);
                         StockManagerController.Insert(stockManager);
 
                         string refund = hdSession.Value;

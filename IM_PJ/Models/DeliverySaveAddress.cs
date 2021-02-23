@@ -14,6 +14,14 @@ namespace IM_PJ.Models
     
     public partial class DeliverySaveAddress
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public DeliverySaveAddress()
+        {
+            this.DeliveryAddresses = new HashSet<DeliveryAddress>();
+            this.DeliveryAddresses1 = new HashSet<DeliveryAddress>();
+            this.DeliveryAddresses2 = new HashSet<DeliveryAddress>();
+        }
+    
         public int ID { get; set; }
         public string Name { get; set; }
         public Nullable<int> PID { get; set; }
@@ -22,5 +30,12 @@ namespace IM_PJ.Models
         public string Alias { get; set; }
         public bool IsPicked { get; set; }
         public bool IsDelivered { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DeliveryAddress> DeliveryAddresses { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DeliveryAddress> DeliveryAddresses1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DeliveryAddress> DeliveryAddresses2 { get; set; }
     }
 }

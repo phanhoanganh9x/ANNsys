@@ -58,3 +58,6 @@ GO
 
 ALTER TABLE [dbo].[ViewOrder] CHECK CONSTRAINT [FK_ViewOrder_tbl_Order]
 GO
+
+CREATE INDEX [ID_ViewOrder_CreatedDate] ON ViewOrder([CreatedDate])
+GO

@@ -47,7 +47,7 @@
         // original length
         var original_len = input_val.length;
 
-        // initial caret position 
+        // initial caret position
         var caret_pos = input.prop("selectionStart");
 
         // check for decimal

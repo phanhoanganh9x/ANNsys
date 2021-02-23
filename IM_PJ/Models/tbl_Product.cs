@@ -14,6 +14,12 @@ namespace IM_PJ.Models
     
     public partial class tbl_Product
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public tbl_Product()
+        {
+            this.PreOrderDetails = new HashSet<PreOrderDetail>();
+        }
+    
         public int ID { get; set; }
         public Nullable<int> CategoryID { get; set; }
         public Nullable<int> ProductOldID { get; set; }
@@ -50,5 +56,8 @@ namespace IM_PJ.Models
         public Nullable<double> Old_Price { get; set; }
         public bool SyncKiotViet { get; set; }
         public string EnName { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PreOrderDetail> PreOrderDetails { get; set; }
     }
 }

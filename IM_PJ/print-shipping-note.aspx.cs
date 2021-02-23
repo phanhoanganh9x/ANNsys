@@ -141,28 +141,56 @@ namespace IM_PJ
                         error += "<p>Không tìm thấy đơn hàng đổi trả " + order.RefundsGoodsID.ToString() + " (có thể đã bị xóa khi làm lại đơn đổi trả). Thêm lại đơn hàng đổi trả nhé!</p>";
                     }
                 }
-                var customer = CustomerController.GetByID(order.CustomerID.Value);
 
-                string addressDetail = "";
-                string ProvinceName = "";
-                if (customer.ProvinceID.HasValue)
+                string receivingPhone = String.Empty;
+                var addressTo = String.Empty;
+                var provinceName = String.Empty;
+
+                if (order.DeliveryAddressId.HasValue)
                 {
-                    var Province = ProvinceController.GetByID(customer.ProvinceID.Value);
-                    addressDetail = ", " + Province.Name;
-                    ProvinceName = Province.Name;
+                    var deliveryAddress = DeliveryController.getDeliveryAddressById(order.DeliveryAddressId.Value);
+                    var Province = ProvinceController.GetByID(deliveryAddress.ProvinceId);
+                    var District = ProvinceController.GetByID(deliveryAddress.DistrictId);
+                    var Ward = ProvinceController.GetByID(deliveryAddress.WardId);
+
+                    receivingPhone = deliveryAddress.Phone;
+                    addressTo = String.Format("{0}, {1}, {2}, {3}", deliveryAddress.Address.ToTitleCase(), Ward.Name, District.Name, Province.Name);
+                    provinceName = Province.Name;
                 }
-                if (customer.DistrictId.HasValue)
+                else
                 {
-                    var District = ProvinceController.GetByID(customer.DistrictId.Value);
-                    addressDetail = ", " + District.Name + addressDetail;
+                    var customer = CustomerController.GetByID(order.CustomerID.Value);
+
+                    receivingPhone = order.CustomerPhone;
+
+                    if (!String.IsNullOrEmpty(customer.CustomerPhone2))
+                        receivingPhone += " - " + customer.CustomerPhone2;
+
+                    addressTo = order.CustomerAddress.ToTitleCase();
+
+                    if (customer.WardId.HasValue && customer.WardId.Value > 0)
+                    {
+                        var Ward = ProvinceController.GetByID(customer.WardId.Value);
+
+                        addressTo += ", " + Ward.Name;
+                    }
+
+                    if (customer.DistrictId.HasValue)
+                    {
+                        var District = ProvinceController.GetByID(customer.DistrictId.Value);
+
+                        addressTo += ", " + District.Name;
+                    }
+
+                    if (customer.ProvinceID.HasValue)
+                    {
+                        var Province = ProvinceController.GetByID(customer.ProvinceID.Value);
+
+                        provinceName = Province.Name;
+                        addressTo += ", " + Province.Name;
+                    }
                 }
-                if (customer.WardId.HasValue && customer.WardId.Value > 0)
-                {
-                    var Ward = ProvinceController.GetByID(customer.WardId.Value);
-                    addressDetail = ", " + Ward.Name + addressDetail;
-                }
-                
-                string CustomerAddress = order.CustomerAddress.ToTitleCase() + addressDetail;
+                 
                 string DeliveryInfo = "";
                 string ShippingFeeInfo = "";
                 string ShipperFeeInfo = "";
@@ -238,13 +266,13 @@ namespace IM_PJ
                                 error += "Chành xe này trả cước trước. Hãy nhập phí vận chuyển vào đơn hàng! Nếu muốn miễn phí cho khách thì trừ phí khác!";
                             }
 
-                            if (!String.IsNullOrEmpty(ProvinceName))
+                            if (!String.IsNullOrEmpty(provinceName))
                             {
-                                CustomerAddress = "<span class='phone'>" + shipto.ShipTo.ToTitleCase() + " (" + ProvinceName + ")</span>";
+                                addressTo = "<span class='phone'>" + shipto.ShipTo.ToTitleCase() + " (" + provinceName + ")</span>";
                             }
                             else
                             {
-                                CustomerAddress = "<span class='phone'>" + shipto.ShipTo.ToTitleCase()+ "</span>";
+                                addressTo = "<span class='phone'>" + shipto.ShipTo.ToTitleCase()+ "</span>";
                             }
                         }
                         else
@@ -327,13 +355,7 @@ namespace IM_PJ
                     }
                 }
 
-                // Lấy số điện thoại 2 nếu có
-                string CustomerPhone = order.CustomerPhone;
                 
-                if (!string.IsNullOrEmpty(customer.CustomerPhone2))
-                {
-                    CustomerPhone += " - " + customer.CustomerPhone2;
-                }
 
                 // Lấy logo ANN
                 string LogoANN = "";
@@ -385,8 +407,8 @@ namespace IM_PJ
                 rowHtml += Environment.NewLine + String.Format("    </div>");
                 rowHtml += Environment.NewLine + String.Format("    <div class='bottom-right'>");
                 rowHtml += Environment.NewLine + String.Format("        <p>Người nhận: <span class='name'>{0}</span></p>", order.CustomerName.ToTitleCase());
-                rowHtml += Environment.NewLine + String.Format("        <p>Điện thoại: <span class='phone'>{0}</span></p>", CustomerPhone);
-                rowHtml += Environment.NewLine + String.Format("        <p>Địa chỉ: <span class='address'>{0}</span></p>", CustomerAddress);
+                rowHtml += Environment.NewLine + String.Format("        <p>Điện thoại: <span class='phone'>{0}</span></p>", receivingPhone);
+                rowHtml += Environment.NewLine + String.Format("        <p>Địa chỉ: <span class='address'>{0}</span></p>", addressTo);
                 rowHtml += Environment.NewLine + String.Format("    </div>");
                 if (destination != "")
                 {

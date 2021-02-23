@@ -61,8 +61,10 @@ namespace IM_PJ.Controllers
                 ui.ModifiedBy = CreatedBy;
                 ui.IsCount = IsCount;
                 ui.CostOfGood = cogs.HasValue ? Convert.ToDecimal(cogs.Value) : 0;
+
+                con.Entry(ui).State = System.Data.Entity.EntityState.Added;
                 con.tbl_OrderDetail.Add(ui);
-                int kq = con.SaveChanges();
+                var kq = con.SaveChanges();
                 #endregion
 
                 return kq.ToString();
@@ -116,6 +118,8 @@ namespace IM_PJ.Controllers
                 ui.ModifiedBy = orderDetail.ModifiedBy;
                 ui.IsCount = orderDetail.IsCount;
                 ui.CostOfGood = cogs.HasValue ? Convert.ToDecimal(cogs.Value) : 0;
+
+                con.Entry(ui).State = System.Data.Entity.EntityState.Added;
                 con.tbl_OrderDetail.Add(ui);
                 con.SaveChanges();
                 #endregion
@@ -252,19 +256,24 @@ namespace IM_PJ.Controllers
         {
             using (var dbe = new inventorymanagementEntities())
             {
-                var ui = dbe.tbl_OrderDetail.Where(o => o.ID == ID).FirstOrDefault();
-                if (ui != null)
-                {
-                    ui.Quantity = Quantity;
-                    ui.Price = Price;
-                    ui.ModifiedDate = ModifiedDate;
-                    ui.ModifiedBy = ModifiedBy;
-                    int kq = dbe.SaveChanges();
-                    return kq.ToString();
-                }
-                return "0";
+                var ui = dbe.tbl_OrderDetail
+                    .Where(o => o.ID == ID)
+                    .SingleOrDefault();
+
+                if (ui == null)
+                    return "0";
+
+                dbe.Entry(ui).State = System.Data.Entity.EntityState.Modified;
+                ui.Quantity = Quantity;
+                ui.Price = Price;
+                ui.ModifiedDate = ModifiedDate;
+                ui.ModifiedBy = ModifiedBy;
+                var kq = dbe.SaveChanges();
+
+                return kq.ToString();
             }
         }
+
         public static string UpdateIsCount(int ID, bool isCount)
         {
             using (var dbe = new inventorymanagementEntities())
@@ -283,15 +292,18 @@ namespace IM_PJ.Controllers
         {
             using (var dbe = new inventorymanagementEntities())
             {
-                var ui = dbe.tbl_OrderDetail.Where(o => o.ID == ID && o.SKU == SKU).FirstOrDefault();
-                var od = dbe.tbl_OrderDetail.ToList();
-                if (ui != null)
-                {
-                    dbe.tbl_OrderDetail.Remove(ui);
-                    int kq = dbe.SaveChanges();
-                    return kq.ToString();
-                }
-                return "0";
+                var ui = dbe.tbl_OrderDetail
+                    .Where(o => o.ID == ID && o.SKU == SKU)
+                    .SingleOrDefault();
+
+                if (ui == null)
+                    return "0";
+
+                dbe.Entry(ui).State = System.Data.Entity.EntityState.Deleted;
+                dbe.tbl_OrderDetail.Remove(ui);
+                var kq = dbe.SaveChanges();
+
+                return kq.ToString();
             }
         }
         #endregion

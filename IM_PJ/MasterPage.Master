@@ -71,7 +71,7 @@
         }
 
         /* Add Animation */
-        .modal-image-product-content, #caption {  
+        .modal-image-product-content, #caption {
           -webkit-animation-name: zoom;
           -webkit-animation-duration: 0.6s;
           animation-name: zoom;
@@ -79,12 +79,12 @@
         }
 
         @-webkit-keyframes zoom {
-          from {-webkit-transform:scale(0)} 
+          from {-webkit-transform:scale(0)}
           to {-webkit-transform:scale(1)}
         }
 
         @keyframes zoom {
-          from {transform:scale(0)} 
+          from {transform:scale(0)}
           to {transform:scale(1)}
         }
 
@@ -165,7 +165,7 @@
             </div>
             <a href="javascript:;" class="scroll-top-link" id="scroll-top"><i class="fa fa-angle-up"></i></a>
             <a href="javascript:;" class="scroll-bottom-link" id="scroll-bottom"><i class="fa fa-angle-down"></i></a>
-            
+
             <script src="/App_Themes/Ann/js/bootstrap.min.js"></script>
             <script src="/App_Themes/Ann/js/bootstrap-table/bootstrap-table.js"></script>
             <script src="/App_Themes/Ann/js/chartjs.min.js"></script>
@@ -215,6 +215,7 @@
                     $("#caption").html(name);
                 }
 
+                // Không được xóa dòng này. Nếu không sẻ gây ra lỗi cho select2 (Tỉnh / thành phố, Phường / xã, Quận / huyện)
                 if ($.cookie('showNotePopup11')) {
 
                 }
@@ -233,7 +234,7 @@
                             noteEditor.setSize('390px', '450px');
                             $('.account-note').attr('style', 'width: 400px; height: 500px;');
                         }
-                        
+
                         $('#<%=txtNote.ClientID%>').removeClass('zoom-in');
                         $('.zoom-in-note-popup').html('Phóng to');
                     }
@@ -260,7 +261,7 @@
                     else {
                         $('.account-note').attr('style', 'width: 400px; height: 500px;');
                     }
-                    
+
                     $('.save-note').attr('style', 'display: block;');
                     $('.zoom-in-note-popup').attr('style', 'display: block;');
                     $('.close-note-popup').html('Đóng').attr('style', 'width: 33.33333%;');
@@ -309,7 +310,7 @@
                         contentType: "application/json; charset=utf-8",
                         dataType: "json",
                         success: function (data) {
-                            
+
                         }
                     });
                 }

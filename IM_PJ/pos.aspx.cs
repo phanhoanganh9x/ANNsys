@@ -1,5 +1,6 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Utils;
 using MB.Extensions;
 using Newtonsoft.Json;
 using NHST.Bussiness;
@@ -389,6 +390,9 @@ namespace IM_PJ
                         var couponID = hdfCouponID.Value.ToInt(0);
                         var couponValue = hdfCouponValue.Value.ToDecimal(0);
 
+                        // Cập nhật địa chỉ giao hàng
+                        var deliveryAddressId = Convert.ToInt64(hdfDeliveryAddressId.Value);
+
                         tbl_Order order = new tbl_Order()
                         {
                             AgentID = AgentID,
@@ -422,7 +426,8 @@ namespace IM_PJ
                             PostalDeliveryType = 1,
                             UserHelp = UserHelp,
                             CouponID = couponID,
-                            CouponValue = couponValue
+                            CouponValue = couponValue,
+                            DeliveryAddressId = deliveryAddressId
                         };
 
                         var ret = OrderController.InsertOnSystem(order);
@@ -461,6 +466,7 @@ namespace IM_PJ
                         if (OrderID > 0)
                         {
                             #region Khởi tạo chi tiết đơn hàng
+                            var orderAvatar = String.Empty;
                             ProductPOS POS = JsonConvert.DeserializeObject<ProductPOS>(hdfListProduct.Value);
                             List<tbl_OrderDetail> orderDetails = new List<tbl_OrderDetail>();
                             List<tbl_StockManager> stockManager = new List<tbl_StockManager>();
@@ -468,8 +474,15 @@ namespace IM_PJ
                             // Reverser
                             POS.productPOS.Reverse();
 
-                            foreach (ProductGetOut item in POS.productPOS)
+                            for(var i = 0; i < POS.productPOS.Count; i++)
                             {
+                                var item = POS.productPOS[i];
+
+                                #region Cập nhật avatar cho đơn hàng
+                                if (String.IsNullOrEmpty(orderAvatar))
+                                    orderAvatar = AnnImage.extractImage(item.ProductImageOrigin);
+                                #endregion
+
                                 orderDetails.Add(
                                     new tbl_OrderDetail()
                                     {
@@ -524,7 +537,7 @@ namespace IM_PJ
                             #endregion
 
                             // Cập nhật lại sô lượng và giá vố vào đơn hàng
-                            OrderController.updateQuantityCOGS(OrderID);
+                            OrderController.updateAvatarQuantityCOGS(OrderID, orderAvatar);
                             // Cập nhật lại thông tin kho hàng
                             StockManagerController.Insert(stockManager);
 
@@ -545,7 +558,7 @@ namespace IM_PJ
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "script", "$(function () { handleErrorSubmit(); });", true);
             }
