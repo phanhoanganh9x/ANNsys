@@ -4,14 +4,13 @@
             return OrderService._instance;
 
         PreOrderService._instance = this;
-        this.backendDomain = 'http://ann-shop-dotnet-core.com';
         this.api = '/api/v1';
 
         return this;
     }
 
     getPreOrder(preOrderId) {
-        let url = this.backendDomain + this.api + '/pre-order/' + preOrderId;
+        let url = this.api + '/pre-order/' + preOrderId;
 
         return new Promise((reslove, reject) => {
             $.ajax({
@@ -29,7 +28,7 @@
     };
 
     createOrder(preOrderId, staff) {
-        let url = this.backendDomain + this.api + '/pre-order/' + preOrderId + '/order?staff=' + staff;
+        let url = this.api + '/pre-order/' + preOrderId + '/order?staff=' + staff;
 
         return new Promise((reslove, reject) => {
             $.ajax({
