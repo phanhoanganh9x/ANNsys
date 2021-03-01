@@ -437,8 +437,8 @@ function ajaxDeleteWordpressPost(web, postCloneID, postWordpressID) {
         return;
     }
     $.ajax({
-        type: "DELETE",
-        url: wpAPI + postCloneID,
+        type: "POST",
+        url: wpAPI + postCloneID + "/delete",
         headers: {
             'domain': web,
         },
