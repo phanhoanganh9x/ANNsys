@@ -377,8 +377,8 @@ function deleteProduct(obj, toggle) {
 function ajaxDeleteProduct(web, productID) {
 
     $.ajax({
-        type: "DELETE",
-        url: API + productID,
+        type: "POST",
+        url: API + productID + "/delete",
         headers: {
             'domain': web,
         },
