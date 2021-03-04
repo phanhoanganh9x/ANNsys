@@ -400,7 +400,7 @@ namespace IM_PJ
 
                     if (item.ShippingType == 4)
                     {
-                        if (item.TransportCompanyID != 0)
+                        if (item.TransportCompanyID.HasValue && item.TransportCompanyID != 0)
                         {
                             var transport = TransportCompanyController.GetTransportCompanyForOrderList(Convert.ToInt32(item.TransportCompanyID));
                             var transportsub = TransportCompanyController.GetReceivePlaceForOrderList(Convert.ToInt32(item.TransportCompanyID), Convert.ToInt32(item.TransportCompanySubID));
