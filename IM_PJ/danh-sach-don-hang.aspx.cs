@@ -284,7 +284,7 @@ namespace IM_PJ
                 // Drop download có / không mã giảm giá
                 ddlCouponStatus.SelectedValue = CouponStatus.ToString();
 
-                if (acc.RoleID != 0)
+                if (acc.RoleID.HasValue && acc.RoleID != 0)
                 {
                     CreatedBy = acc.Username;
                     ddlCreatedBy.Enabled = false;
@@ -470,7 +470,7 @@ namespace IM_PJ
                     }
                     if (item.ShippingType == 4)
                     {
-                        if (item.TransportCompanyID != 0)
+                        if (item.TransportCompanyID.HasValue && item.TransportCompanyID != 0)
                         {
                             var transport = TransportCompanyController.GetTransportCompanyForOrderList(Convert.ToInt32(item.TransportCompanyID));
                             var transportsub = TransportCompanyController.GetReceivePlaceForOrderList(Convert.ToInt32(item.TransportCompanyID), Convert.ToInt32(item.TransportCompanySubID));
