@@ -10,12 +10,13 @@ function showProductSyncModal(productSKU, productID, categoryID) {
     html += "<div class='row'>";
     html += "    <div class='col-md-12 item-website' data-web='all' data-product-sku='" + productSKU + "' data-product-id='" + productID + "'>";
     html += "       <span>";
-    html += "        	<a href='javascript:;' class='btn primary-btn btn-green' onclick='postProduct($(this))'><i class='fa fa-cloud-upload' aria-hidden='true'></i> Đăng tất cả</a>";
-    html += "        	<a href='javascript:;' class='btn primary-btn btn-blue' onclick='upTopProduct($(this))'><i class='fa fa-upload' aria-hidden='true'></i> Up top tất cả</a>";
-    html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='renewProduct($(this))'><i class='fa fa-refresh' aria-hidden='true'></i> Làm mới tất cả</a>";
-    html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='toggleProduct($(this), `hide`)'><i class='fa fa-refresh' aria-hidden='true'></i> Ẩn tất cả</a>";
-    html += "        	<a href='javascript:;' class='btn primary-btn' onclick='toggleProduct($(this), `show`)'><i class='fa fa-refresh' aria-hidden='true'></i> Hiện tất cả</a>";
-    html += "        	<a href='javascript:;' class='btn primary-btn btn-red' onclick='deleteProduct($(this), `show`)'><i class='fa fa-times' aria-hidden='true'></i> Xóa tất cả</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn btn-green' onclick='postProduct($(this))'><i class='fa fa-cloud-upload' aria-hidden='true'></i> Đăng web</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn btn-blue' onclick='upTopProduct($(this))'><i class='fa fa-upload' aria-hidden='true'></i> Up top</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='renewProduct($(this))'><i class='fa fa-refresh' aria-hidden='true'></i> Làm mới</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='updateProductSKU($(this))'><i class='fa fa-refresh' aria-hidden='true'></i> Sửa SKU</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='toggleProduct($(this), `hide`)'><i class='fa fa-refresh' aria-hidden='true'></i> Ẩn</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn' onclick='toggleProduct($(this), `show`)'><i class='fa fa-refresh' aria-hidden='true'></i> Hiện</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn btn-red' onclick='deleteProduct($(this), `show`)'><i class='fa fa-times' aria-hidden='true'></i> Xóa</a>";
     html += "       </span>";
     html += "    </div>";
     html += "</div>";
@@ -28,22 +29,23 @@ function showProductSyncModal(productSKU, productID, categoryID) {
 
         var button = "";
         button += "<span class='btn-not-found hide'>";
-        button += "<a href='javascript:;' class='btn primary-btn btn-green' onclick='postProduct($(this))'>Đăng web</a>";
+        button += "<a href='javascript:;' class='btn primary-btn btn-green' onclick='postProduct($(this))'>Đăng</a>";
         button += "</span>";
         button += "<span class='btn-had-found hide'>";
         button += "<a href='javascript:;' onclick='upTopProduct($(this))' class='btn primary-btn btn-blue'>Up top</a>";
         button += "<a href='javascript:;' onclick='renewProduct($(this))' class='btn primary-btn btn-black'>Làm mới</a>";
         button += "<a href='javascript:;' onclick='viewProduct($(this))' class='btn primary-btn btn-yellow'>Xem</a>";
         button += "<a href='javascript:;' onclick='editProduct($(this))' class='btn primary-btn btn-black'>Sửa</a>";
+        button += "<a href='javascript:;' onclick='updateProductSKU($(this))' class='btn primary-btn btn-black'>Sửa SKU</a>";
         button += "<a href='javascript:;' onclick='toggleProduct($(this), `hide`)' class='btn primary-btn btn-black'>Ẩn</a>";
         button += "<a href='javascript:;' onclick='toggleProduct($(this), `show`)' class='btn primary-btn'>Hiện</a>";
         button += "<a href='javascript:;' onclick='deleteProduct($(this), `show`)' class='btn primary-btn btn-red'>Xóa</a>";
         button += "</span>";
 
         var webItem = "";
-        webItem += "<div class='col-md-3 item-name'>" + webList[i] + "</div>";
+        webItem += "<div class='col-md-2 item-name'>" + webList[i] + "</div>";
         webItem += "<div class='col-md-3 item-status'><span class='bg-yellow'>Đang kết nối web...</span></div>";
-        webItem += "<div class='col-md-6 item-button'>" + button + "</div>";
+        webItem += "<div class='col-md-7 item-button'>" + button + "</div>";
 
         $(".web-list").append("<div class='row item-website' data-web='" + webList[i] + "' data-product-sku='" + productSKU + "' data-product-id='" + productID + "' data-web-product-id=''>" + webItem + "</div>");
 
@@ -215,15 +217,15 @@ function renewProduct(obj) {
 
     if (web == "all") {
         for (var i = 0; i < webList.length; i++) {
-            ajaxRenewProductt(webList[i], productID);
+            ajaxRenewProduct(webList[i], productID);
         }
     }
     else {
-        ajaxRenewProductt(web, productID);
+        ajaxRenewProduct(web, productID);
     }
 }
 
-function ajaxRenewProductt(web, productID) {
+function ajaxRenewProduct(web, productID) {
     $.ajax({
         type: "POST",
         url: API + productID + "/renew",
@@ -342,6 +344,119 @@ function ajaxToggleProduct(web, productID, toggle) {
             else {
                 $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
             }
+        }
+    });
+}
+
+function updateProductSKU(obj) {
+    let oldSKU = "";
+    let newSKU = "";
+
+    swal({
+        title: "Nhập mã SKU cũ",
+        text: "Nhập mã sản phẩm cũ:",
+        type: "input",
+        showCancelButton: true,
+        closeOnConfirm: false,
+        cancelButtonText: "Đóng",
+        confirmButtonText: "Tiếp tục",
+    }, function (inputOldSKU) {
+        if (inputOldSKU != "") {
+            oldSKU = inputOldSKU;
+            swal({
+                title: "Nhập mã SKU mới",
+                text: "Nhập mã sản phẩm mới:",
+                type: "input",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                cancelButtonText: "Đóng",
+                confirmButtonText: "Xác nhận",
+            }, function (inputNewSKU) {
+                if (inputNewSKU != "") {
+                    newSKU = inputNewSKU;
+
+                    let web = obj.closest(".item-website").attr("data-web");
+
+                    if (oldSKU !== "" && newSKU !== "") {
+                        if (oldSKU === newSKU) {
+                            swal("Thông báo", "Mã SKU cũ và mới giống nhau!", "error");
+                        }
+                        else {
+                            swal.close();
+                            if (web == "all") {
+                                for (var i = 0; i < webList.length; i++) {
+                                    ajaxUpdateProductSKU(webList[i], oldSKU, newSKU);
+                                }
+                            }
+                            else {
+                                ajaxUpdateProductSKU(web, oldSKU, newSKU);
+                            }
+                        }
+                    }
+                }
+                else {
+                    swal("Lỗi!", "Chưa nhập mã sản phẩm mới", "error");
+                }
+            });
+        }
+        else {
+            swal("Lỗi!", "Chưa nhập mã sản phẩm cũ", "error");
+        }
+    });
+    
+    
+}
+
+function ajaxUpdateProductSKU(web, oldSKU, newSKU) {
+
+    $.ajax({
+        type: "POST",
+        url: API + "updateSKU/" + oldSKU + "/" + newSKU,
+        headers: {
+            'domain': web,
+        },
+        async: true,
+        datatype: "json",
+        beforeSend: function () {
+            HoldOn.open();
+
+            $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-yellow'>Đang cập nhật SKU sản phẩm</span>");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
+        },
+        success: function (data, textStatus, xhr) {
+            HoldOn.close();
+
+            // Thành công
+            if (xhr.status === 200) {
+                if (data.id > 0) {
+                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Cập nhật SKU thành công</span>");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").removeClass("hide");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
+                }
+                else {
+                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Cập nhật SKU thất bại</span>");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
+                }
+            }
+            else {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
+            }
+        },
+        error: function (xhr, textStatus, error) {
+            HoldOn.close();
+            let data = xhr.responseJSON;
+            if (xhr.status === 500) {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
+            }
+            else if (xhr.status === 400) {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
+            }
+            else {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
+            }
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
         }
     });
 }
