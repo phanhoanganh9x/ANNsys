@@ -1,7 +1,18 @@
 ﻿var API = "/api/v1/woocommerce/product/";
 var webList = ["ann.com.vn", "khohangsiann.com", "bosiquanao.net", "quanaogiaxuong.com", "bansithoitrang.net", "panpan.vn", "quanaoxuongmay.com", "annshop.vn", "thoitrangann.com", "nhapsionline.com"];
-//var webList = ["annshop.vn"];
+var webCosmetics = ["khosimypham.com"];
+var cosmeticCategory = [44, 45, 56];
 
+function getWeblist(categoryID) {
+    // San pham thuoc danh muc my pham, nuoc hoa, thuc pham chuc nang thi them web my pham vao
+    var inCosmeticCategory = cosmeticCategory.includes(categoryID);
+
+    // xoa web cosmetics ra khoi web list truoc khi check category
+    webList = webList.filter(item => !webCosmetics.includes(item));
+    if (inCosmeticCategory) {
+        webList = webList.concat(webCosmetics);
+    }
+}
 function showProductSyncModal(productSKU, productID, categoryID) {
     closePopup();
 
@@ -25,6 +36,8 @@ function showProductSyncModal(productSKU, productID, categoryID) {
     showPopup(html, 8);
     HoldOn.open();
     
+    getWeblist(categoryID);
+
     for (var i = 0; i < webList.length; i++) {
 
         var button = "";
