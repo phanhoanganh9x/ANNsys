@@ -11,6 +11,16 @@ document.addEventListener("DOMContentLoaded", function (event) {
 });
 
 // #region Private
+function _loadSpanNumber(quantity) {
+    let spanNumber = "";
+    let spanNumberDOM = document.querySelector("[id$='spanNumber']");
+
+    if (controller.pagination.totalCount > 0)
+        spanNumber = "(" + UtilsService.formatThousands(controller.pagination.totalCount, ',') + ")";
+
+    spanNumberDOM.innerHTML = spanNumber;
+}
+
 function _initRole() {
     let roleDOM = document.querySelector("[id$='_hdRole']");
 
@@ -50,6 +60,7 @@ function _initPreOrderTable() {
             controller.data = response.data
             controller.pagination = response.pagination;
 
+            _loadSpanNumber();
             _loadPagination();
             _loadPreOrderTable();
 
@@ -88,12 +99,22 @@ function _updateFilter() {
     // Order Status
     let orderStatusDOM = document.querySelector("[id$='_ddlExcuteStatus']");
 
-    if (orderStatusDOM.value == "0")
+    if (orderStatusDOM.value == "0") {
+        controller.filter.searchOrder = 1;
         controller.filter.orderStatus = 0;
-    else if (orderStatusDOM.value)
-        controller.filter.orderStatus = +orderStatusDOM.value || null;
-    else
-        controller.filter.orderStatus = null;
+    }
+    else if (orderStatusDOM.value == "1") {
+        controller.filter.searchOrder = 2;
+        controller.filter.orderStatus = 1;
+    }
+    else if (orderStatusDOM.value == "3") {
+        controller.filter.searchOrder = 1;
+        controller.filter.orderStatus = 3;
+    }
+    else {
+        controller.filter.searchOrder = 0;
+        controller.filter.orderStatus = "0|1";
+    }
 
     // Search
     let searchDOM = document.querySelector("[id$='_txtSearchOrder']");
@@ -434,6 +455,7 @@ function onClickSearchPreOrder() {
             controller.data = response.data
             controller.pagination = response.pagination;
 
+            _loadSpanNumber();
             _loadPagination();
             _loadPreOrderTable();
 
@@ -487,6 +509,7 @@ function onClick_Pagination(page) {
             controller.data = response.data
             controller.pagination = response.pagination;
 
+            _loadSpanNumber();
             _loadPagination();
             _loadPreOrderTable();
 

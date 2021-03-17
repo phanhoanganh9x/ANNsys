@@ -246,7 +246,6 @@ namespace IM_PJ
                 ddlCreatedBy.Items.Clear();
                 ddlCreatedBy.Items.Insert(0, new ListItem(acc.Username, acc.Username));
 
-                
                 var staff = Request.QueryString["staff"];
 
                 if (String.IsNullOrEmpty(staff))
