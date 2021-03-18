@@ -9,7 +9,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="page-title left">Đơn đặt hàng <span id="spanNumberPreOrder"></span></h3>
+                    <h3 class="page-title left">Đơn đặt hàng <span id="spanNumber"></span></h3>
                 </div>
             </div>
             <div class="row">
@@ -30,8 +30,9 @@
                                 </div>
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlExcuteStatus" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Xử lý"></asp:ListItem>
+                                        <asp:ListItem Value="0|1" Text="Xử lý"></asp:ListItem>
                                         <asp:ListItem Value="0" Text="Chờ tiếp nhận" Selected="True"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Đang xử lý"></asp:ListItem>
                                         <asp:ListItem Value="3" Text="Đã hủy"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
