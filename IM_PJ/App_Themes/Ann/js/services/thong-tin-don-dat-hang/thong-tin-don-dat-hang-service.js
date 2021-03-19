@@ -44,4 +44,40 @@
             });
         });
     };
+
+    cancelPreOrder(preOrderId, staff) {
+        let url = this.api + '/pre-order/' + preOrderId + '/cancel?staff=' + staff;
+
+        return new Promise((reslove, reject) => {
+            $.ajax({
+                method: 'Post',
+                url: url,
+                contentType: 'application/json; charset=utf-8',
+                success: (response) => {
+                    reslove(response);
+                },
+                error: err => {
+                    reject(err);
+                }
+            });
+        });
+    };
+
+    recoveryPreOrder(preOrderId, staff) {
+        let url = this.api + '/pre-order/' + preOrderId + '/recovery?staff=' + staff;
+
+        return new Promise((reslove, reject) => {
+            $.ajax({
+                method: 'Post',
+                url: url,
+                contentType: 'application/json; charset=utf-8',
+                success: (response) => {
+                    reslove(response);
+                },
+                error: err => {
+                    reject(err);
+                }
+            });
+        });
+    };
 }

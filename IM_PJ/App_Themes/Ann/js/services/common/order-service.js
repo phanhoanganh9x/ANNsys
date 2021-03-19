@@ -8,6 +8,22 @@
         return this;
     }
 
+    generateOrderUrl(status, id, isPreOrder) {
+        if (isPreOrder == undefined)
+            isPreOrder = true;
+
+        if (status == 0)
+            return '/thong-tin-don-dat-hang?id=' + id;
+        else if (status == 1)
+            return '/thong-tin-don-hang?id=' + id;
+        else if (status == 2)
+            return '/thong-tin-don-hang?id=' + id;
+        else if (status == 3)
+            return (isPreOrder ? '/thong-tin-don-dat-hang?id=' : '/thong-tin-don-hang?id=') + id;
+        else
+            return ''
+    }
+
     generateOrderTypeHTML(orderType) {
         if (orderType == 1)
             return "<span class='bg-yellow'>Lẻ</span>";
