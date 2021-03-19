@@ -21,7 +21,7 @@
         .bootstrap-tagsinput {
             width: 100%;
         }
-        
+
         .bootstrap-tagsinput .label {
             font-size: 100%;
         }
@@ -90,7 +90,7 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
-                                    Chất liệu                                    
+                                    Chất liệu
                                 </div>
                                 <div class="row-right">
                                     <asp:Label ID="lbMaterials" runat="server" CssClass="form-control"></asp:Label>
@@ -106,7 +106,7 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
-                                    Trạng thái                                    
+                                    Trạng thái
                                 </div>
                                 <div class="row-right">
                                     <asp:DropDownList ID="ddlStockStatus" runat="server" CssClass="form-control" Enabled="False">
@@ -158,6 +158,22 @@
                                 </div>
                                 <div class="row-right">
                                     <input type="text" id="txtTag" data-role="tagsinput" />
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Youtube
+                                </div>
+                                <div class="row-right">
+                                    <div class="form-row">
+                                        <asp:Label ID="txtYoutubeUrl" runat="server"  CssClass="form-control" placeholder="Url Youtube của sản phẩm"></asp:Label>
+                                    </div>
+                                    <div class="form-row">
+                                        <asp:RadioButtonList ID="rdbActiveVideo" CssClass="RadioButtonList" runat="server" RepeatDirection="Horizontal">
+                                            <asp:ListItem Value="true" Enabled="false">Hiện</asp:ListItem>
+                                            <asp:ListItem Value="false" Enabled="false">Ẩn</asp:ListItem>
+                                        </asp:RadioButtonList>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -256,6 +272,7 @@
             </div>
         </div>
 
+        <asp:HiddenField ID="hdfProductId" runat="server" />
         <asp:HiddenField ID="hdfTempVariable" runat="server" />
         <asp:HiddenField ID="hdfVariableFull" runat="server" />
         <asp:HiddenField ID="hdfTable" runat="server" />
@@ -334,7 +351,60 @@
             let divBootstrapTagsinput = $('.bootstrap-tagsinput');
             divBootstrapTagsinput.find('span[data-role="remove"]').remove();
             divBootstrapTagsinput.find('input[type="text"]').remove();
+
+            _initVideo();
         });
+
+        function _initVideo() {
+            let productId = +$("#<%=hdfProductId.ClientID%>").val() || null;
+
+            if (productId) {
+                $.ajax({
+                    type: "GET",
+                    url: "/api/v1/product/" + productId + "/video",
+                    beforeSend: function () {
+                        HoldOn.open();
+                    },
+                    success: function (response, textStatus, xhr) {
+                        HoldOn.close();
+
+                        let $txtYoutubeUrl = $("#<%=txtYoutubeUrl.ClientID%>");
+                        let $rdbActiveVideo = $("#<%=rdbActiveVideo.ClientID%>");
+
+                        if (xhr.status == 200) {
+                            if (response) {
+                                url = "https://www.youtube.com/watch?v=" + response.videoId;
+                                $txtYoutubeUrl.text(url);
+
+                                if (response.isActive) {
+                                    $rdbActiveVideo.find("input[value='true']").prop("checked", true);
+                                    $rdbActiveVideo.find("input[value='false']").prop("checked", false);
+                                }
+                                else {
+                                    $rdbActiveVideo.find("input[value='true']").prop("checked", false);
+                                    $rdbActiveVideo.find("input[value='false']").prop("checked", true);
+                                }
+                            }
+                        }
+                        else if (xhr.status == 204) {
+                            $txtYoutubeUrl.text('');
+
+                            $rdbActiveVideo.find("input[value='true']").prop("checked", false);
+                            $rdbActiveVideo.find("input[value='false']").prop("checked", false);
+                        }
+                        else
+                        {
+                            swal("Thông báo", "Đã có lỗi trong quá trình lấy thông tin video", "error");
+                        }
+                    },
+                    error: function (xhr, textStatus, error) {
+                        HoldOn.close();
+
+                        swal("Thông báo", "Đã có lỗi trong quá trình lấy thông tin video", "error");
+                    }
+                });
+            }
+        }
 
         function deleteProduct(id)
         {

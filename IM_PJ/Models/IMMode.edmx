@@ -445,6 +445,19 @@
           <Property Name="ModifiedBy" Type="nvarchar(max)" />
           <Property Name="ModifiedDate" Type="datetime" />
         </EntityType>
+        <EntityType Name="PostVideo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="VideoId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PostId" Type="int" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+        </EntityType>
         <EntityType Name="PostWordpress">
           <Key>
             <PropertyRef Name="ID" />
@@ -524,6 +537,19 @@
           <Property Name="SKU" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="CreatedBy" Type="int" Nullable="false" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ProductVideo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="VideoId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ProductId" Type="int" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="ReceivedProductHistory">
           <Key>
@@ -770,6 +796,7 @@
           <Property Name="HideProduct" Type="int" />
           <Property Name="ViewAllOrders" Type="int" />
           <Property Name="ViewAllReports" Type="int" />
+          <Property Name="MinQuantityOfOrder" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="tbl_Customer">
           <Key>
@@ -1404,16 +1431,10 @@
           <Property Name="Height" Type="int" Nullable="false" />
           <Property Name="Width" Type="int" Nullable="false" />
           <Property Name="Expiration" Type="bigint" Nullable="false" />
-          <Property Name="IsProductVideo" Type="bit" Nullable="false" />
-          <Property Name="ProductId" Type="int" />
-          <Property Name="IsPostVideo" Type="bit" Nullable="false" />
-          <Property Name="PostId" Type="int" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
-          <Property Name="IsActive" Type="bit" Nullable="false" />
-          <Property Name="IsPublicVideo" Type="bit" StoreGeneratedPattern="Computed" Nullable="false" />
         </EntityType>
         <EntityType Name="ViewOrder">
           <Key>
@@ -1496,6 +1517,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PostVideo_PostPublic">
+          <End Role="PostPublic" Type="Self.PostPublic" Multiplicity="0..1" />
+          <End Role="PostVideo" Type="Self.PostVideo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PostPublic">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PostVideo">
+              <PropertyRef Name="PostId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PostVideo_Video">
+          <End Role="Video" Type="Self.Video" Multiplicity="1" />
+          <End Role="PostVideo" Type="Self.PostVideo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Video">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PostVideo">
+              <PropertyRef Name="VideoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_PreOrder_Coupon">
           <End Role="Coupon" Type="Self.Coupon" Multiplicity="0..1" />
           <End Role="PreOrder" Type="Self.PreOrder" Multiplicity="*" />
@@ -1553,6 +1598,30 @@
             </Principal>
             <Dependent Role="PreOrderDetail">
               <PropertyRef Name="VariationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductVideo_tbl_Product">
+          <End Role="tbl_Product" Type="Self.tbl_Product" Multiplicity="0..1" />
+          <End Role="ProductVideo" Type="Self.ProductVideo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Product">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ProductVideo">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductVideo_Video">
+          <End Role="Video" Type="Self.Video" Multiplicity="1" />
+          <End Role="ProductVideo" Type="Self.ProductVideo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Video">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductVideo">
+              <PropertyRef Name="VideoId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1620,10 +1689,12 @@
           <EntitySet Name="PostClone" EntityType="Self.PostClone" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PostPublic" EntityType="Self.PostPublic" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PostPublicImage" EntityType="Self.PostPublicImage" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PostVideo" EntityType="Self.PostVideo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PostWordpress" EntityType="Self.PostWordpress" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PreOrder" EntityType="Self.PreOrder" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PreOrderDetail" EntityType="Self.PreOrderDetail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductTag" EntityType="Self.ProductTag" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductVideo" EntityType="Self.ProductVideo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ReceivedProductHistory" EntityType="Self.ReceivedProductHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Register" EntityType="Self.Register" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RegisterProduct" EntityType="Self.RegisterProduct" Schema="dbo" store:Type="Tables" />
@@ -1687,6 +1758,14 @@
             <End Role="DeliverySaveAddress" EntitySet="DeliverySaveAddress" />
             <End Role="DeliveryAddress" EntitySet="DeliveryAddress" />
           </AssociationSet>
+          <AssociationSet Name="FK_PostVideo_PostPublic" Association="Self.FK_PostVideo_PostPublic">
+            <End Role="PostPublic" EntitySet="PostPublic" />
+            <End Role="PostVideo" EntitySet="PostVideo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PostVideo_Video" Association="Self.FK_PostVideo_Video">
+            <End Role="Video" EntitySet="Video" />
+            <End Role="PostVideo" EntitySet="PostVideo" />
+          </AssociationSet>
           <AssociationSet Name="FK_PreOrder_Coupon" Association="Self.FK_PreOrder_Coupon">
             <End Role="Coupon" EntitySet="Coupon" />
             <End Role="PreOrder" EntitySet="PreOrder" />
@@ -1706,6 +1785,14 @@
           <AssociationSet Name="FK_PreOrderDetail_ProductVariation" Association="Self.FK_PreOrderDetail_ProductVariation">
             <End Role="tbl_ProductVariable" EntitySet="tbl_ProductVariable" />
             <End Role="PreOrderDetail" EntitySet="PreOrderDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductVideo_tbl_Product" Association="Self.FK_ProductVideo_tbl_Product">
+            <End Role="tbl_Product" EntitySet="tbl_Product" />
+            <End Role="ProductVideo" EntitySet="ProductVideo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductVideo_Video" Association="Self.FK_ProductVideo_Video">
+            <End Role="Video" EntitySet="Video" />
+            <End Role="ProductVideo" EntitySet="ProductVideo" />
           </AssociationSet>
           <AssociationSet Name="FK_tbl_Order_DeliveryAddress" Association="Self.FK_tbl_Order_DeliveryAddress">
             <End Role="DeliveryAddress" EntitySet="DeliveryAddress" />
@@ -2124,6 +2211,7 @@
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="PostVideos" Relationship="inventorymanagementModel.FK_PostVideo_PostPublic" FromRole="PostPublic" ToRole="PostVideo" />
         </EntityType>
         <EntityType Name="PostPublicImage">
           <Key>
@@ -2412,6 +2500,7 @@
           <Property Name="HideProduct" Type="Int32" />
           <Property Name="ViewAllOrders" Type="Int32" />
           <Property Name="ViewAllReports" Type="Int32" />
+          <Property Name="MinQuantityOfOrder" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="tbl_Customer">
           <Key>
@@ -2739,6 +2828,7 @@
           <Property Name="SyncKiotViet" Type="Boolean" Nullable="false" />
           <Property Name="EnName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="PreOrderDetails" Relationship="inventorymanagementModel.FK_PreOrderDetail_Product" FromRole="tbl_Product" ToRole="PreOrderDetail" />
+          <NavigationProperty Name="ProductVideos" Relationship="inventorymanagementModel.FK_ProductVideo_tbl_Product" FromRole="tbl_Product" ToRole="ProductVideo" />
         </EntityType>
         <EntityType Name="tbl_ProductImage">
           <Key>
@@ -3138,7 +3228,6 @@
           <EntitySet Name="PreOrders" EntityType="inventorymanagementModel.PreOrder" />
           <EntitySet Name="PreOrderDetails" EntityType="inventorymanagementModel.PreOrderDetail" />
           <EntitySet Name="Tokens" EntityType="inventorymanagementModel.Token" />
-          <EntitySet Name="Videos" EntityType="inventorymanagementModel.Video" />
           <EntitySet Name="ViewOrders" EntityType="inventorymanagementModel.ViewOrder" />
           <AssociationSet Name="FK_PreOrder_Coupon" Association="inventorymanagementModel.FK_PreOrder_Coupon">
             <End Role="Coupon" EntitySet="Coupons" />
@@ -3183,6 +3272,25 @@
           <AssociationSet Name="FK_ViewOrder_tbl_Order" Association="inventorymanagementModel.FK_ViewOrder_tbl_Order">
             <End Role="tbl_Order" EntitySet="tbl_Order" />
             <End Role="ViewOrder" EntitySet="ViewOrders" />
+          </AssociationSet>
+          <EntitySet Name="PostVideos" EntityType="inventorymanagementModel.PostVideo" />
+          <EntitySet Name="ProductVideos" EntityType="inventorymanagementModel.ProductVideo" />
+          <AssociationSet Name="FK_PostVideo_PostPublic" Association="inventorymanagementModel.FK_PostVideo_PostPublic">
+            <End Role="PostPublic" EntitySet="PostPublics" />
+            <End Role="PostVideo" EntitySet="PostVideos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductVideo_tbl_Product" Association="inventorymanagementModel.FK_ProductVideo_tbl_Product">
+            <End Role="tbl_Product" EntitySet="tbl_Product" />
+            <End Role="ProductVideo" EntitySet="ProductVideos" />
+          </AssociationSet>
+          <EntitySet Name="Videos" EntityType="inventorymanagementModel.Video" />
+          <AssociationSet Name="FK_PostVideo_Video" Association="inventorymanagementModel.FK_PostVideo_Video">
+            <End Role="Video" EntitySet="Videos" />
+            <End Role="PostVideo" EntitySet="PostVideos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductVideo_Video" Association="inventorymanagementModel.FK_ProductVideo_Video">
+            <End Role="Video" EntitySet="Videos" />
+            <End Role="ProductVideo" EntitySet="ProductVideos" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="ExchangeRate">
@@ -3289,27 +3397,6 @@
           <Property Name="Device" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="LastDate" Type="DateTime" Nullable="false" Precision="3" />
-        </EntityType>
-        <EntityType Name="Video">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Thumbnail" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Url" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Height" Type="Int32" Nullable="false" />
-          <Property Name="Width" Type="Int32" Nullable="false" />
-          <Property Name="Expiration" Type="Int64" Nullable="false" />
-          <Property Name="IsProductVideo" Type="Boolean" Nullable="false" />
-          <Property Name="ProductId" Type="Int32" />
-          <Property Name="IsPostVideo" Type="Boolean" Nullable="false" />
-          <Property Name="PostId" Type="Int32" />
-          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <Property Name="IsPublicVideo" Type="Boolean" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="ViewOrder">
           <Key>
@@ -3458,6 +3545,101 @@
             </Principal>
             <Dependent Role="ViewOrder">
               <PropertyRef Name="OrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="PostVideo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="VideoId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PostId" Type="Int32" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="PostPublic" Relationship="inventorymanagementModel.FK_PostVideo_PostPublic" FromRole="PostVideo" ToRole="PostPublic" />
+          <NavigationProperty Name="Video" Relationship="inventorymanagementModel.FK_PostVideo_Video" FromRole="PostVideo" ToRole="Video" />
+        </EntityType>
+        <EntityType Name="ProductVideo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="VideoId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ProductId" Type="Int32" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="tbl_Product" Relationship="inventorymanagementModel.FK_ProductVideo_tbl_Product" FromRole="ProductVideo" ToRole="tbl_Product" />
+          <NavigationProperty Name="Video" Relationship="inventorymanagementModel.FK_ProductVideo_Video" FromRole="ProductVideo" ToRole="Video" />
+        </EntityType>
+        <Association Name="FK_PostVideo_PostPublic">
+          <End Type="inventorymanagementModel.PostPublic" Role="PostPublic" Multiplicity="0..1" />
+          <End Type="inventorymanagementModel.PostVideo" Role="PostVideo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PostPublic">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PostVideo">
+              <PropertyRef Name="PostId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductVideo_tbl_Product">
+          <End Type="inventorymanagementModel.tbl_Product" Role="tbl_Product" Multiplicity="0..1" />
+          <End Type="inventorymanagementModel.ProductVideo" Role="ProductVideo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Product">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ProductVideo">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Video">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Thumbnail" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Url" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Height" Type="Int32" Nullable="false" />
+          <Property Name="Width" Type="Int32" Nullable="false" />
+          <Property Name="Expiration" Type="Int64" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="PostVideos" Relationship="inventorymanagementModel.FK_PostVideo_Video" FromRole="Video" ToRole="PostVideo" />
+          <NavigationProperty Name="ProductVideos" Relationship="inventorymanagementModel.FK_ProductVideo_Video" FromRole="Video" ToRole="ProductVideo" />
+        </EntityType>
+        <Association Name="FK_PostVideo_Video">
+          <End Type="inventorymanagementModel.Video" Role="Video" Multiplicity="1" />
+          <End Type="inventorymanagementModel.PostVideo" Role="PostVideo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Video">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PostVideo">
+              <PropertyRef Name="VideoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductVideo_Video">
+          <End Type="inventorymanagementModel.Video" Role="Video" Multiplicity="1" />
+          <End Type="inventorymanagementModel.ProductVideo" Role="ProductVideo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Video">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductVideo">
+              <PropertyRef Name="VideoId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4174,6 +4356,7 @@
           <EntitySetMapping Name="tbl_Config">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Config">
               <MappingFragment StoreEntitySet="tbl_Config">
+                <ScalarProperty Name="MinQuantityOfOrder" ColumnName="MinQuantityOfOrder" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="NumOfDateToChangeProduct" ColumnName="NumOfDateToChangeProduct" />
                 <ScalarProperty Name="NumOfProductCanChange" ColumnName="NumOfProductCanChange" />
@@ -4963,28 +5146,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Videos">
-            <EntityTypeMapping TypeName="inventorymanagementModel.Video">
-              <MappingFragment StoreEntitySet="Video">
-                <ScalarProperty Name="IsPublicVideo" ColumnName="IsPublicVideo" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="PostId" ColumnName="PostId" />
-                <ScalarProperty Name="IsPostVideo" ColumnName="IsPostVideo" />
-                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
-                <ScalarProperty Name="IsProductVideo" ColumnName="IsProductVideo" />
-                <ScalarProperty Name="Expiration" ColumnName="Expiration" />
-                <ScalarProperty Name="Width" ColumnName="Width" />
-                <ScalarProperty Name="Height" ColumnName="Height" />
-                <ScalarProperty Name="Url" ColumnName="Url" />
-                <ScalarProperty Name="Thumbnail" ColumnName="Thumbnail" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="ViewOrders">
             <EntityTypeMapping TypeName="inventorymanagementModel.ViewOrder">
               <MappingFragment StoreEntitySet="ViewOrder">
@@ -4998,6 +5159,50 @@
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Phone" ColumnName="Phone" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PostVideos">
+            <EntityTypeMapping TypeName="inventorymanagementModel.PostVideo">
+              <MappingFragment StoreEntitySet="PostVideo">
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="PostId" ColumnName="PostId" />
+                <ScalarProperty Name="VideoId" ColumnName="VideoId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductVideos">
+            <EntityTypeMapping TypeName="inventorymanagementModel.ProductVideo">
+              <MappingFragment StoreEntitySet="ProductVideo">
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="VideoId" ColumnName="VideoId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Videos">
+            <EntityTypeMapping TypeName="inventorymanagementModel.Video">
+              <MappingFragment StoreEntitySet="Video">
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Expiration" ColumnName="Expiration" />
+                <ScalarProperty Name="Width" ColumnName="Width" />
+                <ScalarProperty Name="Height" ColumnName="Height" />
+                <ScalarProperty Name="Url" ColumnName="Url" />
+                <ScalarProperty Name="Thumbnail" ColumnName="Thumbnail" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
