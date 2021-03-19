@@ -1121,6 +1121,7 @@
           <Property Name="Old_Price" Type="float" />
           <Property Name="SyncKiotViet" Type="bit" Nullable="false" />
           <Property Name="EnName" Type="nvarchar(max)" />
+          <Property Name="ShortDescription" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="tbl_ProductImage">
           <Key>
@@ -2829,6 +2830,7 @@
           <Property Name="EnName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="PreOrderDetails" Relationship="inventorymanagementModel.FK_PreOrderDetail_Product" FromRole="tbl_Product" ToRole="PreOrderDetail" />
           <NavigationProperty Name="ProductVideos" Relationship="inventorymanagementModel.FK_ProductVideo_tbl_Product" FromRole="tbl_Product" ToRole="ProductVideo" />
+          <Property Name="ShortDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_ProductImage">
           <Key>
@@ -4676,6 +4678,7 @@
           <EntitySetMapping Name="tbl_Product">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Product">
               <MappingFragment StoreEntitySet="tbl_Product">
+                <ScalarProperty Name="ShortDescription" ColumnName="ShortDescription" />
                 <ScalarProperty Name="EnName" ColumnName="EnName" />
                 <ScalarProperty Name="SyncKiotViet" ColumnName="SyncKiotViet" />
                 <ScalarProperty Name="ID" ColumnName="ID" />

@@ -57,6 +57,7 @@ namespace IM_PJ.Models
         public Nullable<double> Old_Price { get; set; }
         public bool SyncKiotViet { get; set; }
         public string EnName { get; set; }
+        public string ShortDescription { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PreOrderDetail> PreOrderDetails { get; set; }

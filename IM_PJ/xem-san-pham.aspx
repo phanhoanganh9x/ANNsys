@@ -174,6 +174,18 @@
                                             <asp:ListItem Value="false" Enabled="false">Ẩn</asp:ListItem>
                                         </asp:RadioButtonList>
                                     </div>
+                                    <div id="divYoutube" class="form-row hidden">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Mô tả ngắn
+                                </div>
+                                <div class="row-right">
+                                    <div class="content-box">
+                                        <asp:Literal ID="pSummary" runat="server"></asp:Literal>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -370,6 +382,7 @@
 
                         let $txtYoutubeUrl = $("#<%=txtYoutubeUrl.ClientID%>");
                         let $rdbActiveVideo = $("#<%=rdbActiveVideo.ClientID%>");
+                        let $divYoutube = $("#divYoutube");
 
                         if (xhr.status == 200) {
                             if (response) {
@@ -384,6 +397,15 @@
                                     $rdbActiveVideo.find("input[value='true']").prop("checked", false);
                                     $rdbActiveVideo.find("input[value='false']").prop("checked", true);
                                 }
+
+                                let iframe = '';
+
+                                iframe += '<iframe ';
+                                iframe += '  src="' + response.url + '" ';
+                                iframe += '</iframe>';
+
+                                $divYoutube.removeClass('hidden');
+                                $divYoutube.html(iframe);
                             }
                         }
                         else if (xhr.status == 204) {
@@ -391,6 +413,8 @@
 
                             $rdbActiveVideo.find("input[value='true']").prop("checked", false);
                             $rdbActiveVideo.find("input[value='false']").prop("checked", false);
+                            $divYoutube.addClass('hidden');
+                            $divYoutube.html('');
                         }
                         else
                         {

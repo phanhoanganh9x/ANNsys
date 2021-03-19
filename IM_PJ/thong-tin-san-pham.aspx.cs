@@ -272,6 +272,8 @@ namespace IM_PJ
             }
             // Tags
             _loadTags(product.ID);
+            // Tóm tắt sản phẩm
+            pSummary.Content = product.ShortDescription;
             // Nội dung
             pContent.Content = product.ProductContent;
             // Thư viện ảnh
@@ -619,6 +621,22 @@ namespace IM_PJ
             {
                 updatedData.ProductImage = hdfProductImage.Value;
             }
+            // Cập nhật video
+            if (!String.IsNullOrEmpty(hdfNewVideoId.Value))
+            {
+                var productId = Convert.ToInt32(hdfProductId.Value);
+                var isActive = rdbActiveVideo.SelectedValue == "true";
+
+                _updateProductVideo(hdfOldVideoId.Value, hdfNewVideoId.Value, productId, isActive);
+            }
+            else if (!String.IsNullOrEmpty(hdfOldVideoId.Value))
+            {
+                var productId = Convert.ToInt32(hdfProductId.Value);
+
+                _deleteProductVideo(hdfOldVideoId.Value, productId);
+            }
+            // Cập nhật tóm tắt sản phẩm
+            updatedData.ShortDescription = pSummary.Content;
             // Nội dung
             updatedData.ProductContent = pContent.Content;
             // Ảnh sạch
@@ -1022,22 +1040,6 @@ namespace IM_PJ
             // Update Variable
             if (hdfsetStyle.Value == "2")
                 _updateProductVariation(acc);
-
-            // Cập nhật video
-
-            if (!String.IsNullOrEmpty(hdfNewVideoId.Value))
-            {
-                var productId = Convert.ToInt32(hdfProductId.Value);
-                var isActive = rdbActiveVideo.SelectedValue == "true";
-
-                _updateProductVideo(hdfOldVideoId.Value, hdfNewVideoId.Value, productId, isActive);
-            }
-            else if (!String.IsNullOrEmpty(hdfOldVideoId.Value))
-            {
-                var productId = Convert.ToInt32(hdfProductId.Value);
-
-                _deleteProductVideo(hdfOldVideoId.Value, productId);
-            }
 
             PJUtils.ShowMessageBoxSwAlert("Cập nhật sản phẩm thành công", "s", true, Page);
         }
