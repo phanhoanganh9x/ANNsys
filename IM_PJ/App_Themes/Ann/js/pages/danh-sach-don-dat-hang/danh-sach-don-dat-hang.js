@@ -307,6 +307,32 @@ function _loadPagination() {
     })
 }
 
+function _createBtnCancelPreOrder(preOrderId, staff) {
+    let html = "";
+
+    html += "<a href='javascript:;' ";
+    html += "   onclick='cancelPreOrder(" + preOrderId + ", `" + staff + "`)' ";
+    html += "   title='Hủy đơn đặt hàng' ";
+    html += "   class='btn primary-btn btn-red h45-btn btn-cancel-pre-order'>";
+    html += "    <i class='fa fa-remove' aria-hidden='true'></i>";
+    html += "</a>";
+
+    return html;
+}
+
+function _createBtnRecoveryPreOrder(preOrderId, staff) {
+    let html = "";
+
+    html += "<a href='javascript:;' ";
+    html += "   onclick='recoveryPreOrder(" + preOrderId + ", `" + staff + "`)' ";
+    html += "   title='Phục hồi đơn đặt hàng' ";
+    html += "   class='btn primary-btn h45-btn btn-recovery-pre-order'>"
+    html += "    <i class='fa fa-reply' aria-hidden='true'></i>";
+    html += "</a>";
+
+    return html;
+}
+
 function _createPreOrderTableHTML(data) {
     let html = "";
 
@@ -340,27 +366,27 @@ function _createPreOrderTableHTML(data) {
     }
     else {
         data.forEach(function (item) {
-            html += "    <tr>";
+            html += "    <tr data-pre-order-id='" + item.id +"'>";
             html += "        <td data-title='Mã đơn'>";
-            html += "            <a target='_blank' href='/thong-tin-don-dat-hang?id=" + item.id + "'>" + item.id + "</a>";
+            html += "            <a target='_blank' href='" + orderService.generateOrderUrl(item.status.key, item.id) + "'>" + item.id + "</a>";
             html += "        </td>";
             html += "        <td data-title='Loại đơn'>" + orderService.generateOrderTypeHTML(item.orderType.key) + "</td>";
 
             if (item.customer.nick)
             {
                 html += "        <td  class='customer-td' data-title='Khách hàng'>";
-                html += "            <a class='col-customer-name-link' target='_blank' href='/thong-tin-don-dat-hang?id=" + item.id + "'>" + strFormat.toTitleCase(item.customer.nick) + "</a>";
+                html += "            <a class='col-customer-name-link' target='_blank' href='" + orderService.generateOrderUrl(item.status.key, item.id) + "'>" + strFormat.toTitleCase(item.customer.nick) + "</a>";
                 html += "            <br><span class='name-bottom-nick'>(" + strFormat.toTitleCase(item.customer.name) + ")</span>";
                 html += "        </td>";
             }
             else {
                 html += "        <td  class='customer-td' data-title='Khách hàng'>";
-                html += "            <a class='col-customer-name-link' target='_blank' href='/thong-tin-don-dat-hang?id=" + item.id + "'>" + strFormat.toTitleCase(item.customer.name) + "</a>";
+                html += "            <a class='col-customer-name-link' target='_blank' href='" + orderService.generateOrderUrl(item.status.key, item.id) + "'>" + strFormat.toTitleCase(item.customer.name) + "</a>";
                 html += "        </td>";
             }
 
             html += "        <td data-title='Đã mua'>" + item.quantity + "</td>";
-            html += "        <td data-title='Xử lý'>" + orderService.generateOrderStatusHTML(item.status.key) + "</td>";
+            html += "        <td data-pre-order-status='" + item.status.key + "' data-title='Xử lý'>" + orderService.generateOrderStatusHTML(item.status.key) + "</td>";
             html += "        <td data-title='Thanh toán'>" + orderService.generatePaymentStatusHTML(item.paymentStatus.key) + "</td>";
             html += "        <td class='payment-type' data-title='Kiểu thanh toán'>" + orderService.generatePaymentMethodHTML(item.paymentMethod.key) + "</td>";
             html += "        <td class='shipping-type' data-title='Giao hàng'>" + orderService.generateDeliveryMethodHTML(item.deliveryMethod.key) + "</td>";
@@ -392,6 +418,13 @@ function _createPreOrderTableHTML(data) {
             html += "           <br>" + strFormat.datetimeToString(item.createdDate, 'HH:mm');
             html += "        </td>";
             html += "        <td class='update-button' data-title='Thao tác'>";
+            if (item.staff) {
+                if (item.status.key == 0)
+                    html += _createBtnCancelPreOrder(item.id, item.staff);
+                else if (item.status.key == 3)
+                    html += _createBtnRecoveryPreOrder(item.id, item.staff);
+            }
+
             if (item.customer.id)
             {
                 html += "           <a class='btn primary-btn btn-black h45-btn' ";
@@ -517,6 +550,132 @@ function onClick_Pagination(page) {
         })
         .catch(function (e) {
             HoldOn.close();
+        });
+}
+
+function cancelPreOrder(preOrderId, staff) {
+    let r = confirm('Thông báo\nBạn muốn hủy đơn đặt hàng #' + preOrderId);
+
+    if (!r)
+        return;
+
+    HoldOn.open();
+
+    controller.cancelPreOrder(preOrderId, staff)
+        .then(function (response) {
+            HoldOn.close();
+
+            if (response.success)
+                return swal({
+                    title: 'Thành Công',
+                    text: 'Đơn đặt hàng #' + preOrderId + ' đã được hủy.',
+                    type: 'success',
+                    showCloseButton: true,
+                    html: true,
+                }, function () {
+                    let trDOM = document.querySelector('tr[data-pre-order-id="' + preOrderId + '"]');
+                    let tdStatus = trDOM.querySelector('td[data-pre-order-status="0"]');
+                    let tdBtn = trDOM.querySelector('td[class="update-button"]');
+                    let btnCancelPreOrder = tdBtn.querySelector('.btn-cancel-pre-order');
+
+                    tdStatus.dataset.preOrderStatus = 3;
+                    tdStatus.innerHTML = orderService.generateOrderStatusHTML(3);
+                    btnCancelPreOrder.remove();
+                    tdBtn.innerHTML = _createBtnRecoveryPreOrder(preOrderId, staff) + tdBtn.innerHTML;
+                });
+            else {
+                return swal({
+                    title: 'Error',
+                    text: response.message,
+                    type: 'error',
+                    showCloseButton: true,
+                    html: true,
+                });
+            }
+        })
+        .catch(function (e) {
+            HoldOn.close();
+            console.log(e);
+
+            if (e.status == 400)
+                return swal({
+                    title: 'Error',
+                    text: e.reresponseJSON.message,
+                    type: 'error',
+                    showCloseButton: true,
+                    html: true,
+                });
+            else
+                return swal({
+                    title: 'Error',
+                    text: 'Đã có lỗi xảy ra trong quá trình hủy đơn hàng.',
+                    type: 'error',
+                    showCloseButton: true,
+                    html: true,
+                });
+        });
+}
+
+function recoveryPreOrder(preOrderId, staff) {
+    let r = confirm('Thông báo\nBạn muốn phục hồi đơn đặt hàng #' + preOrderId);
+
+    if (!r)
+        return;
+
+    HoldOn.open();
+
+    controller.recoveryPreOrder(preOrderId, staff)
+        .then(function (response) {
+            HoldOn.close();
+
+            if (response.success)
+                return swal({
+                    title: 'Thành Công',
+                    text: 'Đơn đặt hàng #' + preOrderId + ' đã được phục hồi.',
+                    type: 'success',
+                    showCloseButton: true,
+                    html: true,
+                }, function () {
+                    let trDOM = document.querySelector('tr[data-pre-order-id="' + preOrderId + '"]');
+                    let tdStatus = trDOM.querySelector('td[data-pre-order-status="3"]');
+                    let tdBtn = trDOM.querySelector('td[class="update-button"]');
+                    let btnRecoveryPreOrder = tdBtn.querySelector('.btn-recovery-pre-order');
+
+                    tdStatus.dataset.preOrderStatus = 0;
+                    tdStatus.innerHTML = orderService.generateOrderStatusHTML(0);
+                    btnRecoveryPreOrder.remove();
+                    tdBtn.innerHTML = _createBtnCancelPreOrder(preOrderId, staff) + tdBtn.innerHTML;
+                });
+            else {
+                return swal({
+                    title: 'Error',
+                    text: response.message,
+                    type: 'error',
+                    showCloseButton: true,
+                    html: true,
+                });
+            }
+        })
+        .catch(function (e) {
+            HoldOn.close();
+            console.log(e);
+
+            if (e.status == 400)
+                return swal({
+                    title: 'Error',
+                    text: e.reresponseJSON.message,
+                    type: 'error',
+                    showCloseButton: true,
+                    html: true,
+                });
+            else
+                return swal({
+                    title: 'Error',
+                    text: 'Đã có lỗi xảy ra trong quá trình phục đơn hàng.',
+                    type: 'error',
+                    showCloseButton: true,
+                    html: true,
+                });
         });
 }
 // #endregion
