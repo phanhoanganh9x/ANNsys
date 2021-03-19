@@ -547,8 +547,11 @@
     <Content Include="print-order-image-english.aspx" />
     <Content Include="SQL\01CREATE_TABLE_DeliveryAddress.sql" />
     <Content Include="SQL\01CREATE_TABLE_ExchangeRate.sql" />
+    <Content Include="SQL\01CREATE_TABLE_PostVideo.sql" />
     <Content Include="SQL\01CREATE_TABLE_PreOrder.sql" />
     <Content Include="SQL\01CREATE_TABLE_PreOrderDetail.sql" />
+    <Content Include="SQL\01CREATE_TABLE_ProductVideo.sql" />
+    <Content Include="SQL\01CREATE_TABLE_tbl_Product.sql" />
     <Content Include="SQL\01CREATE_TABLE_Token.sql" />
     <Content Include="SQL\01CREATE_TABLE_Video.sql" />
     <Content Include="SQL\01CREATE_TABLE_ViewOrder.sql" />
@@ -1127,6 +1130,9 @@
     <Compile Include="Models\PostPublicImage.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\PostVideo.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\PostWordpress.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
@@ -1137,6 +1143,9 @@
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductTag.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ProductVideo.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ReceivedProductHistory.cs">

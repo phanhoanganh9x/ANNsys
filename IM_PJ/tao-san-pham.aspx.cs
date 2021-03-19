@@ -101,6 +101,41 @@ namespace IM_PJ
             // Thực thi API
             httpWebRequest.GetResponse();
         }
+
+        /// <summary>
+        /// Khởi tao thông tin video sản phẩm
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <param name="videoId"></param>
+        /// <param name="productId"></param>
+        /// <param name="isActive"></param>
+        /// <returns></returns>
+        private void _createProductVideo(string videoId, int productId, bool isActive)
+        {
+            #region Khởi tạo API
+            var api = "http://ann-shop-dotnet-core.com/api/v1/product-video/create";
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(api);
+
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "POST";
+
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                string json = JsonConvert.SerializeObject(new
+                {
+                    videoId = videoId,
+                    productId = productId,
+                    isActive = isActive
+                });
+
+                streamWriter.Write(json);
+            }
+            #endregion
+
+            // Thực thi API
+            httpWebRequest.GetResponse();
+        }
         #endregion
 
         public void LoadPDW()
@@ -389,6 +424,7 @@ namespace IM_PJ
                         else
                         {
                             string ProductTitle = Regex.Replace(txtProductTitle.Text.Trim(), @"\s*\,\s*|\s*\;\s*", " - ");
+                            var shortDescription = pSummary.Content.ToString().Trim();
                             string ProductContent = pContent.Content.ToString();
 
                             double ProductStock = 0;
@@ -443,12 +479,14 @@ namespace IM_PJ
                                 Color = mainColor,
                                 PreOrder = preOrder,
                                 Old_Price = Old_Price,
-                                SyncKiotViet = syncKiotViet
+                                SyncKiotViet = syncKiotViet,
+                                ShortDescription = shortDescription
                             };
 
                             string kq = ProductController.Insert(prodNew);
                             prodNew.ID = Convert.ToInt32(kq);
 
+                            #region Tag
                             if (!String.IsNullOrEmpty(hdfTags.Value))
                             {
                                 var tagList = JsonConvert.DeserializeObject<List<TagModel>>(hdfTags.Value);
@@ -482,8 +520,9 @@ namespace IM_PJ
                                     ProductTagController.insert(productTag);
                                 }
                             }
+                            #endregion
 
-                            //Phần thêm ảnh đại diện sản phẩm
+                            #region Phần thêm ảnh đại diện sản phẩm
                             string path = "/uploads/images/";
                             string ProductImageClean = "";
                             string ProductImage = "";
@@ -546,10 +585,9 @@ namespace IM_PJ
                                 ProductImage = Path.GetFileName(Server.MapPath(avatarFile));
                                 ProductController.UpdateImage(kq.ToInt(), ProductImage);
                             }
+                            #endregion
 
-
-                            //Phần thêm ảnh đại diện sản phẩm sạch không có đóng dấu
-                            
+                            #region Phần thêm ảnh đại diện sản phẩm sạch không có đóng dấu
                             if (String.IsNullOrEmpty(ProductImageClean) && ProductThumbnailImageClean.UploadedFiles.Count > 0)
                             {
                                 var file = ProductThumbnailImageClean.UploadedFiles[0];
@@ -570,8 +608,9 @@ namespace IM_PJ
                                 ProductImageClean = Path.GetFileName(Server.MapPath(avatarClearPath));
                                 ProductController.UpdateImageClean(kq.ToInt(), ProductImageClean);
                             }
+                            #endregion
 
-                            //Phần thêm thư viện ảnh sản phẩm
+                            #region Phần thêm thư viện ảnh sản phẩm
                             string IMG = "";
                             if (hinhDaiDien.UploadedFiles.Count > 0)
                             {
@@ -610,11 +649,21 @@ namespace IM_PJ
                                     ProductImageController.Insert(kq.ToInt(), IMG, false, currentDate, username);
                                 }
                             }
-
+                            #endregion
 
                             if (kq.ToInt(0) > 0)
                             {
                                 int ProductID = kq.ToInt(0);
+
+                                #region Khởi tạo thông tin video sản phẩm
+                                if (!String.IsNullOrEmpty(hdfVideoId.Value))
+                                {
+                                    var videoId = hdfVideoId.Value;
+                                    var isActive = rdbActiveVideo.SelectedValue == "true";
+
+                                    _createProductVideo(videoId, ProductID, isActive);
+                                }
+                                #endregion
 
                                 string variable = hdfVariableListInsert.Value;
                                 if (!string.IsNullOrEmpty(variable))

@@ -66,6 +66,7 @@ namespace IM_PJ.Controllers
                 ui.PreOrder = product.PreOrder;
                 ui.Old_Price = product.Old_Price;
                 ui.SyncKiotViet = product.SyncKiotViet;
+                ui.ShortDescription = product.ShortDescription;
 
                 dbe.tbl_Product.Add(ui);
                 dbe.SaveChanges();
@@ -109,6 +110,7 @@ namespace IM_PJ.Controllers
                     ui.PreOrder = product.PreOrder;
                     ui.Old_Price = product.Old_Price;
                     ui.SyncKiotViet = product.SyncKiotViet;
+                    ui.ShortDescription = product.ShortDescription;
 
                     int kq = dbe.SaveChanges();
                     return kq.ToString();
@@ -624,7 +626,7 @@ namespace IM_PJ.Controllers
             reader.Close();
             return list.ToList();
         }
-        
+
         public static List<ProductSQL> GetProductAPI(int categoryID, int limit, int showHomePage, int minQuantity, int changeProductName)
         {
             var list = new List<ProductSQL>();
@@ -865,7 +867,7 @@ namespace IM_PJ.Controllers
                 }
                 else
                 {
-                    
+
                     // check show homepage
 
                     if (showHomePage == 1)
@@ -883,7 +885,7 @@ namespace IM_PJ.Controllers
                         }
                     }
                 }
-                
+
 
                 if (check == true)
                 {
@@ -907,7 +909,7 @@ namespace IM_PJ.Controllers
                                 entity.ProductTitle = reader["ProductTitle"].ToString() + ' ' + reader["ProductSKU"].ToString();
                             }
                         }
-                            
+
                     }
                     else
                     {
@@ -916,7 +918,7 @@ namespace IM_PJ.Controllers
                             entity.ProductTitle = reader["ProductTitle"].ToString();
                         }
                     }
-                    
+
                     // get SKU
                     if (reader["ProductSKU"] != DBNull.Value)
                         entity.ProductSKU = reader["ProductSKU"].ToString();
@@ -1018,7 +1020,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("FROM category;");
             }
             #endregion
-            
+
             #region Lấy id màu mà có chứa từ khóa
             // Filter by color product
             if (!String.IsNullOrEmpty(filter.color))
@@ -1861,7 +1863,7 @@ namespace IM_PJ.Controllers
                         entity.StockStatus = 3;
                     }
                 }
-                
+
 
                 entity.TotalProductInstockQuantityLeft = quantityLeft;
                 if (reader["Old_Price"] != DBNull.Value)
@@ -2118,7 +2120,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine(" END");
 
             var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
-            
+
 
             while (reader.Read())
             {

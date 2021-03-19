@@ -49,6 +49,8 @@ namespace IM_PJ
                 }
                 else
                 {
+                    hdfPostId.Value = id.ToString();
+
                     ltrThumbnail.Text = "<img src='" + p.Thumbnail + "'><a href='" + p.Thumbnail + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a>";
                     ltrSummary.Text = p.Summary;
                     if (p.Action == "show_web")

@@ -309,6 +309,8 @@
                                 <div class="panel-post">
                                     <div class="post-table-links clear">
                                         <a href="javascript:;" class="btn link-btn btn-create-order hidden" style="background-color: #f87703; float: right" title="Tạo đơn hàng" onclick="createOrder()"><i class="fa fa-floppy-o"></i> Tạo đơn hàng</a>
+                                        <a href="javascript:;" class="btn link-btn btn-cancel-preorder hidden" style="background-color: #ffad00; float: right" title="Hủy đơn hàng" onclick="cancelPreOrder()"><i class="fa fa-remove"></i> Hủy đơn hàng</a>
+                                        <a href="javascript:;" class="btn link-btn btn-recovery-preorder hidden" style="background-color: #f87703; float: right" title="Phục hồi đơn hàng" onclick="recoveryPreOrder()"><i class="fa fa-reply"></i> Phục hồi đơn hàng</a>
                                     </div>
                                 </div>
                             </div>
@@ -323,6 +325,8 @@
                             <div class="panel-post">
                                 <div class="post-table-links clear">
                                     <a href="javascript:;" class="btn link-btn btn-create-order hidden" style="background-color: #f87703; float: right" title="Tạo đơn hàng" onclick="createOrder()"><i class="fa fa-floppy-o"></i> Tạo đơn hàng</a>
+                                    <a href="javascript:;" class="btn link-btn btn-cancel-preorder hidden" style="background-color: #ffad00; float: right" title="Hủy đơn hàng" onclick="cancelPreOrder()"><i class="fa fa-remove"></i> Hủy đơn hàng</a>
+                                    <a href="javascript:;" class="btn link-btn btn-recovery-preorder hidden" style="background-color: #f87703; float: right" title="Phục hồi đơn hàng" onclick="recoveryPreOrder()"><i class="fa fa-reply"></i> Phục hồi đơn hàng</a>
                                 </div>
                             </div>
                         </div>

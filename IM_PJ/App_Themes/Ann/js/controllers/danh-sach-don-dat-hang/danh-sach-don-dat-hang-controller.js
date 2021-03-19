@@ -229,4 +229,12 @@
     getPreOrders() {
         return this._service.getPreOrders(this.filter, this.pagination)
     }
+
+    cancelPreOrder(preOrderId, staff) {
+        return this._service.cancelPreOrder(preOrderId, staff);
+    }
+
+    recoveryPreOrder(preOrderId, staff) {
+        return this._service.recoveryPreOrder(preOrderId, staff);
+    }
 };

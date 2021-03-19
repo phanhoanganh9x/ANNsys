@@ -14,6 +14,12 @@ namespace IM_PJ.Models
     
     public partial class PostPublic
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public PostPublic()
+        {
+            this.PostVideos = new HashSet<PostVideo>();
+        }
+    
         public int ID { get; set; }
         public int CategoryID { get; set; }
         public string CategorySlug { get; set; }
@@ -29,5 +35,8 @@ namespace IM_PJ.Models
         public string CreatedBy { get; set; }
         public System.DateTime ModifiedDate { get; set; }
         public string ModifiedBy { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PostVideo> PostVideos { get; set; }
     }
 }

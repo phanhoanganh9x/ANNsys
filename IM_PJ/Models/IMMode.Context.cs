@@ -105,7 +105,9 @@ namespace IM_PJ.Models
         public virtual DbSet<PreOrder> PreOrders { get; set; }
         public virtual DbSet<PreOrderDetail> PreOrderDetails { get; set; }
         public virtual DbSet<Token> Tokens { get; set; }
-        public virtual DbSet<Video> Videos { get; set; }
         public virtual DbSet<ViewOrder> ViewOrders { get; set; }
+        public virtual DbSet<PostVideo> PostVideos { get; set; }
+        public virtual DbSet<ProductVideo> ProductVideos { get; set; }
+        public virtual DbSet<Video> Videos { get; set; }
     }
 }

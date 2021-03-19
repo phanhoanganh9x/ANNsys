@@ -14,21 +14,27 @@ namespace IM_PJ.Models
     
     public partial class Video
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Video()
+        {
+            this.PostVideos = new HashSet<PostVideo>();
+            this.ProductVideos = new HashSet<ProductVideo>();
+        }
+    
         public string Id { get; set; }
         public string Thumbnail { get; set; }
         public string Url { get; set; }
         public int Height { get; set; }
         public int Width { get; set; }
         public long Expiration { get; set; }
-        public bool IsProductVideo { get; set; }
-        public Nullable<int> ProductId { get; set; }
-        public bool IsPostVideo { get; set; }
-        public Nullable<int> PostId { get; set; }
         public string CreatedBy { get; set; }
         public System.DateTime CreatedDate { get; set; }
         public string ModifiedBy { get; set; }
         public System.DateTime ModifiedDate { get; set; }
-        public bool IsActive { get; set; }
-        public bool IsPublicVideo { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PostVideo> PostVideos { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductVideo> ProductVideos { get; set; }
     }
 }

@@ -155,6 +155,7 @@ namespace IM_PJ
             // Cài đặt title page
             this.Title = String.Format("{0} - Sửa sản phẩm", product.ProductSKU.ToTitleCase());
             // Cài đặt dữ liệu cho page
+            hdfProductId.Value = productID.ToString();
             ViewState["ID"] = productID;
             ViewState["cateID"] = product.CategoryID;
             _productSKU = product.ProductSKU.ToUpper();
@@ -271,6 +272,8 @@ namespace IM_PJ
             }
             // Tags
             _loadTags(product.ID);
+            // Tóm tắt sản phẩm
+            pSummary.Content = product.ShortDescription;
             // Nội dung
             pContent.Content = product.ProductContent;
             // Thư viện ảnh
@@ -618,6 +621,22 @@ namespace IM_PJ
             {
                 updatedData.ProductImage = hdfProductImage.Value;
             }
+            // Cập nhật video
+            if (!String.IsNullOrEmpty(hdfNewVideoId.Value))
+            {
+                var productId = Convert.ToInt32(hdfProductId.Value);
+                var isActive = rdbActiveVideo.SelectedValue == "true";
+
+                _updateProductVideo(hdfOldVideoId.Value, hdfNewVideoId.Value, productId, isActive);
+            }
+            else if (!String.IsNullOrEmpty(hdfOldVideoId.Value))
+            {
+                var productId = Convert.ToInt32(hdfProductId.Value);
+
+                _deleteProductVideo(hdfOldVideoId.Value, productId);
+            }
+            // Cập nhật tóm tắt sản phẩm
+            updatedData.ShortDescription = pSummary.Content;
             // Nội dung
             updatedData.ProductContent = pContent.Content;
             // Ảnh sạch
@@ -882,6 +901,82 @@ namespace IM_PJ
                     CreatedBy: variationValue.createdBy
                 );
             }
+        }
+        #endregion
+
+        #region Cập nhật thông tin video
+        /// <summary>
+        /// Cập nhật thông tin video sản phẩm
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <param name="oldVideoId"></param>
+        /// <param name="newVideoId"></param>
+        /// <param name="productId"></param>
+        /// <param name="isActive"></param>
+        /// <returns></returns>
+        private void _updateProductVideo(string oldVideoId, string newVideoId, int productId, bool isActive)
+        {
+            #region Khởi tạo API
+            var api = "http://ann-shop-dotnet-core.com/api/v1/product-video/update";
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(api);
+
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "POST";
+
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                string json = JsonConvert.SerializeObject(new
+                {
+                    oldVideoId = oldVideoId,
+                    newVideoId = newVideoId,
+                    productId = productId,
+                    isActive = isActive
+                });
+
+                streamWriter.Write(json);
+            }
+            #endregion
+
+            // Thực thi API
+            httpWebRequest.GetResponse();
+        }
+        #endregion
+        #endregion
+
+        #region Delete
+        #region Cập nhật thông tin video
+        /// <summary>
+        /// Xóa thông tin video sản phẩm
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <param name="videoId"></param>
+        /// <param name="productId"></param>
+        /// <returns></returns>
+        private void _deleteProductVideo(string videoId, int productId)
+        {
+            #region Khởi tạo API
+            var api = "http://ann-shop-dotnet-core.com/api/v1/product-video/delete";
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(api);
+
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "POST";
+
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                string json = JsonConvert.SerializeObject(new
+                {
+                    videoId = videoId,
+                    productId = productId
+                });
+
+                streamWriter.Write(json);
+            }
+            #endregion
+
+            // Thực thi API
+            httpWebRequest.GetResponse();
         }
         #endregion
         #endregion
