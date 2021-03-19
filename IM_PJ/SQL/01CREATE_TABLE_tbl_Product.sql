@@ -1,0 +1,1 @@
+ALTER TABLE [dbo].[tbl_Product] ADD [ShortDescription] NVARCHAR(MAX) NULL

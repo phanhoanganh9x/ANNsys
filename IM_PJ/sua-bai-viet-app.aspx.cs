@@ -13,6 +13,8 @@ using System.Web.UI.WebControls;
 using Telerik.Web.UI;
 using System.IO;
 using System.Web.Script.Serialization;
+using System.Net;
+using Newtonsoft.Json;
 
 namespace IM_PJ
 {
@@ -45,6 +47,86 @@ namespace IM_PJ
                 }
             }
         }
+
+        #region Private
+        #region Update
+        #region Cập nhật thông tin video
+        /// <summary>
+        /// Cập nhật thông tin video bài post
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <param name="oldVideoId"></param>
+        /// <param name="newVideoId"></param>
+        /// <param name="postId"></param>
+        /// <param name="isActive"></param>
+        /// <returns></returns>
+        private void _updatePostVideo(string oldVideoId, string newVideoId, int postId, bool isActive)
+        {
+            #region Khởi tạo API
+            var api = "http://ann-shop-dotnet-core.com/api/v1/post-video/update";
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(api);
+
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "POST";
+
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                string json = JsonConvert.SerializeObject(new
+                {
+                    oldVideoId = oldVideoId,
+                    newVideoId = newVideoId,
+                    postId = postId,
+                    isActive = isActive
+                });
+
+                streamWriter.Write(json);
+            }
+            #endregion
+
+            // Thực thi API
+            httpWebRequest.GetResponse();
+        }
+        #endregion
+        #endregion
+
+        #region Delete
+        #region Cập nhật thông tin video
+        /// <summary>
+        /// Xóa thông tin video bài post
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <param name="videoId"></param>
+        /// <param name="postId"></param>
+        /// <returns></returns>
+        private void _deletePostVideo(string videoId, int postId)
+        {
+            #region Khởi tạo API
+            var api = "http://ann-shop-dotnet-core.com/api/v1/post-video/delete";
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(api);
+
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "POST";
+
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                string json = JsonConvert.SerializeObject(new
+                {
+                    videoId = videoId,
+                    postId = postId
+                });
+
+                streamWriter.Write(json);
+            }
+            #endregion
+
+            // Thực thi API
+            httpWebRequest.GetResponse();
+        }
+        #endregion
+        #endregion
+        #endregion
 
         public void LoadCategory()
         {
@@ -87,6 +169,7 @@ namespace IM_PJ
                 {
                     this.Title = String.Format("{0} - Sửa bài viết App", p.Title.ToTitleCase());
 
+                    hdfPostId.Value = id.ToString();
                     ViewState["ID"] = id;
                     ViewState["cateID"] = p.CategoryID;
                     hdfParentID.Value = p.CategoryID.ToString();
@@ -222,9 +305,24 @@ namespace IM_PJ
                 };
 
                 var updatePost = PostPublicController.Update(oldPostPublic);
-                
+
                 if (updatePost != null)
                 {
+                    // Cập nhật video
+                    if (!String.IsNullOrEmpty(hdfNewVideoId.Value))
+                    {
+                        var productId = Convert.ToInt32(hdfPostId.Value);
+                        var isActive = rdbActiveVideo.SelectedValue == "true";
+
+                        _updatePostVideo(hdfOldVideoId.Value, hdfNewVideoId.Value, productId, isActive);
+                    }
+                    else if (!String.IsNullOrEmpty(hdfOldVideoId.Value))
+                    {
+                        var productId = Convert.ToInt32(hdfPostId.Value);
+
+                        _deletePostVideo(hdfOldVideoId.Value, productId);
+                    }
+
                     // Cập nhật thư viện ảnh cho bài viết
                     if (UploadImages.HasFiles)
                     {

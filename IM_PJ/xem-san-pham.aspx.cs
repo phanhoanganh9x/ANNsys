@@ -155,6 +155,9 @@ namespace IM_PJ
                 {
                     categoryName = " " + category.CategoryName.ToUpper();
                 }
+
+                pSummary.Text = p.ShortDescription;
+
                 pContent.Text = "<p>Xưởng sỉ " + p.ProductTitle + "</p>";
                 pContent.Text += "<p>Chất liệu: " + p.Materials + "</p>";
                 pContent.Text += "<p>" + p.ProductContent + "</p>";

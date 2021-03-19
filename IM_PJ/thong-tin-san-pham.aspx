@@ -355,7 +355,7 @@
                                 </div>
                                 <div class="row-right">
                                     <div class="form-row">
-                                        <asp:TextBox ID="txtYoutubeUrl" runat="server"  CssClass="form-control" placeholder="Url Youtube của sản phẩm"></asp:TextBox>
+                                        <asp:TextBox ID="txtYoutubeUrl" runat="server"  CssClass="form-control" placeholder="Url Youtube của sản phẩm" onchange="onChangeYoutubeUrl($(this).val())"></asp:TextBox>
                                     </div>
                                     <div class="form-row">
                                         <asp:RadioButtonList ID="rdbActiveVideo" CssClass="RadioButtonList" runat="server" RepeatDirection="Horizontal">
@@ -363,6 +363,18 @@
                                             <asp:ListItem Value="false">Ẩn</asp:ListItem>
                                         </asp:RadioButtonList>
                                     </div>
+                                    <div id="divYoutube" class="form-row hidden">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Mô tả ngắn
+                                </div>
+                                <div class="row-right">
+                                    <telerik:RadEditor runat="server" ID="pSummary" Width="100%" Height="150px" ToolsFile="~/FilesResources/ToolContent.xml" Skin="Metro" DialogHandlerUrl="~/Telerik.Web.UI.DialogHandler.axd" AutoResizeHeight="False" EnableResize="False">
+                                        <ImageManager ViewPaths="~/uploads/images" UploadPaths="~/uploads/images" DeletePaths="~/uploads/images" />
+                                    </telerik:RadEditor>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -688,6 +700,7 @@
                             let $txtYoutubeUrl = $("#<%=txtYoutubeUrl.ClientID%>");
                             let $rdbActiveVideo = $("#<%=rdbActiveVideo.ClientID%>");
                             let $hdfOldVideoId = $("#<%=hdfOldVideoId.ClientID%>");
+                            let $divYoutube = $("#divYoutube");
 
                             if (xhr.status == 200) {
                                 if (response) {
@@ -704,6 +717,15 @@
                                         $rdbActiveVideo.find("input[value='true']").prop("checked", false);
                                         $rdbActiveVideo.find("input[value='false']").prop("checked", true);
                                     }
+
+                                    let iframe = '';
+
+                                    iframe += '<iframe ';
+                                    iframe += '  src="' + response.url + '" ';
+                                    iframe += '</iframe>';
+
+                                    $divYoutube.removeClass('hidden');
+                                    $divYoutube.html(iframe);
                                 }
                             }
                             else if (xhr.status == 204) {
@@ -712,6 +734,8 @@
 
                                 $rdbActiveVideo.find("input[value='true']").prop("checked", false);
                                 $rdbActiveVideo.find("input[value='false']").prop("checked", false);
+                                $divYoutube.addClass('hidden');
+                                $divYoutube.html('');
                             }
                             else
                             {
@@ -1647,6 +1671,27 @@
                 $("#<%=hdfNewVideoId.ClientID%>").val(videoId);
 
                 return videoId ? true : false;
+            }
+
+            function onChangeYoutubeUrl(url) {
+                let $divYoutube = $("#divYoutube");
+
+                if (!_checkYoutubeUrl(url)) {
+                    $divYoutube.addClass('hidden');
+                    $divYoutube.html('');
+
+                    return;
+                }
+
+                let videoId = $("#<%=hdfNewVideoId.ClientID%>").val();
+                let iframe = '';
+
+                iframe += '<iframe ';
+                iframe += '  src="https://www.youtube.com/embed/' + videoId + '" ';
+                iframe += '</iframe>';
+
+                $divYoutube.removeClass('hidden');
+                $divYoutube.html(iframe);
             }
         </script>
     </telerik:RadCodeBlock>

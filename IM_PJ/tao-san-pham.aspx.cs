@@ -424,6 +424,7 @@ namespace IM_PJ
                         else
                         {
                             string ProductTitle = Regex.Replace(txtProductTitle.Text.Trim(), @"\s*\,\s*|\s*\;\s*", " - ");
+                            var shortDescription = pSummary.Content.ToString().Trim();
                             string ProductContent = pContent.Content.ToString();
 
                             double ProductStock = 0;
@@ -478,7 +479,8 @@ namespace IM_PJ
                                 Color = mainColor,
                                 PreOrder = preOrder,
                                 Old_Price = Old_Price,
-                                SyncKiotViet = syncKiotViet
+                                SyncKiotViet = syncKiotViet,
+                                ShortDescription = shortDescription
                             };
 
                             string kq = ProductController.Insert(prodNew);
@@ -517,16 +519,6 @@ namespace IM_PJ
 
                                     ProductTagController.insert(productTag);
                                 }
-                            }
-                            #endregion
-
-                            #region Khởi tạo thông tin video sản phẩm
-                            if (!String.IsNullOrEmpty(hdfVideoId.Value))
-                            {
-                                var videoId = hdfVideoId.Value;
-                                var isActive = rdbActiveVideo.SelectedValue == "true";
-
-                                _createProductVideo(videoId, prodNew.ID, isActive);
                             }
                             #endregion
 
@@ -662,6 +654,16 @@ namespace IM_PJ
                             if (kq.ToInt(0) > 0)
                             {
                                 int ProductID = kq.ToInt(0);
+
+                                #region Khởi tạo thông tin video sản phẩm
+                                if (!String.IsNullOrEmpty(hdfVideoId.Value))
+                                {
+                                    var videoId = hdfVideoId.Value;
+                                    var isActive = rdbActiveVideo.SelectedValue == "true";
+
+                                    _createProductVideo(videoId, ProductID, isActive);
+                                }
+                                #endregion
 
                                 string variable = hdfVariableListInsert.Value;
                                 if (!string.IsNullOrEmpty(variable))
