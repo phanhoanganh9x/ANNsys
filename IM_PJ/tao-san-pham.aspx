@@ -380,6 +380,22 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
+                                    Youtube
+                                </div>
+                                <div class="row-right">
+                                    <div class="form-row">
+                                        <asp:TextBox ID="txtYoutubeUrl" runat="server"  CssClass="form-control" placeholder="Url Youtube của sản phẩm"></asp:TextBox>
+                                    </div>
+                                    <div class="form-row">
+                                        <asp:RadioButtonList ID="rdbActiveVideo" CssClass="RadioButtonList" runat="server" RepeatDirection="Horizontal">
+                                            <asp:ListItem Value="true" Selected="True">Hiện</asp:ListItem>
+                                            <asp:ListItem Value="false">Ẩn</asp:ListItem>
+                                        </asp:RadioButtonList>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
                                     Nội dung
                                 </div>
                                 <div class="row-right">
@@ -487,6 +503,7 @@
         <asp:HiddenField ID="hdfParentID" runat="server" />
         <asp:HiddenField ID="hdfUserRole" runat="server" />
         <asp:HiddenField ID="hdfTags" runat="server" />
+        <asp:HiddenField ID="hdfVideoId" runat="server" />
     </main>
 
     <telerik:RadCodeBlock runat="server">
@@ -1315,9 +1332,25 @@
             }
 
             function addNewProduct() {
+                // #region Kiểm tra url video
+                let $youtubeUrl = $("#<%=txtYoutubeUrl.ClientID%>");
+
+                if ($youtubeUrl.val()) {
+                     if (!_checkYoutubeUrl($youtubeUrl.val())) {
+                        $("#<%=txtYoutubeUrl.ClientID%>").focus();
+                        return swal("Thông báo", "Url Youtube không đúng<br> Url mẫu: https://www.youtube.com/watch?v={videoId}", "error");
+                    }
+                }
+                else {
+                    $("#<%=hdfVideoId.ClientID%>").val("");
+                }
+                // #endregion
+
                 var listv = "";
                 var a = $("#<%= hdfsetStyle.ClientID%>").val();
                 var parent = $("#<%=hdfParentID.ClientID%>").val();
+
+                // Trường hợp là biến thể
                 if (a == 2) {
                     var title = $("#<%=txtProductTitle.ClientID%>").val();
                     var SKU = $("#<%=txtProductSKU.ClientID%>").val();
@@ -1686,6 +1719,22 @@
                 });
             }
             // #endregion
+
+            function _checkYoutubeUrl(youtubeUrl) {
+                let expression = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gm;
+                let regex = new RegExp(expression);
+
+                if (!youtubeUrl.match(regex))
+                    return false;
+
+                let url = new URL(youtubeUrl);
+                let urlParams = new URLSearchParams(url.search);
+                let videoId = urlParams.get('v') || '';
+
+                $("#<%=hdfVideoId.ClientID%>").val(videoId);
+
+                return videoId ? true : false;
+            }
         </script>
     </telerik:RadCodeBlock>
 </asp:Content>

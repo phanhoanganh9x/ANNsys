@@ -153,7 +153,7 @@
                             <div class="form-row">
                                 <asp:Label ID="lblError" runat="server" Visible="false" ForeColor="Red"></asp:Label>
                             </div>
-                            
+
                             <div class="form-row">
                                 <div class="row-left">
                                     Tên sản phẩm
@@ -342,11 +342,27 @@
                                 <div class="row-right">
                                     <telerik:RadAsyncUpload Skin="Metro" runat="server" ID="uploadProductImage" ChunkSize="0"
                                         Localization-Select="Chọn ảnh" AllowedFileExtensions=".jpeg,.jpg,.png"
-                                        MultipleFileSelection="Disabled" OnClientFileSelected="OnClientFileSelected1" 
+                                        MultipleFileSelection="Disabled" OnClientFileSelected="OnClientFileSelected1"
                                         MaxFileInputsCount="1" OnClientFileUploadRemoved="OnClientFileUploadRemoved1">
                                     </telerik:RadAsyncUpload>
                                     <asp:Image runat="server" ID="imgProductImage" class="img-product" />
                                     <asp:HiddenField runat="server" ID="hdfProductImage" ClientIDMode="Static" />
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Youtube
+                                </div>
+                                <div class="row-right">
+                                    <div class="form-row">
+                                        <asp:TextBox ID="txtYoutubeUrl" runat="server"  CssClass="form-control" placeholder="Url Youtube của sản phẩm"></asp:TextBox>
+                                    </div>
+                                    <div class="form-row">
+                                        <asp:RadioButtonList ID="rdbActiveVideo" CssClass="RadioButtonList" runat="server" RepeatDirection="Horizontal">
+                                            <asp:ListItem Value="true" Selected="True">Hiện</asp:ListItem>
+                                            <asp:ListItem Value="false">Ẩn</asp:ListItem>
+                                        </asp:RadioButtonList>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -364,8 +380,8 @@
                                     Thư viện ảnh
                                 </div>
                                 <div class="row-right">
-                                    <asp:FileUpload runat="server" ID="uploadImageGallery" name="uploadImageGallery" onchange='showImageGallery(this,$(this));' AllowMultiple="true" />  
-                                    
+                                    <asp:FileUpload runat="server" ID="uploadImageGallery" name="uploadImageGallery" onchange='showImageGallery(this,$(this));' AllowMultiple="true" />
+
                                     <asp:Literal ID="imageGallery" runat="server"></asp:Literal>
                                 </div>
                             </div>
@@ -376,7 +392,7 @@
                                 <div class="row-right">
                                     <telerik:RadAsyncUpload Skin="Metro" runat="server" ID="uploadProductImageClean" ChunkSize="0"
                                         Localization-Select="Chọn ảnh" AllowedFileExtensions=".jpeg,.jpg,.png"
-                                        MultipleFileSelection="Disabled" OnClientFileSelected="OnClientFileSelected2" 
+                                        MultipleFileSelection="Disabled" OnClientFileSelected="OnClientFileSelected2"
                                         MaxFileInputsCount="1"  OnClientFileUploadRemoved="OnClientFileUploadRemoved2">
                                     </telerik:RadAsyncUpload>
                                     <asp:Image runat="server" ID="imgProductImageClean" Width="200" />
@@ -440,6 +456,9 @@
         <asp:HiddenField ID="hdfUserRole" runat="server" />
         <asp:HiddenField ID="hdfTags" runat="server" />
         <asp:FileUpload runat="server" ID="uploadVariationImage" name="uploadVariationImage" AllowMultiple="true" style="display: none"/>
+        <asp:HiddenField ID="hdfProductId" runat="server" />
+        <asp:HiddenField ID="hdfNewVideoId" runat="server" />
+        <asp:HiddenField ID="hdfOldVideoId" runat="server" />
     </main>
 
     <telerik:RadCodeBlock runat="server">
@@ -577,9 +596,11 @@
                 if (categoryID != "0") {
                     getTagList(categoryID);
                 }
-                
+
                 // Variation
                 _initVariation();
+
+                _initVideo();
             });
 
             function _initVariation() {
@@ -591,7 +612,7 @@
 
             function _initDropDownListVariableValue() {
                 let $ddlVariableValue = $("select[name='ddlVariableValue']");
-                
+
                 $.each($ddlVariableValue, function() {
                     $(this).attr("data-pre", $(this).val())
                 });
@@ -649,6 +670,61 @@
                     else
                         _checkVariationInputPrice($price);
                 });
+            }
+
+            function _initVideo() {
+                let productId = +$("#<%=hdfProductId.ClientID%>").val() || null;
+
+                if (productId) {
+                    $.ajax({
+                        type: "GET",
+                        url: "/api/v1/product/" + productId + "/video",
+                        beforeSend: function () {
+                            HoldOn.open();
+                        },
+                        success: function (response, textStatus, xhr) {
+                            HoldOn.close();
+
+                            let $txtYoutubeUrl = $("#<%=txtYoutubeUrl.ClientID%>");
+                            let $rdbActiveVideo = $("#<%=rdbActiveVideo.ClientID%>");
+                            let $hdfOldVideoId = $("#<%=hdfOldVideoId.ClientID%>");
+
+                            if (xhr.status == 200) {
+                                if (response) {
+                                    url = "https://www.youtube.com/watch?v=" + response.videoId;
+
+                                    $hdfOldVideoId.val(response.videoId);
+                                    $txtYoutubeUrl.val(url);
+
+                                    if (response.isActive) {
+                                        $rdbActiveVideo.find("input[value='true']").prop("checked", true);
+                                        $rdbActiveVideo.find("input[value='false']").prop("checked", false);
+                                    }
+                                    else {
+                                        $rdbActiveVideo.find("input[value='true']").prop("checked", false);
+                                        $rdbActiveVideo.find("input[value='false']").prop("checked", true);
+                                    }
+                                }
+                            }
+                            else if (xhr.status == 204) {
+                                $hdfOldVideoId.val('');
+                                $txtYoutubeUrl.text('');
+
+                                $rdbActiveVideo.find("input[value='true']").prop("checked", false);
+                                $rdbActiveVideo.find("input[value='false']").prop("checked", false);
+                            }
+                            else
+                            {
+                                swal("Thông báo", "Đã có lỗi trong quá trình lấy thông tin video", "error");
+                            }
+                        },
+                        error: function (xhr, textStatus, error) {
+                            HoldOn.close();
+
+                            swal("Thông báo", "Đã có lỗi trong quá trình lấy thông tin video", "error");
+                        }
+                    });
+                }
             }
 
             function _checkVariationInputPrice($price) {
@@ -820,13 +896,13 @@
                     fileSize = 0;
                     var allSizes = "";
                     for (i = 0; i < input.files.length ; i++) {
-                        
+
                         if (!input.files[i].type.match("image.*")) {
                             return;
                         }
 
                         storedFiles.push(input.files[i]);
-                        fileSize += input.files[i].size; // total files size  
+                        fileSize += input.files[i].size; // total files size
                         allSizes = allSizes + input.files[i].size + ",";
 
                         var reader = new FileReader();
@@ -876,7 +952,7 @@
                 let $variation = $self.closest(".item-var-gen");
                 let $title = $self.parent();
                 let $content = $variation.find(".variable-content");
-                
+
                 if ($content.is(":hidden")) {
                     $title.addClass("margin-bottom-15");
                     $content.show();
@@ -1076,8 +1152,21 @@
 
 
             function updateProduct() {
-                HoldOn.open();
+                // #region Kiểm tra url Video
+                let $youtubeUrl = $("#<%=txtYoutubeUrl.ClientID%>");
 
+                if ($youtubeUrl.val()) {
+                    if (!_checkYoutubeUrl($youtubeUrl.val())) {
+                        $("#<%=txtYoutubeUrl.ClientID%>").focus();
+                        return swal("Thông báo", "Url Youtube không đúng", "error");
+                    }
+                }
+                else {
+                    $("#<%=hdfNewVideoId.ClientID%>").val("");
+                }
+                // #endregion
+
+                HoldOn.open();
                 let productStyle = +$("#<%=hdfsetStyle.ClientID%>").val() || 1;
 
                 // Sản phẩm có biến thể
@@ -1241,7 +1330,7 @@
 
                 // Kiểm tra logic về giá
                 let giacu = $("#<%=pOld_Price.ClientID%>").val() || 0;
-                    
+
                 if (parseFloat(giasi) < parseFloat(giavon)) {
                     HoldOn.close();
                     $("#<%=pRegular_Price.ClientID%>").focus();
@@ -1499,7 +1588,7 @@
                                     confirmButtonText: "Đúng rồi",
                                     html: true
                                 }, function (isConfirm) {
-                                    let selected = isConfirm ? 'true' : 'false'; 
+                                    let selected = isConfirm ? 'true' : 'false';
                                     let $rdbSyncKiotViet = $("#<%=rdbSyncKiotViet.ClientID%>").find("input[type='radio']");
 
                                     $.each($rdbSyncKiotViet, function (index, element) {
@@ -1543,6 +1632,22 @@
                 });
             }
             // #endregion
+
+            function _checkYoutubeUrl(youtubeUrl) {
+                let expression = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gm;
+                let regex = new RegExp(expression);
+
+                if (!youtubeUrl.match(regex))
+                    return false;
+
+                let url = new URL(youtubeUrl);
+                let urlParams = new URLSearchParams(url.search);
+                let videoId = urlParams.get('v') || '';
+
+                $("#<%=hdfNewVideoId.ClientID%>").val(videoId);
+
+                return videoId ? true : false;
+            }
         </script>
     </telerik:RadCodeBlock>
 </asp:Content>
