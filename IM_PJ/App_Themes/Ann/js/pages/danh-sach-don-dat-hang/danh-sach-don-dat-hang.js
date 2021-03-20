@@ -366,97 +366,99 @@ function _createPreOrderTableHTML(data) {
     }
     else {
         data.forEach(function (item) {
-            html += "    <tr data-pre-order-id='" + item.id +"'>";
-            html += "        <td data-title='Mã đơn'>";
-            html += "            <a target='_blank' href='" + orderService.generateOrderUrl(item.status.key, item.id) + "'>" + item.id + "</a>";
-            html += "        </td>";
-            html += "        <td data-title='Loại đơn'>" + orderService.generateOrderTypeHTML(item.orderType.key) + "</td>";
-
-            if (item.customer.nick)
-            {
-                html += "        <td  class='customer-td' data-title='Khách hàng'>";
-                html += "            <a class='col-customer-name-link' target='_blank' href='" + orderService.generateOrderUrl(item.status.key, item.id) + "'>" + strFormat.toTitleCase(item.customer.nick) + "</a>";
-                html += "            <br><span class='name-bottom-nick'>(" + strFormat.toTitleCase(item.customer.name) + ")</span>";
+            try {
+                html += "    <tr data-pre-order-id='" + item.id + "'>";
+                html += "        <td data-title='Mã đơn'>";
+                html += "            <a target='_blank' href='" + orderService.generateOrderUrl(item.status.key, item.id) + "'>" + item.id + "</a>";
                 html += "        </td>";
-            }
-            else {
-                html += "        <td  class='customer-td' data-title='Khách hàng'>";
-                html += "            <a class='col-customer-name-link' target='_blank' href='" + orderService.generateOrderUrl(item.status.key, item.id) + "'>" + strFormat.toTitleCase(item.customer.name) + "</a>";
+                html += "        <td data-title='Loại đơn'>" + orderService.generateOrderTypeHTML(item.orderType.key) + "</td>";
+
+                if (item.customer.nick) {
+                    html += "        <td  class='customer-td' data-title='Khách hàng'>";
+                    html += "            <a class='col-customer-name-link' target='_blank' href='" + orderService.generateOrderUrl(item.status.key, item.id) + "'>" + strFormat.toTitleCase(item.customer.nick) + "</a>";
+                    html += "            <br><span class='name-bottom-nick'>(" + strFormat.toTitleCase(item.customer.name) + ")</span>";
+                    html += "        </td>";
+                }
+                else {
+                    html += "        <td  class='customer-td' data-title='Khách hàng'>";
+                    html += "            <a class='col-customer-name-link' target='_blank' href='" + orderService.generateOrderUrl(item.status.key, item.id) + "'>" + strFormat.toTitleCase(item.customer.name) + "</a>";
+                    html += "        </td>";
+                }
+
+                html += "        <td data-title='Đã mua'>" + item.quantity + "</td>";
+                html += "        <td data-pre-order-status='" + item.status.key + "' data-title='Xử lý'>" + orderService.generateOrderStatusHTML(item.status.key) + "</td>";
+                html += "        <td data-title='Thanh toán'>" + orderService.generatePaymentStatusHTML(item.paymentStatus.key) + "</td>";
+                html += "        <td class='payment-type' data-title='Kiểu thanh toán'>" + orderService.generatePaymentMethodHTML(item.paymentMethod.key) + "</td>";
+                html += "        <td class='shipping-type' data-title='Giao hàng'>" + orderService.generateDeliveryMethodHTML(item.deliveryMethod.key) + "</td>";
+
+                if (controller.role == 0) {
+                    html += "        <td data-title='Tổng tiền'>";
+                    html += "           <strong>" + UtilsService.formatThousands(item.price, ',') + "</strong>";
+                    if (item.profit > 0)
+                        html += "           <br/><span class='bg-green'><strong>" + UtilsService.formatThousands(item.profit, ',') + "</strong></span>";
+                    else
+                        html += "           <br/><span class='bg-red'><strong>" + UtilsService.formatThousands(item.profit, ',') + "</strong></span>";
+                    html += "        </td>";
+                }
+                else {
+                    html += "        <td data-title='Tổng tiền'>";
+                    html += "           <strong>" + UtilsService.formatThousands(item.price, ',') + "</strong>";
+                    html += "        </td>";
+                }
+
+                if (controller.role == 0)
+                    if (item.staff)
+                        html += "        <td data-title='Nhân viên'>" + item.staff + "</td>";
+                    else
+                        html += "        <td data-title='Nhân viên'></td>";
+
+                html += "        <td data-title='Ngày tạo'>";
+                html += "           <strong>" + strFormat.datetimeToString(item.createdDate, 'dd/MM') + "</strong>";
+                html += "           <br>" + strFormat.datetimeToString(item.createdDate, 'HH:mm');
                 html += "        </td>";
-            }
+                html += "        <td class='update-button' data-title='Thao tác'>";
+                if (item.staff) {
+                    if (item.status.key == 0)
+                        html += _createBtnCancelPreOrder(item.id, item.staff);
+                    else if (item.status.key == 3)
+                        html += _createBtnRecoveryPreOrder(item.id, item.staff);
+                }
 
-            html += "        <td data-title='Đã mua'>" + item.quantity + "</td>";
-            html += "        <td data-pre-order-status='" + item.status.key + "' data-title='Xử lý'>" + orderService.generateOrderStatusHTML(item.status.key) + "</td>";
-            html += "        <td data-title='Thanh toán'>" + orderService.generatePaymentStatusHTML(item.paymentStatus.key) + "</td>";
-            html += "        <td class='payment-type' data-title='Kiểu thanh toán'>" + orderService.generatePaymentMethodHTML(item.paymentMethod.key) + "</td>";
-            html += "        <td class='shipping-type' data-title='Giao hàng'>" + orderService.generateDeliveryMethodHTML(item.deliveryMethod.key) + "</td>";
-
-            if (controller.role == 0)
-            {
-                html += "        <td data-title='Tổng tiền'>";
-                html += "           <strong>" + UtilsService.formatThousands(item.price, ',') + "</strong>";
-                if (item.profit > 0)
-                    html += "           <br/><span class='bg-green'><strong>" + UtilsService.formatThousands(item.profit, ',') + "</strong></span>";
-                else
-                    html += "           <br/><span class='bg-red'><strong>" + UtilsService.formatThousands(profit, ',') + "</strong></span>";
+                if (item.customer.id) {
+                    html += "           <a class='btn primary-btn btn-black h45-btn' ";
+                    html += "              target='_blank' href='/chi-tiet-khach-hang?id=" + item.customer.id + "' ";
+                    html += "              title='Thông tin khách hàng " + strFormat.toTitleCase(item.customer.name) + "' ";
+                    html += "           >";
+                    html += "               <i class='fa fa-user-circle' aria-hidden='true'></i>";
+                    html += "           </a";
+                }
                 html += "        </td>";
-            }
-            else {
-                html += "        <td data-title='Tổng tiền'>";
-                html += "           <strong>" + UtilsService.formatThousands(item.price, ',') + "</strong>";
+                html += "    </tr>";
+
+                // thông tin thêm
+                html += "    <tr class='tr-more-info'>";
+                html += "        <td colspan='2'></td>";
+                html += "        <td colspan='11'>";
+
+                if (item.discount > 0) {
+                    html += "            <span class='order-info'>";
+                    html += "                <strong>Chiết khấu:</strong> -" + UtilsService.formatThousands(item.discount, ',');
+                    html += "            </span>";
+                }
+
+                if (item.coupon) {
+                    html += "            <span class='order-info'>";
+                    html += "                <strong>Coupon (" + item.coupon.code + "):</strong> -" + UtilsService.formatThousands(item.coupon.value, ',');
+                    html += "            </span>";
+                }
+
                 html += "        </td>";
+                html += "    </tr>";
+            } catch (e) {
+                console.log(item);
+                console.log(e);
+                return false;
             }
-
-            if (controller.role == 0)
-                if (item.staff)
-                    html += "        <td data-title='Nhân viên'>" + item.staff + "</td>";
-                else
-                    html += "        <td data-title='Nhân viên'></td>";
-
-            html += "        <td data-title='Ngày tạo'>";
-            html += "           <strong>" + strFormat.datetimeToString(item.createdDate, 'dd/MM') + "</strong>";
-            html += "           <br>" + strFormat.datetimeToString(item.createdDate, 'HH:mm');
-            html += "        </td>";
-            html += "        <td class='update-button' data-title='Thao tác'>";
-            if (item.staff) {
-                if (item.status.key == 0)
-                    html += _createBtnCancelPreOrder(item.id, item.staff);
-                else if (item.status.key == 3)
-                    html += _createBtnRecoveryPreOrder(item.id, item.staff);
-            }
-
-            if (item.customer.id)
-            {
-                html += "           <a class='btn primary-btn btn-black h45-btn' ";
-                html += "              target='_blank' href='/chi-tiet-khach-hang?id=" + item.customer.id + "' ";
-                html += "              title='Thông tin khách hàng " + strFormat.toTitleCase(item.customer.name) + "' ";
-                html += "           >";
-                html += "               <i class='fa fa-user-circle' aria-hidden='true'></i>";
-                html += "           </a";
-            }
-            html += "        </td>";
-            html += "    </tr>";
-
-            // thông tin thêm
-            html += "    <tr class='tr-more-info'>";
-            html += "        <td colspan='2'></td>";
-            html += "        <td colspan='11'>";
-
-            if (item.discount > 0)
-            {
-                html += "            <span class='order-info'>";
-                html += "                <strong>Chiết khấu:</strong> -" + UtilsService.formatThousands(item.discount, ',');
-                html += "            </span>";
-            }
-
-            if (item.coupon) {
-                html += "            <span class='order-info'>";
-                html += "                <strong>Coupon (" + item.coupon.code + "):</strong> -" + UtilsService.formatThousands(item.coupon.value, ',');
-                html += "            </span>";
-            }
-
-            html += "        </td>";
-            html += "    </tr>";
         });
     }
 
@@ -481,6 +483,7 @@ function onKeyUp_txtSearchOrder(event) {
 
 function onClickSearchPreOrder() {
     HoldOn.open();
+    controller.pagination.page = 1;
     _updateFilter();
     _replaceUrl();
     controller.getPreOrders()
