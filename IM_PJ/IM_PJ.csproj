@@ -551,6 +551,7 @@
     <Content Include="SQL\01CREATE_TABLE_PreOrder.sql" />
     <Content Include="SQL\01CREATE_TABLE_PreOrderDetail.sql" />
     <Content Include="SQL\01CREATE_TABLE_ProductVideo.sql" />
+    <Content Include="SQL\01CREATE_TABLE_tbl_Config.sql" />
     <Content Include="SQL\01CREATE_TABLE_tbl_Product.sql" />
     <Content Include="SQL\01CREATE_TABLE_Token.sql" />
     <Content Include="SQL\01CREATE_TABLE_Video.sql" />
