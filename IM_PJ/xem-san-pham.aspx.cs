@@ -122,6 +122,7 @@ namespace IM_PJ
             {
                 this.Title = String.Format("{0} - Sản phẩm", p.ProductSKU.ToTitleCase());
 
+                hdfProductId.Value = id.ToString();
                 ViewState["ID"] = id;
                 ViewState["cateID"] = p.CategoryID;
                 ViewState["SKU"] = p.ProductSKU;
@@ -154,6 +155,9 @@ namespace IM_PJ
                 {
                     categoryName = " " + category.CategoryName.ToUpper();
                 }
+
+                pSummary.Text = p.ShortDescription;
+
                 pContent.Text = "<p>Xưởng sỉ " + p.ProductTitle + "</p>";
                 pContent.Text += "<p>Chất liệu: " + p.Materials + "</p>";
                 pContent.Text += "<p>" + p.ProductContent + "</p>";
@@ -325,7 +329,7 @@ namespace IM_PJ
                     }
 
                     html.Append("   <td>" + string.Format("{0:N0}", item.RetailPrice) + "</td>");
-                    
+
                     if (stock2.HasValue)
                         html.Append(String.Format("   <td>{0:N0}<br>(Kho 2: {1:N0})</td>", PJUtils.TotalProductQuantityInstock(1, item.SKU), stock2.Value));
                     else
@@ -425,7 +429,7 @@ namespace IM_PJ
             {
                 startPageNumbersFrom = 1;
 
-                //As page numbers are starting at one, output an even number of pages.  
+                //As page numbers are starting at one, output an even number of pages.
                 stopPageNumbersAt = pagesToOutput;
             }
 
@@ -444,7 +448,7 @@ namespace IM_PJ
             }
             /******************End: Xác định startPageNumbersFrom & stopPageNumbersAt**********************/
 
-            //Các dấu ... chỉ những trang phía trước  
+            //Các dấu ... chỉ những trang phía trước
             if (startPageNumbersFrom > 1)
             {
                 output.Append("<li><a href=\"" + string.Format(GetPageUrl(currentPage - 1, pageUrl), startPageNumbersFrom - 1) + "\">&hellip;</a></li>");
@@ -463,7 +467,7 @@ namespace IM_PJ
                 }
             }
 
-            //Các dấu ... chỉ những trang tiếp theo  
+            //Các dấu ... chỉ những trang tiếp theo
             if (stopPageNumbersAt < pageCount)
             {
                 output.Append("<li><a href=\"" + string.Format(pageUrl, stopPageNumbersAt + 1) + "\">&hellip;</a></li>");

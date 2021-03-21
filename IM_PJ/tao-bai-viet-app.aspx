@@ -165,6 +165,24 @@
                                     <div class="hidPostPuclicThumbnail"></div>
                                 </div>
                             </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Youtube
+                                </div>
+                                <div class="row-right">
+                                    <div class="form-row">
+                                        <asp:TextBox ID="txtYoutubeUrl" runat="server"  CssClass="form-control" placeholder="Url Youtube của sản phẩm"  onchange="onChangeYoutubeUrl($(this).val())"></asp:TextBox>
+                                    </div>
+                                    <div class="form-row">
+                                        <asp:RadioButtonList ID="rdbActiveVideo" CssClass="RadioButtonList" runat="server" RepeatDirection="Horizontal">
+                                            <asp:ListItem Value="true" Selected="True">Hiện</asp:ListItem>
+                                            <asp:ListItem Value="false">Ẩn</asp:ListItem>
+                                        </asp:RadioButtonList>
+                                    </div>
+                                    <div id="divYoutube" class="form-row hidden">
+                                    </div>
+                                </div>
+                            </div>
                             <div class="input-summary form-row">
                                 <div class="row-left">
                                     Mô tả ngắn
@@ -273,6 +291,7 @@
         </div>
         <asp:HiddenField ID="hdfParentID" runat="server" />
         <asp:HiddenField ID="hdfPostVariants" runat="server" />
+        <asp:HiddenField ID="hdfVideoId" runat="server" />
     </main>
 
     <telerik:RadCodeBlock runat="server">
@@ -402,7 +421,7 @@
             function ChangeToSlug() {
                 var title, slug;
 
-                //Lấy text từ thẻ input title 
+                //Lấy text từ thẻ input title
                 title = $("#<%=txtTitle.ClientID%>").val();
 
                 //Đổi chữ hoa thành chữ thường
@@ -432,7 +451,7 @@
                 //In slug ra textbox có id “slug”
                 $("#<%=txtSlug.ClientID%>").val(slug);
             }
-            
+
             function redirectTo(ID) {
                 window.location.href = "/xem-bai-viet-app?id=" +ID;
             }
@@ -487,6 +506,20 @@
             }
 
             function addNewPost() {
+                // #region Kiểm tra url video
+                let $youtubeUrl = $("#<%=txtYoutubeUrl.ClientID%>");
+
+                if ($youtubeUrl.val()) {
+                     if (!_checkYoutubeUrl($youtubeUrl.val())) {
+                        $("#<%=txtYoutubeUrl.ClientID%>").focus();
+                        return swal("Thông báo", "Url Youtube không đúng<br> Url mẫu: https://www.youtube.com/watch?v={videoId}", "error");
+                    }
+                }
+                else {
+                    $("#<%=hdfVideoId.ClientID%>").val("");
+                }
+                // #endregion
+
                 var action = $("#<%=ddlAction.ClientID%>").val();
                 var category = $("#<%=hdfParentID.ClientID%>").val();
                 var title = $("#<%=txtTitle.ClientID%>").val();
@@ -519,6 +552,43 @@
                     HoldOn.open();
                     $("#<%=btnSubmit.ClientID%>").click();
                 }
+            }
+
+            function _checkYoutubeUrl(youtubeUrl) {
+                let expression = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gm;
+                let regex = new RegExp(expression);
+
+                if (!youtubeUrl.match(regex))
+                    return false;
+
+                let url = new URL(youtubeUrl);
+                let urlParams = new URLSearchParams(url.search);
+                let videoId = urlParams.get('v') || '';
+
+                $("#<%=hdfVideoId.ClientID%>").val(videoId);
+
+                return videoId ? true : false;
+            }
+
+            function onChangeYoutubeUrl(url) {
+                let $divYoutube = $("#divYoutube");
+
+                if (!_checkYoutubeUrl(url)) {
+                    $divYoutube.addClass('hidden');
+                    $divYoutube.html('');
+
+                    return;
+                }
+
+                let videoId = $("#<%=hdfVideoId.ClientID%>").val();
+                let iframe = '';
+
+                iframe += '<iframe ';
+                iframe += '  src="https://www.youtube.com/embed/' + videoId + '" ';
+                iframe += '</iframe>';
+
+                $divYoutube.removeClass('hidden');
+                $divYoutube.html(iframe);
             }
 
             function convertCase() {

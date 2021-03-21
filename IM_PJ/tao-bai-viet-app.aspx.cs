@@ -1,11 +1,13 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
 using MB.Extensions;
+using Newtonsoft.Json;
 using NHST.Bussiness;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Script.Serialization;
@@ -45,6 +47,43 @@ namespace IM_PJ
             }
         }
 
+        #region Private
+        /// <summary>
+        /// Khởi tao thông tin video bài post
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <param name="videoId"></param>
+        /// <param name="posttId"></param>
+        /// <param name="isActive"></param>
+        /// <returns></returns>
+        private void _createPostVideo(string videoId, int posttId, bool isActive)
+        {
+            #region Khởi tạo API
+            var api = "http://ann-shop-dotnet-core.com/api/v1/post-video/create";
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(api);
+
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "POST";
+
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                string json = JsonConvert.SerializeObject(new
+                {
+                    videoId = videoId,
+                    productId = posttId,
+                    isActive = isActive
+                });
+
+                streamWriter.Write(json);
+            }
+            #endregion
+
+            // Thực thi API
+            httpWebRequest.GetResponse();
+        }
+        #endregion
+
         public void LoadCategory()
         {
             var category = PostPublicCategoryController.GetAll();
@@ -60,7 +99,7 @@ namespace IM_PJ
         public void addItemCategory(int id, string h = "")
         {
             var categories = PostPublicCategoryController.GetByParentID("", id);
-            
+
             if (categories.Count > 0)
             {
                 foreach (var c in categories)
@@ -72,7 +111,7 @@ namespace IM_PJ
                 }
             }
         }
-        
+
         [WebMethod]
         public static string getParent(int parent)
         {
@@ -154,6 +193,16 @@ namespace IM_PJ
 
                 if (post != null)
                 {
+                    #region Khởi tạo thông tin video sản phẩm
+                    if (!String.IsNullOrEmpty(hdfVideoId.Value))
+                    {
+                        var videoId = hdfVideoId.Value;
+                        var isActive = rdbActiveVideo.SelectedValue == "true";
+
+                        _createPostVideo(videoId, post.ID, isActive);
+                    }
+                    #endregion
+
                     // Thêm ảnh đại diện
                     string path = "/uploads/images/posts/";
                     string Image = "";
@@ -223,9 +272,9 @@ namespace IM_PJ
                                     PostImageController.Insert(postSystem.ID, item.Image, postSystem.CreatedBy, DateTime.Now);
                                 }
                             }
-                            
+
                         }
-                        
+
                     }
 
 

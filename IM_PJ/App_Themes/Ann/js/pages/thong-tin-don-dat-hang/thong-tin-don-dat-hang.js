@@ -395,13 +395,29 @@ function _initPreOrderStatus(data) {
     }
 }
 
-function _initBtnCreateOrder(role) {
+function _initBtnSubmit(role, preOrderStatus) {
     let btnCreateOrderDOM = document.querySelectorAll('.btn-create-order');
+    let btnCancelPrOrderDOM = document.querySelectorAll('.btn-cancel-preorder');
+    let btnRecoveryPrOrderDOM = document.querySelectorAll('.btn-recovery-preorder');
 
     btnCreateOrderDOM.forEach(function (element) {
         if (role == 4)
             element.classList.add('hidden');
-        else
+        else if (preOrderStatus == 0)
+            element.classList.remove('hidden');
+    });
+
+    btnCancelPrOrderDOM.forEach(function (element) {
+        if (role == 4)
+            element.classList.add('hidden');
+        else if (preOrderStatus == 0)
+            element.classList.remove('hidden');
+    });
+
+    btnRecoveryPrOrderDOM.forEach(function (element) {
+        if (role == 4)
+            element.classList.add('hidden');
+        else if (preOrderStatus == 3)
             element.classList.remove('hidden');
     });
 }
@@ -451,7 +467,7 @@ function _initPage() {
                 _initBody(data.details);
             _initFooter(data);
             _initPreOrderStatus(data);
-            _initBtnCreateOrder(data.role);
+            _initBtnSubmit(data.role, data.status.key);
 
             HoldOn.close();
         })
@@ -531,6 +547,144 @@ function createOrder() {
                 return swal({
                     title: 'Error',
                     text: 'Đã có lỗi xảy ra trong quá trình lấy thông tin tạo đơn hàng.',
+                    type: 'error',
+                    showCloseButton: true,
+                    html: true,
+                });
+        });
+}
+
+function cancelPreOrder() {
+    let staffDOM = document.querySelector('[id$="_ddlCreatedBy"]');
+
+    if (!staffDOM.value) {
+        return swal({
+            title: 'Error',
+            text: 'Vui lòng chọn nhân viên xử lý đơn hàng',
+            type: 'error',
+            showCloseButton: true,
+            html: true,
+        });
+    }
+
+    let r = confirm('Thông báo\nBạn muốn hủy đơn đặt hàng #' + controller.preOrderId);
+
+    if (!r)
+        return;
+
+    HoldOn.open();
+
+    controller.cancelPreOrder(staffDOM.value)
+        .then(function (response) {
+            HoldOn.close();
+
+            if (response.success)
+                return swal({
+                    title: 'Thành Công',
+                    text: 'Đơn đặt hàng #' + controller.preOrderId + ' đã được hủy.',
+                    type: 'success',
+                    showCloseButton: true,
+                    html: true,
+                }, function () {
+                    window.location.reload();
+
+                    return false;
+                });
+            else {
+                return swal({
+                    title: 'Error',
+                    text: response.message,
+                    type: 'error',
+                    showCloseButton: true,
+                    html: true,
+                });
+            }
+        })
+        .catch(function (e) {
+            HoldOn.close();
+            console.log(e);
+
+            if (e.status == 400)
+                return swal({
+                    title: 'Error',
+                    text: e.reresponseJSON.message,
+                    type: 'error',
+                    showCloseButton: true,
+                    html: true,
+                });
+            else
+                return swal({
+                    title: 'Error',
+                    text: 'Đã có lỗi xảy ra trong quá trình hủy đơn hàng.',
+                    type: 'error',
+                    showCloseButton: true,
+                    html: true,
+                });
+        });
+}
+
+function recoveryPreOrder() {
+    let staffDOM = document.querySelector('[id$="_ddlCreatedBy"]');
+
+    if (!staffDOM.value) {
+        return swal({
+            title: 'Error',
+            text: 'Vui lòng chọn nhân viên xử lý đơn hàng',
+            type: 'error',
+            showCloseButton: true,
+            html: true,
+        });
+    }
+
+    let r = confirm('Thông báo\nBạn muốn phục hồi đơn đặt hàng #' + controller.preOrderId);
+
+    if (!r)
+        return;
+
+    HoldOn.open();
+
+    controller.recoveryPreOrder(staffDOM.value)
+        .then(function (response) {
+            HoldOn.close();
+
+            if (response.success)
+                return swal({
+                    title: 'Thành Công',
+                    text: 'Đơn đặt hàng #' + controller.preOrderId + ' đã được phục hồi.',
+                    type: 'success',
+                    showCloseButton: true,
+                    html: true,
+                }, function () {
+                    window.location.reload();
+
+                    return false;
+                });
+            else {
+                return swal({
+                    title: 'Error',
+                    text: response.message,
+                    type: 'error',
+                    showCloseButton: true,
+                    html: true,
+                });
+            }
+        })
+        .catch(function (e) {
+            HoldOn.close();
+            console.log(e);
+
+            if (e.status == 400)
+                return swal({
+                    title: 'Error',
+                    text: e.reresponseJSON.message,
+                    type: 'error',
+                    showCloseButton: true,
+                    html: true,
+                });
+            else
+                return swal({
+                    title: 'Error',
+                    text: 'Đã có lỗi xảy ra trong quá trình phục đơn hàng.',
                     type: 'error',
                     showCloseButton: true,
                     html: true,

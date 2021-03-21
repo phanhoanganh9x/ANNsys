@@ -100,6 +100,24 @@
                                     <div class="hidPostPublicThumbnail"></div>
                                 </div>
                             </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Youtube
+                                </div>
+                                <div class="row-right">
+                                    <div class="form-row">
+                                        <asp:TextBox ID="txtYoutubeUrl" runat="server"  CssClass="form-control" placeholder="Url Youtube của sản phẩm" onchange="onChangeYoutubeUrl($(this).val())"></asp:TextBox>
+                                    </div>
+                                    <div class="form-row">
+                                        <asp:RadioButtonList ID="rdbActiveVideo" CssClass="RadioButtonList" runat="server" RepeatDirection="Horizontal">
+                                            <asp:ListItem Value="true" Selected="True">Hiện</asp:ListItem>
+                                            <asp:ListItem Value="false">Ẩn</asp:ListItem>
+                                        </asp:RadioButtonList>
+                                    </div>
+                                    <div id="divYoutube" class="form-row hidden">
+                                    </div>
+                                </div>
+                            </div>
                             <div class="input-summary form-row">
                                 <div class="row-left">
                                     Mô tả ngắn
@@ -125,7 +143,7 @@
                                     Thư viện ảnh
                                 </div>
                                 <div class="row-right">
-                                    <asp:FileUpload runat="server" ID="UploadImages" name="uploadImageGallery" onchange='showImageGallery(this,$(this));' AllowMultiple="true" />  
+                                    <asp:FileUpload runat="server" ID="UploadImages" name="uploadImageGallery" onchange='showImageGallery(this,$(this));' AllowMultiple="true" />
                                     <asp:Literal ID="imageGallery" runat="server"></asp:Literal>
                                 </div>
                             </div>
@@ -165,6 +183,9 @@
         <asp:HiddenField ID="hdfAction" runat="server" />
         <asp:HiddenField ID="hdfParentID" runat="server" />
         <asp:HiddenField ID="hdfPostVariants" runat="server" />
+        <asp:HiddenField ID="hdfPostId" runat="server" />
+        <asp:HiddenField ID="hdfNewVideoId" runat="server" />
+        <asp:HiddenField ID="hdfOldVideoId" runat="server" />
     </main>
 
     <telerik:RadCodeBlock runat="server">
@@ -226,7 +247,76 @@
                     $(".input-slug").removeClass("hide");
                     $(".input-link").addClass("hide");
                 }
+
+                _initVideo();
             });
+
+            function _initVideo() {
+                let postId = +$("#<%=hdfPostId.ClientID%>").val() || null;
+
+                if (postId) {
+                    $.ajax({
+                        type: "GET",
+                        url: "/api/v1/post/" + postId + "/video",
+                        beforeSend: function () {
+                            HoldOn.open();
+                        },
+                        success: function (response, textStatus, xhr) {
+                            HoldOn.close();
+
+                            let $txtYoutubeUrl = $("#<%=txtYoutubeUrl.ClientID%>");
+                            let $rdbActiveVideo = $("#<%=rdbActiveVideo.ClientID%>");
+                            let $hdfOldVideoId = $("#<%=hdfOldVideoId.ClientID%>");
+                            let $divYoutube = $("#divYoutube");
+
+                            if (xhr.status == 200) {
+                                if (response) {
+                                    url = "https://www.youtube.com/watch?v=" + response.videoId;
+
+                                    $hdfOldVideoId.val(response.videoId);
+                                    $txtYoutubeUrl.val(url);
+
+                                    if (response.isActive) {
+                                        $rdbActiveVideo.find("input[value='true']").prop("checked", true);
+                                        $rdbActiveVideo.find("input[value='false']").prop("checked", false);
+                                    }
+                                    else {
+                                        $rdbActiveVideo.find("input[value='true']").prop("checked", false);
+                                        $rdbActiveVideo.find("input[value='false']").prop("checked", true);
+                                    }
+
+                                    let iframe = '';
+
+                                    iframe += '<iframe ';
+                                    iframe += '  src="' + response.url + '" ';
+                                    iframe += '</iframe>';
+
+                                    $divYoutube.removeClass('hidden');
+                                    $divYoutube.html(iframe);
+                                }
+                            }
+                            else if (xhr.status == 204) {
+                                $hdfOldVideoId.val('');
+                                $txtYoutubeUrl.text('');
+
+                                $rdbActiveVideo.find("input[value='true']").prop("checked", false);
+                                $rdbActiveVideo.find("input[value='false']").prop("checked", false);
+                                $divYoutube.addClass('hidden');
+                                $divYoutube.html('');
+                            }
+                            else
+                            {
+                                swal("Thông báo", "Đã có lỗi trong quá trình lấy thông tin video", "error");
+                            }
+                        },
+                        error: function (xhr, textStatus, error) {
+                            HoldOn.close();
+
+                            swal("Thông báo", "Đã có lỗi trong quá trình lấy thông tin video", "error");
+                        }
+                    });
+                }
+            }
 
             function handlePostVariant() {
                 let checkVariant = $(".post-variant-list").html();
@@ -280,7 +370,7 @@
             function ChangeToSlug() {
                 var title, slug;
 
-                //Lấy text từ thẻ input title 
+                //Lấy text từ thẻ input title
                 title = $("#<%=txtTitle.ClientID%>").val();
 
                 //Đổi chữ hoa thành chữ thường
@@ -352,13 +442,13 @@
                     fileSize = 0;
                     var allSizes = "";
                     for (i = 0; i < input.files.length ; i++) {
-                        
+
                         if (!input.files[i].type.match("image.*")) {
                             return;
                         }
 
                         storedFiles.push(input.files[i]);
-                        fileSize += input.files[i].size; // total files size  
+                        fileSize += input.files[i].size; // total files size
                         allSizes = allSizes + input.files[i].size + ",";
 
                         var reader = new FileReader();
@@ -375,6 +465,20 @@
             }
 
             function updatePost() {
+                // #region Kiểm tra url Video
+                let $youtubeUrl = $("#<%=txtYoutubeUrl.ClientID%>");
+
+                if ($youtubeUrl.val()) {
+                    if (!_checkYoutubeUrl($youtubeUrl.val())) {
+                        $("#<%=txtYoutubeUrl.ClientID%>").focus();
+                        return swal("Thông báo", "Url Youtube không đúng", "error");
+                    }
+                }
+                else {
+                    $("#<%=hdfNewVideoId.ClientID%>").val("");
+                }
+                // #endregion
+
                 var action = $("#<%=ddlAction.ClientID%>").val();
                 var category = $("#<%=ddlCategory.ClientID%>").val();
                 var title = $("#<%=txtTitle.ClientID%>").val();
@@ -443,6 +547,42 @@
                     $("#<%= PostPublicThumbnail.ClientID %>").show();
             }
 
+            function _checkYoutubeUrl(youtubeUrl) {
+                let expression = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gm;
+                let regex = new RegExp(expression);
+
+                if (!youtubeUrl.match(regex))
+                    return false;
+
+                let url = new URL(youtubeUrl);
+                let urlParams = new URLSearchParams(url.search);
+                let videoId = urlParams.get('v') || '';
+
+                $("#<%=hdfNewVideoId.ClientID%>").val(videoId);
+
+                return videoId ? true : false;
+            }
+
+            function onChangeYoutubeUrl(url) {
+                let $divYoutube = $("#divYoutube");
+
+                if (!_checkYoutubeUrl(url)) {
+                    $divYoutube.addClass('hidden');
+                    $divYoutube.html('');
+
+                    return;
+                }
+
+                let videoId = $("#<%=hdfNewVideoId.ClientID%>").val();
+                let iframe = '';
+
+                iframe += '<iframe ';
+                iframe += '  src="https://www.youtube.com/embed/' + videoId + '" ';
+                iframe += '</iframe>';
+
+                $divYoutube.removeClass('hidden');
+                $divYoutube.html(iframe);
+            }
         </script>
     </telerik:RadCodeBlock>
 </asp:Content>

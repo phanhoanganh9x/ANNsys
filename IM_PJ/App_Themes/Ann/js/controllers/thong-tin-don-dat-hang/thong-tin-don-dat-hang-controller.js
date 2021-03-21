@@ -42,4 +42,12 @@
     createOrder(staff) {
         return this._service.createOrder(this.preOrderId, staff);
     }
+
+    cancelPreOrder(staff) {
+        return this._service.cancelPreOrder(this.preOrderId, staff);
+    }
+
+    recoveryPreOrder(staff) {
+        return this._service.recoveryPreOrder(this.preOrderId, staff);
+    }
 }

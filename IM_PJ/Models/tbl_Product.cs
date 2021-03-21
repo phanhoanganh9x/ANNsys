@@ -18,6 +18,7 @@ namespace IM_PJ.Models
         public tbl_Product()
         {
             this.PreOrderDetails = new HashSet<PreOrderDetail>();
+            this.ProductVideos = new HashSet<ProductVideo>();
         }
     
         public int ID { get; set; }
@@ -56,8 +57,11 @@ namespace IM_PJ.Models
         public Nullable<double> Old_Price { get; set; }
         public bool SyncKiotViet { get; set; }
         public string EnName { get; set; }
+        public string ShortDescription { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PreOrderDetail> PreOrderDetails { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductVideo> ProductVideos { get; set; }
     }
 }

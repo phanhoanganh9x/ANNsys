@@ -68,10 +68,22 @@
             // Order Status
             if (key == "orderStatus")
             {
-                if (value == "0")
-                    this.filter.orderStatus = 0
-                else if (value)
-                    this.filter.orderStatus = +value || null;
+                if (value == "0") {
+                    this.filter.searchOrder = 1;
+                    this.filter.orderStatus = 0;
+                }
+                else if (value == "1") {
+                    this.filter.searchOrder = 2;
+                    this.filter.orderStatus = 1;
+                }
+                else if (value == "3") {
+                    this.filter.searchOrder = 1;
+                    this.filter.orderStatus = 3;
+                }
+                else {
+                    this.filter.searchOrder = 0;
+                    this.filter.orderStatus = "0|1";
+                }
             }
 
             // Search
@@ -216,5 +228,13 @@
 
     getPreOrders() {
         return this._service.getPreOrders(this.filter, this.pagination)
+    }
+
+    cancelPreOrder(preOrderId, staff) {
+        return this._service.cancelPreOrder(preOrderId, staff);
+    }
+
+    recoveryPreOrder(preOrderId, staff) {
+        return this._service.recoveryPreOrder(preOrderId, staff);
     }
 };

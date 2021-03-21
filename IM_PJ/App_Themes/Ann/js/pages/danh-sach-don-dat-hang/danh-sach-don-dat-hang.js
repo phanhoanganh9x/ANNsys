@@ -11,6 +11,16 @@ document.addEventListener("DOMContentLoaded", function (event) {
 });
 
 // #region Private
+function _loadSpanNumber(quantity) {
+    let spanNumber = "";
+    let spanNumberDOM = document.querySelector("[id$='spanNumber']");
+
+    if (controller.pagination.totalCount > 0)
+        spanNumber = "(" + UtilsService.formatThousands(controller.pagination.totalCount, ',') + ")";
+
+    spanNumberDOM.innerHTML = spanNumber;
+}
+
 function _initRole() {
     let roleDOM = document.querySelector("[id$='_hdRole']");
 
@@ -50,6 +60,7 @@ function _initPreOrderTable() {
             controller.data = response.data
             controller.pagination = response.pagination;
 
+            _loadSpanNumber();
             _loadPagination();
             _loadPreOrderTable();
 
@@ -88,12 +99,22 @@ function _updateFilter() {
     // Order Status
     let orderStatusDOM = document.querySelector("[id$='_ddlExcuteStatus']");
 
-    if (orderStatusDOM.value == "0")
+    if (orderStatusDOM.value == "0") {
+        controller.filter.searchOrder = 1;
         controller.filter.orderStatus = 0;
-    else if (orderStatusDOM.value)
-        controller.filter.orderStatus = +orderStatusDOM.value || null;
-    else
-        controller.filter.orderStatus = null;
+    }
+    else if (orderStatusDOM.value == "1") {
+        controller.filter.searchOrder = 2;
+        controller.filter.orderStatus = 1;
+    }
+    else if (orderStatusDOM.value == "3") {
+        controller.filter.searchOrder = 1;
+        controller.filter.orderStatus = 3;
+    }
+    else {
+        controller.filter.searchOrder = 0;
+        controller.filter.orderStatus = "0|1";
+    }
 
     // Search
     let searchDOM = document.querySelector("[id$='_txtSearchOrder']");
@@ -286,6 +307,32 @@ function _loadPagination() {
     })
 }
 
+function _createBtnCancelPreOrder(preOrderId, staff) {
+    let html = "";
+
+    html += "<a href='javascript:;' ";
+    html += "   onclick='cancelPreOrder(" + preOrderId + ", `" + staff + "`)' ";
+    html += "   title='Hủy đơn đặt hàng' ";
+    html += "   class='btn primary-btn btn-red h45-btn btn-cancel-pre-order'>";
+    html += "    <i class='fa fa-remove' aria-hidden='true'></i>";
+    html += "</a>";
+
+    return html;
+}
+
+function _createBtnRecoveryPreOrder(preOrderId, staff) {
+    let html = "";
+
+    html += "<a href='javascript:;' ";
+    html += "   onclick='recoveryPreOrder(" + preOrderId + ", `" + staff + "`)' ";
+    html += "   title='Phục hồi đơn đặt hàng' ";
+    html += "   class='btn primary-btn h45-btn btn-recovery-pre-order'>"
+    html += "    <i class='fa fa-reply' aria-hidden='true'></i>";
+    html += "</a>";
+
+    return html;
+}
+
 function _createPreOrderTableHTML(data) {
     let html = "";
 
@@ -319,90 +366,99 @@ function _createPreOrderTableHTML(data) {
     }
     else {
         data.forEach(function (item) {
-            html += "    <tr>";
-            html += "        <td data-title='Mã đơn'>";
-            html += "            <a target='_blank' href='/thong-tin-don-dat-hang?id=" + item.id + "'>" + item.id + "</a>";
-            html += "        </td>";
-            html += "        <td data-title='Loại đơn'>" + orderService.generateOrderTypeHTML(item.orderType.key) + "</td>";
-
-            if (item.customer.nick)
-            {
-                html += "        <td  class='customer-td' data-title='Khách hàng'>";
-                html += "            <a class='col-customer-name-link' target='_blank' href='/thong-tin-don-dat-hang?id=" + item.id + "'>" + strFormat.toTitleCase(item.customer.nick) + "</a>";
-                html += "            <br><span class='name-bottom-nick'>(" + strFormat.toTitleCase(item.customer.name) + ")</span>";
+            try {
+                html += "    <tr data-pre-order-id='" + item.id + "'>";
+                html += "        <td data-title='Mã đơn'>";
+                html += "            <a target='_blank' href='" + orderService.generateOrderUrl(item.status.key, item.id) + "'>" + item.id + "</a>";
                 html += "        </td>";
-            }
-            else {
-                html += "        <td  class='customer-td' data-title='Khách hàng'>";
-                html += "            <a class='col-customer-name-link' target='_blank' href='/thong-tin-don-dat-hang?id=" + item.id + "'>" + strFormat.toTitleCase(item.customer.name) + "</a>";
+                html += "        <td data-title='Loại đơn'>" + orderService.generateOrderTypeHTML(item.orderType.key) + "</td>";
+
+                if (item.customer.nick) {
+                    html += "        <td  class='customer-td' data-title='Khách hàng'>";
+                    html += "            <a class='col-customer-name-link' target='_blank' href='" + orderService.generateOrderUrl(item.status.key, item.id) + "'>" + strFormat.toTitleCase(item.customer.nick) + "</a>";
+                    html += "            <br><span class='name-bottom-nick'>(" + strFormat.toTitleCase(item.customer.name) + ")</span>";
+                    html += "        </td>";
+                }
+                else {
+                    html += "        <td  class='customer-td' data-title='Khách hàng'>";
+                    html += "            <a class='col-customer-name-link' target='_blank' href='" + orderService.generateOrderUrl(item.status.key, item.id) + "'>" + strFormat.toTitleCase(item.customer.name) + "</a>";
+                    html += "        </td>";
+                }
+
+                html += "        <td data-title='Đã mua'>" + item.quantity + "</td>";
+                html += "        <td data-pre-order-status='" + item.status.key + "' data-title='Xử lý'>" + orderService.generateOrderStatusHTML(item.status.key) + "</td>";
+                html += "        <td data-title='Thanh toán'>" + orderService.generatePaymentStatusHTML(item.paymentStatus.key) + "</td>";
+                html += "        <td class='payment-type' data-title='Kiểu thanh toán'>" + orderService.generatePaymentMethodHTML(item.paymentMethod.key) + "</td>";
+                html += "        <td class='shipping-type' data-title='Giao hàng'>" + orderService.generateDeliveryMethodHTML(item.deliveryMethod.key) + "</td>";
+
+                if (controller.role == 0) {
+                    html += "        <td data-title='Tổng tiền'>";
+                    html += "           <strong>" + UtilsService.formatThousands(item.price, ',') + "</strong>";
+                    if (item.profit > 0)
+                        html += "           <br/><span class='bg-green'><strong>" + UtilsService.formatThousands(item.profit, ',') + "</strong></span>";
+                    else
+                        html += "           <br/><span class='bg-red'><strong>" + UtilsService.formatThousands(item.profit, ',') + "</strong></span>";
+                    html += "        </td>";
+                }
+                else {
+                    html += "        <td data-title='Tổng tiền'>";
+                    html += "           <strong>" + UtilsService.formatThousands(item.price, ',') + "</strong>";
+                    html += "        </td>";
+                }
+
+                if (controller.role == 0)
+                    if (item.staff)
+                        html += "        <td data-title='Nhân viên'>" + item.staff + "</td>";
+                    else
+                        html += "        <td data-title='Nhân viên'></td>";
+
+                html += "        <td data-title='Ngày tạo'>";
+                html += "           <strong>" + strFormat.datetimeToString(item.createdDate, 'dd/MM') + "</strong>";
+                html += "           <br>" + strFormat.datetimeToString(item.createdDate, 'HH:mm');
                 html += "        </td>";
-            }
+                html += "        <td class='update-button' data-title='Thao tác'>";
+                if (item.staff) {
+                    if (item.status.key == 0)
+                        html += _createBtnCancelPreOrder(item.id, item.staff);
+                    else if (item.status.key == 3)
+                        html += _createBtnRecoveryPreOrder(item.id, item.staff);
+                }
 
-            html += "        <td data-title='Đã mua'>" + item.quantity + "</td>";
-            html += "        <td data-title='Xử lý'>" + orderService.generateOrderStatusHTML(item.status.key) + "</td>";
-            html += "        <td data-title='Thanh toán'>" + orderService.generatePaymentStatusHTML(item.paymentStatus.key) + "</td>";
-            html += "        <td class='payment-type' data-title='Kiểu thanh toán'>" + orderService.generatePaymentMethodHTML(item.paymentMethod.key) + "</td>";
-            html += "        <td class='shipping-type' data-title='Giao hàng'>" + orderService.generateDeliveryMethodHTML(item.deliveryMethod.key) + "</td>";
-
-            if (controller.role == 0)
-            {
-                html += "        <td data-title='Tổng tiền'>";
-                html += "           <strong>" + UtilsService.formatThousands(item.price, ',') + "</strong>";
-                if (item.profit > 0)
-                    html += "           <br/><span class='bg-green'><strong>" + UtilsService.formatThousands(item.profit, ',') + "</strong></span>";
-                else
-                    html += "           <br/><span class='bg-red'><strong>" + UtilsService.formatThousands(profit, ',') + "</strong></span>";
+                if (item.customer.id) {
+                    html += "           <a class='btn primary-btn btn-black h45-btn' ";
+                    html += "              target='_blank' href='/chi-tiet-khach-hang?id=" + item.customer.id + "' ";
+                    html += "              title='Thông tin khách hàng " + strFormat.toTitleCase(item.customer.name) + "' ";
+                    html += "           >";
+                    html += "               <i class='fa fa-user-circle' aria-hidden='true'></i>";
+                    html += "           </a";
+                }
                 html += "        </td>";
-            }
-            else {
-                html += "        <td data-title='Tổng tiền'>";
-                html += "           <strong>" + UtilsService.formatThousands(item.price, ',') + "</strong>";
+                html += "    </tr>";
+
+                // thông tin thêm
+                html += "    <tr class='tr-more-info'>";
+                html += "        <td colspan='2'></td>";
+                html += "        <td colspan='11'>";
+
+                if (item.discount > 0) {
+                    html += "            <span class='order-info'>";
+                    html += "                <strong>Chiết khấu:</strong> -" + UtilsService.formatThousands(item.discount, ',');
+                    html += "            </span>";
+                }
+
+                if (item.coupon) {
+                    html += "            <span class='order-info'>";
+                    html += "                <strong>Coupon (" + item.coupon.code + "):</strong> -" + UtilsService.formatThousands(item.coupon.value, ',');
+                    html += "            </span>";
+                }
+
                 html += "        </td>";
+                html += "    </tr>";
+            } catch (e) {
+                console.log(item);
+                console.log(e);
+                return false;
             }
-
-            if (controller.role == 0)
-                if (item.staff)
-                    html += "        <td data-title='Nhân viên'>" + item.staff + "</td>";
-                else
-                    html += "        <td data-title='Nhân viên'></td>";
-
-            html += "        <td data-title='Ngày tạo'>";
-            html += "           <strong>" + strFormat.datetimeToString(item.createdDate, 'dd/MM') + "</strong>";
-            html += "           <br>" + strFormat.datetimeToString(item.createdDate, 'HH:mm');
-            html += "        </td>";
-            html += "        <td class='update-button' data-title='Thao tác'>";
-            if (item.customer.id)
-            {
-                html += "           <a class='btn primary-btn btn-black h45-btn' ";
-                html += "              target='_blank' href='/chi-tiet-khach-hang?id=" + item.customer.id + "' ";
-                html += "              title='Thông tin khách hàng " + strFormat.toTitleCase(item.customer.name) + "' ";
-                html += "           >";
-                html += "               <i class='fa fa-user-circle' aria-hidden='true'></i>";
-                html += "           </a";
-            }
-            html += "        </td>";
-            html += "    </tr>";
-
-            // thông tin thêm
-            html += "    <tr class='tr-more-info'>";
-            html += "        <td colspan='2'></td>";
-            html += "        <td colspan='11'>";
-
-            if (item.discount > 0)
-            {
-                html += "            <span class='order-info'>";
-                html += "                <strong>Chiết khấu:</strong> -" + UtilsService.formatThousands(item.discount, ',');
-                html += "            </span>";
-            }
-
-            if (item.coupon) {
-                html += "            <span class='order-info'>";
-                html += "                <strong>Coupon (" + item.coupon.code + "):</strong> -" + UtilsService.formatThousands(item.coupon.value, ',');
-                html += "            </span>";
-            }
-
-            html += "        </td>";
-            html += "    </tr>";
         });
     }
 
@@ -427,6 +483,7 @@ function onKeyUp_txtSearchOrder(event) {
 
 function onClickSearchPreOrder() {
     HoldOn.open();
+    controller.pagination.page = 1;
     _updateFilter();
     _replaceUrl();
     controller.getPreOrders()
@@ -434,6 +491,7 @@ function onClickSearchPreOrder() {
             controller.data = response.data
             controller.pagination = response.pagination;
 
+            _loadSpanNumber();
             _loadPagination();
             _loadPreOrderTable();
 
@@ -487,6 +545,7 @@ function onClick_Pagination(page) {
             controller.data = response.data
             controller.pagination = response.pagination;
 
+            _loadSpanNumber();
             _loadPagination();
             _loadPreOrderTable();
 
@@ -494,6 +553,132 @@ function onClick_Pagination(page) {
         })
         .catch(function (e) {
             HoldOn.close();
+        });
+}
+
+function cancelPreOrder(preOrderId, staff) {
+    let r = confirm('Thông báo\nBạn muốn hủy đơn đặt hàng #' + preOrderId);
+
+    if (!r)
+        return;
+
+    HoldOn.open();
+
+    controller.cancelPreOrder(preOrderId, staff)
+        .then(function (response) {
+            HoldOn.close();
+
+            if (response.success)
+                return swal({
+                    title: 'Thành Công',
+                    text: 'Đơn đặt hàng #' + preOrderId + ' đã được hủy.',
+                    type: 'success',
+                    showCloseButton: true,
+                    html: true,
+                }, function () {
+                    let trDOM = document.querySelector('tr[data-pre-order-id="' + preOrderId + '"]');
+                    let tdStatus = trDOM.querySelector('td[data-pre-order-status="0"]');
+                    let tdBtn = trDOM.querySelector('td[class="update-button"]');
+                    let btnCancelPreOrder = tdBtn.querySelector('.btn-cancel-pre-order');
+
+                    tdStatus.dataset.preOrderStatus = 3;
+                    tdStatus.innerHTML = orderService.generateOrderStatusHTML(3);
+                    btnCancelPreOrder.remove();
+                    tdBtn.innerHTML = _createBtnRecoveryPreOrder(preOrderId, staff) + tdBtn.innerHTML;
+                });
+            else {
+                return swal({
+                    title: 'Error',
+                    text: response.message,
+                    type: 'error',
+                    showCloseButton: true,
+                    html: true,
+                });
+            }
+        })
+        .catch(function (e) {
+            HoldOn.close();
+            console.log(e);
+
+            if (e.status == 400)
+                return swal({
+                    title: 'Error',
+                    text: e.reresponseJSON.message,
+                    type: 'error',
+                    showCloseButton: true,
+                    html: true,
+                });
+            else
+                return swal({
+                    title: 'Error',
+                    text: 'Đã có lỗi xảy ra trong quá trình hủy đơn hàng.',
+                    type: 'error',
+                    showCloseButton: true,
+                    html: true,
+                });
+        });
+}
+
+function recoveryPreOrder(preOrderId, staff) {
+    let r = confirm('Thông báo\nBạn muốn phục hồi đơn đặt hàng #' + preOrderId);
+
+    if (!r)
+        return;
+
+    HoldOn.open();
+
+    controller.recoveryPreOrder(preOrderId, staff)
+        .then(function (response) {
+            HoldOn.close();
+
+            if (response.success)
+                return swal({
+                    title: 'Thành Công',
+                    text: 'Đơn đặt hàng #' + preOrderId + ' đã được phục hồi.',
+                    type: 'success',
+                    showCloseButton: true,
+                    html: true,
+                }, function () {
+                    let trDOM = document.querySelector('tr[data-pre-order-id="' + preOrderId + '"]');
+                    let tdStatus = trDOM.querySelector('td[data-pre-order-status="3"]');
+                    let tdBtn = trDOM.querySelector('td[class="update-button"]');
+                    let btnRecoveryPreOrder = tdBtn.querySelector('.btn-recovery-pre-order');
+
+                    tdStatus.dataset.preOrderStatus = 0;
+                    tdStatus.innerHTML = orderService.generateOrderStatusHTML(0);
+                    btnRecoveryPreOrder.remove();
+                    tdBtn.innerHTML = _createBtnCancelPreOrder(preOrderId, staff) + tdBtn.innerHTML;
+                });
+            else {
+                return swal({
+                    title: 'Error',
+                    text: response.message,
+                    type: 'error',
+                    showCloseButton: true,
+                    html: true,
+                });
+            }
+        })
+        .catch(function (e) {
+            HoldOn.close();
+            console.log(e);
+
+            if (e.status == 400)
+                return swal({
+                    title: 'Error',
+                    text: e.reresponseJSON.message,
+                    type: 'error',
+                    showCloseButton: true,
+                    html: true,
+                });
+            else
+                return swal({
+                    title: 'Error',
+                    text: 'Đã có lỗi xảy ra trong quá trình phục đơn hàng.',
+                    type: 'error',
+                    showCloseButton: true,
+                    html: true,
+                });
         });
 }
 // #endregion
