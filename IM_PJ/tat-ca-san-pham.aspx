@@ -3,15 +3,6 @@
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style>
-        .table > tbody > tr > td {
-    padding: 5px 5px;
-}
-        .account-note {
-            display: none;
-        }
-        .all-product-table .image-column {
-            width: 2.2%;
-        }
         .select2-container .select2-selection--single {
             height: 45px;
         }
@@ -139,8 +130,10 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="page-title left">Tồn kho sản phẩm</h3>
-                    
+                    <h3 class="page-title left">Sản phẩm <span>(<asp:Literal ID="ltrNumberOfProduct" runat="server" EnableViewState="false"></asp:Literal>) <a href="/sp" target="_blank" class="btn primary-btn h45-btn">Mở rộng</a></span></h3>
+                    <div class="right above-list-btn">
+                        <asp:Literal ID="ltrAddProduct" runat="server"></asp:Literal>
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -152,8 +145,7 @@
                                     <asp:TextBox ID="txtSearchProduct" runat="server" CssClass="form-control" placeholder="Tìm sản phẩm" autocomplete="off"></asp:TextBox>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-control"></asp:DropDownList>
-                                    <asp:DropDownList ID="ddlWebPublish" runat="server" CssClass="form-control hide">
+                                    <asp:DropDownList ID="ddlWebPublish" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="" Text="Trang xem hàng"></asp:ListItem>
                                         <asp:ListItem Value="0" Text="Đang ẩn"></asp:ListItem>
                                         <asp:ListItem Value="1" Text="Đang hiện"></asp:ListItem>
@@ -243,11 +235,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="filter-above-wrap clear hide">
+                    <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
                                 <div class="col-md-3 col-xs-6">
-                                    
+                                    <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-control"></asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlTag" runat="server" CssClass="form-control select2" Width="100%"></asp:DropDownList>
