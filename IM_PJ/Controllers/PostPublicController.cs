@@ -83,6 +83,22 @@ namespace IM_PJ.Controllers
                     return null;
             }
         }
+        public static string upTopPost(int ID)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                PostPublic ui = dbe.PostPublics.Where(a => a.ID == ID).SingleOrDefault();
+                if (ui != null)
+                {
+                    ui.ModifiedDate = DateTime.Now;
+                    ui.CreatedDate = DateTime.Now;
+                    int kq = dbe.SaveChanges();
+                    return kq.ToString();
+                }
+                else
+                    return null;
+            }
+        }
         public static string Delete(int ID)
         {
             using (var dbe = new inventorymanagementEntities())

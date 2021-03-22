@@ -178,6 +178,51 @@
                 });
             }
 
+            function upTopPost(id) {
+                swal({
+                    title: "Xác nhận",
+                    text: "Bạn muốn up viết này?",
+                    type: "warning",
+                    showCancelButton: true,
+                    closeOnConfirm: true,
+                    cancelButtonText: "Để em xem lại...",
+                    confirmButtonText: "Đúng rồi sếp!",
+                }, function (confirm) {
+                    if (confirm) {
+                        ajaxUpTopPost(id, function (d) {
+                            if (d === "success") {
+                                $("tr.item-" + id).remove();
+                            }
+                            else if (d === "failed") {
+                                alert("Lỗi");
+                            }
+                            else if (d === "notfound") {
+                                alert("Không tìm thấy bài viết");
+                            }
+                        });
+                    }
+                });
+            }
+
+            function ajaxUpTopPost(id, callback) {
+                var msg;
+                $.ajax({
+                    type: "POST",
+                    url: "/danh-sach-bai-viet-app.aspx/upTopPost",
+                    data: "{id: " + id + "}",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    async: false,
+                    success: function (msg) {
+                        msg = msg.d;
+                        callback(msg);
+                    },
+                    error: function () {
+                        alert("Lỗi");
+                    }
+                });
+            }
+
             function updateAtHome(obj)
             {
                 var ID = obj.attr("data-post-id");

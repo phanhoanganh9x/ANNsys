@@ -247,9 +247,19 @@ namespace IM_PJ
                     }
                 }
 
+                // Delete clone
+                var postClone = PostCloneController.GetAll(id);
+                if (postClone != null)
+                {
+                    foreach (var item in postClone)
+                    {
+                        PostCloneController.Delete(item.ID);
+                    }
+                }
+
                 string deletePost = PostPublicController.Delete(id);
 
-                if (!string.IsNullOrEmpty(deletePost))
+                if (deletePost != null)
                 {
                     result = "success";
                 }
@@ -257,15 +267,31 @@ namespace IM_PJ
                 {
                     result = "failed";
                 }
+            }
+            else
+            {
+                result = "notfound";
+            }
 
-                // Delete clone
-                var postClone = PostCloneController.GetAll(id);
-                if (postClone.Count > 0)
+            return result;
+        }
+        [WebMethod]
+        public static string upTopPost(int id)
+        {
+            var post = PostPublicController.GetByID(id);
+            string result = "";
+
+            if (post != null)
+            {
+                string upTopPost = PostPublicController.upTopPost(id);
+
+                if (!string.IsNullOrEmpty(upTopPost))
                 {
-                    foreach (var item in postClone)
-                    {
-                        PostCloneController.Delete(item.ID);
-                    }
+                    result = "success";
+                }
+                else
+                {
+                    result = "failed";
                 }
             }
             else
@@ -345,6 +371,7 @@ namespace IM_PJ
                         html.Append("       <a href='javascript:;' title='Xóa bài này' class='btn primary-btn btn-red h45-btn' onclick='deletePost(" + item.ID + ");'><i class='fa fa-times' aria-hidden='true'></i> Xóa</a>");
                         html.Append("       <a target='_blank' href='/sua-bai-viet-app?id=" + item.ID + "' title='Sửa bài này' class='btn primary-btn btn-blue h45-btn'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Sửa</a>");
                         html.Append("       <a href='javascript:;' title='Đồng bộ bài viết' class='btn btn-green primary-btn h45-btn' onclick='showPostSyncModal(" + item.ID + ");'><i class='fa fa-refresh' aria-hidden='true'></i></a>");
+                        html.Append("       <a href='javascript:;' title='Up bài viết' class='btn btn-violet primary-btn h45-btn' onclick='upTopPost(" + item.ID + ");'><i class='fa fa-arrow-up' aria-hidden='true'></i></a>");
                         html.Append("  </td>");
                     }
                     html.Append("</tr>");

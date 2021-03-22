@@ -17,6 +17,8 @@ using IM_PJ.Utils;
 using System.Drawing;
 using System.Web.Hosting;
 using System.IO;
+using System.Net;
+using Newtonsoft.Json;
 
 namespace IM_PJ
 {
@@ -554,42 +556,53 @@ namespace IM_PJ
                 }
                 else
                 {
-                    // so sánh 2 hình ảnh đại diện
-                    var rootPath = HostingEnvironment.ApplicationPhysicalPath;
-                    string img1 = Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Source);
-                    string img2 = Thumbnail.getURL(product.ProductImageClean, Thumbnail.Size.Source);
+                    string update = ProductController.updateShowHomePage(id, value);
 
-                    if (File.Exists(rootPath + img1) && File.Exists(rootPath + img2))
+                    if (update != null)
                     {
-                        Bitmap bmp1 = (Bitmap)Bitmap.FromFile(rootPath + img1);
-                        Bitmap bmp2 = (Bitmap)Bitmap.FromFile(rootPath + img2);
-
-                        if (CompareBitmapsLazy(bmp1, bmp2))
-                        {
-                            // Nếu giống nhau
-                            return "sameimage";
-                        }
-                        else
-                        {
-                            // Nếu khác nhau thì tiến hành update
-                            string update = ProductController.updateShowHomePage(id, value);
-
-                            if (update != null)
-                            {
-                                return "true";
-                            }
-                            else
-                            {
-                                return "false";
-                            }
-                        }
+                        return "true";
                     }
                     else
                     {
                         return "false";
                     }
 
-                    
+                    // so sánh 2 hình ảnh đại diện
+                    //var rootPath = HostingEnvironment.ApplicationPhysicalPath;
+                    //string img1 = Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Source);
+                    //string img2 = Thumbnail.getURL(product.ProductImageClean, Thumbnail.Size.Source);
+
+                    //if (File.Exists(rootPath + img1) && File.Exists(rootPath + img2))
+                    //{
+                    //    Bitmap bmp1 = (Bitmap)Bitmap.FromFile(rootPath + img1);
+                    //    Bitmap bmp2 = (Bitmap)Bitmap.FromFile(rootPath + img2);
+
+                    //    if (CompareBitmapsLazy(bmp1, bmp2))
+                    //    {
+                    //        // Nếu giống nhau
+                    //        return "sameimage";
+                    //    }
+                    //    else
+                    //    {
+                    //        // Nếu khác nhau thì tiến hành update
+                    //        string update = ProductController.updateShowHomePage(id, value);
+
+                    //        if (update != null)
+                    //        {
+                    //            return "true";
+                    //        }
+                    //        else
+                    //        {
+                    //            return "false";
+                    //        }
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    return "false";
+                    //}
+
+
                 }
             }
             
@@ -876,6 +889,7 @@ namespace IM_PJ
 
             return html.ToString();
         }
+
         public class ProductVariable
         {
             public string VariableName { get; set; }
@@ -931,6 +945,7 @@ namespace IM_PJ
                     {
                         html.AppendLine("       <a class='update-hot-product' href='javascript:;' data-id='" + item.ID + "' onclick='updateHotProduct($(this))'><i class='fa fa-star-o' aria-hidden='true'></i></a>");
                     }
+
                     html.AppendLine("       <a target='_blank' class='customer-name-link' href='/xem-san-pham?id=" + item.ID + "'>" + (item.OldPrice > 0 ? "<span class='sale-icon'>SALE</span> " : "") + item.ProductTitle + "</a>" + (item.ProductStyle == 2 ? " <i class='fa fa-files-o' aria-hidden='true'></i>": ""));
                     html.AppendLine("       <p class='p-paterials'><strong>Chất liệu:</strong> " + item.Materials + "<p>");
 
