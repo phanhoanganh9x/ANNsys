@@ -61,8 +61,8 @@ function showProductSyncModal(productSKU, productID, categoryID) {
 
         var webItem = "";
         webItem += "<div class='col-md-2 item-name'>" + webList[i] + "</div>";
-        webItem += "<div class='col-md-3 item-status'><span class='bg-yellow'>Đang kết nối web...</span></div>";
-        webItem += "<div class='col-md-7 item-button'>" + button + "</div>";
+        webItem += "<div class='col-md-2 item-status'><span class='bg-yellow'>Đang kết nối web...</span></div>";
+        webItem += "<div class='col-md-8 item-button'>" + button + "</div>";
 
         $(".web-list").append("<div class='row item-website' data-web='" + webList[i] + "' data-product-sku='" + productSKU + "' data-product-id='" + productID + "' data-web-product-id=''>" + webItem + "</div>");
 
