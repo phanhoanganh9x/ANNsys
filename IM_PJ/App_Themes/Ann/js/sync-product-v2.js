@@ -21,9 +21,11 @@ function showProductSyncModal(productSKU, productID, categoryID) {
     html += "<div class='row'>";
     html += "    <div class='col-md-12 item-website' data-web='all' data-product-sku='" + productSKU + "' data-product-id='" + productID + "'>";
     html += "       <span>";
-    html += "        	<a href='javascript:;' class='btn primary-btn btn-green' onclick='postProduct($(this))'><i class='fa fa-cloud-upload' aria-hidden='true'></i> Đăng web</a>";
-    html += "        	<a href='javascript:;' class='btn primary-btn btn-blue' onclick='upTopProduct($(this))'><i class='fa fa-upload' aria-hidden='true'></i> Up top</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn btn-green' onclick='postProduct($(this))'><i class='fa fa-cloud-upload' aria-hidden='true'></i> Đăng</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn btn-blue' onclick='upTopProduct($(this))'><i class='fa fa-upload' aria-hidden='true'></i> Up</a>";
     html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='renewProduct($(this))'><i class='fa fa-refresh' aria-hidden='true'></i> Làm mới</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='updateProductTag($(this))'><i class='fa fa-refresh' aria-hidden='true'></i> Thêm tag</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='updateWholesalePrice($(this))'><i class='fa fa-refresh' aria-hidden='true'></i> Sửa giá sỉ</a>";
     html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='updateProductSKU($(this))'><i class='fa fa-refresh' aria-hidden='true'></i> Sửa SKU</a>";
     html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='toggleProduct($(this), `hide`)'><i class='fa fa-refresh' aria-hidden='true'></i> Ẩn</a>";
     html += "        	<a href='javascript:;' class='btn primary-btn' onclick='toggleProduct($(this), `show`)'><i class='fa fa-refresh' aria-hidden='true'></i> Hiện</a>";
@@ -45,10 +47,12 @@ function showProductSyncModal(productSKU, productID, categoryID) {
         button += "<a href='javascript:;' class='btn primary-btn btn-green' onclick='postProduct($(this))'>Đăng</a>";
         button += "</span>";
         button += "<span class='btn-had-found hide'>";
-        button += "<a href='javascript:;' onclick='upTopProduct($(this))' class='btn primary-btn btn-blue'>Up top</a>";
+        button += "<a href='javascript:;' onclick='upTopProduct($(this))' class='btn primary-btn btn-blue'>Up</a>";
         button += "<a href='javascript:;' onclick='renewProduct($(this))' class='btn primary-btn btn-black'>Làm mới</a>";
         button += "<a href='javascript:;' onclick='viewProduct($(this))' class='btn primary-btn btn-yellow'>Xem</a>";
         button += "<a href='javascript:;' onclick='editProduct($(this))' class='btn primary-btn btn-black'>Sửa</a>";
+        button += "<a href='javascript:;' onclick='updateProductTag($(this))' class='btn primary-btn btn-black'>Thêm tag</a>";
+        button += "<a href='javascript:;' onclick='updateWholesalePrice($(this))' class='btn primary-btn btn-black'>Sửa giá sỉ</a>";
         button += "<a href='javascript:;' onclick='updateProductSKU($(this))' class='btn primary-btn btn-black'>Sửa SKU</a>";
         button += "<a href='javascript:;' onclick='toggleProduct($(this), `hide`)' class='btn primary-btn btn-black'>Ẩn</a>";
         button += "<a href='javascript:;' onclick='toggleProduct($(this), `show`)' class='btn primary-btn'>Hiện</a>";
@@ -449,6 +453,166 @@ function ajaxUpdateProductSKU(web, oldSKU, newSKU) {
                 }
                 else {
                     $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Cập nhật SKU thất bại</span>");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
+                }
+            }
+            else {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
+            }
+        },
+        error: function (xhr, textStatus, error) {
+            HoldOn.close();
+            let data = xhr.responseJSON;
+            if (xhr.status === 500) {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
+            }
+            else if (xhr.status === 400) {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
+            }
+            else {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
+            }
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
+        }
+    });
+}
+
+function updateProductTag(obj) {
+    let web = obj.closest(".item-website").attr("data-web");
+    let productID = obj.closest(".item-website").attr("data-product-id");
+
+    swal({
+        title: "Xác nhận",
+        text: "Bạn muốn cập nhật tags cho sản phẩm này?",
+        type: "warning",
+        showCancelButton: true,
+        closeOnConfirm: true,
+        cancelButtonText: "Để em xem lại...",
+        confirmButtonText: "Đúng rồi sếp!",
+    }, function (confirm) {
+        if (confirm) {
+            if (web == "all") {
+                for (var i = 0; i < webList.length; i++) {
+                    ajaxUpdateProductTag(webList[i], productID);
+                }
+            }
+            else {
+                ajaxUpdateProductTag(web, productID);
+            }
+        }
+    });
+}
+
+function ajaxUpdateProductTag(web, productID) {
+
+    $.ajax({
+        type: "POST",
+        url: API + "updateProductTag/" + productID,
+        headers: {
+            'domain': web,
+        },
+        async: true,
+        datatype: "json",
+        beforeSend: function () {
+            HoldOn.open();
+
+            $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-yellow'>Đang cập nhật tags sản phẩm</span>");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
+        },
+        success: function (data, textStatus, xhr) {
+            HoldOn.close();
+
+            // Thành công
+            if (xhr.status === 200) {
+                if (data.id > 0) {
+                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Cập nhật tags thành công</span>");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
+                }
+                else {
+                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Cập nhật tags thất bại</span>");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
+                }
+            }
+            else {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
+            }
+        },
+        error: function (xhr, textStatus, error) {
+            HoldOn.close();
+            let data = xhr.responseJSON;
+            if (xhr.status === 500) {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
+            }
+            else if (xhr.status === 400) {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
+            }
+            else {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
+            }
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
+        }
+    });
+}
+
+function updateWholesalePrice(obj) {
+    let web = obj.closest(".item-website").attr("data-web");
+    let productID = obj.closest(".item-website").attr("data-product-id");
+
+    swal({
+        title: "Xác nhận",
+        text: "Bạn muốn cập nhật giá sỉ cho sản phẩm này?",
+        type: "warning",
+        showCancelButton: true,
+        closeOnConfirm: true,
+        cancelButtonText: "Để em xem lại...",
+        confirmButtonText: "Đúng rồi sếp!",
+    }, function (confirm) {
+        if (confirm) {
+            if (web == "all") {
+                for (var i = 0; i < webList.length; i++) {
+                    ajaxUpdateWholesalePrice(webList[i], productID);
+                }
+            }
+            else {
+                ajaxUpdateWholesalePrice(web, productID);
+            }
+        }
+    });
+}
+
+function ajaxUpdateWholesalePrice(web, productID) {
+
+    $.ajax({
+        type: "POST",
+        url: API + "updateWholesalePrice/" + productID,
+        headers: {
+            'domain': web,
+        },
+        async: true,
+        datatype: "json",
+        beforeSend: function () {
+            HoldOn.open();
+
+            $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-yellow'>Đang cập nhật giá sỉ sản phẩm</span>");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
+        },
+        success: function (data, textStatus, xhr) {
+            HoldOn.close();
+
+            // Thành công
+            if (xhr.status === 200) {
+                if (data.id > 0) {
+                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Cập nhật giá sỉ thành công</span>");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
+                }
+                else {
+                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Cập nhật giá sỉ thất bại</span>");
                     $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
                     $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
                 }
