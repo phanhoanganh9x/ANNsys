@@ -18,7 +18,7 @@
     <!-- Add Select2 library -->
     <!-- https://select2.org/getting-started/installation -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="/App_Themes/Ann/css/HoldOn.css?v=02112020" rel="stylesheet" type="text/css" />
+    <link href="/App_Themes/Ann/css/HoldOn.css?v=02042021" rel="stylesheet" type="text/css" />
     <title>Tạo đơn GHTK</title>
     <style>
         #total_money, #pick_money, #value {
@@ -325,7 +325,7 @@
             <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
             <!-- Select2 -->
             <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
-            <script src="/App_Themes/Ann/js/HoldOn.js?v=02112020"></script>
+            <script src="/App_Themes/Ann/js/HoldOn.js?v=02042021"></script>
 
             <script>
                 let _feeShipment, // Dùng để lấy trạng thái trước của radio Shipment

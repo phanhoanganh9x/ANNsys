@@ -98,7 +98,7 @@
 
         <asp:HiddenField ID="hdfPostId" runat="server" />
     </main>
-    <script src="/App_Themes/Ann/js/sync-post.js?v=02112020"></script>
+    <script src="/App_Themes/Ann/js/sync-post.js?v=02042021"></script>
     <script>
         $(document).ready(function () {
             _initVideo();
