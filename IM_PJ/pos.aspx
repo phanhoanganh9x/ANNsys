@@ -1422,7 +1422,7 @@
                     html: false
                 }, function () {
                     clearCustomerDetail();
-                    var url = "/print-invoice?id=" + id;
+                    var url = "/print-invoice?id=" + id + "&pushTelegram=true";
                     window.open(url);
                     window.location.replace(window.location.href);
                 });

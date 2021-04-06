@@ -5,7 +5,9 @@ using MB.Extensions;
 using NHST.Bussiness;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -271,7 +273,7 @@ namespace IM_PJ
 
                     string datedone = "";
 
-                    if(ExcuteStatus == 2)
+                    if (ExcuteStatus == 2)
                     {
                         datedone = DateTime.Now.ToString();
                     }
@@ -454,6 +456,35 @@ namespace IM_PJ
                             var update = RefundGoodController.UpdateStatus(RefundID[0].ToInt(), username, 2, OrderID);
                             var updateor = OrderController.UpdateRefund(OrderID, RefundID[0].ToInt(), username);
                         }
+
+                        #region push notify telegram
+                        if (ExcuteStatus == 2)
+                        {
+                            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+
+                            var pushOrder = OrderController.GetByID(ret.ID);
+                            var msg = "<b>Đơn hàng hệ thống</b> - " + pushOrder.ID + " - " + DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+                            msg += "\r\n- <b>Nhân viên</b>: " + pushOrder.CreatedBy;
+                            msg += "\r\n- <b>Khách hàng</b>: " + pushOrder.CustomerName;
+                            msg += "\r\n- <b>Nick</b>: " + txtNick.Text.Trim();
+                            msg += "\r\n- <b>Điện thoại</b>: " + pushOrder.CustomerPhone;
+                            msg += "\r\n- <b>Thanh toán</b>: " + ddlPaymentType.SelectedItem.Text;
+                            msg += "\r\n- <b>Giao hàng</b>: " + ddlShippingType.SelectedItem.Text;
+                            msg += "\r\n- <b>Số lượng</b>: " + pushOrder.TotalQuantity + " cái";
+                            if (pushOrder.DiscountPerProduct > 0)
+                            {
+                                msg += "\r\n- <b>Chiết khấu</b>: " + string.Format("{0:N0}", Convert.ToDouble(pushOrder.DiscountPerProduct)) + "/cái";
+                            }
+                            msg += "\r\n- <b>TỔNG ĐƠN</b>: " + string.Format("{0:N0}", Convert.ToDouble(pushOrder.TotalPrice));
+
+                            var chatID = "-1001229080769";
+                            var token = "bot1714400602:AAHlWZhq4IZZ18wCQxVVGA4kuZJQPkb50z0";
+                            var api = "https://api.telegram.org/" + token + "/sendMessage?parse_mode=html&chat_id=" + chatID + "&text=" + HttpUtility.UrlEncode(msg);
+
+                            WebRequest request = WebRequest.Create(api);
+                            Stream rs = request.GetResponse().GetResponseStream();
+                        }
+                        #endregion
 
                         PJUtils.ShowMessageBoxSwAlertCallFunction("Tạo đơn hàng thành công", "s", true, "redirectTo(" + OrderID + ")", Page);
                     }

@@ -4,7 +4,9 @@ using MB.Extensions;
 using NHST.Bussiness;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -183,6 +185,7 @@ namespace IM_PJ
                 
                 if (order != null)
                 {
+
                     string error = "";
                     string Print = "";
 
@@ -197,6 +200,34 @@ namespace IM_PJ
 
                     if (orderdetails.Count > 0)
                     {
+
+                        #region push notify telegram
+                        if (Request.QueryString["pushTelegram"] == "true")
+                        {
+                            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+
+                            var msg = "<b>Đơn hàng hệ thống</b> - " + order.ID + " - " + DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+                            msg += "\r\n- <b>Nhân viên</b>: " + order.CreatedBy;
+                            msg += "\r\n- <b>Khách hàng</b>: " + order.CustomerName;
+                            if (string.IsNullOrEmpty(customer.Nick))
+                            {
+                                msg += "\r\n- <b>Nick</b>: " + customer.Nick;
+                            }
+                            msg += "\r\n- <b>Điện thoại</b>: " + order.CustomerPhone;
+                            msg += "\r\n- <b>Thanh toán</b>: Tiền mặt";
+                            msg += "\r\n- <b>Giao hàng</b>: Lấy trực tiếp";
+                            msg += "\r\n- <b>Số lượng</b>: " + order.TotalQuantity + " cái";
+                            msg += "\r\n- <b>Chiết khấu</b>: " + string.Format("{0:N0}", Convert.ToDouble(order.DiscountPerProduct)) + "/cái";
+                            msg += "\r\n- <b>TỔNG ĐƠN</b>: " + string.Format("{0:N0}", Convert.ToDouble(order.TotalPrice));
+
+                            var chatID = "-1001229080769";
+                            var token = "bot1714400602:AAHlWZhq4IZZ18wCQxVVGA4kuZJQPkb50z0";
+                            var api = "https://api.telegram.org/" + token + "/sendMessage?parse_mode=html&chat_id=" + chatID + "&text=" + HttpUtility.UrlEncode(msg);
+                            WebRequest request = WebRequest.Create(api);
+                            Stream rs = request.GetResponse().GetResponseStream();
+                        }
+                        #endregion
+
                         printItemList(ref ID, ref mergeprint, ref TotalQuantity, ref TotalOrder, ref Print);
 
                         string productPrint = "";
