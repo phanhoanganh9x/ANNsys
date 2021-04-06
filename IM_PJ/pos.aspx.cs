@@ -553,6 +553,31 @@ namespace IM_PJ
                             }
                             #endregion
 
+                            #region push notify telegram
+                            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+
+                            var pushOrder = OrderController.GetByID(ret.ID);
+                            var msg = "<b>Đơn hàng hệ thống</b> - " + pushOrder.ID + " - " + DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+                            msg += "\r\n- <b>Nhân viên</b>: " + pushOrder.CreatedBy;
+                            msg += "\r\n- <b>Khách hàng</b>: " + pushOrder.CustomerName;
+                            if (checkCustomer != null)
+                            {
+                                msg += "\r\n- <b>Nick</b>: " + checkCustomer.Nick;
+                            }
+                            msg += "\r\n- <b>Điện thoại</b>: " + pushOrder.CustomerPhone;
+                            msg += "\r\n- <b>Thanh toán</b>: Tiền mặt";
+                            msg += "\r\n- <b>Giao hàng</b>: Lấy trực tiếp";
+                            msg += "\r\n- <b>Số lượng</b>: " + pushOrder.TotalQuantity + " cái";
+                            msg += "\r\n- <b>Chiết khấu</b>: " + string.Format("{0:N0}", Convert.ToDouble(pushOrder.DiscountPerProduct)) + "/cái";
+                            msg += "\r\n- <b>TỔNG ĐƠN</b>: " + string.Format("{0:N0}", Convert.ToDouble(pushOrder.TotalPrice));
+
+                            var chatID = "-1001229080769";
+                            var token = "bot1714400602:AAHlWZhq4IZZ18wCQxVVGA4kuZJQPkb50z0";
+                            var api = "https://api.telegram.org/" + token + "/sendMessage?parse_mode=html&chat_id=" + chatID + "&text=" + HttpUtility.UrlEncode(msg);
+                            WebRequest request = WebRequest.Create(api);
+                            Stream rs = request.GetResponse().GetResponseStream();
+                            #endregion
+
                             // Hoàn thành khởi tạo đơn hàng nên gán lại giá trị trang lúc ban đầu
                             hdStatusPage.Value = "Create";
                             ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "script", "$(function () { HoldOn.close(); printInvoice(" + OrderID + ") });", true);
