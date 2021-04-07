@@ -1392,12 +1392,15 @@ namespace IM_PJ
                                     {
                                         msg += "\r\n- <b>Chiết khấu</b>: " + string.Format("{0:N0}", Convert.ToDouble(pushOrder.DiscountPerProduct)) + "/cái";
                                     }
-                                    msg += "\r\n- <b>Thanh toán</b>: Tiền mặt";
-                                    msg += "\r\n- <b>Giao hàng</b>: Lấy trực tiếp";
-                                    msg += "\r\n- <b>Nhân viên</b>: " + pushOrder.CreatedBy;
+                                    msg += "\r\n- <b>Thanh toán</b>: " + ddlPaymentType.SelectedItem.Text;
+                                    msg += "\r\n- <b>Giao hàng</b>: " + ddlShippingType.SelectedItem.Text;
                                     msg += "\r\n- <b>Khách hàng</b>: " + pushOrder.CustomerName;
-                                    msg += "\r\n- <b>Nick</b>: " + txtNick.Text.Trim();
+                                    if (!string.IsNullOrEmpty(txtNick.Text.Trim()))
+                                    {
+                                        msg += "\r\n- <b>Nick</b>: " + txtNick.Text.Trim();
+                                    }
                                     msg += "\r\n- <b>Điện thoại</b>: " + pushOrder.CustomerPhone;
+                                    msg += "\r\n- <b>Nhân viên</b>: " + pushOrder.CreatedBy;
 
                                     var chatID = "-1001229080769";
                                     var token = "bot1714400602:AAHlWZhq4IZZ18wCQxVVGA4kuZJQPkb50z0";

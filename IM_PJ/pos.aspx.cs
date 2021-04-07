@@ -566,13 +566,13 @@ namespace IM_PJ
                             }
                             msg += "\r\n- <b>Thanh toán</b>: Tiền mặt";
                             msg += "\r\n- <b>Giao hàng</b>: Lấy trực tiếp";
-                            msg += "\r\n- <b>Nhân viên</b>: " + pushOrder.CreatedBy;
                             msg += "\r\n- <b>Khách hàng</b>: " + pushOrder.CustomerName;
-                            if (checkCustomer != null)
+                            if (checkCustomer != null && !string.IsNullOrEmpty(checkCustomer.Nick))
                             {
                                 msg += "\r\n- <b>Nick</b>: " + checkCustomer.Nick;
                             }
                             msg += "\r\n- <b>Điện thoại</b>: " + pushOrder.CustomerPhone;
+                            msg += "\r\n- <b>Nhân viên</b>: " + pushOrder.CreatedBy;
 
                             var chatID = "-1001229080769";
                             var token = "bot1714400602:AAHlWZhq4IZZ18wCQxVVGA4kuZJQPkb50z0";
