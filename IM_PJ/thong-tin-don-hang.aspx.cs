@@ -1385,19 +1385,19 @@ namespace IM_PJ
                                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
 
                                     var pushOrder = OrderController.GetByID(order.ID);
-                                    var msg = "<b>Đơn hàng hệ thống</b> - " + pushOrder.ID + " - " + DateTime.Now.ToString("dd/MM/yyyy HH:mm");
-                                    msg += "\r\n- <b>Nhân viên</b>: " + pushOrder.CreatedBy;
-                                    msg += "\r\n- <b>Khách hàng</b>: " + pushOrder.CustomerName;
-                                    msg += "\r\n- <b>Nick</b>: " + txtNick.Text.Trim();
-                                    msg += "\r\n- <b>Điện thoại</b>: " + pushOrder.CustomerPhone;
-                                    msg += "\r\n- <b>Thanh toán</b>: " + ddlPaymentType.SelectedItem.Text;
-                                    msg += "\r\n- <b>Giao hàng</b>: " + ddlShippingType.SelectedItem.Text;
+                                    var msg = "<b>" + pushOrder.ID + "</b> - " + DateTime.Now.ToString("dd/MM HH:mm");
+                                    msg += "\r\n- <b>TỔNG ĐƠN</b>: " + string.Format("{0:N0}", Convert.ToDouble(pushOrder.TotalPrice));
                                     msg += "\r\n- <b>Số lượng</b>: " + pushOrder.TotalQuantity + " cái";
                                     if (pushOrder.DiscountPerProduct > 0)
                                     {
                                         msg += "\r\n- <b>Chiết khấu</b>: " + string.Format("{0:N0}", Convert.ToDouble(pushOrder.DiscountPerProduct)) + "/cái";
                                     }
-                                    msg += "\r\n- <b>TỔNG ĐƠN</b>: " + string.Format("{0:N0}", Convert.ToDouble(pushOrder.TotalPrice));
+                                    msg += "\r\n- <b>Thanh toán</b>: Tiền mặt";
+                                    msg += "\r\n- <b>Giao hàng</b>: Lấy trực tiếp";
+                                    msg += "\r\n- <b>Nhân viên</b>: " + pushOrder.CreatedBy;
+                                    msg += "\r\n- <b>Khách hàng</b>: " + pushOrder.CustomerName;
+                                    msg += "\r\n- <b>Nick</b>: " + txtNick.Text.Trim();
+                                    msg += "\r\n- <b>Điện thoại</b>: " + pushOrder.CustomerPhone;
 
                                     var chatID = "-1001229080769";
                                     var token = "bot1714400602:AAHlWZhq4IZZ18wCQxVVGA4kuZJQPkb50z0";
