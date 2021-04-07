@@ -464,7 +464,7 @@ namespace IM_PJ
 
                             var pushOrder = OrderController.GetByID(ret.ID);
                             var msg = "<b>" + pushOrder.ID + "</b> - " + DateTime.Now.ToString("dd/MM HH:mm");
-                            msg += "\r\n- <b>TỔNG ĐƠN</b>: " + string.Format("{0:N0}", Convert.ToDouble(pushOrder.TotalPrice));
+                            msg += "\r\n- <b>TỔNG</b>: " + string.Format("{0:N0}", Convert.ToDouble(pushOrder.TotalPrice));
                             msg += "\r\n- <b>Số lượng</b>: " + pushOrder.TotalQuantity + " cái";
                             if (pushOrder.DiscountPerProduct > 0)
                             {
