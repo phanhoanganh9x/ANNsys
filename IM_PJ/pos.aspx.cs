@@ -560,7 +560,6 @@ namespace IM_PJ
                             var msg = "<b>" + pushOrder.ID + "</b> - " + DateTime.Now.ToString("dd/MM HH:mm");
                             msg += "\r\n- <b>TỔNG</b>: " + string.Format("{0:N0}", Convert.ToDouble(pushOrder.TotalPrice));
                             msg += "\r\n- <b>Số lượng</b>: " + pushOrder.TotalQuantity + " cái";
-                            
                             msg += "\r\n- <b>Thanh toán</b>: Tiền mặt";
                             msg += "\r\n- <b>Giao hàng</b>: Lấy trực tiếp";
                             if (pushOrder.DiscountPerProduct > 0)
