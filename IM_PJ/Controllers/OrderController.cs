@@ -1587,7 +1587,7 @@ namespace IM_PJ.Controllers
                         var totalProfit = 0D;
 
                         // Tính lợi nhuận
-                        totalProfit = Convert.ToDouble(temp.order.TotalPriceNotDiscount) - totalCOGS - temp.order.TotalDiscount;
+                        totalProfit = Convert.ToDouble(temp.order.TotalPriceNotDiscount) - Convert.ToDouble(temp.order.TotalDiscount) - totalCOGS;
 
                         // OrderID
                         result.ID = temp.order.ID;
@@ -1615,6 +1615,15 @@ namespace IM_PJ.Controllers
                         result.CustomerName = temp.customer.CustomerName;
                         result.Nick = temp.customer.Nick;
                         result.CustomerPhone = temp.customer.CustomerPhone;
+
+                        // Phiếm giảm giắ
+                        if (temp.coupon != null)
+                        {
+                            result.TotalProfit = result.TotalProfit - Convert.ToDouble(temp.order.CouponValue);
+                            result.CouponCode = temp.coupon.couponCode;
+                            result.CouponValue = temp.order.CouponValue;
+                        }
+
                         // Refunds
                         if (temp.refund != null)
                         {
@@ -1666,13 +1675,6 @@ namespace IM_PJ.Controllers
                         else
                         {
                             result.DeliveryStatus = (int)DeliveryStatus.Waiting;
-                        }
-                        // Phiếm giảm giắ
-                        if (temp.coupon != null)
-                        {
-                            result.TotalProfit = result.TotalProfit - Convert.ToDouble(temp.order.CouponValue);
-                            result.CouponCode = temp.coupon.couponCode;
-                            result.CouponValue = temp.order.CouponValue;
                         }
 
                         return result;

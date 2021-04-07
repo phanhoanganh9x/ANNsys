@@ -466,12 +466,34 @@ namespace IM_PJ
                             var msg = "<b>" + pushOrder.ID + "</b> - " + DateTime.Now.ToString("dd/MM HH:mm");
                             msg += "\r\n- <b>TỔNG</b>: " + string.Format("{0:N0}", Convert.ToDouble(pushOrder.TotalPrice));
                             msg += "\r\n- <b>Số lượng</b>: " + pushOrder.TotalQuantity + " cái";
-                            if (pushOrder.DiscountPerProduct > 0)
-                            {
-                                msg += "\r\n- <b>Chiết khấu</b>: " + string.Format("{0:N0}", Convert.ToDouble(pushOrder.DiscountPerProduct)) + "/cái";
-                            }
                             msg += "\r\n- <b>Thanh toán</b>: " + ddlPaymentType.SelectedItem.Text;
                             msg += "\r\n- <b>Giao hàng</b>: " + ddlShippingType.SelectedItem.Text;
+                            if (pushOrder.DiscountPerProduct > 0)
+                            {
+                                msg += "\r\n- <b>Chiết khấu</b>: -" + string.Format("{0:N0}", Convert.ToDouble(pushOrder.DiscountPerProduct)) + "/cái";
+                            }
+                            if (Convert.ToDouble(pushOrder.FeeShipping) > 0)
+                            {
+                                msg += "\r\n- <b>Phí ship</b>: " + string.Format("{0:N0}", Convert.ToDouble(pushOrder.FeeShipping));
+                            }
+                            if (Convert.ToDouble(pushOrder.CouponValue) > 0)
+                            {
+                                msg += "\r\n- <b>Mã giảm giá</b>: -" + string.Format("{0:N0}", Convert.ToDouble(pushOrder.CouponValue));
+                            }
+
+                            double totalProfit = Convert.ToDouble(pushOrder.TotalPriceNotDiscount) - Convert.ToDouble(pushOrder.TotalDiscount) - Convert.ToDouble(pushOrder.CouponValue) - Convert.ToDouble(pushOrder.TotalCostOfGood);
+                            double totalRefundProfit = 0;
+                            if (pushOrder.RefundsGoodsID != 0 && pushOrder.RefundsGoodsID != null)
+                            {
+                                var refundOrder = RefundGoodController.GetByID(pushOrder.RefundsGoodsID.Value);
+                                if (refundOrder != null)
+                                {
+                                    msg += "\r\n- <b>Trừ hàng trả</b>: -" + string.Format("{0:N0}", Convert.ToDouble(refundOrder.TotalPrice));
+                                    totalRefundProfit = Convert.ToDouble(refundOrder.TotalPrice) - Convert.ToDouble(refundOrder.TotalCostOfGood);
+                                }
+                            }
+                            msg += "\r\n- <b>Lợi nhuận</b>: " + string.Format("{0:N0}", totalProfit - totalRefundProfit);
+                            msg += "\r\n-------------------------";
                             msg += "\r\n- <b>Khách hàng</b>: " + pushOrder.CustomerName;
                             if (!string.IsNullOrEmpty(txtNick.Text.Trim()))
                             {
