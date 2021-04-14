@@ -87,3 +87,20 @@ GO
 
 ALTER TABLE [dbo].[PreOrder] CHECK CONSTRAINT [FK_PreOrder_Coupon]
 GO
+
+-- =============================================
+-- Author:      Binh-TT
+-- Create date: 2021-04-12
+-- Description: Add the shipping fee column
+-- ==========================================
+ALTER TABLE [dbo].[PreOrder]
+ADD [ShippingFee] [MONEY] NULL
+
+UPDATE [dbo].[PreOrder]
+SET [ShippingFee] = 0
+
+ALTER TABLE [dbo].[PreOrder]
+ALTER COLUMN [ShippingFee] [MONEY] NOT NULL
+
+ALTER TABLE [dbo].[PreOrder] ADD  CONSTRAINT [DF_PreOrder_ShippingFee]  DEFAULT (0) FOR [ShippingFee]
+GO

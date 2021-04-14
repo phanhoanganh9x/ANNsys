@@ -40,3 +40,11 @@ GO
 
 ALTER TABLE [dbo].[Video] ADD  CONSTRAINT [DF_Video_ModifiedDate]  DEFAULT (getdate()) FOR [ModifiedDate]
 GO
+
+-- =============================================
+-- Author:      Binh-TT
+-- Create date: 2021-04-13
+-- Description: Add the sub link download of video
+-- ==========================================
+ALTER TABLE [dbo].[Video] ADD [SubUrl] [nvarchar](MAX) NULL
+GO
