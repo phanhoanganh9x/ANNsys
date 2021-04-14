@@ -109,9 +109,10 @@ namespace IM_PJ
         /// </remarks>
         /// <param name="videoId"></param>
         /// <param name="productId"></param>
+        /// <param name="linkDownload"></param>
         /// <param name="isActive"></param>
         /// <returns></returns>
-        private void _createProductVideo(string videoId, int productId, bool isActive)
+        private void _createProductVideo(string videoId, string linkDownload, int productId, bool isActive)
         {
             #region Khởi tạo API
             var api = "http://ann-shop-dotnet-core.com/api/v1/product-video/create";
@@ -126,6 +127,7 @@ namespace IM_PJ
                 {
                     videoId = videoId,
                     productId = productId,
+                    linkDownload = linkDownload,
                     isActive = isActive
                 });
 
@@ -659,9 +661,12 @@ namespace IM_PJ
                                 if (!String.IsNullOrEmpty(hdfVideoId.Value))
                                 {
                                     var videoId = hdfVideoId.Value;
+                                    var linkDownload = String.IsNullOrEmpty(txtLinkDownload.Text)
+                                        ? null
+                                        : txtLinkDownload.Text.Trim();
                                     var isActive = rdbActiveVideo.SelectedValue == "true";
 
-                                    _createProductVideo(videoId, ProductID, isActive);
+                                    _createProductVideo(videoId, linkDownload, ProductID, isActive);
                                 }
                                 #endregion
 

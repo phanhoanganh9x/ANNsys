@@ -358,6 +358,9 @@
                                         <asp:TextBox ID="txtYoutubeUrl" runat="server"  CssClass="form-control" placeholder="Url Youtube của sản phẩm" onchange="onChangeYoutubeUrl($(this).val())"></asp:TextBox>
                                     </div>
                                     <div class="form-row">
+                                        <asp:TextBox ID="txtLinkDownload" runat="server"  CssClass="form-control" placeholder="Link tải sản phẩm"></asp:TextBox>
+                                    </div>
+                                    <div class="form-row">
                                         <asp:RadioButtonList ID="rdbActiveVideo" CssClass="RadioButtonList" runat="server" RepeatDirection="Horizontal">
                                             <asp:ListItem Value="true" Selected="True">Hiện</asp:ListItem>
                                             <asp:ListItem Value="false">Ẩn</asp:ListItem>
@@ -698,6 +701,7 @@
                             HoldOn.close();
 
                             let $txtYoutubeUrl = $("#<%=txtYoutubeUrl.ClientID%>");
+                            let $txtLinkDownload = $("#<%=txtLinkDownload.ClientID%>");
                             let $rdbActiveVideo = $("#<%=rdbActiveVideo.ClientID%>");
                             let $hdfOldVideoId = $("#<%=hdfOldVideoId.ClientID%>");
                             let $divYoutube = $("#divYoutube");
@@ -708,6 +712,9 @@
 
                                     $hdfOldVideoId.val(response.videoId);
                                     $txtYoutubeUrl.val(url);
+
+                                    if (response.linkDownload)
+                                        $txtLinkDownload.val(response.linkDownload);
 
                                     if (response.isActive) {
                                         $rdbActiveVideo.find("input[value='true']").prop("checked", true);

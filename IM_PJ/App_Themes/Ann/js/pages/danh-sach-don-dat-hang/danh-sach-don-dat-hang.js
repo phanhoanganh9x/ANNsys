@@ -100,15 +100,19 @@ function _updateFilter() {
     let orderStatusDOM = document.querySelector("[id$='_ddlExcuteStatus']");
 
     if (orderStatusDOM.value == "0") {
+        controller.filter.searchOrder = 1;
         controller.filter.orderStatus = 0;
     }
     else if (orderStatusDOM.value == "1") {
+        controller.filter.searchOrder = 3;
         controller.filter.orderStatus = 1;
     }
     else if (orderStatusDOM.value == "3") {
+        controller.filter.searchOrder = 3;
         controller.filter.orderStatus = 3;
     }
     else {
+        controller.filter.searchOrder = 3;
         controller.filter.orderStatus = "0|1";
     }
 

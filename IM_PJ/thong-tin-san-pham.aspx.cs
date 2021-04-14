@@ -625,9 +625,10 @@ namespace IM_PJ
             if (!String.IsNullOrEmpty(hdfNewVideoId.Value))
             {
                 var productId = Convert.ToInt32(hdfProductId.Value);
+                var linkDownload = String.IsNullOrEmpty(txtLinkDownload.Text) ? null : txtLinkDownload.Text.Trim();
                 var isActive = rdbActiveVideo.SelectedValue == "true";
 
-                _updateProductVideo(hdfOldVideoId.Value, hdfNewVideoId.Value, productId, isActive);
+                _updateProductVideo(hdfOldVideoId.Value, hdfNewVideoId.Value, linkDownload, productId, isActive);
             }
             else if (!String.IsNullOrEmpty(hdfOldVideoId.Value))
             {
@@ -912,10 +913,11 @@ namespace IM_PJ
         /// </remarks>
         /// <param name="oldVideoId"></param>
         /// <param name="newVideoId"></param>
+        /// <param name="linkDownload"></param>
         /// <param name="productId"></param>
         /// <param name="isActive"></param>
         /// <returns></returns>
-        private void _updateProductVideo(string oldVideoId, string newVideoId, int productId, bool isActive)
+        private void _updateProductVideo(string oldVideoId, string newVideoId, string linkDownload, int productId, bool isActive)
         {
             #region Khởi tạo API
             var api = "http://ann-shop-dotnet-core.com/api/v1/product-video/update";
@@ -930,6 +932,7 @@ namespace IM_PJ
                 {
                     oldVideoId = oldVideoId,
                     newVideoId = newVideoId,
+                    linkDownload = linkDownload,
                     productId = productId,
                     isActive = isActive
                 });

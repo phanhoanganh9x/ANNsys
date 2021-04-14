@@ -54,10 +54,11 @@ namespace IM_PJ
         /// <remarks>
         /// </remarks>
         /// <param name="videoId"></param>
-        /// <param name="posttId"></param>
+        /// <param name="linkDownload"></param>
+        /// <param name="postId"></param>
         /// <param name="isActive"></param>
         /// <returns></returns>
-        private void _createPostVideo(string videoId, int posttId, bool isActive)
+        private void _createPostVideo(string videoId, string linkDownload, int postId, bool isActive)
         {
             #region Khởi tạo API
             var api = "http://ann-shop-dotnet-core.com/api/v1/post-video/create";
@@ -71,7 +72,8 @@ namespace IM_PJ
                 string json = JsonConvert.SerializeObject(new
                 {
                     videoId = videoId,
-                    productId = posttId,
+                    linkDownload = linkDownload,
+                    postId = postId,
                     isActive = isActive
                 });
 
@@ -197,9 +199,10 @@ namespace IM_PJ
                     if (!String.IsNullOrEmpty(hdfVideoId.Value))
                     {
                         var videoId = hdfVideoId.Value;
+                        var linkDownload = String.IsNullOrEmpty(txtLinkDownload.Text) ? null : txtLinkDownload.Text.Trim();
                         var isActive = rdbActiveVideo.SelectedValue == "true";
 
-                        _createPostVideo(videoId, post.ID, isActive);
+                        _createPostVideo(videoId, linkDownload, post.ID, isActive);
                     }
                     #endregion
 
