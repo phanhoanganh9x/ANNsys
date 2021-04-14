@@ -174,6 +174,9 @@
                                         <asp:TextBox ID="txtYoutubeUrl" runat="server"  CssClass="form-control" placeholder="Url Youtube của sản phẩm"  onchange="onChangeYoutubeUrl($(this).val())"></asp:TextBox>
                                     </div>
                                     <div class="form-row">
+                                        <asp:TextBox ID="txtLinkDownload" runat="server"  CssClass="form-control" placeholder="Link tải sản phẩm"></asp:TextBox>
+                                    </div>
+                                    <div class="form-row">
                                         <asp:RadioButtonList ID="rdbActiveVideo" CssClass="RadioButtonList" runat="server" RepeatDirection="Horizontal">
                                             <asp:ListItem Value="true" Selected="True">Hiện</asp:ListItem>
                                             <asp:ListItem Value="false">Ẩn</asp:ListItem>

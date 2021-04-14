@@ -58,10 +58,11 @@ namespace IM_PJ
         /// </remarks>
         /// <param name="oldVideoId"></param>
         /// <param name="newVideoId"></param>
+        /// <param name="linkDownload"></param>
         /// <param name="postId"></param>
         /// <param name="isActive"></param>
         /// <returns></returns>
-        private void _updatePostVideo(string oldVideoId, string newVideoId, int postId, bool isActive)
+        private void _updatePostVideo(string oldVideoId, string newVideoId, string linkDownload, int postId, bool isActive)
         {
             #region Khởi tạo API
             var api = "http://ann-shop-dotnet-core.com/api/v1/post-video/update";
@@ -76,6 +77,7 @@ namespace IM_PJ
                 {
                     oldVideoId = oldVideoId,
                     newVideoId = newVideoId,
+                    linkDownload = linkDownload,
                     postId = postId,
                     isActive = isActive
                 });
@@ -312,9 +314,10 @@ namespace IM_PJ
                     if (!String.IsNullOrEmpty(hdfNewVideoId.Value))
                     {
                         var productId = Convert.ToInt32(hdfPostId.Value);
+                        var linkDownload = String.IsNullOrEmpty(txtLinkDownload.Text) ? null : txtLinkDownload.Text.Trim();
                         var isActive = rdbActiveVideo.SelectedValue == "true";
 
-                        _updatePostVideo(hdfOldVideoId.Value, hdfNewVideoId.Value, productId, isActive);
+                        _updatePostVideo(hdfOldVideoId.Value, hdfNewVideoId.Value, linkDownload, productId, isActive);
                     }
                     else if (!String.IsNullOrEmpty(hdfOldVideoId.Value))
                     {
