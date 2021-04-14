@@ -2,7 +2,7 @@
     constructor() {
         this.role = null;
         this.filter = {
-            searchOrder: 1, // preOrder
+            searchOrder: 3, // PreOrder and Order
             fromDate: null,
             toDate: null,
             orderStatus: null,
@@ -69,19 +69,15 @@
             if (key == "orderStatus")
             {
                 if (value == "0") {
-                    this.filter.searchOrder = 1;
                     this.filter.orderStatus = 0;
                 }
                 else if (value == "1") {
-                    this.filter.searchOrder = 2;
                     this.filter.orderStatus = 1;
                 }
                 else if (value == "3") {
-                    this.filter.searchOrder = 1;
                     this.filter.orderStatus = 3;
                 }
                 else {
-                    this.filter.searchOrder = 0;
                     this.filter.orderStatus = "0|1";
                 }
             }
