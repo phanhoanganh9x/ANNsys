@@ -1,6 +1,6 @@
 ﻿var API = "/api/v1/woocommerce/product/";
 var webList = ["ann.com.vn", "khohangsiann.com", "bosiquanao.net", "quanaogiaxuong.com", "bansithoitrang.net", "panpan.vn", "quanaoxuongmay.com", "annshop.vn", "thoitrangann.com", "nhapsionline.com"];
-var webCosmetics = ["khosimypham.com"];
+var webCosmetics = ["khosimypham.com", "simyphamonline.com"];
 var cosmeticCategory = [44, 45, 56, 61, 62, 63, 64];
 
 function getWeblist(categoryID) {

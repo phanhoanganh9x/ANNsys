@@ -40,6 +40,7 @@ namespace IM_PJ.Models
         public string ModifiedBy { get; set; }
         public System.DateTime ModifiedDate { get; set; }
         public byte[] Timestamp { get; set; }
+        public decimal ShippingFee { get; set; }
     
         public virtual Coupon Coupon { get; set; }
         public virtual DeliveryAddress DeliveryAddress { get; set; }

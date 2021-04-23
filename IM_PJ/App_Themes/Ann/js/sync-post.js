@@ -1,6 +1,6 @@
 ﻿var systemAPI = "/danh-sach-bai-viet-app.aspx"
 var wpAPI = "/api/v1/wordpress/post/";
-var webList = ["ann.com.vn", "khohangsiann.com", "bosiquanao.net", "quanaogiaxuong.com", "annshop.vn", "quanaoxuongmay.com", "bansithoitrang.net", "panpan.vn", "nhapsionline.com", "thoitrangann.com", "khosimypham.com"];
+var webList = ["ann.com.vn", "khohangsiann.com", "bosiquanao.net", "quanaogiaxuong.com", "annshop.vn", "quanaoxuongmay.com", "bansithoitrang.net", "panpan.vn", "nhapsionline.com", "thoitrangann.com", "khosimypham.com", "simyphamonline.com"];
 //var webList = ["annshop.vn"];
 
 function showPostSyncModal(postPublicID) {

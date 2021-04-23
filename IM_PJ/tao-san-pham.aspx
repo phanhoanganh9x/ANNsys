@@ -384,10 +384,10 @@
                                 </div>
                                 <div class="row-right">
                                     <div class="form-row">
-                                        <asp:TextBox ID="txtYoutubeUrl" runat="server"  CssClass="form-control" placeholder="Url Youtube của sản phẩm" onchange="onChangeYoutubeUrl($(this).val())"></asp:TextBox>
+                                        <asp:TextBox ID="txtYoutubeUrl" runat="server"  CssClass="form-control" placeholder="Link clip Youtube" onchange="onChangeYoutubeUrl($(this).val())"></asp:TextBox>
                                     </div>
                                     <div class="form-row">
-                                        <asp:TextBox ID="txtLinkDownload" runat="server"  CssClass="form-control" placeholder="Link tải sản phẩm"></asp:TextBox>
+                                        <asp:TextBox ID="txtLinkDownload" runat="server"  CssClass="form-control" placeholder="Link tải clip"></asp:TextBox>
                                     </div>
                                     <div class="form-row">
                                         <asp:RadioButtonList ID="rdbActiveVideo" CssClass="RadioButtonList" runat="server" RepeatDirection="Horizontal">

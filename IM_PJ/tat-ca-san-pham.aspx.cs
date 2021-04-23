@@ -947,6 +947,13 @@ namespace IM_PJ
                     }
 
                     html.AppendLine("       <a target='_blank' class='customer-name-link' href='/xem-san-pham?id=" + item.ID + "'>" + (item.OldPrice > 0 ? "<span class='sale-icon'>SALE</span> " : "") + item.ProductTitle + "</a>" + (item.ProductStyle == 2 ? " <i class='fa fa-files-o' aria-hidden='true'></i>": ""));
+                    if (!String.IsNullOrEmpty(item.VideoId))
+                    {
+                        html.AppendLine("       <p class='p-paterials'><strong>Youtube:</strong> <a target='_blank' class='customer-name-link' href='https://www.youtube.com/watch?v=" + item.VideoId + "'>Link</a><p>");
+                        if (!String.IsNullOrEmpty(item.LinkDownload))
+                            html.AppendLine("       <p class='p-paterials'><strong>Download: </strong><a target='_blank' class='customer-name-link' href='" + item.LinkDownload + "'>Link</a><p>");
+                    }
+                        
                     html.AppendLine("       <p class='p-paterials'><strong>Chất liệu:</strong> " + item.Materials + "<p>");
 
                     if (!String.IsNullOrEmpty(item.Tags))

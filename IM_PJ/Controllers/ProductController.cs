@@ -1780,6 +1780,27 @@ namespace IM_PJ.Controllers
             sql.AppendLine(String.Empty);
             #endregion
 
+            #region Lấy thông tin video sản phẩm
+            sql.AppendLine(String.Empty);
+            sql.AppendLine("     SELECT");
+            sql.AppendLine("        f.ProductId");
+            sql.AppendLine("     ,  v.*");
+            sql.AppendLine("     INTO #ProductVideo");
+            sql.AppendLine("     FROM (");
+            sql.AppendLine("         SELECT");
+            sql.AppendLine("            pv.ProductId");
+            sql.AppendLine("         ,  pv.VideoId");
+            sql.AppendLine("         FROM");
+            sql.AppendLine("                 #ProductPagination AS p");
+            sql.AppendLine("         INNER JOIN ProductVideo AS pv");
+            sql.AppendLine("             ON  p.ID = pv.ProductId");
+            sql.AppendLine("     ) AS f");
+            sql.AppendLine("     INNER JOIN Video AS v");
+            sql.AppendLine("         ON  f.VideoId = v.Id");
+            sql.AppendLine("     ;");
+            sql.AppendLine(String.Empty);
+            #endregion
+
             #region Kết thúc
             sql.AppendLine(String.Empty);
             sql.AppendLine("     SELECT");
@@ -1793,6 +1814,8 @@ namespace IM_PJ.Controllers
             sql.AppendLine("     ,       PRQ.Liquidated");
             sql.AppendLine("     ,       PRQ.HasStock2");
             sql.AppendLine("     ,       PRQ.QuantityLeft2");
+            sql.AppendLine("     ,       pv.Id AS VideoId");
+            sql.AppendLine("     ,       pv.SubUrl AS LinkDownload");
             sql.AppendLine("     FROM");
             sql.AppendLine("             #ProductPagination AS p");
             sql.AppendLine("     LEFT JOIN #ProductQuantity AS PRQ");
@@ -1806,6 +1829,8 @@ namespace IM_PJ.Controllers
             sql.AppendLine("                     dbo.tbl_Category");
             sql.AppendLine("     ) AS c");
             sql.AppendLine("     ON c.ID = p.CategoryID");
+            sql.AppendLine("     LEFT JOIN #ProductVideo AS pv");
+            sql.AppendLine("         ON  p.Id = pv.ProductId");
             sql.AppendLine("     ;");
             sql.AppendLine(String.Empty);
             #endregion
@@ -1913,6 +1938,13 @@ namespace IM_PJ.Controllers
                     entity.Stock2Quantity = Convert.ToInt32(reader["QuantityLeft2"]);
                 else
                     entity.Stock2Quantity = 0;
+                #endregion
+
+                #region Product video
+                if (reader["VideoId"] != DBNull.Value)
+                    entity.VideoId = reader["VideoId"].ToString();
+                if (reader["LinkDownload"] != DBNull.Value)
+                    entity.LinkDownload = reader["LinkDownload"].ToString();
                 #endregion
                 list.Add(entity);
             }
@@ -3405,6 +3437,9 @@ namespace IM_PJ.Controllers
             // Stock 2
             public bool HasStock2 { get; set; }
             public int Stock2Quantity { get; set; }
+            // Video
+            public string VideoId { get; set; }
+            public string LinkDownload { get; set; }
 
         }
 

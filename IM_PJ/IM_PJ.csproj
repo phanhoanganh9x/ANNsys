@@ -409,9 +409,11 @@
     <Content Include="App_Themes\Ann\js\controllers\danh-sach-nhom-khach-hang\danh-sach-nhom-khach-hang-controller.js" />
     <Content Include="App_Themes\Ann\js\controllers\them-moi-giam-gia\them-moi-giam-gia-controller.js" />
     <Content Include="App_Themes\Ann\js\copy-invoice-url.js" />
+    <Content Include="App_Themes\Ann\js\copy-post-app-info.js" />
     <Content Include="App_Themes\Ann\js\copy-post-info.js" />
     <Content Include="App_Themes\Ann\js\copy-post-to-app.js" />
     <Content Include="App_Themes\Ann\js\copy-product-info-public.js" />
+    <Content Include="App_Themes\Ann\js\download-post-app-image.js" />
     <Content Include="App_Themes\Ann\js\download-post-image.js" />
     <Content Include="App_Themes\Ann\js\download-product-image-public.js" />
     <Content Include="App_Themes\Ann\js\download-product-image.js" />

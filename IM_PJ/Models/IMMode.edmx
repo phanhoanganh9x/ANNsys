@@ -499,6 +499,7 @@
           <Property Name="ModifiedBy" Type="nvarchar" MaxLength="15" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
           <Property Name="Timestamp" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="ShippingFee" Type="money" Nullable="false" />
         </EntityType>
         <EntityType Name="PreOrderDetail">
           <Key>
@@ -797,6 +798,7 @@
           <Property Name="ViewAllOrders" Type="int" />
           <Property Name="ViewAllReports" Type="int" />
           <Property Name="MinQuantityOfOrder" Type="int" Nullable="false" />
+          <Property Name="StaffIndex" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="tbl_Customer">
           <Key>
@@ -1436,6 +1438,7 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+          <Property Name="SubUrl" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="ViewOrder">
           <Key>
@@ -2502,6 +2505,7 @@
           <Property Name="ViewAllOrders" Type="Int32" />
           <Property Name="ViewAllReports" Type="Int32" />
           <Property Name="MinQuantityOfOrder" Type="Int32" Nullable="false" />
+          <Property Name="StaffIndex" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="tbl_Customer">
           <Key>
@@ -3358,6 +3362,7 @@
           <NavigationProperty Name="DeliveryAddress" Relationship="inventorymanagementModel.FK_PreOrder_DeliveryAddress" FromRole="PreOrder" ToRole="DeliveryAddress" />
           <NavigationProperty Name="PreOrderDetails" Relationship="inventorymanagementModel.FK_PreOrderDetail_PreOrder" FromRole="PreOrder" ToRole="PreOrderDetail" />
           <NavigationProperty Name="ViewOrders" Relationship="inventorymanagementModel.FK_ViewOrder_PreOrder" FromRole="PreOrder" ToRole="ViewOrder" />
+          <Property Name="ShippingFee" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
         </EntityType>
         <EntityType Name="PreOrderDetail">
           <Key>
@@ -3620,6 +3625,7 @@
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="PostVideos" Relationship="inventorymanagementModel.FK_PostVideo_Video" FromRole="Video" ToRole="PostVideo" />
           <NavigationProperty Name="ProductVideos" Relationship="inventorymanagementModel.FK_ProductVideo_Video" FromRole="Video" ToRole="ProductVideo" />
+          <Property Name="SubUrl" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_PostVideo_Video">
           <End Type="inventorymanagementModel.Video" Role="Video" Multiplicity="1" />
@@ -4358,6 +4364,7 @@
           <EntitySetMapping Name="tbl_Config">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Config">
               <MappingFragment StoreEntitySet="tbl_Config">
+                <ScalarProperty Name="StaffIndex" ColumnName="StaffIndex" />
                 <ScalarProperty Name="MinQuantityOfOrder" ColumnName="MinQuantityOfOrder" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="NumOfDateToChangeProduct" ColumnName="NumOfDateToChangeProduct" />
@@ -5088,6 +5095,7 @@
           <EntitySetMapping Name="PreOrders">
             <EntityTypeMapping TypeName="inventorymanagementModel.PreOrder">
               <MappingFragment StoreEntitySet="PreOrder">
+                <ScalarProperty Name="ShippingFee" ColumnName="ShippingFee" />
                 <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
@@ -5196,6 +5204,7 @@
           <EntitySetMapping Name="Videos">
             <EntityTypeMapping TypeName="inventorymanagementModel.Video">
               <MappingFragment StoreEntitySet="Video">
+                <ScalarProperty Name="SubUrl" ColumnName="SubUrl" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />

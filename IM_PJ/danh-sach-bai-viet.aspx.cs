@@ -363,7 +363,6 @@ namespace IM_PJ
                     string date = string.Format("{0:dd/MM/yyyy}", item.CreatedDate);
                     html.Append("   <td>" + date + "</td>");
                     html.Append("   <td>");
-                    html.Append("       <a href='javascript:;' title='Tải hình bài viết này' class='btn primary-btn h45-btn' onclick='getAllPostImage(" + item.ID + ");'><i class='fa fa-file-image-o' aria-hidden='true'></i> Tải</a>");
                     html.Append("       <a href='javascript:;' title='Xóa bài này' class='btn primary-btn btn-red h45-btn' onclick='deletePost(" + item.ID + ");'><i class='fa fa-times' aria-hidden='true'></i> Xóa</a>");
                     html.Append("       <a target='_blank' href='/sua-bai-viet?id=" + item.ID + "' title='Sửa bài này' class='btn primary-btn btn-blue h45-btn'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Sửa</a>");
                     html.Append("  </td>");

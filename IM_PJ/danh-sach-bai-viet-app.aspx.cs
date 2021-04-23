@@ -141,6 +141,43 @@ namespace IM_PJ
             ltrNumberOfPost.Text = a.Count().ToString();
         }
         [WebMethod]
+        public static string copyPostInfo(int id)
+        {
+            var post = PostPublicController.GetByID(id);
+            StringBuilder html = new StringBuilder();
+            if (post != null)
+            {
+                html.Append("<p>" + post.Content + "</p>\r\n");
+                html.Append("<p></p>\r\n");
+            }
+
+            return html.ToString();
+        }
+        [WebMethod]
+        public static string getAllPostImage(int id)
+        {
+            var post = PostPublicController.GetByID(id);
+            List<string> images = new List<string>();
+            if (post != null)
+            {
+                images.Add(post.Thumbnail);
+
+                // lấy ảnh bài viết từ thư viện
+
+                var imagePost = PostPublicImageController.GetByPostID(post.ID);
+
+                if (imagePost != null)
+                {
+                    foreach (var img in imagePost)
+                    {
+                        images.Add(img.Image);
+                    }
+                }
+            }
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            return serializer.Serialize(images.Distinct().ToList());
+        }
+        [WebMethod]
         public static string getClone(int postPublicID)
         {
             var postWordpressList = PostCloneController.GetAll(postPublicID);
@@ -370,8 +407,8 @@ namespace IM_PJ
                         html.Append("   <td>");
                         html.Append("       <a href='javascript:;' title='Xóa bài này' class='btn primary-btn btn-red h45-btn' onclick='deletePost(" + item.ID + ");'><i class='fa fa-times' aria-hidden='true'></i> Xóa</a>");
                         html.Append("       <a target='_blank' href='/sua-bai-viet-app?id=" + item.ID + "' title='Sửa bài này' class='btn primary-btn btn-blue h45-btn'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Sửa</a>");
-                        html.Append("       <a href='javascript:;' title='Đồng bộ bài viết' class='btn btn-green primary-btn h45-btn' onclick='showPostSyncModal(" + item.ID + ");'><i class='fa fa-refresh' aria-hidden='true'></i></a>");
-                        html.Append("       <a href='javascript:;' title='Up bài viết' class='btn btn-violet primary-btn h45-btn' onclick='upTopPost(" + item.ID + ");'><i class='fa fa-arrow-up' aria-hidden='true'></i></a>");
+                        html.Append("       <a href='javascript:;' title='Đồng bộ bài viết' class='btn btn-green primary-btn h45-btn' onclick='showPostSyncModal(" + item.ID + ");'><i class='fa fa-refresh' aria-hidden='true'></i> Đồng bộ</a>");
+                        html.Append("       <a href='javascript:;' title='Up bài viết' class='btn btn-violet primary-btn h45-btn' onclick='upTopPost(" + item.ID + ");'><i class='fa fa-arrow-up' aria-hidden='true'></i> Up</a>");
                         html.Append("  </td>");
                     }
                     html.Append("</tr>");
