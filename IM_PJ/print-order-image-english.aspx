@@ -4,12 +4,12 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
 <meta charset="utf-8" />
-    <link rel="stylesheet" href="/App_Themes/Ann/css/print-order-image.css?v=02042021" type="text/css"/>
+    <link rel="stylesheet" href="/App_Themes/Ann/css/print-order-image.css?v=26042021" type="text/css"/>
     <link rel="stylesheet" href="/App_Themes/Ann/barcode/style.css" type="text/css"/>
     <link rel="stylesheet" href="/App_Themes/Ann/css/responsive.css" type="text/css"/>
     <script type="text/javascript" src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
     <script type="text/javascript" src="/App_Themes/Ann/js/html2canvas.js"></script>
-    <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=02042021"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=26042021"></script>
     <title>Lấy ảnh đơn hàng Tiếng Anh</title>    
     <style>
         h3 {

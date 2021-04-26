@@ -10,7 +10,7 @@
     <meta name="robots" content="noindex, nofollow">
     <link rel="stylesheet" href="/App_Themes/Ann/css/style.css?v=15052019" media="all">
     <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=23082019" media="all">
-    <link href="/App_Themes/Ann/css/HoldOn.css?v=02042021" rel="stylesheet" type="text/css" />
+    <link href="/App_Themes/Ann/css/HoldOn.css?v=26042021" rel="stylesheet" type="text/css" />
     <link href="/App_Themes/NewUI/js/select2/select2.css" rel="stylesheet" />
     <script type="text/javascript" src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
     <style>
@@ -149,8 +149,8 @@
             <script src="/App_Themes/Ann/js/bootstrap-table/bootstrap-table.js"></script>
             <script src="/App_Themes/NewUI/js/select2/select2.min.js"></script>
             <script src="/App_Themes/Ann/js/master.js?v=2011"></script>
-            <script src="/App_Themes/Ann/js/copy-product-info.js?v=02042021"></script>
-            <script src="/App_Themes/Ann/js/download-product-image.js?v=02042021"></script>
+            <script src="/App_Themes/Ann/js/copy-product-info.js?v=26042021"></script>
+            <script src="/App_Themes/Ann/js/download-product-image.js?v=26042021"></script>
 
             <script src="/App_Themes/Ann/js/HoldOn.js?v=2011"></script>
 
