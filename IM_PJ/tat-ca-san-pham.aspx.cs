@@ -953,9 +953,16 @@ namespace IM_PJ
                         if (!String.IsNullOrEmpty(item.LinkDownload))
                             html.AppendLine("       <p class='p-paterials'><strong>Download: </strong><a target='_blank' class='customer-name-link' href='" + item.LinkDownload + "'>Link</a><p>");
                     }
-                        
+                    
                     html.AppendLine("       <p class='p-paterials'><strong>Chất liệu:</strong> " + item.Materials + "<p>");
-
+                    if (item.Price10 > 0)
+                    {
+                        html.AppendLine("       <p class='p-paterials'><strong>Giá 10 cái:</strong> " + string.Format("{0:N0}", item.Price10) + "<p>");
+                    }
+                    if (item.BestPrice > 0)
+                    {
+                        html.AppendLine("       <p class='p-paterials'><strong>Giá thùng:</strong> " + string.Format("{0:N0}", item.BestPrice) + "<p>");
+                    }
                     if (!String.IsNullOrEmpty(item.Tags))
                     {
                         var tagList = item.Tags.Split(',').Select(x => x.Trim()).ToList();

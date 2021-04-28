@@ -111,6 +111,8 @@ namespace IM_PJ.Controllers
                     ui.Old_Price = product.Old_Price;
                     ui.SyncKiotViet = product.SyncKiotViet;
                     ui.ShortDescription = product.ShortDescription;
+                    ui.Price10 = product.Price10;
+                    ui.BestPrice = product.BestPrice;
 
                     int kq = dbe.SaveChanges();
                     return kq.ToString();
@@ -1946,6 +1948,10 @@ namespace IM_PJ.Controllers
                 if (reader["LinkDownload"] != DBNull.Value)
                     entity.LinkDownload = reader["LinkDownload"].ToString();
                 #endregion
+                if (reader["Price10"] != DBNull.Value)
+                    entity.Price10 = Convert.ToDouble(reader["Price10"].ToString());
+                if (reader["BestPrice"] != DBNull.Value)
+                    entity.BestPrice = Convert.ToDouble(reader["BestPrice"].ToString());
                 list.Add(entity);
             }
             reader.Close();
@@ -3440,6 +3446,9 @@ namespace IM_PJ.Controllers
             // Video
             public string VideoId { get; set; }
             public string LinkDownload { get; set; }
+            // multi Price
+            public double Price10 { get; set; }
+            public double BestPrice { get; set; }
 
         }
 

@@ -328,6 +328,22 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
+                                    Giá 10 cái
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox type="number" min="0" autocomplete="off" ID="pPrice10" runat="server" CssClass="form-control" placeholder="Giá 10 cái"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Giá thùng
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox type="number" min="0" autocomplete="off" ID="pBestPrice" runat="server" CssClass="form-control" placeholder="Giá thùng"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
                                     Tags
                                 </div>
                                 <div class="row-right">

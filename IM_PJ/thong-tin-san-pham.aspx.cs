@@ -264,6 +264,10 @@ namespace IM_PJ
             pCostOfGood.Text = product.CostOfGood.ToString();
             // Giá lẻ
             pRetailPrice.Text = product.Retail_Price.ToString();
+            // Giá 10 cái
+            pPrice10.Text = product.Price10.ToString();
+            // Giá thùng
+            pBestPrice.Text = product.BestPrice.ToString();
             // Ảnh đại diện
             if (product.ProductImage != null)
             {
@@ -611,6 +615,10 @@ namespace IM_PJ
             updatedData.CostOfGood = Convert.ToDouble(pCostOfGood.Text);
             // Giá lẻ
             updatedData.Retail_Price = Convert.ToDouble(pRetailPrice.Text);
+            // Giá 10 cái
+            updatedData.Price10 = Convert.ToDouble(pPrice10.Text);
+            // Giá thùng
+            updatedData.BestPrice = Convert.ToDouble(pBestPrice.Text);
             // Ảnh đại diện
             if (uploadProductImage.UploadedFiles.Count > 0)
             {
