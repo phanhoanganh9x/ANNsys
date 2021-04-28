@@ -9,9 +9,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=yes">
     <meta name="format-detection" content="telephone=no">
     <meta name="robots" content="noindex, nofollow">
-    <link rel="stylesheet" href="/App_Themes/Ann/css/style.css?v=26042021" media="all">
-    <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=26042021" media="all">
-    <link rel="stylesheet" href="/App_Themes/Ann/css/style-sp.css?v=26042021" media="all">
+    <link rel="stylesheet" href="/App_Themes/Ann/css/style.css?v=28042021" media="all">
+    <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=28042021" media="all">
+    <link rel="stylesheet" href="/App_Themes/Ann/css/style-sp.css?v=28042021" media="all">
     <link href="/App_Themes/NewUI/js/sweet/sweet-alert.css" rel="stylesheet" />
     <script type="text/javascript" src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
 </head>
@@ -198,8 +198,8 @@
 
             <script src="/App_Themes/Ann/js/bootstrap.min.js"></script>
             <script src="/App_Themes/Ann/js/bootstrap-table/bootstrap-table.js"></script>
-            <script src="/App_Themes/Ann/js/master.js?v=26042021"></script>
-            <script src="/App_Themes/NewUI/js/sweet/sweet-alert.js?v=26042021" type="text/javascript"></script>
+            <script src="/App_Themes/Ann/js/master.js?v=28042021"></script>
+            <script src="/App_Themes/NewUI/js/sweet/sweet-alert.js?v=28042021" type="text/javascript"></script>
 
             <script type="text/javascript">
                 class RegisterProduct {

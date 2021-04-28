@@ -192,7 +192,7 @@
                                 </div>
                                 <div class="row-right">
                                     <telerik:RadEditor runat="server" ID="pSummary" Width="100%"
-                                        Height="150px" ToolsFile="~/FilesResources/ToolContent.xml" Skin="Metro"
+                                        Height="250px" ToolsFile="~/FilesResources/ToolContent.xml" Skin="Metro"
                                         DialogHandlerUrl="~/Telerik.Web.UI.DialogHandler.axd" AutoResizeHeight="False" ContentFilters="MakeUrlsAbsolute">
                                         <ImageManager ViewPaths="~/uploads/images/posts" UploadPaths="~/uploads/images/posts" DeletePaths="~/uploads/images/posts" />
                                     </telerik:RadEditor>

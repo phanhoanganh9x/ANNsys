@@ -391,7 +391,7 @@
                                     Mô tả ngắn
                                 </div>
                                 <div class="row-right">
-                                    <telerik:RadEditor runat="server" ID="pSummary" Width="100%" Height="150px" ToolsFile="~/FilesResources/ToolContent.xml" Skin="Metro" DialogHandlerUrl="~/Telerik.Web.UI.DialogHandler.axd" AutoResizeHeight="False" EnableResize="False">
+                                    <telerik:RadEditor runat="server" ID="pSummary" Width="100%" Height="250px" ToolsFile="~/FilesResources/ToolContent.xml" Skin="Metro" DialogHandlerUrl="~/Telerik.Web.UI.DialogHandler.axd" AutoResizeHeight="False" EnableResize="False">
                                         <ImageManager ViewPaths="~/uploads/images" UploadPaths="~/uploads/images" DeletePaths="~/uploads/images" />
                                     </telerik:RadEditor>
                                 </div>

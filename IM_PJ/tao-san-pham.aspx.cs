@@ -434,6 +434,8 @@ namespace IM_PJ
                             double Regular_Price = Convert.ToDouble(pRegular_Price.Text);
                             double CostOfGood = Convert.ToDouble(pCostOfGood.Text);
                             double Retail_Price = Convert.ToDouble(pRetailPrice.Text);
+                            double Price10 = Convert.ToDouble(pPrice10.Text);
+                            double BestPrice = Convert.ToDouble(pBestPrice.Text);
                             int supplierID = 0;
                             string supplierName = "";
                             string mainColor = ddlColor.SelectedValue.Trim();
@@ -482,7 +484,9 @@ namespace IM_PJ
                                 PreOrder = preOrder,
                                 Old_Price = Old_Price,
                                 SyncKiotViet = syncKiotViet,
-                                ShortDescription = shortDescription
+                                ShortDescription = shortDescription,
+                                Price10 = Price10,
+                                BestPrice = BestPrice
                             };
 
                             string kq = ProductController.Insert(prodNew);

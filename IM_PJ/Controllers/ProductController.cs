@@ -67,6 +67,8 @@ namespace IM_PJ.Controllers
                 ui.Old_Price = product.Old_Price;
                 ui.SyncKiotViet = product.SyncKiotViet;
                 ui.ShortDescription = product.ShortDescription;
+                ui.Price10 = product.Price10;
+                ui.BestPrice = product.BestPrice;
 
                 dbe.tbl_Product.Add(ui);
                 dbe.SaveChanges();

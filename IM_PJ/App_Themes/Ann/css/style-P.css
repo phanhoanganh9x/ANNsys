@@ -1686,7 +1686,7 @@ body {
     left: 150px;
     width: calc(100% - 150px);
     width: -webkit-calc(100% - 150px);
-    margin-bottom: 40px;
+    margin-bottom: 80px;
 }
 
 #main-wrap {

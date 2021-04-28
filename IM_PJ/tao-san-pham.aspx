@@ -356,6 +356,22 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
+                                    Giá sỉ 10 cái
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox type="number" min="0" autocomplete="off" ID="pPrice10" runat="server" CssClass="form-control" placeholder="Giá sỉ 10 cái"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Giá sỉ thùng
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox type="number" min="0" autocomplete="off" ID="pBestPrice" runat="server" CssClass="form-control" placeholder="Giá sỉ thùng"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
                                     Tags
                                 </div>
                                 <div class="row-right">
@@ -404,7 +420,7 @@
                                     Mô tả ngắn
                                 </div>
                                 <div class="row-right">
-                                    <telerik:RadEditor runat="server" ID="pSummary" Width="100%" Height="150px" ToolsFile="~/FilesResources/ToolContent.xml" Skin="Metro" DialogHandlerUrl="~/Telerik.Web.UI.DialogHandler.axd" AutoResizeHeight="False" EnableResize="False">
+                                    <telerik:RadEditor runat="server" ID="pSummary" Width="100%" Height="250px" ToolsFile="~/FilesResources/ToolContent.xml" Skin="Metro" DialogHandlerUrl="~/Telerik.Web.UI.DialogHandler.axd" AutoResizeHeight="False" EnableResize="False">
                                         <ImageManager ViewPaths="~/uploads/images" UploadPaths="~/uploads/images" DeletePaths="~/uploads/images" />
                                     </telerik:RadEditor>
                                 </div>
