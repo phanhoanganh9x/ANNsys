@@ -957,7 +957,7 @@ namespace IM_PJ
                     html.AppendLine("       <p class='p-paterials'><strong>Chất liệu:</strong> " + item.Materials + "<p>");
                     if (item.Price10 > 0)
                     {
-                        html.AppendLine("       <p class='p-paterials'><strong>Giá 10 cái:</strong> " + string.Format("{0:N0}", item.Price10) + "<p>");
+                        html.AppendLine("       <p class='p-paterials'><strong>Giá sỉ 10 cái:</strong> " + string.Format("{0:N0}", item.Price10) + "<p>");
                     }
                     if (item.BestPrice > 0)
                     {
