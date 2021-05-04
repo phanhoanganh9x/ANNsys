@@ -574,11 +574,11 @@ function updatePrice(obj) {
         if (confirm) {
             if (web == "all") {
                 for (var i = 0; i < webList.length; i++) {
-                    ajaxUpdateWholesalePrice(webList[i], productID);
+                    ajaxUpdatePrice(webList[i], productID);
                 }
             }
             else {
-                ajaxUpdateWholesalePrice(web, productID);
+                ajaxUpdatePrice(web, productID);
             }
         }
     });
