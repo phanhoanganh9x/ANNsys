@@ -25,7 +25,7 @@ function showProductSyncModal(productSKU, productID, categoryID) {
     html += "        	<a href='javascript:;' class='btn primary-btn btn-blue' onclick='upTopProduct($(this))'><i class='fa fa-upload' aria-hidden='true'></i> Up</a>";
     html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='renewProduct($(this))'><i class='fa fa-refresh' aria-hidden='true'></i> Làm mới</a>";
     html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='updateProductTag($(this))'><i class='fa fa-refresh' aria-hidden='true'></i> Thêm tag</a>";
-    html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='updateWholesalePrice($(this))'><i class='fa fa-refresh' aria-hidden='true'></i> Sửa giá sỉ</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='updatePrice($(this))'><i class='fa fa-refresh' aria-hidden='true'></i> Sửa giá</a>";
     html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='updateProductSKU($(this))'><i class='fa fa-refresh' aria-hidden='true'></i> Sửa SKU</a>";
     html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='toggleProduct($(this), `hide`)'><i class='fa fa-refresh' aria-hidden='true'></i> Ẩn</a>";
     html += "        	<a href='javascript:;' class='btn primary-btn' onclick='toggleProduct($(this), `show`)'><i class='fa fa-refresh' aria-hidden='true'></i> Hiện</a>";
@@ -52,7 +52,7 @@ function showProductSyncModal(productSKU, productID, categoryID) {
         button += "<a href='javascript:;' onclick='viewProduct($(this))' class='btn primary-btn btn-yellow'>Xem</a>";
         button += "<a href='javascript:;' onclick='editProduct($(this))' class='btn primary-btn btn-black'>Sửa</a>";
         button += "<a href='javascript:;' onclick='updateProductTag($(this))' class='btn primary-btn btn-black'>Thêm tag</a>";
-        button += "<a href='javascript:;' onclick='updateWholesalePrice($(this))' class='btn primary-btn btn-black'>Sửa giá sỉ</a>";
+        button += "<a href='javascript:;' onclick='updatePrice($(this))' class='btn primary-btn btn-black'>Sửa giá</a>";
         button += "<a href='javascript:;' onclick='updateProductSKU($(this))' class='btn primary-btn btn-black'>Sửa SKU</a>";
         button += "<a href='javascript:;' onclick='toggleProduct($(this), `hide`)' class='btn primary-btn btn-black'>Ẩn</a>";
         button += "<a href='javascript:;' onclick='toggleProduct($(this), `show`)' class='btn primary-btn'>Hiện</a>";
@@ -558,13 +558,13 @@ function ajaxUpdateProductTag(web, productID) {
     });
 }
 
-function updateWholesalePrice(obj) {
+function updatePrice(obj) {
     let web = obj.closest(".item-website").attr("data-web");
     let productID = obj.closest(".item-website").attr("data-product-id");
 
     swal({
         title: "Xác nhận",
-        text: "Bạn muốn cập nhật giá sỉ cho sản phẩm này?",
+        text: "Bạn muốn cập nhật giá cho sản phẩm này?",
         type: "warning",
         showCancelButton: true,
         closeOnConfirm: true,
@@ -584,11 +584,11 @@ function updateWholesalePrice(obj) {
     });
 }
 
-function ajaxUpdateWholesalePrice(web, productID) {
+function ajaxUpdatePrice(web, productID) {
 
     $.ajax({
         type: "POST",
-        url: API + "updateWholesalePrice/" + productID,
+        url: API + "updatePrice/" + productID,
         headers: {
             'domain': web,
         },
@@ -597,7 +597,7 @@ function ajaxUpdateWholesalePrice(web, productID) {
         beforeSend: function () {
             HoldOn.open();
 
-            $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-yellow'>Đang cập nhật giá sỉ sản phẩm</span>");
+            $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-yellow'>Đang cập nhật giá sản phẩm</span>");
             $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
             $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
         },
@@ -607,12 +607,12 @@ function ajaxUpdateWholesalePrice(web, productID) {
             // Thành công
             if (xhr.status === 200) {
                 if (data.id > 0) {
-                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Cập nhật giá sỉ thành công</span>");
+                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Cập nhật giá thành công</span>");
                     $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
                     $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
                 }
                 else {
-                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Cập nhật giá sỉ thất bại</span>");
+                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Cập nhật giá thất bại</span>");
                     $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
                     $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
                 }
