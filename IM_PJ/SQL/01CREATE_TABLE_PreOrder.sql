@@ -104,3 +104,15 @@ ALTER COLUMN [ShippingFee] [MONEY] NOT NULL
 
 ALTER TABLE [dbo].[PreOrder] ADD  CONSTRAINT [DF_PreOrder_ShippingFee]  DEFAULT (0) FOR [ShippingFee]
 GO
+
+-- =============================================
+-- Author:      Binh-TT
+-- Create date: 2021-05-04
+-- Description: Editing the total column
+-- ==========================================
+ALTER TABLE [dbo].[PreOrder] DROP COLUMN [Total]
+GO
+
+ALTER TABLE [dbo].[PreOrder]
+ADD [Total] AS ISNULL(ISNULL([PreOrder].[TotalPrice], 0) - ISNULL([PreOrder].[TotalDiscount], 0) - ISNULL([PreOrder].[CouponPrice], 0) + ISNULL([PreOrder].ShippingFee, 0), 0)
+GO
