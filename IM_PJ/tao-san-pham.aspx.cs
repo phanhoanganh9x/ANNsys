@@ -434,8 +434,8 @@ namespace IM_PJ
                             double Regular_Price = Convert.ToDouble(pRegular_Price.Text);
                             double CostOfGood = Convert.ToDouble(pCostOfGood.Text);
                             double Retail_Price = Convert.ToDouble(pRetailPrice.Text);
-                            double Price10 = Convert.ToDouble(pPrice10.Text);
-                            double BestPrice = Convert.ToDouble(pBestPrice.Text);
+                            double Price10 = String.IsNullOrEmpty(pPrice10.Text) ? 0 : Convert.ToDouble(pPrice10.Text);
+                            double BestPrice = String.IsNullOrEmpty(pBestPrice.Text) ? 0 : Convert.ToDouble(pBestPrice.Text);
                             int supplierID = 0;
                             string supplierName = "";
                             string mainColor = ddlColor.SelectedValue.Trim();

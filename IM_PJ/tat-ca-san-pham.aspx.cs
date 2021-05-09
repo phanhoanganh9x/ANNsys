@@ -1038,7 +1038,7 @@ namespace IM_PJ
                             html.AppendLine("       <a href='javascript:;' title='Phục hồi xả kho' class='recover-liquidation-product-" + item.ID + " btn primary-btn btn-green h45-btn' onclick='recoverLiquidatedProduct(" + item.CategoryID + ", " + item.ID + ", `" + item.ProductSKU + "`);'><i class='glyphicon glyphicon-repeat' aria-hidden='true'></i></a>");
                         }
                     }
-
+                    html.AppendLine("       <a href='javascript:;' title='Download sản phẩm Shopee' class='btn primary-btn h45-btn' onclick='downloadProductShopee(`" + item.ProductSKU + "`);'><i class='fa fa-download' aria-hidden='true'></i> S</a>");
                     html.AppendLine("  </td>");
                     html.AppendLine("</tr>");
                 }

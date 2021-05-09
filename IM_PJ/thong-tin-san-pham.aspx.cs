@@ -616,9 +616,9 @@ namespace IM_PJ
             // Giá lẻ
             updatedData.Retail_Price = Convert.ToDouble(pRetailPrice.Text);
             // Giá 10 cái
-            updatedData.Price10 = Convert.ToDouble(pPrice10.Text);
+            updatedData.Price10 = String.IsNullOrEmpty(pPrice10.Text) ? 0 : Convert.ToDouble(pPrice10.Text);
             // Giá thùng
-            updatedData.BestPrice = Convert.ToDouble(pBestPrice.Text);
+            updatedData.BestPrice = String.IsNullOrEmpty(pBestPrice.Text) ? 0 : Convert.ToDouble(pBestPrice.Text);
             // Ảnh đại diện
             if (uploadProductImage.UploadedFiles.Count > 0)
             {

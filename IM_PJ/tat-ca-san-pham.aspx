@@ -798,13 +798,22 @@
                 $(".table-product > tbody > tr").each(function (i, tr) {
                     let showHomePage = $(tr).attr("data-home-page");
                     let stockQuantity = $(tr).attr("data-stock-quantity");
-                    if (showHomePage == 1 && stockQuantity >= 5) {
+                    if (showHomePage == 1) {
                         $(".copy-product-id").append($(tr).attr("data-id") + "\n");
                     }
                 });
 
                 Clipboard.copy($(".copy-product-id").text());
                 $(".copy-product-id").remove();
+            }
+
+            function downloadProductShopee(productSKU) {
+
+                if (!productSKU)
+                    _alterError(titleAlert, { message: "Chưa chọn sản phẩm nào!" });
+
+                window.open("/api/v1/shopee/product/export/excel?productSKU=" + productSKU, "_self");
+
             }
         </script>
     </main>
