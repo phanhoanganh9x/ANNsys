@@ -626,9 +626,7 @@
                     }
 
                     $("input.cost-price").val(cost);
-                });
 
-                $("#<%=pRegular_Price.ClientID%>").blur(function () {
                     var regularPrice = parseInt($("#<%=pRegular_Price.ClientID%>").val());
                     var retailPrice = 0;
                     if (regularPrice < 60000)
@@ -651,6 +649,16 @@
                     }
 
                     $("#<%=pRetailPrice.ClientID%>").val(retailPrice);
+                    
+                });
+
+                $("#<%=pCostOfGood.ClientID%>").blur(function () {
+                    var regularPrice = parseInt($("#<%=pRegular_Price.ClientID%>").val());
+                    var CostOfGood = parseInt($("#<%=pCostOfGood.ClientID%>").val());
+                    var Price10 = regularPrice - 15000;
+                    var BestPrice = CostOfGood + 10000;
+                    $("#<%=pPrice10.ClientID%>").val(Price10);
+                    $("#<%=pBestPrice.ClientID%>").val(BestPrice);
                 });
 
                 $('input.sku-input').val(function () {
