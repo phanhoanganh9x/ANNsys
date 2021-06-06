@@ -27,15 +27,16 @@ CREATE TABLE [dbo].[DeliverySaveReport](
 	[ShopTraShipKhiTraHang] [money] NOT NULL,
 	[KhuyenMai] [money] NOT NULL,
 	[ThanhToan] [money] NOT NULL,
-	[GhiChu] [nvarchar](MAX) NOT NULL,
+	[GhiChu] [nvarchar](MAX),
 	[FileName] [nvarchar](255) NOT NULL,
+	[OrderSearchStatus] [int] NOT NULL,
 	[ShopCod][money],
 	[ShopFee] [money],
 	[Staff] [nvarchar](100),
 	[Review] [int] NOT NULL,
 ) ON [PRIMARY]
 GO
-ALTER TABLE [dbo].[DeliverySaveReport] ADD  CONSTRAINT [PK_DeliverySaveReport] PRIMARY KEY CLUSTERED 
+ALTER TABLE [dbo].[DeliverySaveReport] ADD  CONSTRAINT [PK_DeliverySaveReport] PRIMARY KEY CLUSTERED
 (
 	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
@@ -44,6 +45,9 @@ ALTER TABLE [dbo].[DeliverySaveReport] ADD  CONSTRAINT [DF_DeliverySaveReport_Re
 GO
 
 EXEC sys.sp_addextendedproperty @name=N'TrangThaiDonHang', @value=N'1: Đã đối soát; 2: Đã đối soát công nợ trả hàng' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'DeliverySaveReport', @level2type=N'COLUMN',@level2name=N'TrangThaiDonHang'
+GO
+
+EXEC sys.sp_addextendedproperty @name=N'OrderSearchStatus', @value=N'1: Tìm thấy đơn; 2: Không tìm thấy đơn' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'DeliverySaveReport', @level2type=N'COLUMN',@level2name=N'OrderSearchStatus'
 GO
 
 EXEC sys.sp_addextendedproperty @name=N'ShopCod', @value=N'Tiền COD của hệ thống ANN Shop' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'DeliverySaveReport', @level2type=N'COLUMN',@level2name=N'ShopCod'

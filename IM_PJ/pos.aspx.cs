@@ -610,7 +610,7 @@ namespace IM_PJ
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "script", "$(function () { handleErrorSubmit(); });", true);
             }

@@ -603,7 +603,7 @@ function cancelPreOrder(preOrderId, staff) {
             if (e.status == 400)
                 return swal({
                     title: 'Error',
-                    text: e.reresponseJSON.message,
+                    text: e.responseJSON.message,
                     type: 'error',
                     showCloseButton: true,
                     html: true,
@@ -666,7 +666,7 @@ function recoveryPreOrder(preOrderId, staff) {
             if (e.status == 400)
                 return swal({
                     title: 'Error',
-                    text: e.reresponseJSON.message,
+                    text: e.responseJSON.message,
                     type: 'error',
                     showCloseButton: true,
                     html: true,
