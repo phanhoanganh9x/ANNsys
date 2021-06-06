@@ -791,19 +791,19 @@ namespace IM_PJ.Controllers
                 // Filter orderid or customername or customerphone or nick or shipcode
                 if (!String.IsNullOrEmpty(filter.search))
                 {
-                    string search = Regex.Replace(filter.search.Trim(), @"[^0-9a-zA-Z\s_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]+", "").Trim().ToLower();
+                    string search = Regex.Replace(filter.search.Trim(), @"[^0-9a-zA-Z\.\s_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]+", "").Trim().ToLower();
                     search = UnSign.convert(search);
-
-                    var number = Regex.IsMatch(search, @"^\d+$");
 
                     if (filter.searchType == (int)SearchType.Order)
                     {
-                        if (number)
+                        // Trường hợp là mã giao hàng tiết kiệm
+                        if (Regex.IsMatch(search, @"^s19100253\."))
+                            orderFilter = orderFilter.Where(x => x.ShippingCode == filter.search).ToList();
+                        // Trường hợp bắt đầu là sô
+                        else if (Regex.IsMatch(search, @"^\d+$"))
                         {
                             if (search.Length <= 6)
-                            {
                                 orderFilter = orderFilter.Where(x => x.ID.ToString() == search).ToList();
-                            }
                             else
                             {
                                 orderFilter = orderFilter

@@ -26,7 +26,24 @@
         let minute = datetime.getMinutes();
         let seconds = datetime.getSeconds();
 
-        if (format == 'MM/dd/yyyy') {
+        if (format == 'dd/MM/yyyy') {
+            let strDate = ''
+            let strMonth = ''
+            let strYear = year.toString();
+
+            if (date < 10)
+                strDate = '0' + date.toString();
+            else
+                strDate = date.toString();
+
+            if (month < 10)
+                strMonth = '0' + month.toString();
+            else
+                strMonth = month.toString();
+
+            return  strDate + '/' + strMonth + '/' + strYear;
+        }
+        else if (format == 'MM/dd/yyyy') {
             let strDate = ''
             let strMonth = ''
             let strYear = year.toString();
