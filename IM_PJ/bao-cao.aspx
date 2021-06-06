@@ -47,6 +47,10 @@
                                         <td><a href="thong-ke-buu-dien" class="btn primary-btn h45-btn">Chi tiết</a></td>
                                     </tr>
                                     <tr>
+                                        <td><a href="thong-ke-ghtk">Thống kê GHTK</a></td>
+                                        <td><a href="thong-ke-ghtk" class="btn primary-btn h45-btn">Chi tiết</a></td>
+                                    </tr>
+                                    <tr>
                                         <td><a href="thong-ke-khach-hang">Thống kê khách hàng</a></td>
                                         <td><a href="thong-ke-khach-hang" class="btn primary-btn h45-btn">Chi tiết</a></td>
                                     </tr>
