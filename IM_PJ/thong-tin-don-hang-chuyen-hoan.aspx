@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=20200703145200"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=202106081515"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:Panel ID="parent" runat="server">
@@ -60,7 +60,7 @@
                                             <asp:Literal ID="ltrOrderStatus" runat="server"></asp:Literal>
                                         </div>
                                     </div>
-                                    <div class="col-md-4"> 
+                                    <div class="col-md-4">
                                         <label class="left pad10">Lý do chuyển hoàn: </label>
                                         <div class="ordernote">
                                             <asp:Literal ID="ltrOrderNote" runat="server"></asp:Literal>
@@ -604,7 +604,7 @@
 
                         });
                     }
-                    
+
                 }
                 else {
                     HoldOn.open();

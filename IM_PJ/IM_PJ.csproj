@@ -346,6 +346,7 @@
     <Content Include="App_Themes\Ann\css\HoldOn.css" />
     <Content Include="App_Themes\Ann\css\pages\chi-tiet-giam-gia\chi-tiet-giam-gia.css" />
     <Content Include="App_Themes\Ann\css\pages\cron-job-product-status\cron-job-product-status.css" />
+    <Content Include="App_Themes\Ann\css\pages\dang-ky-ghtk\dang-ky-ghtk.css" />
     <Content Include="App_Themes\Ann\css\pages\danh-sach-don-dat-hang\danh-sach-don-dat-hang.css" />
     <Content Include="App_Themes\Ann\css\pages\danh-sach-don-hang\danh-sach-don-hang.css" />
     <Content Include="App_Themes\Ann\css\pages\danh-sach-khach-giam-gia\danh-sach-khach-giam-gia.css" />
@@ -423,6 +424,7 @@
     <Content Include="App_Themes\Ann\js\models\common\customer-model.js" />
     <Content Include="App_Themes\Ann\js\models\common\discount-group-model.js" />
     <Content Include="App_Themes\Ann\js\models\common\order-model.js" />
+    <Content Include="App_Themes\Ann\js\pages\dang-ky-ghtk\dang-ky-ghtk.js" />
     <Content Include="App_Themes\Ann\js\pages\thong-ke-ghtk\thong-ke-ghtk.js" />
     <Content Include="App_Themes\Ann\js\pages\thong-tin-don-dat-hang\thong-tin-don-dat-hang.js" />
     <Content Include="App_Themes\Ann\js\pages\chi-tiet-giam-gia\chi-tiet-giam-gia.js" />

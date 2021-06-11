@@ -25,7 +25,7 @@ namespace IM_PJ.Models
         public int ID { get; set; }
         public string Name { get; set; }
         public Nullable<int> PID { get; set; }
-        public int Type { get; set; }
+        public Nullable<int> Type { get; set; }
         public Nullable<int> Region { get; set; }
         public string Alias { get; set; }
         public bool IsPicked { get; set; }

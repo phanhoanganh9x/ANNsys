@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=20200703145200"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=202106081515"></script>
     <script src="/App_Themes/Ann/js/search-product.js?v=09052021"></script>
     <script src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=09052021"></script>
 </asp:Content>
@@ -461,7 +461,7 @@
         </AjaxSettings>
     </telerik:RadAjaxManager>
     <telerik:RadScriptBlock ID="sc" runat="server">
-        <script type="text/javascript" src="App_Themes/Ann/js/delivery-address.js?v=202101211340"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/delivery-address.js?v=202106081810"></script>
         <script type="text/javascript">
             "use strict";
             // #region Private
@@ -475,17 +475,17 @@
 
                     return false;
                 }
-                
+
                 // SĐT khách hàng
                 let $phone = $("#<%=txtPhone.ClientID%>");
-                
+
                 if ($phone.val() === "") {
                     $phone.focus();
                     swal("Thông báo", "Hãy nhập số điện thoại khách hàng!", "error");
 
                     return false;
                 }
-                
+
                 // Tỉnh / thành phố
                 let $province = $("#<%=ddlProvince.ClientID%>");
 
@@ -507,7 +507,7 @@
 
                     return false;
                 }
-                
+
                 // Quận / huyện
                 let $district = $("#<%=ddlDistrict.ClientID%>");
 
@@ -529,11 +529,11 @@
 
                     return false;
                 }
-                
+
                 // Phường / xã
                 let $ward = $("#<%=ddlWard.ClientID%>");
 
-                if ((+$ward.val() || 0) === 0) {
+                if ($ward.val() == null) {
                     swal({
                         title: "Thông báo",
                         text: "Chưa chọn phường xã",
@@ -551,7 +551,7 @@
 
                     return false;
                 }
-                
+
                 // Địa chỉ
                 let $address = $("#<%=txtAddress.ClientID%>");
 
@@ -675,7 +675,7 @@
                 // Kiểm tra thông tin nhận hàng
                 if (!checkDeliveryAddressValidation())
                     return false;
-               
+
                 // Kiểm tra đơn hàng là đơn rỗng không
                 if (!_checkOrderEmty())
                     return false;
@@ -746,7 +746,7 @@
                 // original length
                 var original_len = input_val.length;
 
-                // initial caret position 
+                // initial caret position
                 var caret_pos = input.prop("selectionStart");
 
                 // check for decimal
@@ -1463,7 +1463,7 @@
             function payAll() {
                 if (!_checkValidation())
                     return;
-                
+
                 Promise.all([_updateDeliveryAddress()])
                     .then(function () {
                         _insertOrder();

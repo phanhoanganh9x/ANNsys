@@ -29,5 +29,6 @@ namespace IM_PJ.Models
         public Nullable<int> ZaloShop { get; set; }
         public string EnName { get; set; }
         public string EnDescription { get; set; }
+        public Nullable<int> ShopeeId { get; set; }
     }
 }

@@ -12,19 +12,19 @@ namespace IM_PJ.Models
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
-    
+
     public partial class inventorymanagementEntities : DbContext
     {
         public inventorymanagementEntities()
             : base("name=inventorymanagementEntities")
         {
         }
-    
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             throw new UnintentionalCodeFirstException();
         }
-    
+
         public virtual DbSet<Bank> Banks { get; set; }
         public virtual DbSet<BankAccount> BankAccounts { get; set; }
         public virtual DbSet<BankTransfer> BankTransfers { get; set; }

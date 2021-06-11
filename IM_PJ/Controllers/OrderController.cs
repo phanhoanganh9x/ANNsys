@@ -3082,6 +3082,10 @@ namespace IM_PJ.Controllers
                         }
                     }
 
+                    // Trường hợp là GHTK
+                    if (orderLast.ShippingType == 6)
+                        result.shippingFee = "0";
+
                     return serializer.Serialize(result);
                 }
 

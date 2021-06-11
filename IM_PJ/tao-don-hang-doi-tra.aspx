@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=20200703145200"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=202106081515"></script>
     <script src="/Scripts/moment.min.js"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -56,7 +56,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="form-group">
@@ -311,7 +311,7 @@
                 isTarget(RowIndex, ProductID, ProductVariableID) {
                     return this.RowIndex == RowIndex && this.ProductID == ProductID && this.ProductVariableID == ProductVariableID;
                 }
-                
+
                 stringJSON() {
                     return JSON.stringify(this);
                 }
@@ -351,7 +351,7 @@
                         else {
                             newValue = formatThousands(parseInt(oldValue) + discount);
                         }
-                        
+
                         $(this).val(newValue);
                         changeRow($(this));
                     });
@@ -448,7 +448,7 @@
                     return false;
                 }
             });
-            
+
             $('#txtSearch').keydown(function (event) {
                 if (event.which === 13) {
                     searchProduct();
@@ -798,8 +798,8 @@
                         html += "               <option value='3' selected>Đổi hàng lỗi</option>\n";
                     }
                 }
-                
-                
+
+
                 html += "           </select>\n";
                 html += "    </td>\n";
                 if (item.ChangeType == 2) {
@@ -928,7 +928,7 @@
                     productVariableSearch = [];
 
                     if (isBlank(txtPhone)) {
-                    
+
                         swal({
                             title: "Từ từ nè",
                             text: "Tìm khách hàng trước đã!<br><br>Nếu chưa có thì phải tạo khách hàng trước nha!",
@@ -974,7 +974,7 @@
                     });
 
                     if (product != null) {
-                        // remove product by SKU 
+                        // remove product by SKU
                         productDeleteRefunds = productDeleteRefunds.filter(function (item) {
                             return !(item.ParentSKU == product.ParentSKU && item.ChildSKU == product.ChildSKU)
                         });
@@ -1139,11 +1139,11 @@
                         });
 
                         dataJSON = dataJSON.replace(/.$/, "") + "]}";
-                        
+
                         HoldOn.open();
                         $("#<%=hdfListProduct.ClientID%>").val(dataJSON);
                         $("#<%=btnSave.ClientID%>").click();
-                        
+
                     }
                     else {
                         $("#txtSearch").focus();

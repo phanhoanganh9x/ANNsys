@@ -228,7 +228,7 @@
           <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="PID" Type="int" />
-          <Property Name="Type" Type="int" Nullable="false" />
+          <Property Name="Type" Type="int" />
           <Property Name="Region" Type="int" />
           <Property Name="Alias" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="IsPicked" Type="bit" Nullable="false" />
@@ -492,7 +492,6 @@
           <Property Name="TotalPrice" Type="money" Nullable="false" />
           <Property Name="TotalDiscount" Type="money" Nullable="false" />
           <Property Name="CouponPrice" Type="money" Nullable="false" />
-          <Property Name="Total" Type="money" StoreGeneratedPattern="Computed" />
           <Property Name="SourceOrdering" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="15" Nullable="false" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
@@ -500,6 +499,7 @@
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
           <Property Name="Timestamp" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
           <Property Name="ShippingFee" Type="money" Nullable="false" />
+          <Property Name="Total" Type="money" StoreGeneratedPattern="Computed" Nullable="false" />
         </EntityType>
         <EntityType Name="PreOrderDetail">
           <Key>
@@ -776,6 +776,7 @@
           <Property Name="ZaloShop" Type="int" />
           <Property Name="EnName" Type="nvarchar(max)" />
           <Property Name="EnDescription" Type="nvarchar(max)" />
+          <Property Name="ShopeeId" Type="int" />
         </EntityType>
         <EntityType Name="tbl_Config">
           <Key>
@@ -1001,6 +1002,7 @@
           <Property Name="Avatar" Type="nvarchar(max)" />
           <Property Name="DeliveryAddressId" Type="bigint" />
           <Property Name="Timestamp" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="GhtkInsuranceFee" Type="money" Nullable="false" />
         </EntityType>
         <EntityType Name="tbl_OrderDetail">
           <Key>
@@ -1126,6 +1128,8 @@
           <Property Name="ShortDescription" Type="nvarchar(max)" />
           <Property Name="Price10" Type="float" />
           <Property Name="BestPrice" Type="float" />
+          <Property Name="ShopeeDescription" Type="nvarchar(max)" />
+          <Property Name="CleanName" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="tbl_ProductImage">
           <Key>
@@ -1431,8 +1435,8 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Thumbnail" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="Url" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Thumbnail" Type="nvarchar(max)" />
+          <Property Name="Url" Type="nvarchar(max)" />
           <Property Name="Height" Type="int" Nullable="false" />
           <Property Name="Width" Type="int" Nullable="false" />
           <Property Name="Expiration" Type="bigint" Nullable="false" />
@@ -2023,7 +2027,7 @@
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="PID" Type="Int32" />
-          <Property Name="Type" Type="Int32" Nullable="false" />
+          <Property Name="Type" Type="Int32" />
           <Property Name="Region" Type="Int32" />
           <Property Name="Alias" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="IsPicked" Type="Boolean" Nullable="false" />
@@ -2485,6 +2489,7 @@
           <Property Name="ZaloShop" Type="Int32" />
           <Property Name="EnName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="EnDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ShopeeId" Type="Int32" />
         </EntityType>
         <EntityType Name="tbl_Config">
           <Key>
@@ -2712,6 +2717,7 @@
           <Property Name="Timestamp" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
           <NavigationProperty Name="DeliveryAddress" Relationship="inventorymanagementModel.FK_tbl_Order_DeliveryAddress" FromRole="tbl_Order" ToRole="DeliveryAddress" />
           <NavigationProperty Name="ViewOrders" Relationship="inventorymanagementModel.FK_ViewOrder_tbl_Order" FromRole="tbl_Order" ToRole="ViewOrder" />
+          <Property Name="GhtkInsuranceFee" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
         </EntityType>
         <EntityType Name="tbl_OrderDetail">
           <Key>
@@ -2839,6 +2845,8 @@
           <Property Name="ShortDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Price10" Type="Double" />
           <Property Name="BestPrice" Type="Double" />
+          <Property Name="ShopeeDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CleanName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_ProductImage">
           <Key>
@@ -3355,7 +3363,7 @@
           <Property Name="TotalPrice" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
           <Property Name="TotalDiscount" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
           <Property Name="CouponPrice" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
-          <Property Name="Total" Type="Decimal" Precision="19" Scale="4" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="Total" Type="Decimal" Precision="19" Scale="4" annotation:StoreGeneratedPattern="Computed" Nullable="false" />
           <Property Name="SourceOrdering" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
@@ -3618,8 +3626,8 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Thumbnail" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Url" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Thumbnail" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Url" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Height" Type="Int32" Nullable="false" />
           <Property Name="Width" Type="Int32" Nullable="false" />
           <Property Name="Expiration" Type="Int64" Nullable="false" />
@@ -4347,6 +4355,7 @@
           <EntitySetMapping Name="tbl_Category">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Category">
               <MappingFragment StoreEntitySet="tbl_Category">
+                <ScalarProperty Name="ShopeeId" ColumnName="ShopeeId" />
                 <ScalarProperty Name="EnDescription" ColumnName="EnDescription" />
                 <ScalarProperty Name="EnName" ColumnName="EnName" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
@@ -4547,6 +4556,7 @@
           <EntitySetMapping Name="tbl_Order">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Order">
               <MappingFragment StoreEntitySet="tbl_Order">
+                <ScalarProperty Name="GhtkInsuranceFee" ColumnName="GhtkInsuranceFee" />
                 <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
                 <ScalarProperty Name="DeliveryAddressId" ColumnName="DeliveryAddressId" />
                 <ScalarProperty Name="Avatar" ColumnName="Avatar" />
@@ -4689,6 +4699,8 @@
           <EntitySetMapping Name="tbl_Product">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Product">
               <MappingFragment StoreEntitySet="tbl_Product">
+                <ScalarProperty Name="CleanName" ColumnName="CleanName" />
+                <ScalarProperty Name="ShopeeDescription" ColumnName="ShopeeDescription" />
                 <ScalarProperty Name="BestPrice" ColumnName="BestPrice" />
                 <ScalarProperty Name="Price10" ColumnName="Price10" />
                 <ScalarProperty Name="ShortDescription" ColumnName="ShortDescription" />

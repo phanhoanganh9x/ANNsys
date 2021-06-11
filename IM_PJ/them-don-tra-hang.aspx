@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=20200703145200"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=202106081515"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:Panel ID="parent" runat="server">
@@ -36,7 +36,7 @@
                                             <asp:TextBox ID="txtPhone" Enabled="false" CssClass="form-control" runat="server" onchange="checkCustomer()" onpaste="checkCustomer()"></asp:TextBox>
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -52,7 +52,7 @@
                                             <asp:TextBox ID="txtAddress" Enabled="false" CssClass="form-control" runat="server"></asp:TextBox>
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -262,7 +262,7 @@
                     return false;
                 }
             });
-            
+
             $('#txtSearch').keydown(function (event) {
                 if (event.which === 13) {
                     searchProduct();
@@ -630,7 +630,7 @@
             }
 
             <%--function checkCustomer() {
-                
+
                     var phone = $("#<%=txtPhone.ClientID%>").val();
 
                     $.ajax({
@@ -659,8 +659,8 @@
                             alert('lỗi');
                         }
                     });
-                
-                
+
+
             }--%>
 
             var formatThousands = function (n, dp) {

@@ -640,7 +640,8 @@ namespace IM_PJ
                     }
                     if (order.ShippingType == 6 && !String.IsNullOrEmpty(order.ShippingCode))
                     {
-                        ltrPrint.Text += "<a target='_blank' href='https://khachhang.giaohangtietkiem.vn/khachhang?code=" + order.ShippingCode + "' class='btn primary-btn btn-ghtk fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-upload' aria-hidden='true'></i> Xem đơn GHTK</a>";
+                        ltrPrint.Text += "<a id='btnShowGhtk' target='_blank' href='https://khachhang.giaohangtietkiem.vn/khachhang?code=" + order.ShippingCode + "' class='btn primary-btn btn-ghtk fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-upload' aria-hidden='true'></i> Xem đơn GHTK</a>";
+                        ltrPrint.Text += "<a id='btnCancelGhtk' href='javascript:;' onclick='cancelGhtk(" + ID + ", `" + order.ShippingCode + "`)' class='btn primary-btn fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-trash' aria-hidden='true'></i> Xem đơn GHTK</a>";
                     }
                     if (order.ShippingType == 3 && !String.IsNullOrEmpty(order.ShippingCode))
                     {
