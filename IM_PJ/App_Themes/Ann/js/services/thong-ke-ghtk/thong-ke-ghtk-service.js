@@ -22,7 +22,7 @@
         if (filter.orderStatus)
             queryParams += '&orderStatus=' + filter.orderStatus
         // Trạng thái GHTK
-        if (filter.ghtkStatus)
+        if (filter.ghtkStatus != null)
             queryParams += '&ghtkStatus=' + filter.ghtkStatus;
         // Trạng thái duyệt
         if (filter.reviewStatus)
