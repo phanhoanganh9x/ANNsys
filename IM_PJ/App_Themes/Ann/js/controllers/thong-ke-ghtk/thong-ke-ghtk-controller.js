@@ -71,7 +71,12 @@
             // Trạng thái GHTK
             if (key == "ghtkStatus")
                 if (value)
-                    this.filter.ghtkStatus = +value || null;
+                {
+                    if (value == "0")
+                        this.filter.ghtkStatus = 0;
+                    else
+                        this.filter.ghtkStatus = +value || null;
+                }
             // Trạng thái duyệt
             if (key == "reviewStatus")
                 if (value)
@@ -102,7 +107,7 @@
         if (this.filter.orderStatus)
             queryParams += '&orderStatus=' + this.filter.orderStatus;
         // Trạng thái GHTK
-        if (this.filter.ghtkStatus)
+        if (this.filter.ghtkStatus != null)
             queryParams += '&ghtkStatus=' + this.filter.ghtkStatus;
         // Trạng thái duyệt
         if (this.filter.reviewStatus)

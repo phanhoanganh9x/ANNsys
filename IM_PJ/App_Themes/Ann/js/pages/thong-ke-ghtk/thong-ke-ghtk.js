@@ -111,7 +111,12 @@ function _updateFilter() {
     let ghtkStatusDOM = document.querySelector("[id$='_ddlGhtkStatus']");
 
     if (ghtkStatusDOM.value)
-        controller.filter.ghtkStatus = +ghtkStatusDOM.value || null;
+    {
+        if (ghtkStatusDOM.value == "0")
+            controller.filter.ghtkStatus = 0;
+        else
+            controller.filter.ghtkStatus = +ghtkStatusDOM.value || null;
+    }
     else
         controller.filter.ghtkStatus = null;
 
