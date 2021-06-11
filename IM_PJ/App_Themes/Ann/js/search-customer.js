@@ -33,7 +33,7 @@ function getCustomerDiscount(custID) {
                 }
 
                 $(".refund-info").html(strHTML).show();
-                
+
                 $("input[id$='_hdfIsDiscount']").val(data.IsDiscount ? 1 : 0);
                 $("input[id$='_hdfDiscountAmount']").val(data.Discount);
                 $("input[id$='_hdfQuantityRequirement']").val(data.QuantityProduct);
@@ -72,7 +72,7 @@ function viewCustomerDetail(custID) {
         dataType: "json",
         success: function (msg) {
             if (msg.d !== "null") {
-                
+
                 var alldata = JSON.parse(msg.d);
 
                 var data = alldata.Customer;
@@ -98,7 +98,7 @@ function viewCustomerDetail(custID) {
                     html += "           <td class=\"capitalize\">" + data.Nick + "</td>";
                     html += "       </tr>";
                 }
-                
+
                 html += "       <tr>";
                 html += "           <td style=\"width:25%;\">Điện thoại</td>";
                 html += "           <td>" + data.CustomerPhone + "</td>";
@@ -289,7 +289,7 @@ function showCustomerList() {
                         } else {
                             html += ("<td class=\"facebook\" data-value=\"null\"></td>");
                         }
-                        
+
                         html += ("<td class=\"createdby province-column\">" + item.CreatedBy + "</td>");
                         html += ("<td class=\"address address-column\">" + item.CustomerAddress + "</td>");
                         html += ("</tr>");
@@ -348,7 +348,7 @@ function selectCustomer() {
         var createdby = $(this).closest('tr').find("td.createdby").html();
         var username = $("input[id$='_hdfUsername']").val();
 
-        
+
 
         if (createdby !== username) {
             swal({
@@ -445,7 +445,7 @@ function selectCustomer() {
             if (typeof removeCoupon === 'function') {
                 removeCoupon();
             }
-            
+
             closePopup();
 
             $("input[id$='_hdfCustomerID']").val(id);
@@ -456,7 +456,7 @@ function selectCustomer() {
 
             swal.close();
 
-            // Trường hợp là them-moi-don-hang page 
+            // Trường hợp là them-moi-don-hang page
             // Kiểm tra xem có đơn hàng cũ đang xử lý và đơn đổi tra hàng nào chưa trừ tiền không
             checkOrderOld(id);
 
@@ -642,7 +642,7 @@ function selectCustomerDetail(data) {
         button += "<a href=\"chi-tiet-khach-hang?id=" + data.ID + "\" class=\"btn primary-btn fw-btn not-fullwidth edit-customer-btn\" target=\"_blank\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i> Sửa</a>";
         button += "<a href=\"danh-sach-don-hang?searchtype=1&textsearch=" + data.CustomerPhone + "\" class=\"btn primary-btn fw-btn not-fullwidth edit-customer-btn\" target=\"_blank\"><i class=\"fa fa-history\" aria-hidden=\"true\"></i> Lịch sử</a>";
     }
-    
+
     button += "<a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth clear-btn\" onclick=\"clearCustomerDetail()\"><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Bỏ</a>";
     $(".view-detail").html(button).show();
 
@@ -765,13 +765,13 @@ function ajaxCheckCustomer() {
         });
 
     }
-    
+
 }
 
 
 // Customer Address
 function _initReceiverAddress() {
-    
+
     $("select[id$='_ddlProvince']").val(null).trigger('change');
     // Danh sách tỉnh / thành phố
     $("select[id$='_ddlProvince']").select2({
@@ -783,9 +783,11 @@ function _initReceiverAddress() {
             url: '/api/v1/delivery-save/provinces/select2',
             data: (params) => {
                 var query = {
-                    search: params.term,
                     page: params.page || 1
                 }
+
+                if (params.term)
+                    query.search = params.term;
 
                 return query;
             }
@@ -853,9 +855,11 @@ function _disabledDDLDistrict(disabled, provinceID) {
                 url: '/api/v1/delivery-save/province/' + provinceID + '/districts/select2',
                 data: (params) => {
                     var query = {
-                        search: params.term,
                         page: params.page || 1
                     }
+
+                    if (params.term)
+                        query.search = params.term;
 
                     return query;
                 }
@@ -887,9 +891,11 @@ function _disabledDDLWard(disabled, districtID) {
                 url: '/api/v1/delivery-save/district/' + districtID + '/wards/select2',
                 data: (params) => {
                     var query = {
-                        search: params.term,
                         page: params.page || 1
                     }
+
+                    if (params.term)
+                        query.search = params.term;
 
                     return query;
                 }
@@ -925,7 +931,7 @@ function _getCustomerAddress(customerPhone) {
                 // Danh sách phường / xã
                 _disabledDDLWard(false, data.districtID);
             }
-            if (data.provinceID && data.districtID && data.wardID) {
+            if (data.provinceID && data.districtID && data.wardID != null) {
                 let newOption = new Option(data.wardName, data.wardID, false, false);
                 $("select[id$='_ddlWard']").removeAttr('disabled');
                 $("select[id$='_ddlWard']").removeAttr('readonly');
@@ -950,6 +956,6 @@ function _clearCustomerAddress() {
     $("select[id$='_ddlProvince']").find("option").remove();
     $("select[id$='_ddlDistrict']").find("option").remove();
     $("select[id$='_ddlWard']").find("option").remove();
-    
+
     _initReceiverAddress();
 }

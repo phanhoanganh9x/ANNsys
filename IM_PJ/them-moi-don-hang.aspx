@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=20200703145200"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=202106081515"></script>
     <script src="/App_Themes/Ann/js/search-product.js?v=09052021"></script>
     <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=09052021"></script>
 </asp:Content>
@@ -549,7 +549,7 @@
     </telerik:RadAjaxManager>
     <telerik:RadScriptBlock ID="sc" runat="server">
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-        <script type="text/javascript" src="App_Themes/Ann/js/delivery-address.js?v=202101211340"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/delivery-address.js?v=202106081810"></script>
         <script type="text/javascript">
             "use strict";
 
@@ -644,7 +644,7 @@
 
                 return true;
             }
-            
+
             function _checkFeeShip() {
                 let $feeShip = $("#<%=pFeeShip.ClientID%>");
                 let feeShip = parseFloat($feeShip.val().replace(/\,/g, ''));
@@ -691,10 +691,10 @@
                 return true;
             }
 
-            function _checkValidation() {            
+            function _checkValidation() {
                 if (!checkDeliveryAddressValidation())
                     return false;
-               
+
                 // Kiểm tra trạng thái đơn hàng
                 if (!_checkOrderStatus())
                     return false;
@@ -772,7 +772,7 @@
                     // original length
                     var original_len = input_val.length;
 
-                    // initial caret position 
+                    // initial caret position
                     var caret_pos = input.prop("selectionStart");
 
                     // check for decimal
@@ -1068,7 +1068,7 @@
                     }
                 });
 
-                // Handling min value for shipper fee 
+                // Handling min value for shipper fee
                 $("#<%=txtShippingFeeModal.ClientID%>").change(e => {
                     let value = e.target.value;
 
@@ -1296,7 +1296,7 @@
                     $("#<%= txtFacebook.ClientID%>").focus();
                     swal("Thông báo", "Hãy nhập link Facebook của khách này!", "error");
                 }
-                else if (province === "0" || province === null || province === "") {
+                else if (province === "0" || province == null || province === "") {
                     swal({
                         title: "Thông báo",
                         text: "Chưa chọn tỉnh thành",
@@ -1312,7 +1312,7 @@
                         }
                     });
                 }
-                else if (district === "0" || district === null || district === "") {
+                else if (district === "0" || district == null || district === "") {
                     swal({
                         title: "Thông báo",
                         text: "Chưa chọn quận huyện",
@@ -1328,7 +1328,7 @@
                         }
                     });
                 }
-                else if (ward === "0" || ward === null || ward === "") {
+                else if (ward == null || ward === "") {
                     swal({
                         title: "Thông báo",
                         text: "Chưa chọn phường xã",
@@ -1399,7 +1399,7 @@
                     HoldOn.close();
                     return;
                 }
-                
+
                 Promise.all([_updateDeliveryAddress()])
                     .then(function () {
                         window.onbeforeunload = null;
@@ -1729,26 +1729,42 @@
             }
 
             function onchangeShippingType(shipType) {
-                let tranContainerDOM = $("[id$=ddlTransportCompanyID-container]");
-                let tranSubContainerDOM = $("[id$=ddlTransportCompanySubID-container]");
+                let $transportModal = $("#transportModal");
+                let $transportSubModal = $("#transportSubModal");
+                let $shippingFeeModal = $("#shippingFeeModal");
 
-                tranContainerDOM.val(0);
-                tranSubContainerDOM.attr("title", "Nhà chành xe");
-                tranSubContainerDOM.html("Nhà chành xe");
-                tranSubContainerDOM.val(0);
-                tranSubContainerDOM.attr("title", "Chọn nơi nhận");
-                tranSubContainerDOM.html("Chọn nơi nhận");
+                $shippingFeeModal.removeAttr("hidden");
+                $transportModal.attr("hidden", true);
+                $transportSubModal.attr("hidden", true);
 
-                // Khác hình thức chuyển xe
-                if (shipType.val() != 4) {
-                    $("#transportModal").attr("hidden", true);
-                    $("#transportSubModal").attr("hidden", true);
+                if (shipType.val() == 4) {
+                    let tranContainerDOM = $("[id$=ddlTransportCompanyID-container]");
+                    let tranSubContainerDOM = $("[id$=ddlTransportCompanySubID-container]");
+
+                    tranContainerDOM.val(0);
+                    tranSubContainerDOM.attr("title", "Nhà chành xe");
+                    tranSubContainerDOM.html("Nhà chành xe");
+                    tranSubContainerDOM.val(0);
+                    tranSubContainerDOM.attr("title", "Chọn nơi nhận");
+                    tranSubContainerDOM.html("Chọn nơi nhận");
+
+                    $transportModal.removeAttr("hidden");
+                    $transportSubModal.removeAttr("hidden");
                 }
-                else {
-                    $("#transportModal").removeAttr("hidden");
-                    $("#transportSubModal").removeAttr("hidden");
-                }
+                else if (shipType.val() == 6) {
+                    $shippingFeeModal.attr("hidden", true);
+                    $("<%=txtShippingFeeModal.ClientID%>").val(0);
 
+                    let $pFeeShip = $("#<%=pFeeShip.ClientID%>");
+                    let fee = parseInt($pFeeShip.val().replace(/,/g, '')) || 0
+
+                    if (fee > 0)
+                    {
+                        $("#<%=pFeeShip.ClientID%>").val(0);
+
+                        getAllPrice();
+                    }
+                }
             }
 
             function onChangeTransportCompany(transport, selected) {
@@ -1831,7 +1847,6 @@
                         let tranContainerDOM = $("[id$=ddlTransportCompanyID-container]");
                         let tranSubContainerDOM = $("[id$=ddlTransportCompanySubID-container]");
 
-
                         if (data) {
                             transDOM.val(data.tranID);
                             tranContainerDOM.attr("title", data.tranName);
@@ -1882,6 +1897,7 @@
                             // Phương thức giao hàng
                             shipType.val(data.shipType);
                             onchangeShippingType(shipType);
+
                             // Chành xe & nơi tới
                             if (data.shipType == "4") {
                                 transDOM.val(data.tranID);
@@ -1889,18 +1905,12 @@
                                 tranContainerDOM.html(data.tranName);
                                 onChangeTransportCompany(transDOM, data.tranSubID);
                             }
-                            else {
-                                tranContainerDOM.val(0);
-                                tranContainerDOM.attr("title", "Nhà chành xe");
-                                tranContainerDOM.html("Nhà chành xe");
-                                tranSubContainerDOM.val(0);
-                                tranSubContainerDOM.attr("title", "Chọn nơi nhận");
-                                tranSubContainerDOM.html("Chọn nơi nhận");
-                            }
+
                             // Phí vận chuyển
-                            if (shippingFeeDOM.val() == 0) {
+                            if (data.shipType != "6" && shippingFeeDOM.val() == 0) {
                                 shippingFeeDOM.val(formatNumber(data.shippingFee));
                                 $("#<%=pFeeShip.ClientID%>").val(formatNumber(data.shippingFee));
+
                                 getAllPrice();
                             }
                         }

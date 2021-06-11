@@ -33,7 +33,7 @@ namespace IM_PJ.Models
         public decimal TotalPrice { get; set; }
         public decimal TotalDiscount { get; set; }
         public decimal CouponPrice { get; set; }
-        public Nullable<decimal> Total { get; set; }
+        public decimal Total { get; set; }
         public string SourceOrdering { get; set; }
         public string CreatedBy { get; set; }
         public System.DateTime CreatedDate { get; set; }

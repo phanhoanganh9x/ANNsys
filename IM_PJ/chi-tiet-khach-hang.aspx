@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="Chi tiết khách hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="chi-tiet-khach-hang.aspx.cs" Inherits="IM_PJ.chi_tiet_khach_hang" EnableSessionState="ReadOnly" EnableEventValidation="false"%>
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=20200703145200"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=202106081515"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
@@ -34,10 +34,10 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
-                                    Điện thoại                                   
+                                    Điện thoại
                                 </div>
                                 <div class="row-right">
-                                    <asp:TextBox ID="txtCustomerPhone" runat="server" CssClass="form-control" placeholder="Số điện thoại" autocomplete="off"></asp:TextBox>                                
+                                    <asp:TextBox ID="txtCustomerPhone" runat="server" CssClass="form-control" placeholder="Số điện thoại" autocomplete="off"></asp:TextBox>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -45,7 +45,7 @@
                                     Điện thoại 2
                                 </div>
                                 <div class="row-right">
-                                    <asp:TextBox ID="txtCustomerPhone2" runat="server" CssClass="form-control" placeholder="Số điện thoại 2 nếu có" autocomplete="off"></asp:TextBox>                                    
+                                    <asp:TextBox ID="txtCustomerPhone2" runat="server" CssClass="form-control" placeholder="Số điện thoại 2 nếu có" autocomplete="off"></asp:TextBox>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -53,7 +53,7 @@
                                     Điện thoại kiểu cũ
                                 </div>
                                 <div class="row-right">
-                                    <asp:TextBox ID="txtCustomerPhoneBackup" runat="server" CssClass="form-control input-disabled" placeholder="Số điện thoại kiểu cũ"></asp:TextBox>                                    
+                                    <asp:TextBox ID="txtCustomerPhoneBackup" runat="server" CssClass="form-control input-disabled" placeholder="Số điện thoại kiểu cũ"></asp:TextBox>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -161,7 +161,7 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
-                                    Nhân viên phụ trách          
+                                    Nhân viên phụ trách
                                 </div>
                                 <div class="row-right">
                                     <asp:DropDownList ID="ddlUser" runat="server" CssClass="form-control"></asp:DropDownList>
@@ -169,7 +169,7 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
-                                    Ẩn                   
+                                    Ẩn
                                 </div>
                                 <div class="row-right">
                                     <asp:CheckBox ID="chkIsHidden" runat="server" />

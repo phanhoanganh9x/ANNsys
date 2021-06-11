@@ -86,9 +86,11 @@ function _initRecipientProvince() {
             url: '/api/v1/delivery-save/provinces/select2',
             data: (params) => {
                 var query = {
-                    search: params.term,
                     page: params.page || 1
                 }
+
+                if (params.term)
+                    query.search = params.term;
 
                 return query;
             }
@@ -156,9 +158,11 @@ function _disabledRecipientDistrict(disabled, provinceID) {
                 url: '/api/v1/delivery-save/province/' + provinceID + '/districts/select2',
                 data: (params) => {
                     var query = {
-                        search: params.term,
                         page: params.page || 1
                     }
+
+                    if (params.term)
+                        query.search = params.term;
 
                     return query;
                 }
@@ -190,9 +194,11 @@ function _disabledRecipientWard(disabled, districtID) {
                 url: '/api/v1/delivery-save/district/' + districtID + '/wards/select2',
                 data: (params) => {
                     var query = {
-                        search: params.term,
                         page: params.page || 1
                     }
+
+                    if (params.term)
+                        query.search = params.term;
 
                     return query;
                 }
@@ -289,8 +295,8 @@ function _initDeliveryAddressByCustomer() {
 
             // Danh sách phường / xã
             let $ddlWard = $("select[id$='_ddlWard']");
-            
-            if ((+$ddlWard.val() || 0) > 0) {
+
+            if ($ddlWard.val() != null) {
                 let newWardOption = new Option($ddlWard.text().trim(), +$ddlDistrict.val(), false, false);
                 $("select[id$='_ddlRecipientWard']").removeAttr('disabled');
                 $("select[id$='_ddlRecipientWard']").removeAttr('readonly');
@@ -300,7 +306,6 @@ function _initDeliveryAddressByCustomer() {
             }
         }
     }
-    
 
     // Địa chỉ
     let $txtAddress = $("input[id$='_txtAddress']");
@@ -511,7 +516,7 @@ function checkDeliveryAddressValidation() {
     }
 
     // Phường / xã
-    if ((+$ward.val() || 0) === 0) {
+    if ($ward.val() == null) {
         swal({
             title: "Thông báo",
             text: "Chưa chọn phường xã",
@@ -554,7 +559,7 @@ function updateDeliveryAddress(phone) {
             "address": $address.val() ? $address.val().trim() : null,
             "provinceId": +$province.val() || 0,
             "districtId": +$district.val() || 0,
-            "wardId": +$ward.val() || 0,
+            "wardId": +$ward.val() || null,
             "createdBy": phone
         };
 
@@ -582,7 +587,7 @@ function updateDeliveryAddress(phone) {
             || $hdfPhone.val() !== $phone.val()
             || $hdfProvince.val() !== $province.val()
             || $hdfDistrict.val() !== $district.val()
-            || $hdfWard.val() !== $ward.val()
+            || $hdfWard.val() != $ward.val()
             || $hdfAddress.val() !== $address.val()
         ) {
             let deliveryAddress = {
@@ -591,7 +596,7 @@ function updateDeliveryAddress(phone) {
                 "address": $address.val() ? $address.val().trim() : null,
                 "provinceId": +$province.val() || 0,
                 "districtId": +$district.val() || 0,
-                "wardId": +$ward.val() || 0,
+                "wardId": +$ward.val() || null,
                 "createdBy": phone
             };
 

@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script type="text/javascript" src="/App_Themes/Ann/js/search-customer.js?v=09052021"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/search-customer.js?v=202106081515"></script>
     <script type="text/javascript" src="/App_Themes/Ann/js/search-product.js?v=09052021"></script>
     <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=09052021"></script>
     <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=09052021"></script>
@@ -523,7 +523,7 @@
                                     <div class="left">Khối lượng đơn hàng (kg)</div>
                                     <div class="right">
                                         <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull input-weight" Skin="MetroTouch"
-                                            ID="txtWeight" MinValue="0" Value="0" NumberFormat-DecimalDigits="1" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
+                                            ID="txtWeight" MinValue="0" Value="0" NumberFormat-DecimalDigits="1" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false" onchange="onChangeWeight()">
                                         </telerik:RadNumericTextBox>
                                     </div>
                                 </div>
@@ -567,7 +567,7 @@
                                         Phương thức thanh toán
                                     </div>
                                     <div class="row-right">
-                                        <asp:DropDownList ID="ddlPaymentType" runat="server" CssClass="form-control" onchange="onchangePaymentType($(this))">
+                                        <asp:DropDownList ID="ddlPaymentType" runat="server" CssClass="form-control">
                                             <asp:ListItem Value="1" Text="Tiền mặt"></asp:ListItem>
                                             <asp:ListItem Value="2" Text="Chuyển khoản"></asp:ListItem>
                                             <asp:ListItem Value="3" Text="Thu hộ"></asp:ListItem>
@@ -846,7 +846,7 @@
     </telerik:RadAjaxManager>
     <telerik:RadScriptBlock ID="sc" runat="server">
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-        <script type="text/javascript" src="App_Themes/Ann/js/delivery-address.js?v=202101211340"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/delivery-address.js?v=202106081810"></script>
         <script type="text/javascript">
             // #region Private
             // Kiểm tra xác nhận thông tin khách hàng
@@ -928,7 +928,7 @@
                 }
 
                 // Phường / xã
-                if ((+$ward.val() || 0) === 0) {
+                if ($ward.val() == null) {
                     swal({
                         title: "Thông báo",
                         text: "Chưa chọn phường xã",
@@ -1554,7 +1554,28 @@
                 window.open("/print-order-image?id=" + ID + "&merge=" + mergeprint, "_blank");
             }
 
-            function init() {
+            // Thông tin khách hàng
+            function _initCustomer() {
+                _initReceiverAddress();
+                _onChangeReceiverAddress();
+                _getCustomerAddress($("#<%=txtPhone.ClientID%>").val());
+
+                // Text box Phone
+                $("#<%=txtPhone.ClientID%>").keyup(function (e) {
+                    if (/\D/g.test(this.value)) {
+                        // Filter non-digits from input value.
+                        this.value = this.value.replace(/\D/g, '');
+                    }
+                });
+
+                // Text box Facebook
+                if ($("input[id$='_txtFacebook']").val() == "") {
+                    $("input[id$='_txtFacebook']").parent().addClass("width-100");
+                }
+            }
+
+            // Các loại phí khác
+            function _initOtherFees() {
                 // Load Fee Type List
                 let data = JSON.parse($("#<%=hdfFeeType.ClientID%>").val());
                 data.forEach((item) => {
@@ -1580,41 +1601,8 @@
                 }
             }
 
-            $(document).ready(function () {
-
-                // Thông tin khách hàng
-                _initReceiverAddress();
-                _onChangeReceiverAddress();
-                _getCustomerAddress($("#<%=txtPhone.ClientID%>").val());
-
-                // Thông tin địa chỉ nhận hàng
-                initDeliveryAddress();
-
-                init();
-
-                let roleID = $("#<%=hdfRoleID.ClientID%>").val();
-
-                // Show change createdby if role = admin
-                if (roleID == 0) {
-                    $("#row-createdby").removeClass("hide");
-                }
-
-                // search Product by SKU
-                $("#txtSearch").keydown(function (event) {
-                    if (event.which === 13) {
-                        searchProduct();
-                        event.preventDefault();
-                        return false;
-                    }
-                });
-
-                $("#<%=txtPhone.ClientID%>").keyup(function (e) {
-                    if (/\D/g.test(this.value)) {
-                        // Filter non-digits from input value.
-                        this.value = this.value.replace(/\D/g, '');
-                    }
-                });
-
+            // Hình thức thanh toán
+            function _initPaymentType() {
                 if ($("#<%=ddlPaymentType.ClientID%>").find(":selected").val() != 2) {
                     $("#row-bank").addClass("hide");
                 }
@@ -1628,184 +1616,201 @@
                         $("#row-bank").addClass("hide");
                     }
                 });
+            }
 
-                // hide shipping code
+            // Hình thức giao hàng
+            function _initShippingType(roleID) {
+                //#region Phí vận chuyển
+                let $btnFreeShipping = $("#calfeeship");
+                let $fee = $("#<%=pFeeShip.ClientID%>");
 
-                if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 1) {
-                    $(".transport-company").addClass("hide");
+                $btnFreeShipping.removeClass("hide");
+                $fee.removeAttr('style')
+                $fee.removeAttr('disabled')
+                //#endregion
+
+                //#region Phương thức giao hàng
+                let $btnGHTK = $("#getShipGHTK");
+                let $weight = $(".weight-input");
+                let $ddlShippingType = $("#<%=ddlShippingType.ClientID%>");
+                let $transportCompany  = $(".transport-company");
+                let $postalDeliveryType = $(".postal-delivery-type");
+                let $shippingCode = $(".shipping-code");
+
+                // Lấy trục tiếp
+                if ($ddlShippingType.find(":selected").val() == 1) {
+                    $transportCompany.addClass("hide");
                 }
 
-                if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 2) {
-                    $(".shipping-code").removeClass("hide");
-                    $(".postal-delivery-type").removeClass("hide");
-                    $(".transport-company").addClass("hide");
+                // Bưu điện
+                if ($ddlShippingType.find(":selected").val() == 2) {
+                    $transportCompany.addClass("hide");
+                    $postalDeliveryType.removeClass("hide");
+                    $shippingCode.removeClass("hide");
                 }
 
-                if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 3) {
-                    $(".shipping-code").removeClass("hide");
-                    $(".transport-company").addClass("hide");
+                // Proship
+                if ($ddlShippingType.find(":selected").val() == 3) {
+                    $shippingCode.removeClass("hide");
+                    $transportCompany.addClass("hide");
                 }
 
-                if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 4) {
-                    $(".transport-company").removeClass("hide");
-                    $(".shipping-code").addClass("hide");
+                // Chuyển xe
+                if ($ddlShippingType.find(":selected").val() == 4) {
+                    $transportCompany.removeClass("hide");
+                    $shippingCode.addClass("hide");
                 }
 
-                if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 5) {
-                    $(".transport-company").addClass("hide");
-                    $(".shipping-code").addClass("hide");
+                // Nhân viên giao hàng
+                if ($ddlShippingType.find(":selected").val() == 5) {
+                    $transportCompany.addClass("hide");
+                    $shippingCode.addClass("hide");
                 }
 
-                if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 6) {
-                    $(".shipping-code").removeClass("hide");
-                    $(".transport-company").addClass("hide");
-                    $(".weight-input").removeClass("hide");
-                    $("#getShipGHTK").removeClass("hide");
+                // GHTK
+                if ($ddlShippingType.find(":selected").val() == 6) {
+                    $btnGHTK.removeClass("hide");
+                    $btnFreeShipping.addClass("hide");
+                    $fee.prop('disabled', true).css("background-color", "#eeeeee");
+                    $weight.removeClass("hide");
+                    $transportCompany.addClass("hide");
+                    $shippingCode.removeClass("hide");
                 }
 
-                if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 7) {
-                    $(".shipping-code").addClass("hide");
-                    $(".transport-company").addClass("hide");
+                // Vietel
+                if ($ddlShippingType.find(":selected").val() == 7) {
+                    $transportCompany.addClass("hide");
+                    $shippingCode.addClass("hide");
                 }
 
-                if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 8) {
-                    $(".shipping-code").addClass("hide");
-                    $(".transport-company").addClass("hide");
+                // Grab
+                if ($ddlShippingType.find(":selected").val() == 8) {
+                    $transportCompany.addClass("hide");
+                    $shippingCode.addClass("hide");
                 }
 
-                if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 9) {
-                    $(".shipping-code").addClass("hide");
-                    $(".transport-company").addClass("hide");
+                // AhaMove
+                if ($ddlShippingType.find(":selected").val() == 9) {
+                    $transportCompany.addClass("hide");
+                    $shippingCode.addClass("hide");
                 }
 
-                $("#<%=ddlShippingType.ClientID%>").change(function () {
-                    var selected = $(this).find(":selected").val();
-                    switch(selected) {
+                // Event onChange
+                let $ddlPaymentType = $("#<%=ddlPaymentType.ClientID%>");
+                let $ddlPostalDeliveryType = $("#<%=ddlPostalDeliveryType.ClientID%>");
+                let $ddlTransportCompany = $("#<%=ddlTransportCompanyID.ClientID%>");
+                let $ddlTransportCompanySub = $("#<%=ddlTransportCompanySubID.ClientID%>");
+                let $txtShippingCode = $("#<%=txtShippingCode.ClientID%>");
+
+                $ddlShippingType.change(function () {
+                    // Phí vận chuyển
+                    $btnGHTK.addClass("hide");
+                    $btnFreeShipping.removeClass("hide");
+                    $fee.removeAttr('style')
+                    $fee.removeAttr('disabled')
+                    $weight.addClass("hide");
+
+                    // Hình thức thanh toán
+                    if (roleID != 0)
+                        $ddlPaymentType.find("option[value='1']").remove();
+
+                    // Hình thức chuyển phát
+                    $postalDeliveryType.addClass("hide");
+                    $ddlPostalDeliveryType.val(1);
+                    // Chành xe
+                    $transportCompany.addClass("hide");
+                    $ddlTransportCompany.val(0);
+                    $ddlTransportCompanySub.val(0);
+                    // Mã vẫn đơn
+                    $shippingCode.addClass("hide");
+                    $txtShippingCode.val("");
+
+                    let selected = $(this).find(":selected").val();
+
+                    switch (selected) {
+                        // Lấy hàng trực tiếp
                         case "1":
-                            $(".shipping-code").addClass("hide");
-                            $(".postal-delivery-type").addClass("hide");
-                            $(".transport-company").addClass("hide");
-                            $("#<%=txtShippingCode.ClientID%>").val("");
-                            $("#<%=ddlPostalDeliveryType.ClientID%>").val(1);
-                            $("#<%=ddlTransportCompanyID.ClientID%>").val(0);
-                            $("#<%=ddlTransportCompanySubID.ClientID%>").val(0);
-                            $("#getShipGHTK").addClass("hide");
-                            $(".weight-input").addClass("hide");
-                            if ($("#<%=ddlPaymentType.ClientID%> option[value='1']").length == 0 && roleID != 0) {
-                                $("#<%=ddlPaymentType.ClientID%>").append('<option value="1">Tiền mặt</option>');
-                            }
+                            if ($ddlPaymentType.find("option[value='1']").length == 0 && roleID != 0)
+                                $ddlPaymentType.append('<option value="1">Tiền mặt</option>');
                             break;
+                        // Bưu điện
                         case "2":
-                            $(".shipping-code").removeClass("hide");
-                            $(".postal-delivery-type").removeClass("hide");
-                            $(".transport-company").addClass("hide");
-                            $("#<%=ddlTransportCompanyID.ClientID%>").val(0);
-                            $("#<%=ddlTransportCompanySubID.ClientID%>").val(0);
-                            $("#getShipGHTK").addClass("hide");
-                            $(".weight-input").addClass("hide");
-                            if (roleID != 0) {
-                                $("#<%=ddlPaymentType.ClientID%> option[value='1']").remove();
-                            }
+                            $shippingCode.removeClass("hide");
+                            $postalDeliveryType.removeClass("hide");
                             break;
+                        // Proship
                         case "3":
-                            $(".shipping-code").removeClass("hide");
-                            $(".postal-delivery-type").addClass("hide");
-                            $(".transport-company").addClass("hide");
-                            $("#<%=ddlPostalDeliveryType.ClientID%>").val(1);
-                            $("#<%=ddlTransportCompanyID.ClientID%>").val(0);
-                            $("#<%=ddlTransportCompanySubID.ClientID%>").val(0);
-                            $("#getShipGHTK").addClass("hide");
-                            $(".weight-input").addClass("hide");
-                            if (roleID != 0) {
-                                $("#<%=ddlPaymentType.ClientID%> option[value='1']").remove();
-                            }
+                            $shippingCode.removeClass("hide");
                             break;
+                        // Chuyễn xe
                         case "4":
-                            $(".shipping-code").addClass("hide");
-                            $(".postal-delivery-type").addClass("hide");
-                            $(".transport-company").removeClass("hide");
-                            $("#<%=txtShippingCode.ClientID%>").val("");
-                            $("#<%=ddlPostalDeliveryType.ClientID%>").val(1);
-                            $("#getShipGHTK").addClass("hide");
-                            $(".weight-input").addClass("hide");
-                            if (roleID != 0) {
-                                $("#<%=ddlPaymentType.ClientID%> option[value='1']").remove();
-                            }
+                            $transportCompany.removeClass("hide");
                             break;
+                        // Nhân viên giao hàng
                         case "5":
-                            $(".shipping-code").addClass("hide");
-                            $(".postal-delivery-type").addClass("hide");
-                            $(".transport-company").addClass("hide");
-                            $("#<%=txtShippingCode.ClientID%>").val("");
-                            $("#<%=ddlPostalDeliveryType.ClientID%>").val(1);
-                            $("#<%=ddlTransportCompanyID.ClientID%>").val(0);
-                            $("#<%=ddlTransportCompanySubID.ClientID%>").val(0);
-                            $("#getShipGHTK").addClass("hide");
-                            $(".weight-input").addClass("hide");
-                            if (roleID != 0) {
-                                $("#<%=ddlPaymentType.ClientID%> option[value='1']").remove();
-                            }
                             break;
+                        // GHTK
                         case "6":
-                            $(".shipping-code").removeClass("hide");
-                            $(".postal-delivery-type").addClass("hide");
-                            $(".transport-company").addClass("hide");
-                            $("#<%=ddlPostalDeliveryType.ClientID%>").val(1);
-                            $("#<%=ddlTransportCompanyID.ClientID%>").val(0);
-                            $("#<%=ddlTransportCompanySubID.ClientID%>").val(0);
-                            $(".weight-input").removeClass("hide");
-                            $("#getShipGHTK").removeClass("hide");
-                            if (roleID != 0) {
-                                $("#<%=ddlPaymentType.ClientID%> option[value='1']").remove();
-                            }
+                            $btnFreeShipping.addClass("hide");
+                            $btnGHTK.removeClass("hide");
+                            $fee.prop('disabled', true).css("background-color", "#eeeeee").val(0);
+                            $weight.removeClass("hide");
+                            $("#<%=txtWeight.ClientID%>").val(0);
+                            $shippingCode.removeClass("hide");
                             break;
+                        // Viettel
                         case "7":
-                            $(".shipping-code").addClass("hide");
-                            $(".postal-delivery-type").addClass("hide");
-                            $(".transport-company").addClass("hide");
-                            $("#<%=ddlPostalDeliveryType.ClientID%>").val(1);
-                            $("#<%=ddlTransportCompanyID.ClientID%>").val(0);
-                            $("#<%=ddlTransportCompanySubID.ClientID%>").val(0);
-                            $("#getShipGHTK").addClass("hide");
-                            $(".weight-input").addClass("hide");
-                            if (roleID != 0) {
-                                $("#<%=ddlPaymentType.ClientID%> option[value='1']").remove();
-                            }
                             break;
+                        // Grab
                         case "8":
-                            $(".shipping-code").addClass("hide");
-                            $(".postal-delivery-type").addClass("hide");
-                            $(".transport-company").addClass("hide");
-                            $("#<%=ddlPostalDeliveryType.ClientID%>").val(1);
-                            $("#<%=ddlTransportCompanyID.ClientID%>").val(0);
-                            $("#<%=ddlTransportCompanySubID.ClientID%>").val(0);
-                            $("#getShipGHTK").addClass("hide");
-                            $(".weight-input").addClass("hide");
-                            if (roleID != 0) {
-                                $("#<%=ddlPaymentType.ClientID%> option[value='1']").remove();
-                            }
                             break;
+                        // AhaMove
                         case "9":
-                            $(".shipping-code").addClass("hide");
-                            $(".postal-delivery-type").addClass("hide");
-                            $(".transport-company").addClass("hide");
-                            $("#<%=ddlPostalDeliveryType.ClientID%>").val(1);
-                            $("#<%=ddlTransportCompanyID.ClientID%>").val(0);
-                            $("#<%=ddlTransportCompanySubID.ClientID%>").val(0);
-                            $("#getShipGHTK").addClass("hide");
-                            $(".weight-input").addClass("hide");
-                            if (roleID != 0) {
-                                $("#<%=ddlPaymentType.ClientID%> option[value='1']").remove();
-                            }
+                            break;
+                        default:
                             break;
                     }
-
                 });
+                //#endregion
+            }
 
-                // add class full width for txtFacebook if it's null
-                if ($("input[id$='_txtFacebook']").val() == "") {
-                    $("input[id$='_txtFacebook']").parent().addClass("width-100");
+            // Nhân viên phụ trách
+            function _initStaff(roleID) {
+                // Show change createdby if role = admin
+                if (roleID == 0) {
+                    $("#row-createdby").removeClass("hide");
                 }
+
+                // search Product by SKU
+                $("#txtSearch").keydown(function (event) {
+                    if (event.which === 13) {
+                        searchProduct();
+                        event.preventDefault();
+                        return false;
+                    }
+                });
+            }
+
+            $(document).ready(function () {
+                let roleID = $("#<%=hdfRoleID.ClientID%>").val();
+
+                // Thông tin khách hàng
+                _initCustomer();
+
+                // Thông tin địa chỉ nhận hàng
+                initDeliveryAddress();
+
+                // Các loại phí khác
+                _initOtherFees();
+
+                // Hình thức thanh toán
+                _initPaymentType();
+
+                // Hình thức giao hàng
+                _initShippingType(roleID);
+
+                // Nhân Viên phụ trách
+                _initStaff(roleID);
 
                 // onchange drop down list excute status
                 preExcuteStatus = +$("#<%=ddlExcuteStatus.ClientID%>").val() || 0;
@@ -2124,7 +2129,7 @@
                 var feeship = parseFloat(fs.replace(/\,/g, ''));
 
                 // kiểm tra nhập phí vận chuyển chưa
-                if (shippingtype == 2 || shippingtype == 3 || shippingtype == 6 || shippingtype == 7) {
+                if (shippingtype == 2 || shippingtype == 3 || shippingtype == 7) {
                     if (feeship == 0 && $("#<%=pFeeShip.ClientID%>").is(":disabled") == false) {
                         $("#<%=pFeeShip.ClientID%>").focus();
                         swal({
@@ -2136,6 +2141,20 @@
                             confirmButtonText: "Để em tính phí!!",
                             closeOnConfirm: false,
                             cancelButtonText: "Để em bấm nút miễn phí",
+                            html: true
+                        });
+                        checkAllValue = false;
+                    }
+                }
+                // Trường hợp giao hàng tiết kiệm
+                else if (shippingtype == 6) {
+                    if (feeship == 0) {
+                        $("#<%=pFeeShip.ClientID%>").focus();
+                        swal({
+                            title: "Có vấn đề:",
+                            text: "Chưa nhập phí vận chuyển!<br><br>Đơn này miễn phí vận chuyển luôn hở?",
+                            type: "warning",
+                            confirmButtonText: "Để em tính lại phí!!",
                             html: true
                         });
                         checkAllValue = false;
@@ -2899,24 +2918,184 @@
                 generateCouponG25(customerName, customerID);
             }
 
-            function getShipGHTK() {
-                let orderID = $("#<%=hdOrderInfoID.ClientID%>").val();
-                let weight = $("#<%=txtWeight.ClientID%>").val();
+            function _checkWeight() {
+                let $weight = $("#<%=txtWeight.ClientID%>");
+                let weight = $weight.val() || 0;
+
                 if (weight <= 0) {
                     $("#<%=txtWeight.ClientID%>").focus();
-                    return swal("Thông báo", "Chưa nhập khối lượng đơn hàng!", "warning");
+                    swal("Thông báo", "Chưa nhập khối lượng đơn hàng!", "warning");
+
+                    return false;
                 }
                 else if (weight > 150) {
                     $("#<%=txtWeight.ClientID%>").focus();
-                    return swal("Thông báo", "Khối lượng đơn hàng phải nhỏ hơn 150kg", "warning");
+                    swal("Thông báo", "Khối lượng đơn hàng phải nhỏ hơn 150kg", "warning");
+
+                    return false;
                 }
-                let shippingType = $("#<%=hdfShippingType.ClientID%>").val();
-                if (shippingType != 6) {
-                    return swal("Thông báo", "Đơn hàng này trước đó không phải ship GHTK<br>Nếu vừa đổi sang GHTK thì hãy lưu lại đơn rồi lấy phí...", "warning");
-                }
-                window.open("/dang-ky-ghtk?orderID=" + orderID + "&weight=" + weight, "_blank");
+
+                return true;
             }
 
+            function getShipGHTK() {
+                // Kiểm tra trọng lượng
+                if (!_checkWeight())
+                    return;
+
+                if (!checkDeliveryAddressValidation())
+                    return;
+
+                let url = "/api/v1/delivery-save/fee",
+                    query = "",
+                    address = $("#<%=txtRecipientAddress%>").val() || "",
+                    province = $("[id$='_ddlRecipientProvince'] :selected").text() || "",
+                    district = $("[id$='_ddlRecipientDistrict'] :selected").text() || "",
+                    ward = $("[id$='_ddlRecipientWard'] :selected").text() || "",
+                    $pFeeShip = $("#<%=pFeeShip.ClientID%>"),
+                    fee = +$pFeeShip.val() || 0,
+                    weight = $("#<%=txtWeight.ClientID%>").val() || 0,
+                    value = parseInt($(".totalpriceorderall").html().replace(/,/g,''))  || 0;
+
+                query += "&pick_address=68 Đường C12";
+                query += "&pick_province=TP. Hồ Chí Minh";
+                query += "&pick_district=Quận Tân Bình";
+                query += "&pick_ward=Phường 13";
+                query += "&address=" + address;
+                query += "&province=" + province;
+                query += "&district=" + district;
+                query += "&ward=" + ward;
+                query += "&weight=" + (weight * 1000);
+                query += "&transport=road";
+
+                // tính phí có bảo hiểm
+                if (fee === 0)
+                    value += 100000;
+
+                if (value > 0)
+                    query += "&value=" + value;
+
+                if (query)
+                    url = url + "?" + query.substring(1);
+
+                let titleAlert = "Tính phí giao hàng";
+
+                $.ajax({
+                    method: 'GET',
+                    url: url,
+                    beforeSend: function () {
+                        HoldOn.open();
+                    },
+                    success: (data, textStatus, xhr) => {
+                        HoldOn.close();
+
+                        if (xhr.status == 200 && data) {
+                            if (data.success) {
+                                fee = data.fee.fee;
+
+                                if (data.fee.insurance_fee > 0)
+                                    fee -= data.fee.insurance_fee;
+
+                                $pFeeShip.val(formatNumber(fee.toString()));
+
+                                countTotal();
+                            }
+                            else {
+                                _alterError(titleAlert, { message: data.message });
+                            }
+                        } else {
+                            _alterError(titleAlert);
+                        }
+                    },
+                    error: (xhr, textStatus, error) => {
+                        HoldOn.close();
+
+                        _alterError(titleAlert);
+                    }
+                });
+            }
+
+            function _alterError(title, responseJSON) {
+                let message = '';
+                title = (typeof title !== 'undefined') ? title : 'Thông báo lỗi';
+
+                if (responseJSON === undefined || responseJSON === null) {
+                    message = 'Đẫ có lỗi xãy ra.';
+                }
+                else {
+                    if (responseJSON.message)
+                        message += responseJSON.message;
+                }
+
+                return swal({
+                    title: title,
+                    text: message,
+                    icon: "error",
+                });
+            }
+
+            function cancelGhtk(orderId, code) {
+                let titleAlert = "Hủy đơn GHTK";
+
+                $.ajax({
+                    method: 'POST',
+                    contentType: 'application/json',
+                    dataType: "json",
+                    data: JSON.stringify({ code: code, orderId: orderId}),
+                    url: "/api/v1/delivery-save/cancel-order",
+                    beforeSend: function () {
+                        HoldOn.open();
+                    },
+                    success: (data, textStatus, xhr) => {
+                        HoldOn.close();
+
+                        if (xhr.status == 200 && data) {
+                            return swal({
+                                title: titleAlert,
+                                text: "Hủy thành công!<br>Đơn GHTK '<strong>" + code + "</strong>'",
+                                icon: "success",
+                            }, function (isConfirm) {
+                                let $btnShowGhtk = $("#btnShowGhtk");
+                                let $btnCancelGhtk = $("#btnCancelGhtk");
+                                let $divParent = $btnShowGhtk.parent();
+                                let $txtShippingCode = $("[id$='_txtShippingCode']");
+                                let btnRegisterGhtkHtml = "";
+
+                                btnRegisterGhtkHtml += "<a target='_blank'";
+                                btnRegisterGhtkHtml += "   href='/dang-ky-ghtk?orderID=" + orderId + "'";
+                                btnRegisterGhtkHtml += "   class='btn primary-btn btn-ghtk fw-btn not-fullwidth print-invoice-merged'";
+                                btnRegisterGhtkHtml += ">";
+                                btnRegisterGhtkHtml += "    <i class='fa fa-upload' aria-hidden='true'></i> Đẩy đơn GHTK";
+                                btnRegisterGhtkHtml += "</a>";
+
+                                $btnShowGhtk.remove();
+                                $btnCancelGhtk.remove();
+                                $divParent.append(btnRegisterGhtkHtml);
+                                $txtShippingCode.val('');
+                            });
+                        } else {
+                            return _alterError(titleAlert);
+                        }
+                    },
+                    error: (xhr, textStatus, error) => {
+                        HoldOn.close();
+
+                        return _alterError(titleAlert);
+                    }
+                });
+            }
+
+            function onChangeWeight() {
+                let $txtWeight = $("#<%=txtWeight.ClientID%>");
+                let weight = +$txtWeight.val() || 0;
+
+                if (weight)
+                    getShipGHTK();
+                else {
+                    $("#<%=pFeeShip.ClientID%>").val(0);
+                    countTotal();
+                }
+            }
         </script>
     </telerik:RadScriptBlock>
 </asp:Content>
