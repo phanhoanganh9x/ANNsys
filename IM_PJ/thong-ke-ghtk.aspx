@@ -86,9 +86,8 @@
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlGhtkStatus" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="" Text="Trạng thái GHTK"></asp:ListItem>
-                                        <asp:ListItem Value="1" Text="Đã đối soát"></asp:ListItem>
-                                        <asp:ListItem Value="2" Text="Công nợ trả hàng"></asp:ListItem>
-                                        <asp:ListItem Value="0" Text="Khác"></asp:ListItem>
+                                        <asp:ListItem Value="6" Text="Đã đối soát"></asp:ListItem>
+                                        <asp:ListItem Value="11" Text="Công nợ trả hàng"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
