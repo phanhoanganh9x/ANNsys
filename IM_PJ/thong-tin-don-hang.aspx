@@ -3042,7 +3042,7 @@
                     contentType: 'application/json',
                     dataType: "json",
                     data: JSON.stringify({ code: code, orderId: orderId}),
-                    url: "/api/v1/delivery-save/cancel-order",
+                    url: "/api/v1/delivery-save/order/cancel",
                     beforeSend: function () {
                         HoldOn.open();
                     },

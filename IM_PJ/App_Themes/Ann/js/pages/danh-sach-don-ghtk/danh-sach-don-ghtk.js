@@ -1,11 +1,11 @@
 ﻿let strFormat = new StringFormat();
-let orderService = new GhtkReportService();
-let controller = new GhtkReportController();
+let orderService = new GhtkNotificationService();
+let controller = new GhtkNotificationController();
 
 document.addEventListener("DOMContentLoaded", function (event) {
     _initQueryParams();
-    _initBtnUpload();
-    _initReportTable();
+    _initGhtkStatus();
+    _initNotificationTable();
 });
 
 //#region Private
@@ -17,9 +17,8 @@ function _loadSpanReport() {
     {
         spanReport += "(";
         spanReport += UtilsService.formatThousands(controller.pagination.totalCount, ',');
-        spanReport += " số đơn GHTK - Số tiền phí lệch: ";
-        spanReport += UtilsService.formatThousands(controller.lossMoney, ',');
-        spanReport += " VND)";
+        spanReport += " số đơn GHTK";
+        spanReport += ")";
     }
 
     spanReportDOM.innerHTML = spanReport;
@@ -31,16 +30,50 @@ function _initQueryParams() {
     controller.setFilter(search);
 }
 
-function _initBtnUpload() {
-    let $btnUpload = $("#btnUpload");
+function _initGhtkStatus() {
+    let $ddlGhtkStatus = $('#ddlGhtkStatus');
 
-    $btnUpload.attr("disabled", "disabled");
+    // Cài đặt giá trị ban đầu
+    $ddlGhtkStatus.val(null).trigger('change');
+
+    if (controller.filter.ghtkStatus)
+        controller.getGhtkStatus()
+            .then(function (response) {
+                let newOption = new Option(response.value, response.key, false, false);
+                $ddlGhtkStatus.find("option").remove();
+                $ddlGhtkStatus.append(newOption).trigger('change');
+            })
+            .catch(function (e) {
+                console.log(e);
+            });
+
+    // Cài đặt API
+    $ddlGhtkStatus.select2({
+        placeholder: 'Trạng thái đơn GHHTK',
+        ajax: {
+            delay: 500,
+            method: 'GET',
+            url: '/api/v1/delivery-save/statuses/selected2',
+            data: (params) => {
+                var query = {
+                    page: params.page || 1
+                }
+
+                if (params.term)
+                    query.search = params.term;
+
+                return query;
+            }
+        }
+    });
+
+
 }
 
-function _initReportTable() {
+function _initNotificationTable() {
     HoldOn.open();
 
-    controller.getGhtkReports()
+    controller.getGhtkNotifications()
         .then(function (response) {
             controller.lossMoney = response.lossMoney;
             controller.data = response.data
@@ -48,7 +81,7 @@ function _initReportTable() {
 
             _loadSpanReport();
             _loadPagination();
-            _loadReportTable();
+            _loadNotificationTable();
 
             HoldOn.close();
         })
@@ -67,13 +100,17 @@ function _updateFilter() {
     else
         controller.filter.search = null;
 
-    // Trạng thái phí vận chuyển
-    let feeStatusDOM = document.querySelector("[id$='_ddlFeeStatus']");
+    // Trạng thái GHTK
+    let ghtkStatusDOM = document.querySelector("#ddlGhtkStatus");
 
-    if (feeStatusDOM.value)
-        controller.filter.feeStatus = +feeStatusDOM.value || null;
+    if (ghtkStatusDOM.value) {
+        if (ghtkStatusDOM.value == "0")
+            controller.filter.ghtkStatus = 0;
+        else
+            controller.filter.ghtkStatus = +ghtkStatusDOM.value || null;
+    }
     else
-        controller.filter.feeStatus = null;
+        controller.filter.ghtkStatus = null;
 
     // Khoảng thời gian
     let fromDateDOM = document.querySelector("[id$='_dpFromDate_dateInput']");
@@ -98,35 +135,6 @@ function _updateFilter() {
     else {
         controller.filter.toDate = strFormat.datetimeToString(new Date(), 'MM/dd/yyyy')
     }
-
-    // Trạng thái đơn hàng
-    let orderStatusDOM = document.querySelector("[id$='_ddlOrderStatus']");
-
-    if (orderStatusDOM.value)
-        controller.filter.orderStatus = +orderStatusDOM.value || null;
-    else
-        controller.filter.orderStatus = null;
-
-    // Trạng thái GHTK
-    let ghtkStatusDOM = document.querySelector("[id$='_ddlGhtkStatus']");
-
-    if (ghtkStatusDOM.value)
-    {
-        if (ghtkStatusDOM.value == "0")
-            controller.filter.ghtkStatus = 0;
-        else
-            controller.filter.ghtkStatus = +ghtkStatusDOM.value || null;
-    }
-    else
-        controller.filter.ghtkStatus = null;
-
-    // Trạng thái duyệt
-    let reviewStatusDOM = document.querySelector("[id$='_ddlReviewStatus']");
-
-    if (reviewStatusDOM.value)
-        controller.filter.reviewStatus = +reviewStatusDOM.value || null;
-    else
-        controller.filter.reviewStatus = null;
 }
 
 function _replaceUrl() {
@@ -227,7 +235,6 @@ function _createReportTableHTML(data) {
     html += "        <th>Phí <br/>(GHTK)</th>";
     html += "        <th>Phí <br/>(Hệ thống)</th>";
     html += "        <th>Nhân viên</th>";
-    html += "        <th></th>";
     html += "    </tr>";
     html += "</thead>";
     html += "<tbody>";
@@ -237,7 +244,7 @@ function _createReportTableHTML(data) {
     else
         data.forEach(function (item) {
             try {
-                html += "    <tr data-id='" + item.id + "' data-order-id='" + (item.orderId ? item.orderId : '') + "'>";
+                html += "    <tr data-order-id='" + item.orderId + "'>";
                 if (item.orderId)
                 {
                     // Mã hóa đơn
@@ -267,17 +274,18 @@ function _createReportTableHTML(data) {
                 html += "        <td data-title='Trạng thái'>";
                 html += "            " + item.ghtkStatus;
                 html += "        </td>";
-                // Ngày gửi (Ngày mà hệ thống ANN hoàn tất đơn hàng)
+                // Ngày gửi
                 html += "        <td  data-title='Ngày gửi'>";
                 html += "            " + strFormat.datetimeToString(item.orderDate, 'dd/MM/yyyy');
                 html += "        </td>";
-                // Ngày phát (Ngày GHTK kết thúc đơn giao hàng)
+                // Ngày phát
                 html += "        <td  data-title='Ngày phát'>";
                 html += "            " + strFormat.datetimeToString(item.ghtkDate, 'dd/MM/yyyy');
                 html += "        </td>";
                 // COD (GHTK)
                 html += "        <td data-title='COD (GHTK)'>";
-                html += "            <strong>" + UtilsService.formatThousands(item.ghtkCod, ',') + "</strong>";
+                if (item.ghtkCod)
+                    html += "            <strong>" + UtilsService.formatThousands(item.ghtkCod, ',') + "</strong>";
                 html += "        </td>";
                 // COD (Hệ thống)
                 html += "        <td data-title='COD (Hệ thống)'>";
@@ -298,21 +306,6 @@ function _createReportTableHTML(data) {
                 if (item.staff)
                     html += "            " + item.staff;
                 html += "        </td>";
-                // Thao tác
-                html += "        <td class='handle-button' data-title='Thao tác'>";
-                // Nếu khác trạng thái approve
-                if (item.reviewStatus != 2)
-                {
-                    html += "            <button type='button'";
-                    html += "                class='btn primary-btn h45-btn'";
-                    html += "                title='Duyệt đơn hàng'";
-                    html += "                style='background-color: #73a724'";
-                    html += "                onclick='openApproveModal(" + item.id + ", " + item.orderId + ")'";
-                    html += "            >";
-                    html += "                <span class='glyphicon glyphicon-check'></span>";
-                    html += "            </button>";
-                }
-                html += "        </td>";
                 html += "    </tr>";
 
                 html += "    <tr class='tr-more-info'>";
@@ -322,9 +315,14 @@ function _createReportTableHTML(data) {
                 html += "        </td>";
                 // Thông tin file name và địa chỉ
                 html += "        <td colspan='10' data-title='Thông tin thêm địa chỉ khách hàng'>";
-                html += "            <span class='order-info'><strong>FileName:</strong> " + item.fileName + "</span>";
+                if (item.reason)
+                    html += "            <span class='order-info'><strong>Lý do:</strong> " + item.reason + "</span>";
                 if (item.address)
-                    html += "            <br><span class='order-info'><strong>Địa chỉ:</strong> " + item.address + "</span>";
+                {
+                    if (item.reason)
+                        html += "            <br>";
+                    html += "            <span class='order-info'><strong>Địa chỉ:</strong> " + item.address + "</span>";
+                }
                 html += "        </td>";
                 html += "    </tr>";
             } catch (e) {
@@ -339,7 +337,7 @@ function _createReportTableHTML(data) {
     return html;
 }
 
-function _loadReportTable() {
+function _loadNotificationTable() {
     let tbReportDOM = document.querySelector("#tbReport");
     let html = _createReportTableHTML(controller.data);
 
@@ -348,87 +346,6 @@ function _loadReportTable() {
 //#endregion
 
 //#region Public
-function onChangeFileName(name) {
-    let $btnUpload = $("#btnUpload");
-
-    if (name || name.trim())
-        $btnUpload.removeAttr("disabled");
-    else
-        $btnUpload.attr("disabled", "disabled");
-}
-
-function onChangeUpload($file) {
-    let file = $file[0].files[0] || null;
-    let txtFileNameDOM = document.querySelector('#txtFileName');
-    let lbUploadStatusDOM = document.querySelector("[id$='_lbUploadStatus']");
-
-    if (file) {
-        txtFileNameDOM.value = file.name.replace('.xls', '');
-        txtFileNameDOM.disabled = false;
-    }
-    else {
-        txtFileNameDOM.value = "";
-        txtFileNameDOM.disabled = true;
-    }
-
-    txtFileNameDOM.dispatchEvent(new Event('change'));
-    lbUploadStatusDOM.innerHTML = "";
-}
-
-function onClickUpload(name, $file) {
-    let lbUploadStatusDOM = document.querySelector("[id$='_lbUploadStatus']");
-    let file = $file[0].files[0] || null;
-
-    if (file) {
-        HoldOn.open();
-
-        controller.uploadGhtkReports(name, file)
-            .then(function (response) {
-                HoldOn.close();
-
-                if (response.success) {
-                    let txtFileNameDOM = document.querySelector('#txtFileName');
-
-                    txtFileNameDOM.value = "";
-                    txtFileNameDOM.disabled = true;
-                    txtFileNameDOM.dispatchEvent(new Event('change'));
-                    lbUploadStatusDOM.innerText = 'Import file thành công';
-
-                    onClickSearch();
-                }
-                else
-                    lbUploadStatusDOM.innerText = 'Thông báo: Đã có lỗi xãy ra trong quá trình import file';
-            })
-            .catch(function (e) {
-                console.log(e);
-                HoldOn.close();
-
-                let response = e.responseJSON;
-
-                if (e.status == 400)
-                {
-                    let errorHtml = '';
-
-                    errorHtml += 'Thông báo: ' + response.message;
-
-                    if (response.error && response.error.length > 0)
-                        response.error.forEach(function (item) {
-                            for (key in item) {
-                                errorHtml += '<br>' + key + ': ' + item[key];
-                            };
-                        });
-
-                    lbUploadStatusDOM.innerHTML = errorHtml;
-                }
-                else
-                    lbUploadStatusDOM.innerText = 'Thông báo: ' + response.message;
-            });
-    }
-    else {
-        lbUploadStatusDOM.innerText = "Vui lòng nhập file import";
-    }
-}
-
 function onKeyUpSearch(event) {
     if (event.keyCode === 13)
         onClickSearch();
@@ -440,7 +357,7 @@ function onClickSearch() {
     _updateFilter();
     _replaceUrl();
 
-    controller.getGhtkReports()
+    controller.getGhtkNotifications()
         .then(function (response) {
             HoldOn.close();
             controller.lossMoney = response.lossMoney;
@@ -449,7 +366,7 @@ function onClickSearch() {
 
             _loadSpanReport();
             _loadPagination();
-            _loadReportTable();
+            _loadNotificationTable();
         })
         .catch(function (e) {
             console.log(e);
@@ -462,7 +379,7 @@ function onClickPagination(page) {
     controller.pagination.page = page;
     _replaceUrl();
 
-    controller.getGhtkReports()
+    controller.getGhtkNotifications()
         .then(function (response) {
             HoldOn.close();
             controller.lossMoney = response.lossMoney;
@@ -471,74 +388,11 @@ function onClickPagination(page) {
 
             _loadSpanReport();
             _loadPagination();
-            _loadReportTable();
+            _loadNotificationTable();
         })
         .catch(function (e) {
             console.log(e);
             HoldOn.close();
         });
-}
-
-function openApproveModal(deliverySaveId, orderId) {
-    if (!deliverySaveId)
-        return;
-
-    let $modal = $("#approveModal");
-    let $orderId = $modal.find("[id$='_txtOrderId']");
-    let $deliverySaveId = $modal.find("[id$='_hdfdeliverySaveId']");
-
-    //#region Init giá trị cho modal
-    $deliverySaveId.val(deliverySaveId);
-
-    if ($orderId)
-        $orderId.val(orderId);
-    else
-        $orderId.val('');
-    //#endregion
-
-    $modal.modal({ show: 'true', backdrop: 'static' });
-}
-
-function onClickApprove() {
-    let $modal = $("#approveModal");
-    let $orderId = $modal.find("[id$='_txtOrderId']");
-    let $deliverySaveId = $modal.find("[id$='_hdfdeliverySaveId']");
-
-    if (!$deliverySaveId.val() && !$orderId.val())
-        return;
-
-    $modal.find("#closeApprove").click();
-    HoldOn.open();
-
-    controller.approveRecord($deliverySaveId.val(), $orderId.val())
-        .then(function (response) {
-            HoldOn.close();
-
-            if (response.success) {
-                let $handleButton = $("tr[data-id='" + $deliverySaveId.val() + "'").find(".handle-button");
-
-                $handleButton.html('');
-                $handleButton.append("<span class='bg-blue-hoki'>Đã duyệt</span>");
-                swal("Thông báo", "Đã duyệt thành công!", "success");
-            }
-            else {
-                swal("Thông báo", response.message, "error");
-            }
-        })
-        .catch(function (e) {
-            console.log(e);
-            HoldOn.close();
-
-            let response = e.responseJSON;
-
-            if (response) {
-                if (response.message)
-                    swal("Thông báo", e.responseJSON.message, "error");
-                else
-                    swal("Thông báo", "Đã có lỗi trong quá trình duyệt đơn GHTK", "error");
-            }
-            else
-                swal("Thông báo", "Đã có lỗi trong quá trình duyệt đơn GHTK", "error");
-        });;
 }
 //#endregion

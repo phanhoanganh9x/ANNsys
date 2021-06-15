@@ -351,6 +351,7 @@
     <Content Include="App_Themes\Ann\css\pages\danh-sach-don-hang\danh-sach-don-hang.css" />
     <Content Include="App_Themes\Ann\css\pages\danh-sach-khach-giam-gia\danh-sach-khach-giam-gia.css" />
     <Content Include="App_Themes\Ann\css\pages\them-moi-giam-gia\them-moi-giam-gia.css" />
+    <Content Include="App_Themes\Ann\css\pages\danh-sach-don-ghtk\danh-sach-don-ghtk.css" />
     <Content Include="App_Themes\Ann\css\pages\thong-ke-ghtk\thong-ke-ghtk.css" />
     <Content Include="App_Themes\Ann\css\pages\thong-tin-don-dat-hang\thong-tin-don-dat-hang.css" />
     <Content Include="App_Themes\Ann\css\print-delivery.css" />
@@ -401,6 +402,7 @@
     <Content Include="App_Themes\Ann\js\bootstrap.min.js" />
     <Content Include="App_Themes\Ann\js\Chart.min.js" />
     <Content Include="App_Themes\Ann\js\chartjs.min.js" />
+    <Content Include="App_Themes\Ann\js\controllers\danh-sach-don-ghtk\danh-sach-don-ghtk-controller.js" />
     <Content Include="App_Themes\Ann\js\controllers\thong-ke-ghtk\thong-ke-ghtk-controller.js" />
     <Content Include="App_Themes\Ann\js\controllers\thong-tin-don-dat-hang\thong-tin-don-dat-hang-controller.js" />
     <Content Include="App_Themes\Ann\js\controllers\chi-tiet-giam-gia\chi-tiet-giam-gia-controller.js" />
@@ -425,6 +427,7 @@
     <Content Include="App_Themes\Ann\js\models\common\discount-group-model.js" />
     <Content Include="App_Themes\Ann\js\models\common\order-model.js" />
     <Content Include="App_Themes\Ann\js\pages\dang-ky-ghtk\dang-ky-ghtk.js" />
+    <Content Include="App_Themes\Ann\js\pages\danh-sach-don-ghtk\danh-sach-don-ghtk.js" />
     <Content Include="App_Themes\Ann\js\pages\thong-ke-ghtk\thong-ke-ghtk.js" />
     <Content Include="App_Themes\Ann\js\pages\thong-tin-don-dat-hang\thong-tin-don-dat-hang.js" />
     <Content Include="App_Themes\Ann\js\pages\chi-tiet-giam-gia\chi-tiet-giam-gia.js" />
@@ -436,6 +439,7 @@
     <Content Include="App_Themes\Ann\js\pages\danh-sach-nhom-khach-hang\danh-sach-nhom-khach-hang.js" />
     <Content Include="App_Themes\Ann\js\pages\them-moi-giam-gia\them-moi-giam-gia.js" />
     <Content Include="App_Themes\Ann\js\delivery-address.js" />
+    <Content Include="App_Themes\Ann\js\services\danh-sach-don-ghtk\danh-sach-don-ghtk-service.js" />
     <Content Include="App_Themes\Ann\js\services\thong-ke-ghtk\thong-ke-ghtk-service.js" />
     <Content Include="App_Themes\Ann\js\services\thong-tin-don-dat-hang\thong-tin-don-dat-hang-service.js" />
     <Content Include="App_Themes\Ann\js\services\common\order-service.js" />
@@ -554,7 +558,11 @@
     </Content>
     <Content Include="print-order-image-english.aspx" />
     <Content Include="SQL\01CREATE_TABLE_DeliveryAddress.sql" />
+    <Content Include="SQL\01CREATE_TABLE_DeliverySaveAddress.sql" />
+    <Content Include="SQL\01CREATE_TABLE_DeliverySaveNotification.sql" />
+    <Content Include="SQL\01CREATE_TABLE_DeliverySaveReason.sql" />
     <Content Include="SQL\01CREATE_TABLE_DeliverySaveReport.sql" />
+    <Content Include="SQL\01CREATE_TABLE_DeliverySaveStatus.sql" />
     <Content Include="SQL\01CREATE_TABLE_ExchangeRate.sql" />
     <Content Include="SQL\01CREATE_TABLE_PostVideo.sql" />
     <Content Include="SQL\01CREATE_TABLE_PreOrder.sql" />
@@ -601,6 +609,7 @@
     <Content Include="dang-ky-ghtk.aspx" />
     <Content Include="san-pham.aspx" />
     <Content Include="sua-phien-kiem-kho.aspx" />
+    <Content Include="danh-sach-don-ghtk.aspx" />
     <Content Include="thong-ke-ghtk.aspx" />
     <Content Include="thong-ke-chuyen-kho.aspx" />
     <Content Include="thong-tin-don-dat-hang.aspx" />
@@ -1458,6 +1467,13 @@
     </Compile>
     <Compile Include="sua-phien-kiem-kho.aspx.designer.cs">
       <DependentUpon>sua-phien-kiem-kho.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="danh-sach-don-ghtk.aspx.cs">
+      <DependentUpon>danh-sach-don-ghtk.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="danh-sach-don-ghtk.aspx.designer.cs">
+      <DependentUpon>danh-sach-don-ghtk.aspx</DependentUpon>
     </Compile>
     <Compile Include="thong-ke-ghtk.aspx.cs">
       <DependentUpon>thong-ke-ghtk.aspx</DependentUpon>

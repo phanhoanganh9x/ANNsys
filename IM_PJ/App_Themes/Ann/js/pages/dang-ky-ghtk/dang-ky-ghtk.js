@@ -916,7 +916,7 @@ function _submit() {
         contentType: 'application/json',
         dataType: "json",
         data: JSON.stringify({ products: [_product], order: _order }),
-        url: "/api/v1/delivery-save/register-order",
+        url: "/api/v1/delivery-save/order/register",
         beforeSend: function () {
             HoldOn.open();
         },
