@@ -9,7 +9,7 @@ CREATE TABLE [dbo].[DeliverySaveStatus](
     [Name] [nvarchar](255) NOT NULL,
     [CreatedDate] [datetime] NOT NULL,
     [ModifiedDate] [datetime] NOT NULL,
- CONSTRAINT [PK_DeliverySaveStatus] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_DeliverySaveStatus] PRIMARY KEY CLUSTERED
 (
     [Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
@@ -23,7 +23,6 @@ ALTER TABLE [dbo].[DeliverySaveStatus] ADD  CONSTRAINT [DF_DeliverySaveStatus_Mo
 GO
 
 INSERT INTO [dbo].[DeliverySaveStatus] ([Id], [Name]) VALUES ( -1, N'Hủy đơn hàng');
-INSERT INTO [dbo].[DeliverySaveStatus] ([Id], [Name]) VALUES (  0, N'Trạng thái khác');
 INSERT INTO [dbo].[DeliverySaveStatus] ([Id], [Name]) VALUES (  1, N'Chưa tiếp nhận');
 INSERT INTO [dbo].[DeliverySaveStatus] ([Id], [Name]) VALUES (  2, N'Đã tiếp nhận');
 INSERT INTO [dbo].[DeliverySaveStatus] ([Id], [Name]) VALUES (  3, N'Đã lấy hàng/Đã nhập kho');
