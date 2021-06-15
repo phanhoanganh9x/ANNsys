@@ -18,6 +18,9 @@
         // Tới ngày
         if (filter.toDate)
             queryParams += '&toDate=' + filter.toDate;
+        // Nhân viên
+        if (filter.staff && filter.staff != "admin")
+            queryParams += '&staff=' + filter.staff;
 
         queryParams += '&pageSize=' + pagination.pageSize;
         queryParams += '&page=' + pagination.page;

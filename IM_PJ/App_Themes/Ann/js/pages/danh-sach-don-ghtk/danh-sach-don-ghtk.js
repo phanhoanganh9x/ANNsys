@@ -25,9 +25,11 @@ function _loadSpanReport() {
 }
 
 function _initQueryParams() {
+    let $hdfStaff = $("[id$='_hdfStaff']");
     let search = window.location.search;
 
     controller.setFilter(search);
+    controller.filter.staff = $hdfStaff.val();
 }
 
 function _initGhtkStatus() {
@@ -234,7 +236,8 @@ function _createReportTableHTML(data) {
     html += "        <th>COD <br/>(Hệ thống)</th>";
     html += "        <th>Phí <br/>(GHTK)</th>";
     html += "        <th>Phí <br/>(Hệ thống)</th>";
-    html += "        <th>Nhân viên</th>";
+    if (controller.filter.staff == "admin")
+        html += "        <th>Nhân viên</th>";
     html += "    </tr>";
     html += "</thead>";
     html += "<tbody>";
@@ -302,12 +305,14 @@ function _createReportTableHTML(data) {
                     html += "            <strong>" + UtilsService.formatThousands(item.fee, ',') + "</strong>";
                 html += "        </td>";
                 // Nhân viên
-                html += "        <td data-title='Nhân viên tạo đơn'>";
-                if (item.staff)
-                    html += "            " + item.staff;
-                html += "        </td>";
+                if (controller.filter.staff == "admin")
+                {
+                    html += "        <td data-title='Nhân viên tạo đơn'>";
+                    if (item.staff)
+                        html += "            " + item.staff;
+                    html += "        </td>";
+                }
                 html += "    </tr>";
-
                 html += "    <tr class='tr-more-info'>";
                 // Mã đơn GHTK
                 html += "        <td colspan='2' data-title='Thông tin mã vẫn đơn'>";

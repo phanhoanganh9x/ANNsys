@@ -4,7 +4,8 @@
             search: null,
             ghtkStatus: null,
             fromDate: null,
-            toDate: null
+            toDate: null,
+            staff: null
         }
         this.data = [];
         this.pagination = {
