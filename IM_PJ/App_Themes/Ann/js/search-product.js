@@ -186,6 +186,8 @@ function addHtmlProductResult(item) {
                     + "data-productvariableid='" + item.ProductVariableID + "' "
                     + "data-productvariablename='" + ProductVariableName + "' "
                     + "data-productvariablevalue ='" + ProductVariableValue + "' "
+                    + "data-price10 ='" + item.Price10 + "' "
+                    + "data-bestprice ='" + item.BestPrice + "' "
                     + "data-productvariablesave ='" + ProductVariableSave + "'>";
 
     // for page them-moi-don-hang
@@ -378,7 +380,7 @@ function searchProductMaster(textsearch, isStock) {
     var regex = /^[\x20-\x7E]*$/;
     if (!regex.test(textsearch)) {
         $("#txtSearch").val(textsearch).select();
-        swal("Tắt bộ gõ Tiếng Việt", "Hãy tắt bộ gõ Tiếng Việt có dấu:<br><br>Nhấn phím <strong>Ctrl và Shirt</strong> cùng lúc", "error");
+        swal("Tắt bộ gõ Tiếng Việt", "Hãy tắt bộ gõ Tiếng Việt có dấu:<br><br>Nhấn phím <strong>Ctrl + Shirt</strong> cùng lúc", "error");
     }
     else {
         _productVariable = [];

@@ -180,11 +180,25 @@
                     var fullPath = $(this).attr("src");
                     var filename = fullPath.replace(/^.*[\\\/]/, '');
                     $("#img01").attr("src", "/uploads/images/" + filename);
+                    let product = $(this).parent().parent();
 
-                    let productName = $(this).parent().parent().find(".name-item").text();
-                    let productSKU = " - " + $(this).parent().parent().find(".sku-item").text();
-                    let productPrice = " - " + $(this).parent().parent().find(".price-item").text();
-                    $("#caption").html(productName + productSKU + productPrice);
+                    let caption = product.attr("data-productname");
+                    caption += " - " + product.attr("data-sku");
+
+                    let price = product.attr("data-giabansi");
+                    caption += "<br> - Giá sỉ 1 cái: " + price.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+                    let price10 = product.attr("data-price10");
+                    if (price10 !== "" && price10 != 0) {
+                        caption += "<br> - Giá sỉ 10 cái: " + price10.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+
+                    let bestprice = product.attr("data-bestprice");
+                    if (bestprice !== "" && bestprice != 0) {
+                        caption += "<br> - Giá sỉ thùng: " + bestprice.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                    
+                    $("#caption").html(caption);
                 });
 
                 $(".modal-image-product").click(function (e) {
@@ -201,11 +215,25 @@
                     var fullPath = $(obj).attr("src");
                     var filename = fullPath.replace(/^.*[\\\/]/, '');
                     $("#img01").attr("src", "/uploads/images/" + filename);
+                    let product = $(obj).parent().parent();
 
-                    let productName = $(obj).parent().parent().find(".name-item").text();
-                    let productSKU = " - " + $(obj).parent().parent().find(".sku-item").text();
-                    let productPrice = " - " + $(obj).parent().parent().find(".price-item").text();
-                    $("#caption").html(productName + productSKU + productPrice);
+                    let caption = product.attr("data-productname");
+                    caption += " - " + product.attr("data-sku");
+
+                    let price = product.attr("data-giabansi");
+                    caption += "<br> - Giá sỉ 1 cái: " + price.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+                    let price10 = product.attr("data-price10");
+                    if (price10 !== "" && price10 != 0) {
+                        caption += "<br> - Giá sỉ 10 cái: " + price10.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+
+                    let bestprice = product.attr("data-bestprice");
+                    if (bestprice !== "" && bestprice != 0) {
+                        caption += "<br> - Giá sỉ thùng: " + bestprice.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+
+                    $("#caption").html(caption);
                 }
 
                 function openImageInvoice(obj) {

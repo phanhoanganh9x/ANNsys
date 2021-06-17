@@ -54,7 +54,9 @@ namespace IM_PJ.Controllers
                                     RegularPrice = child != null ? child.Regular_Price.Value : parent.product.Regular_Price.Value,
                                     CostOfGood = child != null ? child.CostOfGood.Value : parent.product.CostOfGood.Value,
                                     RetailPrice = child != null ? child.RetailPrice.Value : parent.product.Retail_Price.Value,
-                                    OldPrice = parent.product.Old_Price.Value > 0 ? parent.product.Old_Price.Value : 0
+                                    OldPrice = parent.product.Old_Price.Value > 0 ? parent.product.Old_Price.Value : 0,
+                                    Price10 = parent.product.Price10.Value > 0 ? parent.product.Price10.Value : 0,
+                                    BestPrice = parent.product.BestPrice.Value > 0 ? parent.product.BestPrice.Value : 0
                                 })
                     .Where(x => x.ParentSKU == SKU.Trim().ToUpper() || x.ChildSKU == SKU.Trim().ToUpper())
                     .OrderBy(x => x.ProductID)
@@ -96,7 +98,9 @@ namespace IM_PJ.Controllers
                             RegularPrice = x.RegularPrice,
                             CostOfGood = x.CostOfGood,
                             RetailPrice = x.RetailPrice,
-                            OldPrice = x.OldPrice
+                            OldPrice = x.OldPrice,
+                            Price10 = x.Price10,
+                            BestPrice = x.BestPrice
                         };
                     })
                     .ToList();
@@ -171,7 +175,9 @@ namespace IM_PJ.Controllers
                                 CostOfGood = parent.product.CostOfGood,
                                 RetailPrice = parent.product.RetailPrice,
                                 QuantityCurrent = child != null ? child.Quantity : 0,
-                                OldPrice = parent.product.OldPrice
+                                OldPrice = parent.product.OldPrice,
+                                Price10 = parent.product.Price10,
+                                BestPrice = parent.product.BestPrice
                             })
                         .ToList();
                 }

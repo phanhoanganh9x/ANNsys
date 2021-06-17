@@ -190,18 +190,12 @@ namespace IM_PJ
 
                 lbOldPrice.Text = string.Format("{0:N0}", p.Old_Price);
                 lbRegularPrice.Text = string.Format("{0:N0}", p.Regular_Price);
-
-                ltrCostOfGood.Text = "";
+                lbPrice10.Text = string.Format("{0:N0}", p.Price10);
+                lbBestPrice.Text = string.Format("{0:N0}", p.BestPrice);
+                lbCostOfGood.Text = "";
                 if (acc.RoleID == 0)
                 {
-                    ltrCostOfGood.Text += "<div class='form-row'>";
-                    ltrCostOfGood.Text += "    <div class='row-left'>";
-                    ltrCostOfGood.Text += "        Giá vốn";
-                    ltrCostOfGood.Text += "    </div>";
-                    ltrCostOfGood.Text += "    <div class='row-right'>";
-                    ltrCostOfGood.Text += "        <span class='form-control'>" + string.Format("{0:N0}", p.CostOfGood) + "</span>";
-                    ltrCostOfGood.Text += "    </div>";
-                    ltrCostOfGood.Text += "</div>";
+                    lbCostOfGood.Text =  string.Format("{0:N0}", p.CostOfGood);
                 }
 
                 lbRetailPrice.Text = string.Format("{0:N0}", p.Retail_Price);

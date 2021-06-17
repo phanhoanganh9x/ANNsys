@@ -118,7 +118,7 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
-                                    Giá cũ chưa sale
+                                    Giá sỉ cũ chưa sale
                                 </div>
                                 <div class="row-right">
                                     <asp:Label ID="lbOldPrice" runat="server" CssClass="form-control"></asp:Label>
@@ -132,7 +132,30 @@
                                     <asp:Label ID="lbRegularPrice" runat="server" CssClass="form-control"></asp:Label>
                                 </div>
                             </div>
-                            <asp:Literal ID="ltrCostOfGood" runat="server"></asp:Literal>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Giá sỉ 10 cái
+                                </div>
+                                <div class="row-right">
+                                    <asp:Label ID="lbPrice10" runat="server" CssClass="form-control"></asp:Label>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Giá sỉ thùng
+                                </div>
+                                <div class="row-right">
+                                    <asp:Label ID="lbBestPrice" runat="server" CssClass="form-control"></asp:Label>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Giá vốn
+                                </div>
+                                <div class="row-right">
+                                    <asp:Label ID="lbCostOfGood" runat="server" CssClass="form-control"></asp:Label>
+                                </div>
+                            </div>
                             <div class="form-row">
                                 <div class="row-left">
                                     Giá lẻ

@@ -364,6 +364,8 @@ namespace IM_PJ
                             double Giacu = 0;
                             double Giabansi = 0;
                             double Giabanle = 0;
+                            double Price10 = 0;
+                            double BestPrice = 0;
                             string stringGiabansi = "";
                             string stringGiabanle = "";
                             double QuantityInstock = 0;
@@ -406,14 +408,15 @@ namespace IM_PJ
 
                                     QuantityInstock = mainstock;
                                     QuantityInstockString = string.Format("{0:N0}", mainstock);
-                                    ProductImage = "<img onclick='openImage($(this))' src='" + Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Small) + "'>";
+                                    ProductImage = "<img src='" + Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Small) + "'>";
                                     ProductImageOrigin = Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Source);
                                     ProductVariable = variable;
                                     ProductName = product.ProductTitle;
                                     QuantityMainInstock = mainstock;
                                     QuantityMainInstockString = string.Format("{0:N0}", mainstock);
                                     ProductVariableSave = item.ProductVariableDescrition;
-
+                                    Price10 = product.Price10.HasValue ? product.Price10.Value : 0;
+                                    BestPrice = product.BestPrice.HasValue ? product.BestPrice.Value : 0;
                                     ProductVariableName = variablename;
                                     ProductVariableValue = variablevalue;
                                 }
@@ -474,16 +477,18 @@ namespace IM_PJ
                                         {
                                             Giacu = Convert.ToDouble(_product.Old_Price);
                                         }
+                                        Price10 = _product.Price10.HasValue? _product.Price10.Value : 0;
+                                        BestPrice = _product.BestPrice.HasValue ? _product.BestPrice.Value : 0;
                                     }
 
                                     if (!string.IsNullOrEmpty(productvariable.Image))
                                     {
-                                        ProductImage = "<img onclick='openImage($(this))' src='" + Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Small) + "'>";
+                                        ProductImage = "<img src='" + Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Small) + "'>";
                                         ProductImageOrigin = Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Source);
                                     }
                                     else if (_product != null && !string.IsNullOrEmpty(_product.ProductImage))
                                     {
-                                        ProductImage = "<img onclick='openImage($(this))' src='" + Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Small) + "'>";
+                                        ProductImage = "<img src='" + Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Small) + "'>";
                                         ProductImageOrigin = Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Source);
                                     }
 
@@ -516,6 +521,8 @@ namespace IM_PJ
                             html.AppendLine(String.Format("        data-productvariablename='{0}'", ProductVariableName));
                             html.AppendLine(String.Format("        data-productvariablevalue ='{0}'", ProductVariableValue));
                             html.AppendLine(String.Format("        data-productvariablesave ='{0}'", ProductVariableSave));
+                            html.AppendLine(String.Format("        data-price10 ='{0}'", Price10));
+                            html.AppendLine(String.Format("        data-bestprice ='{0}'", BestPrice));
                             html.AppendLine(String.Format("        data-quantitymaininstock='{0}'>", QuantityMainInstock));
                             html.AppendLine(String.Format("    <td class='order-item'>{0}</td>", excuteStatus == (int)ExcuteStatus.Doing ? (orderdetails.Count - orderitem + 1) : orderitem));
                             html.AppendLine(String.Format("    <td class='image-item'>{0}</td>", ProductImage));
