@@ -25,6 +25,7 @@ namespace IM_PJ
     public partial class tat_ca_san_pham : System.Web.UI.Page
     {
         private static tbl_Account acc;
+        private static string[] cosmetics = { "my-pham", "kem-face", "kem-body", "serum", "tam-trang", "sua-tam", "sua-rua-mat", "dau-goi-dau", "son-moi", "kem-chong-nang", "my-pham-tong-hop", "dung-dich-ve-sinh", "mat-na-duong-da", "nuoc-hoa", "nuoc-hoa-charme", "nuoc-hoa-noi-dia-trung", "nuoc-hoa-vung-kin", "nuoc-hoa-mini", "nuoc-hoa-full-size", "thuc-pham-chuc-nang" };
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -785,13 +786,31 @@ namespace IM_PJ
             StringBuilder html = new StringBuilder();
             if (product != null)
             {
-                html.AppendLine("<p>" + product.ProductSKU + " - Sỉ " + product.ProductTitle + "</p>\r\n");
-                html.AppendLine("<p>📌 Giá sỉ: " + (product.Regular_Price).ToString() + "</p>\r\n");
-                html.AppendLine("<p>📌 Giá lẻ: " + (product.Retail_Price).ToString() + "</p>\r\n");
-                html.AppendLine("<p>📌 Wholesale price: $" + (Math.Round(Convert.ToDecimal(product.Regular_Price / 23100), 2)).ToString() + " USD</p>\r\n");
-                if (!string.IsNullOrEmpty(product.Materials))
+                var category = CategoryController.GetByID(product.CategoryID.Value);
+
+                html.AppendLine("<p>" + product.ProductTitle + " - " + product.ProductSKU + "</p>\r\n");
+                html.AppendLine("<p>📌 𝖦ιá ѕἰ: " + (product.Regular_Price).ToString() + "</p>\r\n");
+
+                if (product.Price10 > 0 && product.Price10 < product.Regular_Price)
                 {
-                    html.AppendLine("<p>🔖 " + (product.CategoryID == 44 ? "" : "Chất liệu: ")  + product.Materials + "</p>\r\n");
+                    html.AppendLine("<p>📌 𝖦ιá ѕἰ 10 cái: " + (product.Price10).ToString() + "</p>\r\n");
+                }
+
+                if (product.BestPrice > 0 && product.BestPrice < product.Price10)
+                {
+                    html.AppendLine("<p>📌 𝖦ιá ѕἰ thùng: " + (product.BestPrice).ToString() + "</p>\r\n");
+                }
+
+                html.AppendLine("<p>📌 𝖦ιá l.ẻ: " + (product.Retail_Price).ToString() + "</p>\r\n");
+
+                if (!cosmetics.Contains(category.Slug))
+                {
+                    html.AppendLine("<p>📌 Wholesale price: $" + (Math.Round(Convert.ToDecimal(product.Regular_Price / 23100), 2)).ToString() + " USD</p>\r\n");
+                }
+
+                if (!cosmetics.Contains(category.Slug) && !string.IsNullOrEmpty(product.Materials))
+                {
+                    html.AppendLine("<p>🔖 Chất liệu: " + product.Materials + "</p>\r\n");
                 }
 
                 if (!string.IsNullOrEmpty(product.ProductContent))
@@ -873,14 +892,21 @@ namespace IM_PJ
                 {
                     // thông tin liên hệ
                     string categoryName = "";
-                    var category = CategoryController.GetByID(product.CategoryID.Value);
                     if (category != null)
                     {
                         categoryName = " " + category.CategoryName.ToUpper();
                     }
                     html.AppendLine("\r\n");
                     html.AppendLine("<p>--------------------------</p>\r\n");
-                    html.AppendLine("<p>⚡⚡ KHO SỈ" + categoryName + " ANN ⚡⚡</p>\r\n");
+                    if (!cosmetics.Contains(category.Slug))
+                    {
+                        html.AppendLine("<p>⚡⚡ KHO SỈ" + categoryName + " ANN ⚡⚡</p>\r\n");
+                    }
+                    else
+                    {
+                        html.AppendLine("<p>⚡⚡ KHO SỈ MỸ PHẨM ANN ⚡⚡</p>\r\n");
+                    }
+                        
                     html.AppendLine("<p>🏭 68 Đường C12, P.13, Tân Bình, TP.HCM</p>\r\n");
                     html.AppendLine("<p>⭐ Web: https://ann.com.vn </p>\r\n");
                 }
@@ -953,16 +979,24 @@ namespace IM_PJ
                         if (!String.IsNullOrEmpty(item.LinkDownload))
                             html.AppendLine("       <p class='p-paterials'><strong>Download: </strong><a target='_blank' class='customer-name-link' href='" + item.LinkDownload + "'>Link</a><p>");
                     }
-                    
-                    html.AppendLine("       <p class='p-paterials'><strong>Chất liệu:</strong> " + item.Materials + "<p>");
-                    if (item.Price10 > 0)
+
+                    if (!cosmetics.Contains(item.CategorySlug))
+                    {
+                        html.AppendLine("       <p class='p-paterials'><strong>Chất liệu:</strong> " + item.Materials + "<p>");
+                    }
+
+                    html.AppendLine("       <p class='p-paterials'><strong>Giá sỉ 1 cái:</strong> " + string.Format("{0:N0}", item.RegularPrice) + "<p>");
+
+                    if (item.Price10 > 0 && item.Price10 < item.RegularPrice)
                     {
                         html.AppendLine("       <p class='p-paterials'><strong>Giá sỉ 10 cái:</strong> " + string.Format("{0:N0}", item.Price10) + "<p>");
                     }
-                    if (item.BestPrice > 0)
+
+                    if (item.BestPrice > 0 && item.BestPrice < item.Price10)
                     {
                         html.AppendLine("       <p class='p-paterials'><strong>Giá thùng:</strong> " + string.Format("{0:N0}", item.BestPrice) + "<p>");
                     }
+
                     if (!String.IsNullOrEmpty(item.Tags))
                     {
                         var tagList = item.Tags.Split(',').Select(x => x.Trim()).ToList();

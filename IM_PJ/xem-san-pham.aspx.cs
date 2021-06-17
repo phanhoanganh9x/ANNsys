@@ -158,12 +158,8 @@ namespace IM_PJ
 
                 pSummary.Text = p.ShortDescription;
 
-                pContent.Text = "<p>Xưởng sỉ " + p.ProductTitle + "</p>";
-                pContent.Text += "<p>Chất liệu: " + p.Materials + "</p>";
-                pContent.Text += "<p>" + p.ProductContent + "</p>";
-                pContent.Text += "<p>⚡⚡ KHO SỈ" + categoryName + " ANN ⚡⚡</p>";
-                pContent.Text += "<p>⭐ Zalo: 0971500506 - 0946500509 - 0946500504 - 0918569400</p>";
-                pContent.Text += "<p>⭐ Web: https://ann.com.vn </p>";
+
+                pContent.Text = p.ProductContent;
 
 
                 lblSKU.Text = p.ProductSKU;

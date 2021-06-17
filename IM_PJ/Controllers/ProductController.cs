@@ -998,6 +998,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("    SELECT");
                 sql.AppendLine("            ID");
                 sql.AppendLine("    ,       CategoryName");
+                sql.AppendLine("    ,       Slug");
                 sql.AppendLine("    ,       ParentID");
                 sql.AppendLine("    FROM");
                 sql.AppendLine("            tbl_Category");
@@ -1010,6 +1011,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("    SELECT");
                 sql.AppendLine("            CHI.ID");
                 sql.AppendLine("    ,       CHI.CategoryName");
+                sql.AppendLine("    ,       CHI.Slug");
                 sql.AppendLine("    ,       CHI.ParentID");
                 sql.AppendLine("    FROM");
                 sql.AppendLine("            category AS PAR");
@@ -1019,6 +1021,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("SELECT");
                 sql.AppendLine("        ID");
                 sql.AppendLine(",       CategoryName");
+                sql.AppendLine(",       Slug");
                 sql.AppendLine(",       ParentID");
                 sql.AppendLine("INTO #category");
                 sql.AppendLine("FROM category;");
@@ -1812,6 +1815,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("     ,       @totalPages AS TotalPages");
             sql.AppendLine("     ,       p.ProductStyle AS ProductStyle");
             sql.AppendLine("     ,       c.CategoryName");
+            sql.AppendLine("     ,       c.Slug as CategorySlug");
             sql.AppendLine("     ,       dbo.ufnGetTagByProductID(p.ID) AS Tags");
             sql.AppendLine("     ,       p.*");
             sql.AppendLine("     ,       PRQ.QuantityLeft");
@@ -1829,6 +1833,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("             SELECT");
             sql.AppendLine("                     ID");
             sql.AppendLine("             ,       CategoryName");
+            sql.AppendLine("             ,       Slug");
             sql.AppendLine("             FROM");
             sql.AppendLine("                     dbo.tbl_Category");
             sql.AppendLine("     ) AS c");
@@ -1905,6 +1910,8 @@ namespace IM_PJ.Controllers
                     entity.RetailPrice = Convert.ToDouble(reader["Retail_Price"].ToString());
                 if (reader["CategoryName"] != DBNull.Value)
                     entity.CategoryName = reader["CategoryName"].ToString();
+                if (reader["CategorySlug"] != DBNull.Value)
+                    entity.CategorySlug = reader["CategorySlug"].ToString();
                 if (reader["CategoryID"] != DBNull.Value)
                     entity.CategoryID = reader["CategoryID"].ToString().ToInt(0);
                 if (reader["Tags"] != DBNull.Value)
@@ -3451,6 +3458,7 @@ namespace IM_PJ.Controllers
             // multi Price
             public double Price10 { get; set; }
             public double BestPrice { get; set; }
+            public string CategorySlug { get; set; }
 
         }
 
