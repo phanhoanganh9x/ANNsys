@@ -139,7 +139,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="form-group row">
+                            <div id="divFee" class="form-group row hide">
                                 <div class="col-4 col-xl-4">
                                     <label>Phí GHTK tính</label>
                                 </div>
@@ -153,32 +153,13 @@
                                                 <input type="radio" id="feeship_shop" name="feeship" class="custom-control-input" value="1">
                                                 <label class="custom-control-label" for="feeship_shop">Lấy phí GHTK (update phí này vào đơn hàng)</label>
                                             </div>
-                                            <div class="custom-control custom-radio custom-control-inline">
-                                                <input type="radio" id="feeship_receiver" name="feeship" class="custom-control-input" value="0">
-                                                <label class="custom-control-label" for="feeship_receiver">Khách tự trả phí (shop ứng trước, phí cộng vào thu hộ)</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group row insurance-fee hide">
-                                <div class="col-4 col-xl-4">
-                                    <label>Phí bảo hiểm</label>
-                                </div>
-                                <div class="col-8 col-xl-8">
-                                    <div class="row">
-                                        <div class="col-5 col-xl-3">
-                                            <label id="insuranceFee">0</label>
-                                        </div>
-                                        <div class="col-7 col-xl-9">
-                                            (đã cộng vào phí ship GHTK)
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div id="divFeeShop" class="form-group row">
                                 <div class="col-4 col-xl-4">
-                                    <label>Phí nhân viên tính</label>
+                                    <label id="labelShopFeeTitle">Phí nhân viên tính</label>
                                 </div>
                                 <div class="col-8 col-xl-8">
                                     <div class="row">
@@ -188,7 +169,7 @@
                                         <div class="col-7 col-xl-9">
                                             <div class="custom-control custom-radio custom-control-inline">
                                                 <input type="radio" id="fee_entered" name="feeship" class="custom-control-input" value="2">
-                                                <label class="custom-control-label" for="fee_entered">Lấy phí nhân viên tính (phí này phải bằng phí GHTK tính)</label>
+                                                <label class="custom-control-label" for="fee_entered">Lấy phí nhân viên tính</label>
                                             </div>
                                         </div>
                                     </div>
@@ -198,18 +179,6 @@
                                 <label for="pick_money" class="col-4 col-xl-4 col-form-label">Tiền thu hộ</label>
                                 <div class="input-group col-8 col-xl-8">
                                     <input type="text" id="pick_money" class="form-control text-right" value="0" disabled="disabled" readonly>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="value" class="col-4 col-xl-4 col-form-label">Giá trị hàng</label>
-                                <div class="input-group col-8 col-xl-8">
-                                    <input type="text" id="value" class="form-control text-right" value="0" disabled="disabled" readonly>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="total_money" class="col-4 col-xl-4 col-form-label">Tổng tiền GHTK thu</label>
-                                <div class="input-group col-8 col-xl-8">
-                                    <input type="text" id="total_money" class="form-control text-right" value="0" disabled="disabled" readonly>
                                 </div>
                             </div>
                             <div class="form-group row">

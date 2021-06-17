@@ -39,34 +39,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Tỉnh thành</label>
-                                            <asp:DropDownList ID="ddlProvince" runat="server" CssClass="form-control"></asp:DropDownList>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Quận huyện</label>
-                                            <asp:DropDownList ID="ddlDistrict" runat="server" CssClass="form-control"></asp:DropDownList>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Phường xã</label>
-                                            <asp:DropDownList ID="ddlWard" runat="server" CssClass="form-control"></asp:DropDownList>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Địa chỉ</label>
-                                            <asp:TextBox ID="txtAddress" CssClass="form-control capitalize" runat="server" autocomplete="off"></asp:TextBox>
-                                        </div>
-                                    </div>
-                                </div>
                                 <div class="form-row view-detail" style="display: none">
                                 </div>
                                 <div class="form-row discount-info" style="display: none">
@@ -277,9 +249,6 @@
             <asp:HiddenField ID="hdfCouponValue" runat="server" />
             <asp:HiddenField ID="hdfCouponProductNumber" runat="server" />
             <asp:HiddenField ID="hdfCouponPriceMin" runat="server" />
-            <asp:HiddenField ID="hdfProvinceID" runat="server" />
-            <asp:HiddenField ID="hdfDistrictID" runat="server" />
-            <asp:HiddenField ID="hdfWardID" runat="server" />
 
             <!-- Biến đăng ký địa chỉ nhận hàng -->
             <asp:HiddenField ID="hdfDeliveryAddressId" runat="server" />
@@ -482,82 +451,6 @@
                 if ($phone.val() === "") {
                     $phone.focus();
                     swal("Thông báo", "Hãy nhập số điện thoại khách hàng!", "error");
-
-                    return false;
-                }
-
-                // Tỉnh / thành phố
-                let $province = $("#<%=ddlProvince.ClientID%>");
-
-                if ((+$province.val() || 0) === 0) {
-                    swal({
-                        title: "Thông báo",
-                        text: "Chưa chọn tỉnh thành",
-                        type: "warning",
-                        showCancelButton: false,
-                        confirmButtonText: "Để em xem lại!!",
-                        closeOnConfirm: false,
-                        html: true
-                    }, function (isConfirm) {
-                        if (isConfirm) {
-                            sweetAlert.close();
-                            $province.select2('open');
-                        }
-                    });
-
-                    return false;
-                }
-
-                // Quận / huyện
-                let $district = $("#<%=ddlDistrict.ClientID%>");
-
-                if ((+$district.val() || 0) === 0) {
-                    swal({
-                        title: "Thông báo",
-                        text: "Chưa chọn quận huyện",
-                        type: "warning",
-                        showCancelButton: false,
-                        confirmButtonText: "Để em xem lại!!",
-                        closeOnConfirm: false,
-                        html: true
-                    }, function (isConfirm) {
-                        if (isConfirm) {
-                            sweetAlert.close();
-                            $district.select2('open');
-                        }
-                    });
-
-                    return false;
-                }
-
-                // Phường / xã
-                let $ward = $("#<%=ddlWard.ClientID%>");
-
-                if ($ward.val() == null) {
-                    swal({
-                        title: "Thông báo",
-                        text: "Chưa chọn phường xã",
-                        type: "warning",
-                        showCancelButton: false,
-                        confirmButtonText: "Để em xem lại!!",
-                        closeOnConfirm: false,
-                        html: true
-                    }, function (isConfirm) {
-                        if (isConfirm) {
-                            sweetAlert.close();
-                            $ward.select2('open');
-                        }
-                    });
-
-                    return false;
-                }
-
-                // Địa chỉ
-                let $address = $("#<%=txtAddress.ClientID%>");
-
-                if ($address.val() === "") {
-                    $address.focus();
-                    swal("Thông báo", "Hãy nhập địa chỉ khách hàng!", "error");
 
                     return false;
                 }
@@ -1112,9 +1005,8 @@
                             swal.close();
                             $("#<%=hdfUsernameCurrent.ClientID%>").val(username);
                             $("#<%=hdfUsername.ClientID%>").val(username);
-                            $("#<%=txtPhone.ClientID%>").val("").prop('readonly', false).prop('disabled', false);
-                            $("#<%=txtFullname.ClientID%>").val("").prop('readonly', false).prop('disabled', false).focus();
-                            $("#<%=txtAddress.ClientID%>").val("").prop('readonly', false).prop('disabled', false);
+                            $("#<%=txtPhone.ClientID%>").val(null).prop('readonly', false).prop('disabled', false);
+                            $("#<%=txtFullname.ClientID%>").val(null).prop('readonly', false).prop('disabled', false).focus();
                             $(".view-detail").html("").hide();
                             $(".discount-info").html("").hide();
                             $(".refund-info").html("").hide();
@@ -1149,9 +1041,8 @@
             function setNewUser() {
                 var selectedUser = $("#listUser").val();
                 $("#<%=hdfUsernameCurrent.ClientID%>").val(selectedUser);
-                $("#<%=txtPhone.ClientID%>").val("").prop('readonly', false).prop('disabled', false);
-                $("#<%=txtFullname.ClientID%>").val("").prop('readonly', false).prop('disabled', false).focus();
-                $("#<%=txtAddress.ClientID%>").val("").prop('readonly', false).prop('disabled', false);
+                $("#<%=txtPhone.ClientID%>").val(null).prop('readonly', false).prop('disabled', false);
+                $("#<%=txtFullname.ClientID%>").val(null).prop('readonly', false).prop('disabled', false).focus();
                 $(".view-detail").html("").hide();
                 $(".discount-info").html("").hide();
                 $(".refund-info").html("").hide();

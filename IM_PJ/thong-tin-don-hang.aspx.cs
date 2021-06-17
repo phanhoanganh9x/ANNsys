@@ -191,12 +191,9 @@ namespace IM_PJ
                     // hidden OrderID
                     hdOrderInfoID.Value = ID.ToString();
 
-
-
                     int AgentID = Convert.ToInt32(order.AgentID);
                     txtPhone.Text = order.CustomerPhone;
                     txtFullname.Text = order.CustomerName.ToLower().ToTitleCase();
-                    txtAddress.Text = order.CustomerAddress.ToTitleCase();
                     var cus = CustomerController.GetByID(order.CustomerID.Value);
                     if (cus != null)
                     {
@@ -215,9 +212,6 @@ namespace IM_PJ
                         {
                             txtFacebook.Enabled = true;
                         }
-                        hdfProvinceID.Value = cus.ProvinceID.ToString();
-                        hdfDistrictID.Value = cus.DistrictId.ToString();
-                        hdfWardID.Value = cus.WardId.ToString();
                     }
 
                     // Title
@@ -648,7 +642,7 @@ namespace IM_PJ
                     if (order.ShippingType == 6 && !String.IsNullOrEmpty(order.ShippingCode))
                     {
                         ltrPrint.Text += "<a id='btnShowGhtk' target='_blank' href='https://khachhang.giaohangtietkiem.vn/khachhang?code=" + order.ShippingCode + "' class='btn primary-btn btn-ghtk fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-upload' aria-hidden='true'></i> Xem đơn GHTK</a>";
-                        ltrPrint.Text += "<a id='btnCancelGhtk' href='javascript:;' onclick='cancelGhtk(" + ID + ", `" + order.ShippingCode + "`)' class='btn primary-btn fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-trash' aria-hidden='true'></i> Xem đơn GHTK</a>";
+                        ltrPrint.Text += "<a id='btnCancelGhtk' href='javascript:;' onclick='cancelGhtk(" + ID + ", `" + order.ShippingCode + "`)' class='btn primary-btn btn-red fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-trash' aria-hidden='true'></i> Xóa đơn GHTK</a>";
                     }
                     if (order.ShippingType == 3 && !String.IsNullOrEmpty(order.ShippingCode))
                     {
@@ -884,13 +878,14 @@ namespace IM_PJ
                             string CustomerPhone = Regex.Replace(txtPhone.Text.Trim(), @"[^\d]", "");
                             string CustomerName = txtFullname.Text.Trim().ToTitleCase();
                             string Nick = txtNick.Text.Trim();
-                            string CustomerAddress = txtAddress.Text.Trim().ToTitleCase();
-                            string Zalo = "";
                             string Facebook = txtFacebook.Text.Trim();
+                            var CustomerAddress = String.Empty;
 
-                            int ProvinceID = hdfProvinceID.Value.ToInt(0);
-                            int DistrictID = hdfDistrictID.Value.ToInt(0);
-                            int WardID = hdfWardID.Value.ToInt(0);
+                            var recipientPhone = hdfRecipientPhone.Value;
+                            var recipientProvinceId = hdfRecipientProvinceId.Value.ToInt(0);
+                            var recipientDistrictId = hdfRecipientDistrictId.Value.ToInt(0);
+                            var recipientWardId = hdfRecipientWardId.Value.ToInt(0);
+                            var recipientAddress = hdfRecipientAddress.Value.Trim().ToTitleCase();
 
                             int PaymentType = ddlPaymentType.SelectedValue.ToInt(0);
                             int ShippingType = ddlShippingType.SelectedValue.ToInt(0);
@@ -899,18 +894,90 @@ namespace IM_PJ
                             int PostalDeliveryType = ddlPostalDeliveryType.SelectedValue.ToInt();
 
                             #region Câp nhật thông tin khách hàng
-                            var Customer = CustomerController.GetByPhone(CustomerPhone);
-                            if (Customer != null)
+                            var customer = CustomerController.GetByPhone(CustomerPhone);
+
+                            if (customer != null)
                             {
-                                CustomerID = Customer.ID;
-                                string kq = CustomerController.Update(CustomerID, CustomerName, Customer.CustomerPhone, CustomerAddress, "", Customer.CustomerLevelID.Value, Customer.Status.Value, username, currentDate, acc.Username, false, Zalo, Facebook, Customer.Note, Nick, Customer.Avatar, ShippingType, PaymentType, TransportCompanyID, TransportCompanySubID, Customer.CustomerPhone2, ProvinceID, DistrictID, WardID);
+                                var address = customer.CustomerAddress;
+                                var provinceId = customer.ProvinceID;
+                                var districtId = customer.DistrictId;
+                                var wardId = customer.WardId;
+
+                                if (customer.CustomerPhone == recipientPhone)
+                                {
+                                    address = recipientAddress;
+                                    provinceId = recipientProvinceId;
+                                    districtId = recipientDistrictId;
+                                    wardId = recipientWardId;
+                                }
+                                else if (!provinceId.HasValue && !districtId.HasValue && !wardId.HasValue)
+                                {
+                                    address = recipientAddress;
+                                    provinceId = recipientProvinceId;
+                                    districtId = recipientDistrictId;
+                                    wardId = recipientWardId;
+                                }
+
+                                CustomerController.Update(
+                                    ID: CustomerID,
+                                    CustomerName: CustomerName,
+                                    CustomerPhone: customer.CustomerPhone,
+                                    CustomerAddress: address,
+                                    CustomerEmail: String.Empty,
+                                    CustomerLevelID: customer.CustomerLevelID.Value,
+                                    Status: customer.Status.Value,
+                                    CreatedBy: username,
+                                    ModifiedDate: currentDate,
+                                    ModifiedBy: acc.Username,
+                                    IsHidden: false,
+                                    Zalo: String.Empty,
+                                    Facebook: Facebook,
+                                    Note: customer.Note,
+                                    Nick: Nick,
+                                    Avatar: customer.Avatar,
+                                    ShippingType: ShippingType,
+                                    PaymentType: PaymentType,
+                                    TransportCompanyID: TransportCompanyID,
+                                    TransportCompanySubID: TransportCompanySubID,
+                                    CustomerPhone2: customer.CustomerPhone2,
+                                    ProvinceID: provinceId.HasValue ? provinceId.Value : 0,
+                                    DistrictID: districtId.HasValue ? districtId.Value : 0,
+                                    WardID: wardId.HasValue ? wardId.Value : 0
+                                );
+                                CustomerID = customer.ID;
+                                CustomerAddress = address;
                             }
                             else
                             {
-                                string kq = CustomerController.Insert(CustomerName, CustomerPhone, CustomerAddress, "", 0, 0, currentDate, username, false, Zalo, Facebook, "", Nick, "", ShippingType, PaymentType, TransportCompanyID, TransportCompanySubID, "", ProvinceID, DistrictID, WardID);
+                                string kq = CustomerController.Insert(
+                                    CustomerName: CustomerName,
+                                    CustomerPhone: CustomerPhone,
+                                    CustomerAddress: recipientAddress,
+                                    CustomerEmail: String.Empty,
+                                    CustomerLevelID: 0,
+                                    Status: 0,
+                                    CreatedDate: currentDate,
+                                    CreatedBy: username,
+                                    IsHidden: false,
+                                    Zalo: String.Empty,
+                                    Facebook: Facebook,
+                                    Note: String.Empty,
+                                    Nick: Nick,
+                                    Avatar: String.Empty,
+                                    ShippingType: ShippingType,
+                                    PaymentType: PaymentType,
+                                    TransportCompanyID: TransportCompanyID,
+                                    TransportCompanySubID: TransportCompanySubID,
+                                    CustomerPhone2: String.Empty,
+                                    ProvinceID: recipientProvinceId,
+                                    DistrictID: recipientDistrictId,
+                                    WardID: recipientWardId
+                                );
+
                                 if (kq.ToInt(0) > 0)
                                 {
                                     CustomerID = kq.ToInt(0);
+                                    CustomerAddress = recipientAddress;
                                 }
                             }
                             #endregion

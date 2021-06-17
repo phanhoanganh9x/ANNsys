@@ -1,6 +1,5 @@
 ﻿let _feeShipment, // Dùng để lấy trạng thái trước của radio Shipment
     _fee,
-    _insuranceFee,
     _feeShop,
     _order,
     _weight_min,
@@ -33,7 +32,6 @@ function _initParameterLocal() {
     // Fee Ship
     _feeShipment = 1;
     _fee = 0;
-    _insuranceFee = 0;
     _feeShop = 0;
 
     // payment Type
@@ -68,9 +66,7 @@ function _initParameterLocal() {
         is_freeship: 1,
         weight_option: 'kilogram',
         pick_work_shift: null,
-        //deliver_work_shift: null,
         pick_date: null,
-        //deliver_date: null,
         value: 0,
         opm: null,
         pick_option: null,
@@ -98,10 +94,6 @@ function _initReceiveInfo() {
     $("#address").change(function () {
         _order.address = $(this).val();
         _order.street = _order.address;
-    });
-
-    $("#address").blur(function () {
-        _updateAddress();
     });
 }
 
@@ -141,7 +133,6 @@ function _onChangeReceiverAddress() {
         // Cập nhật order
         _order.province_id = data.id;
         _order.province = data.text;
-        _updateAddress();
 
         // Danh sách quận / huyện
         _disabledDDLDistrict(false);
@@ -158,7 +149,6 @@ function _onChangeReceiverAddress() {
         // Cập nhật order
         _order.district_id = data.id;
         _order.district = data.text;
-        _updateAddress();
 
         // Tính tiền phí Ship
         _calculateFee();
@@ -175,7 +165,6 @@ function _onChangeReceiverAddress() {
         // Cập nhật order
         _order.ward_id = data.id;
         _order.ward = data.text;
-        _updateAddress();
 
         // Tính tiền phí Ship
         _calculateFee();
@@ -275,9 +264,7 @@ function _initShipment() {
         minimumResultsForSearch: Infinity,
         data: pick_work_shift
     });
-    //$("#deliver_work_shift").select2({
-    //    allowClear: true,
-    //});
+
     _onChangePickWorkShift(pick_work_shift[0].text);
 
 
@@ -286,55 +273,6 @@ function _initShipment() {
 
         _onChangePickWorkShift(data.text);
     });
-
-    //$('#deliver_work_shift').on('select2:select', function (e) {
-    //    let data = e.params.data;
-    //    let now = new Date();
-    //    let tomorrow = new Date();
-    //    let dateAfterTomorrow = new Date();
-    //    let strNow = "";
-    //    let strTomorrow = "";
-    //    let strDateAfterTomorrow = "";
-
-    //    tomorrow.setDate(tomorrow.getDate() + 1);
-    //    dateAfterTomorrow.setDate(tomorrow.getDate() + 2);
-    //    strNow = now.toISOString().substring(0, 10).replace(/-/g, '/');
-    //    strTomorrow = tomorrow.toISOString().substring(0, 10).replace(/-/g, '/');
-    //    strDateAfterTomorrow = dateAfterTomorrow.toISOString().substring(0, 10).replace(/-/g, '/');
-
-    //    switch (data.text) {
-    //        case "Tối nay":
-    //            _order.deliver_date = _order.pick_date
-    //            _order.deliver_work_shift = 3;
-    //            break;
-    //        case "Sáng mai":
-    //            _order.deliver_date = strTomorrow;
-    //            _order.deliver_work_shift = 1;
-    //            break;
-    //        case "Chiều mai":
-    //            _order.deliver_date = strTomorrow;
-    //            _order.deliver_work_shift = 2;
-    //            break;
-    //        case "Tối mai":
-    //            _order.deliver_date = strTomorrow;
-    //            _order.deliver_work_shift = 3;
-    //            break;
-    //        case "Sáng ngày kia":
-    //            _order.deliver_date = strDateAfterTomorrow;
-    //            _order.deliver_work_shift = 1;
-    //            break;
-    //        case "Chiều ngày kia":
-    //            _order.deliver_date = strDateAfterTomorrow;
-    //            _order.deliver_work_shift = 2;
-    //            break;
-    //        case "Tối ngày kia":
-    //            _order.deliver_date = strDateAfterTomorrow;
-    //            _order.deliver_work_shift = 3;
-    //            break;
-    //        default:
-    //            break;
-    //    }
-    //});
 }
 
 function _initTableProduct() {
@@ -403,7 +341,11 @@ function _initFee() {
 }
 
 function _initNote() {
-    $("#note").change(function () {
+    let $note = $("#note");
+
+    _order.note = $note.val();
+
+    $note.change(function () {
         _order.note = $(this).val();
     });
 }
@@ -456,8 +398,6 @@ function _initPage() {
             $("#pick_money").val(_formatThousand(data.money));
             // value
             _order.value = data.value;
-            $("#value").val(_formatThousand(data.money));
-            $("#total_money").val(_formatThousand(data.money));
             // id
             _order.id = data.orderID;
             $("#client_id").val(data.orderID);
@@ -524,28 +464,20 @@ function _initPage() {
                 $("#fee_entered").prop('checked', true).trigger('change');
                 if (data.money == 0) {
                     $("#feeship_shop").attr("disabled", true);
-                    $("#feeship_receiver").attr("disabled", true);
                     $("#feeship_shop").parent().hide();
-                    $("#feeship_receiver").parent().hide();
-                }
-                else {
-                    $("#feeship_receiver").attr("disabled", true);
-                    $("#feeship_receiver").parent().hide();
                 }
             }
             else {
                 $("#divFeeShop").hide();
+
                 // nếu không thu hộ
                 if (data.money == 0) {
                     $("#feeship_shop").attr("disabled", true);
                     $("#feeship_shop").hide();
                     $("#feeship_shop").parent().hide();
-                    $("#feeship_receiver").prop('checked', true).trigger('change');
                 }
                 else {
                     $("#feeship_shop").removeAttr("disabled");
-                    $("#feeship_receiver").attr("disabled", true);
-                    $("#feeship_receiver").parent().hide();
                     $("#feeship_shop").prop('checked', true).trigger('change');
                 }
             }
@@ -589,97 +521,40 @@ function _onChangeShipment(shipment) {
 }
 
 function _onChangePickWorkShift(pick_work_shift) {
-    //let deliver_work_shift = [];
     let now = new Date();
     let tomorrow = new Date();
-    //let dateAfterTomorrow = new Date();
     let strNow = "";
     let strTomorrow = "";
-    //let strDateAfterTomorrow = "";
 
     tomorrow.setDate(tomorrow.getDate() + 1);
-    //dateAfterTomorrow.setDate(tomorrow.getDate() + 2);
     strNow = now.toISOString().substring(0, 10).replace(/-/g, '/');
     strTomorrow = tomorrow.toISOString().substring(0, 10).replace(/-/g, '/');
-    //strDateAfterTomorrow = dateAfterTomorrow.toISOString().substring(0, 10).replace(/-/g, '/');
 
     if (pick_work_shift == "Sáng nay") {
-        //deliver_work_shift.push({ id: 3, text: "Tối nay" });
-        //deliver_work_shift.push({ id: 1, text: "Sáng mai" });
-        //deliver_work_shift.push({ id: 2, text: "Chiều mai" });
-
         _order.pick_date = strNow;
         _order.pick_work_shift = 1;
-        //_order.deliver_date = strNow;
-        //_order.deliver_work_shift = 3;
     }
     else if (pick_work_shift == "Chiều nay") {
-        //deliver_work_shift.push({ id: 3, text: "Tối nay" });
-        //deliver_work_shift.push({ id: 1, text: "Sáng mai" });
-        //deliver_work_shift.push({ id: 2, text: "Chiều mai" });
-
         _order.pick_date = strNow;
         _order.pick_work_shift = 2;
-        //_order.deliver_date = strNow;
-        //_order.deliver_work_shift = 3;
     }
     else if (pick_work_shift == "Tối nay") {
-        //deliver_work_shift.push({ id: 1, text: "Sáng mai" });
-        //deliver_work_shift.push({ id: 2, text: "Chiều mai" });
-        //deliver_work_shift.push({ id: 3, text: "Tối mai" });
-
         _order.pick_date = strNow;
         _order.pick_work_shift = 3;
-        //_order.deliver_date = strTomorrow;
-        //_order.deliver_work_shift = 1;
     }
     else if (pick_work_shift == "Sáng mai") {
-        //deliver_work_shift.push({ id: 2, text: "Chiều mai" });
-        //deliver_work_shift.push({ id: 3, text: "Tối mai" });
-        //deliver_work_shift.push({ id: 1, text: "Sáng ngày kia" });
-
         _order.pick_date = strTomorrow;
         _order.pick_work_shift = 1;
-        //_order.deliver_date = strTomorrow;
-        //_order.deliver_work_shift = 2;
     }
     else if (pick_work_shift == "Chiều mai") {
-        //deliver_work_shift.push({ id: 3, text: "Tối mai" });
-        //deliver_work_shift.push({ id: 1, text: "Sáng ngày kia" });
-        //deliver_work_shift.push({ id: 2, text: "Chiều ngày kia" });
-
         _order.pick_date = strTomorrow;
         _order.pick_work_shift = 2;
-        //_order.deliver_date = strTomorrow;
-        //_order.deliver_work_shift = 3;
     }
     else if (pick_work_shift == "Tối mai") {
-        //deliver_work_shift.push({ id: 1, text: "Sáng ngày kia" });
-        //deliver_work_shift.push({ id: 2, text: "Chiều ngày kia" });
-        //deliver_work_shift.push({ id: 3, text: "Tối ngày kia" });
-
         _order.pick_date = strTomorrow;
         _order.pick_work_shift = 3;
-        //_order.deliver_date = strDateAfterTomorrow;
-        //_order.deliver_work_shift = 1;
     }
 
-    //let $deliver_work_shift = $('#deliver_work_shift');
-
-    //// https://github.com/select2/select2/issues/2830
-    ////clear chosen items
-    //$deliver_work_shift.val(null).trigger('change');
-
-    ////destroy select2
-    //$deliver_work_shift.select2("destroy");
-
-    ////remove options physically from the HTML
-    //$deliver_work_shift.find("option").remove();
-
-    //$deliver_work_shift.select2({
-    //    minimumResultsForSearch: Infinity,
-    //    data: deliver_work_shift
-    //});
     _calculateFee();
 }
 
@@ -751,14 +626,14 @@ function _checkSubmit() {
         });
     }
 
-    _calculateFee();
     _submit();
 }
 
 function _calculateFee() {
+    let $divFee = $("#divFee");
     let $fee = $("#feeship");
-    let $insuranceFee = $("#insuranceFee");
-    let $insuranceFeeDiv = $(".insurance-fee");
+    let $labelShopFeeTitle = $("#labelShopFeeTitle");
+    let $rdShopFee = $("#fee_entered");
 
     if (!_order.pick_province
         || !_order.pick_district
@@ -767,13 +642,14 @@ function _calculateFee() {
         || !_order.ward
     ) {
         _fee = 0;
-        _insuranceFee = 0;
 
         // Phí GHTK
+        $divFee.addClass("hiden");
         $fee.html("0");
-        // Phí bảo hiểm
-        $insuranceFee.html("0");
-        $insuranceFeeDiv.addClass("hiden");
+
+        // Phí shop
+        $labelShopFeeTitle.text("Phí");
+        $rdShopFee.parent().hide();
     }
     else {
         let url = "/api/v1/delivery-save/fee",
@@ -824,8 +700,8 @@ function _calculateFee() {
                 if (xhr.status == 200 && data) {
                     if (data.success) {
                         if (_feeShipment == 0 || _feeShipment == 1) {
-                            _order.pick_money = _order.pick_money - (_fee - _insuranceFee);
-                            _order.value = _order.value - (_fee - _insuranceFee);
+                            _order.pick_money = _order.pick_money - _fee;
+                            _order.value = _order.value - _fee;
                         }
                         else if (_feeShipment == 2) {
                             // thu hộ
@@ -840,19 +716,21 @@ function _calculateFee() {
                         }
 
                         _fee = data.fee.fee;
-                        _insuranceFee = data.fee.insurance_fee;
 
                         // Phí GHTK
                         $fee.html(_formatThousand(_fee));
 
-                        // Phí bảo hiểm
-                        if (_insuranceFee > 0) {
-                            $insuranceFee.html(_formatThousand(_insuranceFee));
-                            $insuranceFeeDiv.removeClass("hide");
+                        if (_fee != _feeShop) {
+                            $divFee.removeClass("hide");
+
+                            $labelShopFeeTitle.text("Phí nhân viên tính");
+                            $rdShopFee.parent().show();
                         }
                         else {
-                            $insuranceFee.html("0");
-                            $insuranceFeeDiv.addClass("hiden");
+                            $divFee.addClass("hide");
+
+                            $labelShopFeeTitle.text("Phí");
+                            $rdShopFee.parent().hide();
                         }
 
                         _calculateMoney();
@@ -875,14 +753,11 @@ function _calculateFee() {
 
 function _calculateMoney() {
     let $pick_money = $("#pick_money");
-    let $value = $("#value");
-    let $total_money = $("#total_money");
-    let feeShipment = +$("input:radio[name='feeship']:checked").val() || 0;
-    let total_money = 0;
+    let feeShipment = +$("input:radio[name='feeship']:checked").val() || 1;
 
-    if (feeShipment == 0 || feeShipment == 1) {
-        _order.pick_money = _order.pick_money + (_fee - _insuranceFee);
-        _order.value = _order.value + (_fee - _insuranceFee);
+    if (feeShipment == 1) {
+        _order.pick_money = _order.pick_money + _fee;
+        _order.value = _order.value + _fee;
     }
     else if (feeShipment == 2) {
         // thu hộ
@@ -898,24 +773,17 @@ function _calculateMoney() {
 
     _feeShipment = feeShipment;
     $pick_money.val(_formatThousand(_order.pick_money));
-    $value.val(_formatThousand(_order.value));
-    $total_money.val(_formatThousand(_order.pick_money));
 }
 
 function _submit() {
     let titleAlert = "Đồng bộ đơn hàng GHTK";
-
-    //let $value = $("#value");
-    //let $total_money = $("#total_money");
-    //_order.pick_money = +parseInt($total_money.val().replace(/,/g, '')) || 0;
-    //_order.value = +parseInt($value.val().replace(/,/g, '')) || 0;
-
+    let chooseShopFee =  _feeShipment == 2; // Trường hợp chọn phí nhân viên tính
 
     $.ajax({
         method: 'POST',
         contentType: 'application/json',
         dataType: "json",
-        data: JSON.stringify({ products: [_product], order: _order }),
+        data: JSON.stringify({ products: [_product], order: _order, chooseShopFee: chooseShopFee }),
         url: "/api/v1/delivery-save/order/register",
         beforeSend: function () {
             HoldOn.open();
@@ -1041,36 +909,4 @@ function _disabledDDLWard(disabled) {
             }
         });
     }
-}
-
-function _updateAddress() {
-    if (!_order || !_order.tel || (!_order.province_id && !_order.district_id && !_order.ward_id && !_order.address))
-        return;
-
-    let titleAlert = "Cập nhật thông tin địa chỉ khách hàng";
-    let dataJSON = JSON.stringify({
-        provinceID: _order.province_id,
-        districtID: _order.district_id,
-        wardID: _order.ward_id,
-        address: _order.address
-    });
-
-    $.ajax({
-        method: 'POST',
-        contentType: 'application/json',
-        dataType: "json",
-        data: dataJSON,
-        url: "/api/v1/customer/" + _order.tel + "/update-address",
-        success: (response, textStatus, xhr) => {
-            if (xhr.status == 200 && response.success) {
-
-            } else {
-                _alterError(titleAlert);
-            }
-        },
-        error: (xhr, textStatus, error) => {
-            _alterError(titleAlert, xhr.responseJSON);
-        }
-    });
-    _calculateFee();
 }
