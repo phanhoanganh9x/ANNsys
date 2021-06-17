@@ -673,6 +673,7 @@ function ajaxCheckCustomer() {
             success: function (msg) {
                 var data = JSON.parse(msg.d);
                 var username = $("input[id$='_hdfUsername']").val();
+
                 if (data !== null) {
                     if (username !== data.CreatedBy) {
                         swal({
@@ -759,7 +760,17 @@ function ajaxCheckCustomer() {
                             }
                         });
                     }
+                }
+                else {
+                    let name = $("input[id$='_txtFullname']").val();
 
+                    if (name) {
+                        $("input[id$='_txtRecipientFullName']").val(name);
+                        $("input[id$='_hdfRecipientFullName']").val(name);
+                    }
+
+                    $("input[id$='_txtRecipientPhone']").val(phone);
+                    $("input[id$='_hdfRecipientPhone']").val(phone);
                 }
             }
         });

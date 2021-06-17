@@ -323,32 +323,6 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>Tỉnh thành</label>
-                                            <asp:DropDownList ID="ddlProvince" runat="server" CssClass="form-control"></asp:DropDownList>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>Quận huyện</label>
-                                            <asp:DropDownList ID="ddlDistrict" runat="server" CssClass="form-control"></asp:DropDownList>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>Phường xã</label>
-                                            <asp:DropDownList ID="ddlWard" runat="server" CssClass="form-control"></asp:DropDownList>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>Địa chỉ</label>
-                                            <asp:TextBox ID="txtAddress" CssClass="form-control capitalize" runat="server" Enabled="true" placeholder="Địa chỉ" autocomplete="off"></asp:TextBox>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
                                     <div class="col-md-12 view-detail">
                                         <asp:Literal ID="ltrViewDetail" runat="server"></asp:Literal>
                                     </div>
@@ -408,6 +382,11 @@
                                             <label>Địa chỉ</label>
                                             <asp:TextBox ID="txtRecipientAddress" runat="server" CssClass="form-control capitalize" autocomplete="off"></asp:TextBox>
                                         </div>
+                                    </div>
+                                </div>
+                                <div id="notificationFee" class="row hide">
+                                    <div class="col-md-12">
+                                        <strong class="font-red">Phí vận chuyển đã thay đổi. Vui lòng check lại!</strong>
                                     </div>
                                 </div>
                             </div>
@@ -730,9 +709,6 @@
             <asp:HiddenField ID="hdfCouponProductNumberOld" runat="server" />
             <asp:HiddenField ID="hdfCouponPriceMinOld" runat="server" />
             <asp:HiddenField ID="hdfShippingType" runat="server" />
-            <asp:HiddenField ID="hdfProvinceID" runat="server" />
-            <asp:HiddenField ID="hdfDistrictID" runat="server" />
-            <asp:HiddenField ID="hdfWardID" runat="server" />
 
             <!-- Biến đăng ký địa chỉ nhận hàng -->
             <asp:HiddenField ID="hdfDeliveryAddressId" runat="server" />
@@ -856,10 +832,6 @@
                 let $nick = $("#<%= txtNick.ClientID%>");
                 let $facebook = $("#<%= txtFacebook.ClientID%>");
                 let $username = $("#<%= hdfUsernameCurrent.ClientID%>");
-                let $province = $("#<%=ddlProvince.ClientID%>");
-                let $district = $("#<%=ddlDistrict.ClientID%>");
-                let $ward = $("#<%=ddlWard.ClientID%>");
-                let $address = $("#<%= txtAddress.ClientID%>");
 
                 // Tên khách hàng
                 if (!$name.val()) {
@@ -886,69 +858,6 @@
                 if (!$facebook.val() && $username.val() === "nhom_facebook") {
                     $facebook.focus();
                     swal("Thông báo", "Hãy nhập link Facebook của khách này!", "error");
-                    return false;
-                }
-
-                // Tỉnh / thành phố
-                if ((+$province.val() || 0) === 0) {
-                    swal({
-                        title: "Thông báo",
-                        text: "Chưa chọn tỉnh thành",
-                        type: "warning",
-                        showCancelButton: false,
-                        confirmButtonText: "Để em xem lại!!",
-                        closeOnConfirm: false,
-                        html: true
-                    }, function (isConfirm) {
-                        if (isConfirm) {
-                            sweetAlert.close();
-                            $province.select2('open');
-                        }
-                    });
-                    return false;
-                }
-
-                // Quận / huyện
-                if ((+$district.val() || 0) === 0) {
-                    swal({
-                        title: "Thông báo",
-                        text: "Chưa chọn quận huyện",
-                        type: "warning",
-                        showCancelButton: false,
-                        confirmButtonText: "Để em xem lại!!",
-                        closeOnConfirm: false,
-                        html: true
-                    }, function (isConfirm) {
-                        if (isConfirm) {
-                            sweetAlert.close();
-                            $district.select2('open');
-                        }
-                    });
-                    return false;
-                }
-
-                // Phường / xã
-                if ($ward.val() == null) {
-                    swal({
-                        title: "Thông báo",
-                        text: "Chưa chọn phường xã",
-                        type: "warning",
-                        showCancelButton: false,
-                        confirmButtonText: "Để em xem lại!!",
-                        closeOnConfirm: false,
-                        html: true
-                    }, function (isConfirm) {
-                        if (isConfirm) {
-                            sweetAlert.close();
-                            $("#<%=ddlWard.ClientID%>").select2('open');
-                        }
-                    });
-                }
-
-                // Địa chỉ
-                if (!$address.val()) {
-                    $address.focus();
-                    swal("Thông báo", "Hãy nhập địa chỉ khách hàng!", "error");
                     return false;
                 }
 
@@ -1556,10 +1465,6 @@
 
             // Thông tin khách hàng
             function _initCustomer() {
-                _initReceiverAddress();
-                _onChangeReceiverAddress();
-                _getCustomerAddress($("#<%=txtPhone.ClientID%>").val());
-
                 // Text box Phone
                 $("#<%=txtPhone.ClientID%>").keyup(function (e) {
                     if (/\D/g.test(this.value)) {
@@ -2967,10 +2872,6 @@
                 query += "&ward=" + ward;
                 query += "&weight=" + (weight * 1000);
                 query += "&transport=road";
-
-                // tính phí có bảo hiểm
-                if (fee === 0)
-                    value += 100000;
 
                 if (value > 0)
                     query += "&value=" + value;

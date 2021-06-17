@@ -58,32 +58,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>Tỉnh thành</label>
-                                            <asp:DropDownList ID="ddlProvince" runat="server" CssClass="form-control"></asp:DropDownList>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>Quận huyện</label>
-                                            <asp:DropDownList ID="ddlDistrict" runat="server" CssClass="form-control"></asp:DropDownList>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>Phường xã</label>
-                                            <asp:DropDownList ID="ddlWard" runat="server" CssClass="form-control"></asp:DropDownList>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>Địa chỉ</label>
-                                            <asp:TextBox ID="txtAddress" CssClass="form-control capitalize" autocomplete="off" runat="server" placeholder="Địa chỉ"></asp:TextBox>
-                                        </div>
-                                    </div>
-                                </div>
                                 <div class="form-row view-detail" style="display: none">
                                 </div>
                                 <div class="form-row discount-info" style="display: none">
@@ -297,9 +271,6 @@
             <asp:HiddenField ID="hdfCouponValue" runat="server" />
             <asp:HiddenField ID="hdfCouponProductNumber" runat="server" />
             <asp:HiddenField ID="hdfCouponPriceMin" runat="server" />
-            <asp:HiddenField ID="hdfProvinceID" runat="server" />
-            <asp:HiddenField ID="hdfDistrictID" runat="server" />
-            <asp:HiddenField ID="hdfWardID" runat="server" />
 
             <!-- Biến đăng ký địa chỉ nhận hàng -->
             <asp:HiddenField ID="hdfDeliveryAddressId" runat="server" />
@@ -1274,11 +1245,7 @@
                 var phone = $("#<%=txtPhone.ClientID%>").val();
                 var name = $("#<%= txtFullname.ClientID%>").val();
                 var nick = $("#<%= txtNick.ClientID%>").val();
-                var address = $("#<%= txtAddress.ClientID%>").val();
                 var facebooklink = $("#<%= txtFacebook.ClientID%>").val();
-                var province = $("#<%=ddlProvince.ClientID%>").val();
-                var district = $("#<%=ddlDistrict.ClientID%>").val();
-                var ward = $("#<%=ddlWard.ClientID%>").val();
 
                 if (name === "") {
                     $("#<%= txtFullname.ClientID%>").focus();
@@ -1295,58 +1262,6 @@
                 else if (facebooklink === "" && $("#<%= hdfUsernameCurrent.ClientID%>").val() == "nhom_facebook") {
                     $("#<%= txtFacebook.ClientID%>").focus();
                     swal("Thông báo", "Hãy nhập link Facebook của khách này!", "error");
-                }
-                else if (province === "0" || province == null || province === "") {
-                    swal({
-                        title: "Thông báo",
-                        text: "Chưa chọn tỉnh thành",
-                        type: "warning",
-                        showCancelButton: false,
-                        confirmButtonText: "Để em xem lại!!",
-                        closeOnConfirm: false,
-                        html: true
-                    }, function (isConfirm) {
-                        if (isConfirm) {
-                            sweetAlert.close();
-                            $("#<%=ddlProvince.ClientID%>").select2('open');
-                        }
-                    });
-                }
-                else if (district === "0" || district == null || district === "") {
-                    swal({
-                        title: "Thông báo",
-                        text: "Chưa chọn quận huyện",
-                        type: "warning",
-                        showCancelButton: false,
-                        confirmButtonText: "Để em xem lại!!",
-                        closeOnConfirm: false,
-                        html: true
-                    }, function (isConfirm) {
-                        if (isConfirm) {
-                            sweetAlert.close();
-                            $("#<%=ddlDistrict.ClientID%>").select2('open');
-                        }
-                    });
-                }
-                else if (ward == null || ward === "") {
-                    swal({
-                        title: "Thông báo",
-                        text: "Chưa chọn phường xã",
-                        type: "warning",
-                        showCancelButton: false,
-                        confirmButtonText: "Để em xem lại!!",
-                        closeOnConfirm: false,
-                        html: true
-                    }, function (isConfirm) {
-                        if (isConfirm) {
-                            sweetAlert.close();
-                            $("#<%=ddlWard.ClientID%>").select2('open');
-                        }
-                    });
-                }
-                else if (address === "") {
-                    $("#<%= txtAddress.ClientID%>").focus();
-                    swal("Thông báo", "Hãy nhập địa chỉ khách hàng!", "error");
                 }
                 else if ($(".product-result").length == 0) {
                     $("#txtSearch").focus();

@@ -346,29 +346,99 @@ namespace IM_PJ
 
                         string CustomerPhone = Regex.Replace(txtPhone.Text.Trim(), @"[^\d]", "");
                         string CustomerName = txtFullname.Text.Trim().ToLower().ToTitleCase();
-                        string CustomerEmail = "";
-                        string CustomerAddress = txtAddress.Text.Trim().ToTitleCase();
+                        var CustomerAddress = String.Empty;
 
-                        int ProvinceID = hdfProvinceID.Value.ToInt(0);
-                        int DistrictID = hdfDistrictID.Value.ToInt(0);
-                        int WardID = hdfWardID.Value.ToInt(0);
-
-                        var checkCustomer = CustomerController.GetByPhone(CustomerPhone);
-
-                        string kq = "";
+                        var recipientPhone = hdfRecipientPhone.Value;
+                        var recipientProvinceId = hdfRecipientProvinceId.Value.ToInt(0);
+                        var recipientDistrictId = hdfRecipientDistrictId.Value.ToInt(0);
+                        var recipientWardId = hdfRecipientWardId.Value.ToInt(0);
+                        var recipientAddress = hdfRecipientAddress.Value.Trim().ToTitleCase();
 
                         #region Cập nhật thông tin khách hàng
-                        if (checkCustomer != null)
+                        var customer = CustomerController.GetByPhone(CustomerPhone);
+
+                        if (customer != null)
                         {
-                            CustomerID = checkCustomer.ID;
-                            kq = CustomerController.Update(CustomerID, CustomerName, checkCustomer.CustomerPhone, CustomerAddress, "", checkCustomer.CustomerLevelID.Value, checkCustomer.Status.Value, checkCustomer.CreatedBy, currentDate, username, false, checkCustomer.Zalo, checkCustomer.Facebook, checkCustomer.Note, checkCustomer.Nick, checkCustomer.Avatar, checkCustomer.ShippingType.Value, checkCustomer.PaymentType.Value, checkCustomer.TransportCompanyID.Value, checkCustomer.TransportCompanySubID.Value, checkCustomer.CustomerPhone2, ProvinceID, DistrictID, WardID);
+                            var address = customer.CustomerAddress;
+                            var provinceId = customer.ProvinceID;
+                            var districtId = customer.DistrictId;
+                            var wardId = customer.WardId;
+
+                            if (customer.CustomerPhone == recipientPhone)
+                            {
+                                address = recipientAddress;
+                                provinceId = recipientProvinceId;
+                                districtId = recipientDistrictId;
+                                wardId = recipientWardId;
+                            }
+                            else if (!provinceId.HasValue && !districtId.HasValue && !wardId.HasValue)
+                            {
+                                address = recipientAddress;
+                                provinceId = recipientProvinceId;
+                                districtId = recipientDistrictId;
+                                wardId = recipientWardId;
+                            }
+
+                            CustomerController.Update(
+                                ID: CustomerID,
+                                CustomerName: CustomerName,
+                                CustomerPhone: customer.CustomerPhone,
+                                CustomerAddress: CustomerAddress,
+                                CustomerEmail: "",
+                                CustomerLevelID: customer.CustomerLevelID.Value,
+                                Status: customer.Status.Value,
+                                CreatedBy: customer.CreatedBy,
+                                ModifiedDate: currentDate,
+                                ModifiedBy: username,
+                                IsHidden: false,
+                                Zalo: customer.Zalo,
+                                Facebook: customer.Facebook,
+                                Note: customer.Note,
+                                Nick: customer.Nick,
+                                Avatar: customer.Avatar,
+                                ShippingType: customer.ShippingType.Value,
+                                PaymentType: customer.PaymentType.Value,
+                                TransportCompanyID: customer.TransportCompanyID.Value,
+                                TransportCompanySubID: customer.TransportCompanySubID.Value,
+                                CustomerPhone2: customer.CustomerPhone2,
+                                ProvinceID: provinceId.HasValue ? provinceId.Value : 0,
+                                DistrictID: districtId.HasValue ? districtId.Value : 0,
+                                WardID: wardId.HasValue ? wardId.Value : 0
+                            );
+                            CustomerID = customer.ID;
+                            CustomerAddress = address;
                         }
                         else
                         {
-                            kq = CustomerController.Insert(CustomerName, CustomerPhone, CustomerAddress, CustomerEmail, 0, 0, currentDate, username, false, "", "", "", "", "", 0, 0, 0, 0, "", ProvinceID, DistrictID, WardID);
+                            var kq = CustomerController.Insert(
+                                CustomerName: CustomerName,
+                                CustomerPhone: CustomerPhone,
+                                CustomerAddress: recipientAddress,
+                                CustomerEmail: String.Empty,
+                                CustomerLevelID: 0,
+                                Status: 0,
+                                CreatedDate: currentDate,
+                                CreatedBy: username,
+                                IsHidden: false,
+                                Zalo: String.Empty,
+                                Facebook: String.Empty,
+                                Note: String.Empty,
+                                Nick: String.Empty,
+                                Avatar: String.Empty,
+                                ShippingType: 0,
+                                PaymentType: 0,
+                                TransportCompanyID: 0,
+                                TransportCompanySubID: 0,
+                                CustomerPhone2: String.Empty,
+                                ProvinceID: recipientProvinceId,
+                                DistrictID: recipientDistrictId,
+                                WardID: recipientWardId
+                            );
+
                             if (kq.ToInt(0) > 0)
                             {
                                 CustomerID = kq.ToInt(0);
+                                CustomerAddress = recipientAddress;
                             }
                         }
                         #endregion
@@ -405,7 +475,7 @@ namespace IM_PJ
                             CustomerName = CustomerName,
                             CustomerPhone = CustomerPhone,
                             CustomerAddress = CustomerAddress,
-                            CustomerEmail = CustomerEmail,
+                            CustomerEmail = String.Empty,
                             TotalPrice = totalPrice,
                             TotalPriceNotDiscount = totalPriceNotDiscount,
                             PaymentStatus = PaymentStatus,
@@ -589,9 +659,9 @@ namespace IM_PJ
                             msg += "\r\n- <b>Lợi nhuận</b>: " + string.Format("{0:N0}", totalProfit - totalRefundProfit);
                             msg += "\r\n-------------------------";
                             msg += "\r\n- <b>Khách hàng</b>: " + pushOrder.CustomerName;
-                            if (checkCustomer != null && !string.IsNullOrEmpty(checkCustomer.Nick))
+                            if (customer != null && !string.IsNullOrEmpty(customer.Nick))
                             {
-                                msg += "\r\n- <b>Nick</b>: " + checkCustomer.Nick;
+                                msg += "\r\n- <b>Nick</b>: " + customer.Nick;
                             }
                             msg += "\r\n- <b>Điện thoại</b>: " + pushOrder.CustomerPhone;
                             msg += "\r\n- <b>Nhân viên</b>: " + pushOrder.CreatedBy;

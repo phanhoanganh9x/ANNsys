@@ -54,7 +54,6 @@
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_LinkImnage" Width="1.5" PointX="20.75" PointY="6.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_MovePro" Width="1.5" PointX="20.75" PointY="9.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_MoveProdDetail" Width="1.5" PointX="20.75" PointY="14.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_Order" Width="1.5" PointX="14.75" PointY="20.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_OrderDetail" Width="1.5" PointX="20.75" PointY="20.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_OrderReturnGood" Width="1.5" PointX="4.75" PointY="21.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_Post" Width="1.5" PointX="22.75" PointY="0.75" IsExpanded="true" />
@@ -91,12 +90,10 @@
         <AssociationConnector Association="inventorymanagementModel.FK_DeliveryAddress_Province" />
         <AssociationConnector Association="inventorymanagementModel.FK_DeliveryAddress_Ward" />
         <AssociationConnector Association="inventorymanagementModel.FK_PreOrder_DeliveryAddress" />
-        <AssociationConnector Association="inventorymanagementModel.FK_tbl_Order_DeliveryAddress" />
         <AssociationConnector Association="inventorymanagementModel.FK_PreOrderDetail_PreOrder" />
         <AssociationConnector Association="inventorymanagementModel.FK_ViewOrder_PreOrder" />
         <AssociationConnector Association="inventorymanagementModel.FK_PreOrderDetail_Product" />
         <AssociationConnector Association="inventorymanagementModel.FK_PreOrderDetail_ProductVariation" />
-        <AssociationConnector Association="inventorymanagementModel.FK_ViewOrder_tbl_Order" />
         <EntityTypeShape EntityType="inventorymanagementModel.PostVideo" Width="1.5" PointX="11.625" PointY="28" />
         <EntityTypeShape EntityType="inventorymanagementModel.ProductVideo" Width="1.5" PointX="29" PointY="16" />
         <AssociationConnector Association="inventorymanagementModel.FK_PostVideo_PostPublic" />
@@ -104,6 +101,9 @@
         <EntityTypeShape EntityType="inventorymanagementModel.Video" Width="1.5" PointX="4.375" PointY="30.75" />
         <AssociationConnector Association="inventorymanagementModel.FK_PostVideo_Video" />
         <AssociationConnector Association="inventorymanagementModel.FK_ProductVideo_Video" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_Order" Width="1.5" PointX="15.25" PointY="31.25" />
+        <AssociationConnector Association="inventorymanagementModel.FK_tbl_Order_DeliveryAddress" />
+        <AssociationConnector Association="inventorymanagementModel.FK_ViewOrder_tbl_Order" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

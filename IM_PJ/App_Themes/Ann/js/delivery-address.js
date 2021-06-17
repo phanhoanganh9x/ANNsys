@@ -74,10 +74,12 @@ function _getDeliveryAddressesDefault(phone) {
 // #region Page
 // Province Address
 function _initRecipientProvince() {
-    $("select[id$='_ddlRecipientProvince']").val(null).trigger('change');
+    let $ddlRecipientProvince = $("select[id$='_ddlRecipientProvince']");
+
+    $ddlRecipientProvince.val(null).trigger('change');
 
     // Danh sách tỉnh / thành phố
-    $("select[id$='_ddlRecipientProvince']").select2({
+    $ddlRecipientProvince.select2({
         width: "100%",
         placeholder: 'Chọn tỉnh thành',
         ajax: {
@@ -105,51 +107,78 @@ function _initRecipientProvince() {
 }
 
 function _onChangeRecipientProvince() {
-    // Danh sách tỉnh / thành phố
-    $("select[id$='_ddlRecipientProvince']").on('select2:select', (e) => {
-        let data = e.params.data;
-        $("input[id$='_hdfProvinceID']").val(data.id);
-        $("input[id$='_hdfDistrictID']").val(null);
-        $("input[id$='_hdfWardID']").val(null);
-        _disabledRecipientDistrict(false, data.id);
-        $("select[id$='_ddlRecipientDistrict']").select2('open');
+    let $ddlRecipientProvince = $("select[id$='_ddlRecipientProvince']"),
+        $ddlRecipientDistrict = $("select[id$='_ddlRecipientDistrict']"),
+        $ddlRecipientWard = $("select[id$='_ddlRecipientWard']"),
+        $hdfRecipientProvinceID = $("input[id$='_hdfRecipientProvinceID']"),
+        $hdfRecipientDistrictID = $("input[id$='_hdfRecipientDistrictID']"),
+        $hdfRecipientWardID = $("input[id$='_hdfRecipientWardID']");
 
+    // Danh sách tỉnh / thành phố
+    $ddlRecipientProvince.on('select2:select', (e) => {
+        let data = e.params.data;
+
+        $hdfRecipientProvinceID.val(data.id);
+        $hdfRecipientDistrictID.val(null);
+        $hdfRecipientWardID.val(null);
+        _disabledRecipientDistrict(false, data.id);
+        $ddlRecipientDistrict.select2('open');
         _disabledRecipientWard(true, data.id);
+
+        // Yêu cầu tính lại phí
+        $("#notificationFee").removeClass('hide');
+        $("input[id$='_pFeeShip']").val(0);
+        if (typeof getAllPrice === 'function')
+            getAllPrice();
     });
 
     // Danh sách quận / huyện
-    $("select[id$='_ddlRecipientDistrict']").on('select2:select', (e) => {
+    $ddlRecipientDistrict.on('select2:select', (e) => {
         let data = e.params.data;
 
-        $("input[id$='_hdfDistrictID']").val(data.id);
-        $("input[id$='_hdfWardID']").val(null);
+        $hdfRecipientDistrictID.val(data.id);
+        $hdfRecipientWardID.val(null);
         _disabledRecipientWard(false, data.id);
-        $("select[id$='_ddlRecipientWard']").select2('open');
+        $ddlRecipientWard.select2('open');
+
+        // Yêu cầu tính lại phí
+        $("#notificationFee").removeClass('hide');
+        $("input[id$='_pFeeShip']").val(0);
+        if (typeof getAllPrice === 'function')
+            getAllPrice();
     });
 
     // Danh sách phường / xã
-    $("select[id$='_ddlRecipientWard']").on('select2:select', (e) => {
+    $ddlRecipientWard.on('select2:select', (e) => {
         let data = e.params.data;
 
-        $("input[id$='_hdfWardID']").val(data.id);
+        $hdfRecipientWardID.val(data.id);
+
+        // Yêu cầu tính lại phí
+        $("#notificationFee").removeClass('hide');
+        $("input[id$='_pFeeShip']").val(0);
+        if (typeof getAllPrice === 'function')
+            getAllPrice();
     });
 }
 
 function _disabledRecipientDistrict(disabled, provinceID) {
+    let $ddlRecipientDistrict = $("select[id$='_ddlRecipientDistrict']");
+
     if (disabled) {
-        $("select[id$='_ddlRecipientDistrict']").attr('disabled', true);
-        $("select[id$='_ddlRecipientDistrict']").attr('readonly', 'readonly');
-        $("select[id$='_ddlRecipientDistrict']").val(null).trigger('change');
-        $("select[id$='_ddlRecipientDistrict']").select2({
+        $ddlRecipientDistrict.attr('disabled', true);
+        $ddlRecipientDistrict.attr('readonly', 'readonly');
+        $ddlRecipientDistrict.val(null).trigger('change');
+        $ddlRecipientDistrict.select2({
             width: "100%",
             placeholder: 'Chọn quận huyện'
         });
     }
     else {
-        $("select[id$='_ddlRecipientDistrict']").removeAttr('disabled');
-        $("select[id$='_ddlRecipientDistrict']").removeAttr('readonly');
-        $("select[id$='_ddlRecipientDistrict']").val(null).trigger('change');
-        $("select[id$='_ddlRecipientDistrict']").select2({
+        $ddlRecipientDistrict.removeAttr('disabled');
+        $ddlRecipientDistrict.removeAttr('readonly');
+        $ddlRecipientDistrict.val(null).trigger('change');
+        $ddlRecipientDistrict.select2({
             width: "100%",
             placeholder: 'Chọn quận huyện',
             ajax: {
@@ -172,20 +201,22 @@ function _disabledRecipientDistrict(disabled, provinceID) {
 }
 
 function _disabledRecipientWard(disabled, districtID) {
+    let $ddlRecipientWard = $("select[id$='_ddlRecipientWard']");
+
     if (disabled) {
-        $("select[id$='_ddlRecipientWard']").attr('disabled', true);
-        $("select[id$='_ddlRecipientWard']").attr('readonly', 'readonly');
-        $("select[id$='_ddlRecipientWard']").val(null).trigger('change');
-        $("select[id$='_ddlRecipientWard']").select2({
+        $ddlRecipientWard.attr('disabled', true);
+        $ddlRecipientWard.attr('readonly', 'readonly');
+        $ddlRecipientWard.val(null).trigger('change');
+        $ddlRecipientWard.select2({
             width: "100%",
             placeholder: 'Chọn phường xã'
         });
     }
     else {
-        $("select[id$='_ddlRecipientWard']").removeAttr('disabled');
-        $("select[id$='_ddlRecipientWard']").removeAttr('readonly');
-        $("select[id$='_ddlRecipientWard']").val(null).trigger('change');
-        $("select[id$='_ddlRecipientWard']").select2({
+        $ddlRecipientWard.removeAttr('disabled');
+        $ddlRecipientWard.removeAttr('readonly');
+        $ddlRecipientWard.val(null).trigger('change');
+        $ddlRecipientWard.select2({
             width: "100%",
             placeholder: 'Chọn phường xã',
             ajax: {
@@ -218,30 +249,33 @@ function _initDeliveryAddress(data) {
     $("input[id$='_hdfRecipientPhone']").val(data.phone);
 
     // Danh sách tỉnh / thành phố
+    let $ddlRecipientProvince = $("select[id$='_ddlRecipientProvince']");
     let newProvinceOption = new Option(data.provinceName, data.provinceId, false, false);
 
-    $("select[id$='_ddlRecipientProvince']").find("option").remove();
-    $("select[id$='_ddlRecipientProvince']").append(newProvinceOption).trigger('change');
+    $ddlRecipientProvince.find("option").remove();
+    $ddlRecipientProvince.append(newProvinceOption).trigger('change');
     $("input[id$='_hdfRecipientProvinceId']").val(data.provinceId);
     _disabledRecipientDistrict(false, data.provinceId);
 
     // Danh sách quận / huyện
+    let $ddlRecipientDistrict = $("select[id$='_ddlRecipientDistrict']");
     let newDistrictOption = new Option(data.districtName, data.districtId, false, false);
 
-    $("select[id$='_ddlRecipientDistrict']").removeAttr('disabled');
-    $("select[id$='_ddlRecipientDistrict']").removeAttr('readonly');
-    $("select[id$='_ddlRecipientDistrict']").find("option").remove();
-    $("select[id$='_ddlRecipientDistrict']").append(newDistrictOption).trigger('change');
+    $ddlRecipientDistrict.removeAttr('disabled');
+    $ddlRecipientDistrict.removeAttr('readonly');
+    $ddlRecipientDistrict.find("option").remove();
+    $ddlRecipientDistrict.append(newDistrictOption).trigger('change');
     $("input[id$='_hdfRecipientDistrictId']").val(data.districtId);
     _disabledRecipientWard(false, data.districtId);
 
     // Danh sách phường / xã
+    let $ddlRecipientWard = $("select[id$='_ddlRecipientWard']");
     let newWardOption = new Option(data.wardName, data.wardId, false, false);
 
-    $("select[id$='_ddlRecipientWard']").removeAttr('disabled');
-    $("select[id$='_ddlRecipientWard']").removeAttr('readonly');
-    $("select[id$='_ddlRecipientWard']").find("option").remove();
-    $("select[id$='_ddlRecipientWard']").append(newWardOption).trigger('change');
+    $ddlRecipientWard.removeAttr('disabled');
+    $ddlRecipientWard.removeAttr('readonly');
+    $ddlRecipientWard.find("option").remove();
+    $ddlRecipientWard.append(newWardOption).trigger('change');
     $("input[id$='_hdfRecipientWardId']").val(data.wardId);
 
     // Địa chỉ
@@ -267,53 +301,6 @@ function _initDeliveryAddressByCustomer() {
     if ($txtPhone.val()) {
         $("input[id$='_txtRecipientPhone']").val($txtPhone.val())
         $("input[id$='_hdfRecipientPhone']").val($txtPhone.val());
-    }
-
-    // Danh sách tỉnh / thành phố
-    let $ddlProvince = $("select[id$='_ddlProvince']");
-
-    if ((+$ddlProvince.val() || 0) > 0) {
-        let newProvinceOption = new Option($ddlProvince.text().trim(), +$ddlProvince.val(), false, false);
-
-        $("select[id$='_ddlRecipientProvince']").find("option").remove();
-        $("select[id$='_ddlRecipientProvince']").append(newProvinceOption).trigger('change');
-        $("input[id$='_hdfRecipientProvinceId']").val(+$ddlProvince.val());
-        _disabledRecipientDistrict(false, +$ddlProvince.val());
-
-        // Danh sách quận / huyện
-        let $ddlDistrict = $("select[id$='_ddlDistrict']");
-
-        if ((+$ddlDistrict.val() || 0) > 0) {
-            let newDistrictOption = new Option($ddlDistrict.text().trim(), +$ddlDistrict.val(), false, false);
-
-            $("select[id$='_ddlRecipientDistrict']").removeAttr('disabled');
-            $("select[id$='_ddlRecipientDistrict']").removeAttr('readonly');
-            $("select[id$='_ddlRecipientDistrict']").find("option").remove();
-            $("select[id$='_ddlRecipientDistrict']").append(newDistrictOption).trigger('change');
-            $("input[id$='_hdfRecipientDistrictId']").val(+$ddlDistrict.val());
-            _disabledRecipientWard(false, +$ddlDistrict.val());
-
-            // Danh sách phường / xã
-            let $ddlWard = $("select[id$='_ddlWard']");
-
-            if ($ddlWard.val() != null) {
-                let newWardOption = new Option($ddlWard.text().trim(), +$ddlDistrict.val(), false, false);
-                $("select[id$='_ddlRecipientWard']").removeAttr('disabled');
-                $("select[id$='_ddlRecipientWard']").removeAttr('readonly');
-                $("select[id$='_ddlRecipientWard']").find("option").remove();
-                $("select[id$='_ddlRecipientWard']").append(newWardOption).trigger('change');
-                $("input[id$='_hdfRecipientWardId']").val(+$ddlDistrict.val());
-            }
-        }
-    }
-
-    // Địa chỉ
-    let $txtAddress = $("input[id$='_txtAddress']");
-
-    if ($txtAddress.val()) {
-        $("input[id$='_txtRecipientAddress']").val($txtAddress.val());
-        $("input[id$='_hdfOldRecipientAddress']").val($txtAddress.val());
-        $("input[id$='_hdfRecipientAddress']").val($txtAddress.val());
     }
 }
 

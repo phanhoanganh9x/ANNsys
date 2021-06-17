@@ -70,7 +70,6 @@ namespace IM_PJ.Models
         public string Avatar { get; set; }
         public Nullable<long> DeliveryAddressId { get; set; }
         public byte[] Timestamp { get; set; }
-        public decimal GhtkInsuranceFee { get; set; }
     
         public virtual DeliveryAddress DeliveryAddress { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

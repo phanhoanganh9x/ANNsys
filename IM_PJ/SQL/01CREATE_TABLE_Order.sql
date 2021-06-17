@@ -22,3 +22,10 @@ ALTER COLUMN [GhtkInsuranceFee] MONEY NOT NULL;
 
 ALTER TABLE [dbo].[tbl_Order] ADD  CONSTRAINT [DF_tbl_Order_GhtkInsuranceFee]  DEFAULT (0) FOR [GhtkInsuranceFee]
 GO
+
+-- Remove column GhtkInsuranceFee vì không cần lấy phí bảo hiểm nữa
+ALTER TABLE [dbo].[tbl_Order] DROP  CONSTRAINT [DF_tbl_Order_GhtkInsuranceFee]
+GO
+
+ALTER TABLE [dbo].[tbl_Order] DROP COLUMN [GhtkInsuranceFee]
+GO

@@ -74,7 +74,6 @@ namespace IM_PJ.Models
         public virtual DbSet<tbl_LinkImnage> tbl_LinkImnage { get; set; }
         public virtual DbSet<tbl_MovePro> tbl_MovePro { get; set; }
         public virtual DbSet<tbl_MoveProdDetail> tbl_MoveProdDetail { get; set; }
-        public virtual DbSet<tbl_Order> tbl_Order { get; set; }
         public virtual DbSet<tbl_OrderDetail> tbl_OrderDetail { get; set; }
         public virtual DbSet<tbl_OrderReturnGood> tbl_OrderReturnGood { get; set; }
         public virtual DbSet<tbl_Post> tbl_Post { get; set; }
@@ -109,5 +108,6 @@ namespace IM_PJ.Models
         public virtual DbSet<PostVideo> PostVideos { get; set; }
         public virtual DbSet<ProductVideo> ProductVideos { get; set; }
         public virtual DbSet<Video> Videos { get; set; }
+        public virtual DbSet<tbl_Order> tbl_Order { get; set; }
     }
 }
