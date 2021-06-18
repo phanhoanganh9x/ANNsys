@@ -243,22 +243,8 @@
                 $(".h2guide").addClass("h2-guide").show();
                 $(".pguide").addClass("p-guide").show();
             });
-
-            html2canvas(document.querySelector(".table-note"), {
-                allowTaint: true,
-                logging: false
-            }).then(canvas => {
-                $("#previewNoteImage").append(canvas);
-                $(".table-note").hide();
-            });
-
-            html2canvas(document.querySelector(".table-fragile-goods"), {
-                allowTaint: true,
-                logging: false
-            }).then(canvas => {
-                $("#previewFragileGoodsImage").append(canvas);
-                $(".table-fragile-goods").hide();
-            });
+            $(".table-note").hide();
+            $(".table-fragile-goods").hide();
         }
 
         function printIt() {
