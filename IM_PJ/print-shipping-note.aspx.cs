@@ -304,7 +304,7 @@ namespace IM_PJ
                             error += "<p>- MÃ VẬN ĐƠN của GHTK phải có ít nhất 9 số ở cuối!</p>";
                         }
                         DeliveryInfo = String.Format("<p class='delivery'><strong>GHTK:</strong> {0}</p>", order.ShippingCode);
-                        DeliveryInfo += String.Format("<p><img src='{0}'></p>", createBarcode(newCode));
+                        DeliveryInfo += String.Format("<p><img class='barcode-image' src='{0}'></p>", createBarcode(newCode));
                     }
                     else
                     {
@@ -422,8 +422,27 @@ namespace IM_PJ
                 rowHtml += Environment.NewLine + String.Format("    </div>");
                 rowHtml += Environment.NewLine + String.Format("</div>");
                 // Kết thúc HTML in phiếu gửi hàng
+
+                // HTML in phiếu cam kết chính hãng
+                rowHtml += Environment.NewLine + String.Format("<div class='table-note {0}'>", bodyClass);
+                rowHtml += Environment.NewLine + String.Format("<h2>CAM KẾT CHÍNH HÃNG 100%</h2>");
+                rowHtml += Environment.NewLine + String.Format("<p>Quý khách có nhu cầu xác minh hàng thật, vui lòng liên hệ hotline: 0922.474.777 - 0914.615.408</p>");
+                rowHtml += Environment.NewLine + String.Format("<p>Chúng tôi chấp nhận bồi thường gấp 10 lần giá trị đơn hàng, nếu quý khách phát hiện hàng giả!</p>");
+                rowHtml += Environment.NewLine + String.Format("<p>Địa chỉ công ty: 68 Đường C12, Phường 13, Tân Bình, TPHCM</p>");
+                rowHtml += Environment.NewLine + String.Format("<p>Người đại diện: Trần Yến Ngọc</p>");
+                rowHtml += Environment.NewLine + String.Format("</div>");
+                // Kết thúc HTML in phiếu cam kết chính hãng
+
+                // HTML in phiếu hàng dễ vỡ
+                rowHtml += Environment.NewLine + String.Format("<div class='table-fragile-goods {0}'>", bodyClass);
+                rowHtml += Environment.NewLine + String.Format("<h2>HÀNG DỄ VỠ</h2>");
+                rowHtml += Environment.NewLine + String.Format("<h2>XIN NHẸ TAY!</h2>");
+                rowHtml += Environment.NewLine + String.Format("<p>Hãy liên hệ chúng tôi, nếu khách hàng từ chối nhận hàng!</p>");
+                rowHtml += Environment.NewLine + String.Format("<p>CHÂN THÀNH CÁM ƠN!</p>");
+                rowHtml += Environment.NewLine + String.Format("</div>");
+                // Kết thúc HTML in phiếu hàng dễ vỡ
             }
-            
+
             /// Hiển thị lỗi nếu có
             if (error != "")
             {
@@ -443,14 +462,18 @@ namespace IM_PJ
                 {
                     ltrPrintButton.Text += "<a class='btn' href='javascript:;' onclick='printIt()'>In phiếu gửi hàng</a>";
                 }
+
                 if (order.ShippingType == 4)
                 {
                     ltrPrintButton.Text += "<a class='btn show-transport-info' href='javascript:;' onclick='showTransportInfo()'>Hiện thông tin nhà xe</a>";
                 }
+
                 if (order.ShippingType == 3 && order.PaymentType == 3)
                 {
                     ltrPrintButton.Text += "<a class='btn show-transport-info' href='https://proship.vn/quan-ly-van-don/?isInvoiceFilter=1&generalInfo=" + order.ShippingCode + "' target='_blank'>Kiểm tra thu hộ trên Proship</a>";
                 }
+                ltrPrintButton.Text += "<a class='btn btn-green' href='javascript:;' onclick='printNote()'>In phiếu cam kết</a>";
+                ltrPrintButton.Text += "<a class='btn btn-blue' href='javascript:;' onclick='printFragileGoods()'>In phiếu hàng dễ vỡ</a>";
                 ltrPrintButton.Text += "</div>";
             }
         }

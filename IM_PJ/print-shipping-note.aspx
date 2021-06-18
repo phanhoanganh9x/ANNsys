@@ -26,15 +26,39 @@
         position: relative;
         border-left: dashed 2px #000;
     }
+    .table-note {
+        display: block;
+        width: 210mm;
+        height: 70mm;
+        position: relative;
+    }
+    .table-note h2 {
+        font-size: 3em;
+        margin-bottom: 10px;
+        margin-top: 5px;
+    }
+    .table-fragile-goods {
+        display: block;
+        width: 150mm;
+        height: 70mm;
+        position: relative;
+        text-align: center;
+    }
+    .table-fragile-goods h2 {
+        font-size: 4.7em;
+        margin-bottom: 0;
+        margin-top: 5px;
+        line-height: 1.3em;
+    }
     .top-left {
         position: absolute;
-        top: -2mm;
+        top: 0;
         left: 3mm;
         width: 90mm;
     }
     .top-right {
         position: absolute;
-        top: 0;
+        top: 1mm;
         right: 16mm;
         width: 120mm;
         text-align: right;
@@ -137,7 +161,7 @@
         transform: rotate(-90deg);
         width: 72mm;
         position: absolute;
-        text-align: right;
+        text-align: center;
         /*top: 35.7mm;*/
         top: 31mm;
         left: 176mm;
@@ -155,14 +179,27 @@
         top: 27.8mm;
         left: 179mm;
         padding-top: 0;
-        text-align: right;
+        text-align: center;
         font-size: 35px;
+    }
+    .btn-blue {
+        background-color: #2ea2cc!important;
+    }
+    .btn-green {
+        background-color: #73a724!important;
     }
     .btn-violet {
         background-color: #8000d0!important
     }
-    .btn-violet:hover, .btn-violet:active {
+    .btn:hover, .btn:active {
         background-color: #585858!important;
+    }
+    #previewNoteImage{
+        margin-top: 30px;
+    }
+    .barcode-image {
+        width: 50%;
+        height: 50%;
     }
     @media print { 
         body {
@@ -170,7 +207,7 @@
             -o-transform:rotate(-90deg);
             transform:rotate(-90deg);
             margin-top: 143mm;
-            margin-left: 0;
+            margin-left: 4mm;
         }
         .table-ghtk {
             margin-top: 159mm;
@@ -186,6 +223,10 @@
     <asp:Literal ID="ltrShippingNote" runat="server"></asp:Literal>
     <asp:Literal ID="ltrPrintButton"  runat="server"></asp:Literal>
     <a href="javascript:;" onclick="copyNote()" title="Copy link hóa đơn" class="btn btn-violet h45-btn">Copy câu kiểm tra</a>
+    <br />
+    <div id="previewNoteImage"></div>
+    <div id="previewFragileGoodsImage"></div>
+
     <script src="/App_Themes/NewUI/js/sweet/sweet-alert.js" type="text/javascript"></script>
     <script src="/App_Themes/Ann/js/html2canvas.js"></script>
     <script type="text/javascript">
@@ -202,23 +243,76 @@
                 $(".h2guide").addClass("h2-guide").show();
                 $(".pguide").addClass("p-guide").show();
             });
+
+            html2canvas(document.querySelector(".table-note"), {
+                allowTaint: true,
+                logging: false
+            }).then(canvas => {
+                $("#previewNoteImage").append(canvas);
+                $(".table-note").hide();
+            });
+
+            html2canvas(document.querySelector(".table-fragile-goods"), {
+                allowTaint: true,
+                logging: false
+            }).then(canvas => {
+                $("#previewFragileGoodsImage").append(canvas);
+                $(".table-fragile-goods").hide();
+            });
         }
 
         function printIt() {
-            removeDiv();
-            //swal({
-            //    title: "Coi lại lần cuối nè",
-            //    text: "Phiếu gửi hàng đúng thông tin hết chưa và có gửi cho khách xem chưa?",
-            //    type: "warning",
-            //    showCancelButton: true,
-            //    confirmButtonColor: "#DD6B55",
-            //    confirmButtonText: "Đúng rồi sếp! In sếp ơi..",
-            //    cancelButtonText: "Để em coi lại lần nữa..",
-            //    closeOnConfirm: true,
-            //    html: false
-            //}, function () {
-            //    removeDiv();
-            //});
+            $("#previewImage").hide();
+            $("#previewNoteImage").hide();
+            $("#previewFragileGoodsImage").hide();
+            $(".table").show();
+            $(".table-note").hide();
+            $(".table-fragile-goods").hide();
+            $(".print-it").hide();
+            $(".h2guide").hide();
+            $(".pguide").hide();
+            $(".btn-violet").hide();
+            $(".show-transport-info").hide();
+            $(".sweet-alert").hide().empty();
+            $(".sweet-overlay").hide().empty();
+            window.print();
+            window.close();
+        }
+
+        function printNote() {
+            $("#previewImage").hide();
+            $("#previewNoteImage").hide();
+            $("#previewFragileGoodsImage").hide();
+            $(".table").hide();
+            $(".table-note").show();
+            $(".table-fragile-goods").hide();
+            $(".print-it").hide();
+            $(".h2guide").hide();
+            $(".pguide").hide();
+            $(".btn-violet").hide();
+            $(".show-transport-info").hide();
+            $(".sweet-alert").hide().empty();
+            $(".sweet-overlay").hide().empty();
+            window.print();
+            location.reload();
+        }
+
+        function printFragileGoods() {
+            $("#previewImage").hide();
+            $("#previewNoteImage").hide();
+            $("#previewFragileGoodsImage").hide();
+            $(".table").hide();
+            $(".table-note").hide();
+            $(".table-fragile-goods").show();
+            $(".print-it").hide();
+            $(".h2guide").hide();
+            $(".pguide").hide();
+            $(".btn-violet").hide();
+            $(".show-transport-info").hide();
+            $(".sweet-alert").hide().empty();
+            $(".sweet-overlay").hide().empty();
+            window.print();
+            location.reload();
         }
 
         function printError(shippingType) {
@@ -231,19 +325,6 @@
                 closeOnConfirm: true,
                 html: true
             });
-        }
-        function removeDiv() {
-            $("#previewImage").hide();
-            $(".table").show();
-            $(".print-it").hide();
-            $(".h2guide").hide();
-            $(".pguide").hide();
-            $(".btn-violet").hide();
-            $(".show-transport-info").hide();
-            $(".sweet-alert").hide().empty();
-            $(".sweet-overlay").hide().empty();
-            window.print();
-            window.close();
         }
 
         function showTransportInfo() {
