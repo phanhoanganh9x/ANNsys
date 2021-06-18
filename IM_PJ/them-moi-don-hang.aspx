@@ -39,7 +39,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Nick đặt hàng</label>
-                                            <asp:TextBox ID="txtNick" CssClass="form-control capitalize" autocomplete="off" runat="server" placeholder="Tên nick đặt hàng"></asp:TextBox>
+                                            <asp:TextBox ID="txtNick" CssClass="form-control capitalize" autocomplete="off" runat="server" placeholder="Nick đặt hàng"></asp:TextBox>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -1258,10 +1258,6 @@
                 else if (nick === "") {
                     $("#<%= txtNick.ClientID%>").focus();
                     swal("Thông báo", "Hãy nhập Nick đặt hàng của khách hàng!", "error");
-                }
-                else if (facebooklink === "" && $("#<%= hdfUsernameCurrent.ClientID%>").val() == "nhom_facebook") {
-                    $("#<%= txtFacebook.ClientID%>").focus();
-                    swal("Thông báo", "Hãy nhập link Facebook của khách này!", "error");
                 }
                 else if ($(".product-result").length == 0) {
                     $("#txtSearch").focus();

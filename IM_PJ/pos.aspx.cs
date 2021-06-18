@@ -379,6 +379,9 @@ namespace IM_PJ
                                 wardId = recipientWardId;
                             }
 
+                            CustomerID = customer.ID;
+                            CustomerAddress = address;
+
                             CustomerController.Update(
                                 ID: CustomerID,
                                 CustomerName: CustomerName,
@@ -405,8 +408,6 @@ namespace IM_PJ
                                 DistrictID: districtId.HasValue ? districtId.Value : 0,
                                 WardID: wardId.HasValue ? wardId.Value : 0
                             );
-                            CustomerID = customer.ID;
-                            CustomerAddress = address;
                         }
                         else
                         {

@@ -198,24 +198,16 @@ namespace IM_PJ
                     if (cus != null)
                     {
                         txtNick.Text = cus.Nick;
-                        if (string.IsNullOrEmpty(cus.Nick))
-                        {
-                            txtNick.Enabled = true;
-                        }
 
                         txtFacebook.Text = cus.Facebook;
                         if (!string.IsNullOrEmpty(cus.Facebook))
                         {
                             ltrFb.Text += "<a href='" + cus.Facebook + "' class='btn primary-btn fw-btn not-fullwidth' target='_blank'>Xem</a>";
                         }
-                        else
-                        {
-                            txtFacebook.Enabled = true;
-                        }
                     }
 
                     // Title
-                    this.Title = String.Format("{0} - Đơn hàng", cus.Nick != "" ? cus.Nick.ToTitleCase() : cus.CustomerName.ToTitleCase());
+                    this.Title = String.Format("{0}", cus.Nick != "" ? cus.Nick.ToTitleCase() : cus.CustomerName.ToTitleCase());
                     ltrHeading.Text = "Đơn hàng " + ID.ToString() + " - " + (cus.Nick != "" ? cus.Nick.ToTitleCase() : cus.CustomerName.ToLower().ToTitleCase()) + (!String.IsNullOrEmpty(order.UserHelp) ? " (được tạo giúp bởi " + order.UserHelp + ")" : "");
                     ltrOrderID.Text = ID.ToString();
                     int customerID = Convert.ToInt32(order.CustomerID);
@@ -642,7 +634,7 @@ namespace IM_PJ
                     if (order.ShippingType == 6 && !String.IsNullOrEmpty(order.ShippingCode))
                     {
                         ltrPrint.Text += "<a id='btnShowGhtk' target='_blank' href='https://khachhang.giaohangtietkiem.vn/khachhang?code=" + order.ShippingCode + "' class='btn primary-btn btn-ghtk fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-upload' aria-hidden='true'></i> Xem đơn GHTK</a>";
-                        ltrPrint.Text += "<a id='btnCancelGhtk' href='javascript:;' onclick='cancelGhtk(" + ID + ", `" + order.ShippingCode + "`)' class='btn primary-btn btn-red fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-trash' aria-hidden='true'></i> Xóa đơn GHTK</a>";
+                        ltrPrint.Text += "<a id='btnCancelGhtk' href='javascript:;' onclick='cancelGhtk(" + ID + ", `" + order.ShippingCode + "`)' class='btn primary-btn btn-red fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-trash' aria-hidden='true'></i> Hủy đơn GHTK</a>";
                     }
                     if (order.ShippingType == 3 && !String.IsNullOrEmpty(order.ShippingCode))
                     {
@@ -881,7 +873,7 @@ namespace IM_PJ
                             string Facebook = txtFacebook.Text.Trim();
                             var CustomerAddress = String.Empty;
 
-                            var recipientPhone = hdfRecipientPhone.Value;
+                            var recipientPhone = Regex.Replace(hdfRecipientPhone.Value, @"[^\d]", "");
                             var recipientProvinceId = hdfRecipientProvinceId.Value.ToInt(0);
                             var recipientDistrictId = hdfRecipientDistrictId.Value.ToInt(0);
                             var recipientWardId = hdfRecipientWardId.Value.ToInt(0);
@@ -918,6 +910,9 @@ namespace IM_PJ
                                     wardId = recipientWardId;
                                 }
 
+                                CustomerID = customer.ID;
+                                CustomerAddress = address;
+
                                 CustomerController.Update(
                                     ID: CustomerID,
                                     CustomerName: CustomerName,
@@ -944,8 +939,6 @@ namespace IM_PJ
                                     DistrictID: districtId.HasValue ? districtId.Value : 0,
                                     WardID: wardId.HasValue ? wardId.Value : 0
                                 );
-                                CustomerID = customer.ID;
-                                CustomerAddress = address;
                             }
                             else
                             {

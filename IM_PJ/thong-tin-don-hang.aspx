@@ -301,7 +301,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Nick đặt hàng</label>
-                                            <asp:TextBox ID="txtNick" CssClass="form-control capitalize" runat="server" Enabled="true" placeholder="Tên nick đặt hàng" autocomplete="off"></asp:TextBox>
+                                            <asp:TextBox ID="txtNick" CssClass="form-control capitalize" runat="server" Enabled="true" placeholder="Nick đặt hàng" autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -309,7 +309,7 @@
                                             <label>Facebook</label>
                                             <div class="row">
                                                 <div class="col-md-9 fb">
-                                                    <asp:TextBox ID="txtFacebook" CssClass="form-control" runat="server" Enabled="true" placeholder="Đường link chat Facebook" autocomplete="off"></asp:TextBox>
+                                                    <asp:TextBox ID="txtFacebook" CssClass="form-control" runat="server" Enabled="true" placeholder="Đường link Facebook" autocomplete="off"></asp:TextBox>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="row">
@@ -386,7 +386,7 @@
                                 </div>
                                 <div id="notificationFee" class="row hide">
                                     <div class="col-md-12">
-                                        <strong class="font-red">Phí vận chuyển đã thay đổi. Vui lòng check lại!</strong>
+                                        <strong class="font-red">Phí vận chuyển đã thay đổi. Hãy tính lại phí!</strong>
                                     </div>
                                 </div>
                             </div>
@@ -851,13 +851,6 @@
                 if (!$nick.val()) {
                     $nick.focus();
                     swal("Thông báo", "Hãy nhập Nick đặt hàng của khách hàng!", "error");
-                    return false;
-                }
-
-                // Facebook
-                if (!$facebook.val() && $username.val() === "nhom_facebook") {
-                    $facebook.focus();
-                    swal("Thông báo", "Hãy nhập link Facebook của khách này!", "error");
                     return false;
                 }
 
