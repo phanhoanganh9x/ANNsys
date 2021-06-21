@@ -68,6 +68,21 @@ function _getDeliveryAddressesDefault(phone) {
     });
 }
 
+function _getDeliveryAddressLast(phone) {
+    return new Promise(function (reslove, reject) {
+        $.ajax({
+            method: 'GET',
+            url: "api/v1/customer/" + phone + "/delivery-address-last",
+            success: function (data, textStatus, xhr) {
+                reslove(data);
+            },
+            error: function (xhr, textStatus, err) {
+                reject(err);
+            }
+        });
+    });
+}
+
 // #endregion
 // #endregion
 
@@ -608,6 +623,16 @@ function updateDeliveryAddress(phone) {
 
 function getDeliveryAddressDefault(phone) {
     _getDeliveryAddressesDefault(phone)
+        .then(function (data) {
+            _initDeliveryAddress(data);
+        })
+        .catch(function (err) {
+            _initDeliveryAddressByCustomer()
+        });
+}
+
+function getDeliveryAddressLast(phone) {
+    _getDeliveryAddressLast(phone)
         .then(function (data) {
             _initDeliveryAddress(data);
         })
