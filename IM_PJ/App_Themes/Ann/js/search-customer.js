@@ -401,8 +401,8 @@ function selectCustomer() {
                     $("input[id$='_hdfCustomerID']").val(id);
                     $("input[id$='_hdfUsernameCurrent']").val(createdby);
 
-                    if (typeof getDeliveryAddressDefault(phone) === 'function')
-                        getDeliveryAddressDefault(phone);
+                    if (typeof getDeliveryAddressLast(phone) === 'function')
+                        getDeliveryAddressLast(phone);
 
                     swal.close();
                 }
@@ -451,8 +451,8 @@ function selectCustomer() {
             $("input[id$='_hdfCustomerID']").val(id);
             $("input[id$='_hdfUsernameCurrent']").val(createdby);
 
-            if (typeof getDeliveryAddressDefault(phone) === 'function')
-                getDeliveryAddressDefault(phone);
+            if (typeof getDeliveryAddressLast(phone) === 'function')
+                getDeliveryAddressLast(phone);
 
             swal.close();
 
@@ -716,8 +716,8 @@ function ajaxCheckCustomer() {
                                             $("input[id$='_hdfUsernameCurrent']").val(data.CreatedBy);
                                             selectCustomerDetail(data);
 
-                                            if (typeof getDeliveryAddressDefault(phone) === 'function')
-                                                getDeliveryAddressDefault(phone);
+                                            if (typeof getDeliveryAddressLast(phone) === 'function')
+                                                getDeliveryAddressLast(phone);
 
                                             $("#txtSearch").focus();
                                         }
@@ -749,8 +749,8 @@ function ajaxCheckCustomer() {
                                 $("input[id$='_hdfCustomerID']").val(data.ID);
                                 selectCustomerDetail(data);
 
-                                if (typeof getDeliveryAddressDefault(phone) === 'function')
-                                    getDeliveryAddressDefault(phone);
+                                if (typeof getDeliveryAddressLast(phone) === 'function')
+                                    getDeliveryAddressLast(phone);
 
                                 $("#txtSearch").focus();
                             }
