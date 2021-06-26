@@ -288,6 +288,12 @@ namespace IM_PJ
                 hdfProductImageClean.Value = product.ProductImageClean;
                 imgProductImageClean.ImageUrl = Thumbnail.getURL(product.ProductImageClean, Thumbnail.Size.Source);
             }
+            // Ảnh đặc trưng
+            if (!String.IsNullOrEmpty(product.FeaturedImage))
+            {
+                hdfFeaturedImage.Value = product.FeaturedImage;
+                featuredImage.ImageUrl = Thumbnail.getURL(product.FeaturedImage, Thumbnail.Size.Source);
+            }
         }
 
         /// <summary>
@@ -566,6 +572,33 @@ namespace IM_PJ
             return Path.GetFileName(filePath);
         }
 
+        /// <summary>
+        /// Cập nhật hình ảnh đặc trưng
+        /// </summary>
+        /// <param name="produuctId"></param>
+        /// <param name="uploadedFile"></param>
+        /// <returns>File Name</returns>
+        private string _uploadFeaturedImageClean(int produuctId, UploadedFile uploadedFile)
+        {
+            // Upload image
+            var folder = Server.MapPath("/uploads/images");
+            var fileName = Slug.ConvertToSlug(Path.GetFileName(uploadedFile.FileName), isFile: true);
+            var filePath = String.Format("{0}/featured-{1}-{2}", folder, produuctId, fileName);
+
+            if (File.Exists(filePath))
+            {
+                var strNow = DateTime.Now.ToString("HHmmssffff");
+                var extension = Path.GetExtension(fileName);
+                var nameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
+
+                filePath = String.Format("{0}/featured-{1}-{2}-{3}{4}", folder, produuctId, nameWithoutExtension, strNow, extension);
+            }
+
+            uploadedFile.SaveAs(filePath);
+
+            return Path.GetFileName(filePath);
+        }
+
         #region Cập nhật Prodcut
         /// <summary>
         /// Cập nhật thông tin product
@@ -658,6 +691,14 @@ namespace IM_PJ
             {
                 updatedData.ProductImageClean = hdfProductImageClean.Value;
             }
+            // Ảnh đặc trưng
+            if (rauFeaturedImage.UploadedFiles.Count > 0)
+            {
+                var file = rauFeaturedImage.UploadedFiles[0];
+                updatedData.FeaturedImage = _uploadFeaturedImageClean(productID, file);
+            }
+            else
+                updatedData.FeaturedImage = hdfFeaturedImage.Value;
 
             // Update product
             ProductController.Update(updatedData);

@@ -223,6 +223,16 @@ namespace IM_PJ
                 }
                 imageGallery.Text += "</ul>";
 
+                // Ảnh đặc trưng
+                ltrFeaturedImage.Text = "";
+                ltrFeaturedImage.Text += "<ul class='image-gallery'>";
+                ltrFeaturedImage.Text += "    <li>";
+                ltrFeaturedImage.Text += "        <img src='" + Thumbnail.getURL(p.FeaturedImage, Thumbnail.Size.Source) + "'>";
+                ltrFeaturedImage.Text += "        <a href='" + Thumbnail.getURL(p.FeaturedImage, Thumbnail.Size.Source) + "' download class='btn download-btn download-image h45-btn'>";
+                ltrFeaturedImage.Text += "            <i class='fa fa-cloud-download'></i> Tải hình này";
+                ltrFeaturedImage.Text += "        </a>";
+                ltrFeaturedImage.Text += "    </li>";
+                ltrFeaturedImage.Text += "</ul>";
 
                 hdfTable.Value = p.ProductStyle.ToString();
 

@@ -62,6 +62,7 @@ namespace IM_PJ.Models
         public Nullable<double> BestPrice { get; set; }
         public string ShopeeDescription { get; set; }
         public string CleanName { get; set; }
+        public string FeaturedImage { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PreOrderDetail> PreOrderDetails { get; set; }
