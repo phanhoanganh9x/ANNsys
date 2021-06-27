@@ -674,6 +674,22 @@ namespace IM_PJ
                                 }
                                 #endregion
 
+                                #region Lưu ảnh đặc trưng
+                                if (rauFeaturedImage.UploadedFiles.Count > 0)
+                                {
+                                    var folder = Server.MapPath("/uploads/images");
+                                    var imageFile = rauFeaturedImage.UploadedFiles[0];
+                                    var fileName = Slug.ConvertToSlug(Path.GetFileName(imageFile.FileName), isFile: true);
+                                    var filePath = String.Format("{0}/featured-{1}-{2}", folder, ProductID, fileName);
+
+                                    if (!File.Exists(filePath))
+                                        imageFile.SaveAs(filePath);
+
+                                    var featuredImage = Path.GetFileName(filePath);
+                                    ProductController.updateFeaturedImage(ProductID, featuredImage, acc.Username);
+                                }
+                                #endregion
+
                                 string variable = hdfVariableListInsert.Value;
                                 if (!string.IsNullOrEmpty(variable))
                                 {

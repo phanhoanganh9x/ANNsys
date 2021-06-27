@@ -1129,6 +1129,7 @@
           <Property Name="BestPrice" Type="float" />
           <Property Name="ShopeeDescription" Type="nvarchar(max)" />
           <Property Name="CleanName" Type="nvarchar(max)" />
+          <Property Name="FeaturedImage" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="tbl_ProductImage">
           <Key>
@@ -2788,6 +2789,7 @@
           <Property Name="BestPrice" Type="Double" />
           <Property Name="ShopeeDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CleanName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FeaturedImage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_ProductImage">
           <Key>
@@ -4640,6 +4642,7 @@
           <EntitySetMapping Name="tbl_Product">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Product">
               <MappingFragment StoreEntitySet="tbl_Product">
+                <ScalarProperty Name="FeaturedImage" ColumnName="FeaturedImage" />
                 <ScalarProperty Name="CleanName" ColumnName="CleanName" />
                 <ScalarProperty Name="ShopeeDescription" ColumnName="ShopeeDescription" />
                 <ScalarProperty Name="BestPrice" ColumnName="BestPrice" />

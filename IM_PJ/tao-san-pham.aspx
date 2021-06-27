@@ -463,6 +463,20 @@
                                     <div class="hidProductThumbnailClean"></div>
                                 </div>
                             </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Ảnh đặc trưng
+                                </div>
+                                <div class="row-right">
+                                    <telerik:RadAsyncUpload Skin="Metro" runat="server" ID="rauFeaturedImage" ChunkSize="5242880"
+                                        Localization-Select="Chọn ảnh" AllowedFileExtensions=".jpeg,.jpg,.png"
+                                        MultipleFileSelection="Disabled" OnClientFileSelected="OnClientFileSelected1" MaxFileInputsCount="1">
+                                    </telerik:RadAsyncUpload>
+                                    <asp:Image runat="server" ID="featuredImage" Width="200" />
+                                    <asp:HiddenField runat="server" ID="hdfFeaturedImage" ClientIDMode="Static" />
+                                    <div class="hidFeaturedImage"></div>
+                                </div>
+                            </div>
                             <div class="form-row variable" style="display: none">
                                 <div class="row-left">
                                     Thuộc tính
@@ -649,7 +663,7 @@
                     }
 
                     $("#<%=pRetailPrice.ClientID%>").val(retailPrice);
-                    
+
                 });
 
                 $("#<%=pCostOfGood.ClientID%>").blur(function () {

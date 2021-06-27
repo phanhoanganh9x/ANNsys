@@ -115,6 +115,7 @@ namespace IM_PJ.Controllers
                     ui.ShortDescription = product.ShortDescription;
                     ui.Price10 = product.Price10;
                     ui.BestPrice = product.BestPrice;
+                    ui.FeaturedImage = String.IsNullOrEmpty(product.FeaturedImage) ? null : product.FeaturedImage;
 
                     int kq = dbe.SaveChanges();
                     return kq.ToString();
@@ -167,6 +168,26 @@ namespace IM_PJ.Controllers
                 }
                 else
                     return null;
+            }
+        }
+
+        public static bool updateFeaturedImage(int id, string featuredImage, string modifiedBy)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var ui = con.tbl_Product
+                    .Where(a => a.ID == id)
+                    .SingleOrDefault();
+
+                if (ui == null)
+                    return false;
+
+                ui.FeaturedImage = featuredImage;
+                ui.ModifiedDate = DateTime.Now;
+                ui.ModifiedBy = modifiedBy;
+                con.SaveChanges();
+
+                return true;
             }
         }
 

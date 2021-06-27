@@ -246,6 +246,14 @@
                                 </div>
                             </div>
                             <div class="form-row">
+                                <div class="row-left">
+                                    Ảnh đặc trưng
+                                </div>
+                                <div class="row-right">
+                                    <asp:Literal ID="ltrFeaturedImage" runat="server"></asp:Literal>
+                                </div>
+                            </div>
+                            <div class="form-row">
                                 <asp:Literal ID="ltrEdit2" runat="server"></asp:Literal>
                             </div>
                         </div>

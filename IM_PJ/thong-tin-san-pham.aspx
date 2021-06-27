@@ -430,6 +430,20 @@
                                     <asp:HiddenField runat="server" ID="hdfProductImageClean" ClientIDMode="Static" />
                                 </div>
                             </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Ảnh đặc trưng
+                                </div>
+                                <div class="row-right">
+                                    <telerik:RadAsyncUpload Skin="Metro" runat="server" ID="rauFeaturedImage" ChunkSize="5242880"
+                                        Localization-Select="Chọn ảnh" AllowedFileExtensions=".jpeg,.jpg,.png"
+                                        MultipleFileSelection="Disabled" OnClientFileSelected="OnClientFileSelected3"
+                                        MaxFileInputsCount="1" OnClientFileUploadRemoved="OnClientFileUploadRemoved3">
+                                    </telerik:RadAsyncUpload>
+                                    <asp:Image runat="server" ID="featuredImage" Width="200" />
+                                    <asp:HiddenField runat="server" ID="hdfFeaturedImage" ClientIDMode="Static" />
+                                </div>
+                            </div>
                             <div class="form-row variable">
                                 <div class="row-left">
                                     Biến thể
@@ -1574,12 +1588,26 @@
                 }
             }
 
+            function OnClientFileSelected3(sender, args) {
+                if (!$telerik.isIE)
+                {
+                    truncateName(args);
+                    let file = args.get_fileInputField().files.item(args.get_rowIndex());
+                    showThumbnail(file, args);
+                    $("#<%= featuredImage.ClientID %>").hide();
+                }
+            }
+
             function OnClientFileUploadRemoved1(sender, args) {
                     $("#<%= imgProductImage.ClientID %>").show();
             }
 
             function OnClientFileUploadRemoved2(sender, args) {
                     $("#<%= imgProductImageClean.ClientID %>").show();
+            }
+
+            function OnClientFileUploadRemoved3(sender, args) {
+                $("#<%= featuredImage.ClientID %>").show();
             }
 
             // Used for creating a new FileList in a round-about way
