@@ -3,9 +3,9 @@
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script type="text/javascript" src="/App_Themes/Ann/js/search-customer.js?v=202106081515"></script>
-    <script type="text/javascript" src="/App_Themes/Ann/js/search-product.js?v=09052021"></script>
-    <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=09052021"></script>
-    <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=09052021"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/search-product.js?v=28062021"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=28062021"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=28062021"></script>
     <style>
         .panel-post {
             margin-bottom: 20px;
@@ -578,6 +578,7 @@
                                             <asp:ListItem Value="7" Text="Viettel"></asp:ListItem>
                                             <asp:ListItem Value="8" Text="Grab"></asp:ListItem>
                                             <asp:ListItem Value="9" Text="AhaMove"></asp:ListItem>
+                                            <asp:ListItem Value="10" Text="J&T"></asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
                                 </div>
@@ -1423,6 +1424,22 @@
                         window.open("/print-shipping-note?id=" + ID, "_blank");
                     });
                 }
+                else if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 10 && $("#<%=ddlPaymentType.ClientID%>").find(":selected").val() != 3) {
+                    swal({
+                        title: "Ê nhỏ:",
+                        text: "Đơn hàng này gửi J&T nhưng <strong>Không Thu Hộ</strong> hở?",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Đúng rồi sếp!!",
+                        closeOnConfirm: false,
+                        cancelButtonText: "Để em xem lại..",
+                        html: true
+                    }, function (isConfirm) {
+                        sweetAlert.close();
+                        window.open("/print-shipping-note?id=" + ID, "_blank");
+                    });
+                }
                 else {
                     window.open("/print-shipping-note?id=" + ID, "_blank");
                 }
@@ -1593,6 +1610,12 @@
                     $shippingCode.addClass("hide");
                 }
 
+                // J&T
+                if ($ddlShippingType.find(":selected").val() == 10) {
+                    $transportCompany.addClass("hide");
+                    $shippingCode.addClass("hide");
+                }
+
                 // Event onChange
                 let $ddlPaymentType = $("#<%=ddlPaymentType.ClientID%>");
                 let $ddlPostalDeliveryType = $("#<%=ddlPostalDeliveryType.ClientID%>");
@@ -1664,6 +1687,9 @@
                             break;
                         // AhaMove
                         case "9":
+                            break;
+                        // J&T
+                        case "10":
                             break;
                         default:
                             break;

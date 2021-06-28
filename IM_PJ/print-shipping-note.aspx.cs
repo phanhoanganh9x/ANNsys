@@ -331,6 +331,11 @@ namespace IM_PJ
                 {
                     DeliveryInfo = String.Format("<p class='delivery'><strong>AhaMove</strong></p>");
                 }
+                // J&T
+                else if (order.ShippingType == 10)
+                {
+                    DeliveryInfo = String.Format("<p class='delivery'><strong>J&T</strong></p>");
+                }
 
                 // Lấy tiền THU HỘ
                 if (order.PaymentType == 3)

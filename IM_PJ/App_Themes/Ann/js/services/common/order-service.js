@@ -87,6 +87,8 @@
             return "<span class='bg-grab'>Grab</span>";
         else if (deliveryMethod == 9)
             return "<span class='bg-ahamove'>AhaMove</span>";
+        else if (deliveryMethod == 10)
+            return "<span class='bg-jt'>J&T</span>";
         else
             return "<span class='bg-red'>Chưa xác định</span>";
     }
