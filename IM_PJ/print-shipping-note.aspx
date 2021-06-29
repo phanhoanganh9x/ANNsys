@@ -85,7 +85,7 @@
         position: absolute;
         bottom: 1mm;
         right: 12mm;
-        width: 90mm;
+        width: 95mm;
     }
     .cod {
         font-size: 18px;
@@ -111,7 +111,7 @@
         font-weight: bold;
     }
     .receiver-name {
-        font-size: 22px;
+        font-size: 20px;
         text-transform: uppercase;
         font-weight: bold;
     }
@@ -244,7 +244,7 @@
     <script src="/App_Themes/Ann/js/html2canvas.js"></script>
     <script type="text/javascript">
 
-        //$(document).ready(printImage());
+        $(document).ready(printImage());
 
         function printImage () {
             html2canvas(document.querySelector(".table"), {
