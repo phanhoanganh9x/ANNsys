@@ -233,6 +233,7 @@
           <Property Name="Alias" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="IsPicked" Type="bit" Nullable="false" />
           <Property Name="IsDelivered" Type="bit" Nullable="false" />
+          <Property Name="NameJT" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="ExchangeRate">
           <Key>
@@ -2035,6 +2036,7 @@
           <NavigationProperty Name="DeliveryAddresses" Relationship="inventorymanagementModel.FK_DeliveryAddress_District" FromRole="DeliverySaveAddress" ToRole="DeliveryAddress" />
           <NavigationProperty Name="DeliveryAddresses1" Relationship="inventorymanagementModel.FK_DeliveryAddress_Province" FromRole="DeliverySaveAddress" ToRole="DeliveryAddress" />
           <NavigationProperty Name="DeliveryAddresses2" Relationship="inventorymanagementModel.FK_DeliveryAddress_Ward" FromRole="DeliverySaveAddress" ToRole="DeliveryAddress" />
+          <Property Name="NameJT" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Fee">
           <Key>
@@ -3108,7 +3110,7 @@
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
         </EntityType>
-        <EntityContainer Name="inventorymanagementEntities1" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="inventorymanagementEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Banks" EntityType="Self.Bank" />
           <EntitySet Name="BankAccounts" EntityType="Self.BankAccount" />
           <EntitySet Name="BankTransfers" EntityType="Self.BankTransfer" />
@@ -3668,7 +3670,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="inventorymanagementModelStoreContainer" CdmEntityContainer="inventorymanagementEntities1">
+        <EntityContainerMapping StorageEntityContainer="inventorymanagementModelStoreContainer" CdmEntityContainer="inventorymanagementEntities">
           <EntitySetMapping Name="Banks">
             <EntityTypeMapping TypeName="inventorymanagementModel.Bank">
               <MappingFragment StoreEntitySet="Bank">
@@ -3882,6 +3884,7 @@
           <EntitySetMapping Name="DeliverySaveAddresses">
             <EntityTypeMapping TypeName="inventorymanagementModel.DeliverySaveAddress">
               <MappingFragment StoreEntitySet="DeliverySaveAddress">
+                <ScalarProperty Name="NameJT" ColumnName="NameJT" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="PID" ColumnName="PID" />

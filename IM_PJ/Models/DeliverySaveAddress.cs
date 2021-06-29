@@ -30,6 +30,7 @@ namespace IM_PJ.Models
         public string Alias { get; set; }
         public bool IsPicked { get; set; }
         public bool IsDelivered { get; set; }
+        public string NameJT { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DeliveryAddress> DeliveryAddresses { get; set; }
