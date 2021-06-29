@@ -9,7 +9,7 @@
   <style>
     
     body {
-        font-size: 17px;
+        font-size: 15px;
         font-family: Tahoma,sans-serif;
         margin-left: 0;
         margin-top: 0;
@@ -21,14 +21,23 @@
     }
     .table {
         display: block;
-        width: 220mm;
+        width: 180mm;
         height: 72mm;
         position: relative;
         border-left: dashed 2px #000;
     }
+    .table-ghtk {
+        width: 195mm;
+    }
+    .table-ghtk .top-right {
+        right: 27mm;
+    }
+    .table-ghtk .bottom-right {
+        right: 27mm;
+    }
     .table-note {
         display: block;
-        width: 210mm;
+        width: 200mm;
         height: 70mm;
         position: relative;
     }
@@ -53,27 +62,30 @@
     .top-left {
         position: absolute;
         top: 0;
-        left: 3mm;
+        left: 2mm;
         width: 90mm;
     }
     .top-right {
         position: absolute;
         top: 1mm;
-        right: 16mm;
-        width: 120mm;
+        right: 12mm;
+        width: 100mm;
         text-align: right;
     }
     .bottom-left {
         position: absolute;
         bottom: 1mm;
-        left: 3mm;
+        left: 2mm;
         width: 70mm;
+    }
+    .bottom-left img {
+        width: 50mm;
     }
     .bottom-right {
         position: absolute;
         bottom: 1mm;
-        right: 16mm;
-        width: 132mm;
+        right: 12mm;
+        width: 100mm;
     }
     .cod {
         font-size: 18px;
@@ -83,7 +95,7 @@
         text-transform: capitalize;
     }
     .agent-address {
-        font-size: 16px;
+        font-size: 15px;
     }
     .web {
         text-decoration: underline;
@@ -91,20 +103,26 @@
     .delivery {
         margin-top: 0;
         text-transform: uppercase;
+        font-size: 18px;
     }
-    .name {
-        font-size: 24px;
+    .sender-name {
+        font-size: 20px;
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+    .receiver-name {
+        font-size: 22px;
         text-transform: uppercase;
         font-weight: bold;
     }
     .phone {
-        font-size: 22px;
+        font-size: 20px;
         font-weight: bold;
     }
     .img {
         margin-top: 5px;
         margin-bottom: 5px;
-        width: 27%;
+        width: 24%;
     }
     .btn {
         display: inline-block;
@@ -162,25 +180,23 @@
         width: 72mm;
         position: absolute;
         text-align: center;
-        /*top: 35.7mm;*/
         top: 31mm;
-        left: 176mm;
-        font-size: 24px;
+        left: 139mm;
+        font-size: 30px;
         font-weight: bold;
         border-top: dashed 2px #000;
-        padding-top: 2mm;
-        /*padding-left: 9mm;*/
-        letter-spacing: 2px;
+        padding-top: 0;
+        letter-spacing: 6px;
     }
     .margin-left-ghtk {
-        left: 193mm;
+        left: 152mm;
     }
     .ghtk {
-        top: 27.8mm;
-        left: 179mm;
+        top: 30.5mm;
+        left: 140mm;
         padding-top: 0;
         text-align: center;
-        font-size: 35px;
+        font-size: 33px;
     }
     .btn-blue {
         background-color: #2ea2cc!important;
@@ -198,7 +214,7 @@
         margin-top: 30px;
     }
     .barcode-image {
-        width: 50%;
+        width: 55%;
         height: 50%;
     }
     @media print { 
@@ -206,11 +222,8 @@
             -ms-transform:rotate(-90deg);
             -o-transform:rotate(-90deg);
             transform:rotate(-90deg);
-            margin-top: 143mm;
+            margin-top: 123mm;
             margin-left: 4mm;
-        }
-        .table-ghtk {
-            margin-top: 159mm;
         }
     }
   </style>

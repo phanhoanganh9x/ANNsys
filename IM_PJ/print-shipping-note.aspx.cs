@@ -378,11 +378,11 @@ namespace IM_PJ
                     string[] barcode = order.ShippingCode.Split('.');
                     if (barcode.Length < 6 && barcode.Length > 3)
                     {
-                        destination = String.Format("<p>{0}.{1}</p>", barcode[barcode.Length - 3], barcode[barcode.Length - 2]);
+                        destination = String.Format("{0}.{1}", barcode[barcode.Length - 3], barcode[barcode.Length - 2]);
                     }
                     else if (barcode.Length >= 6)
                     {
-                        destination = String.Format("<p>{0}.{1}.{2}</p>", barcode[barcode.Length - 4], barcode[barcode.Length - 3], barcode[barcode.Length - 2]);
+                        destination = String.Format("{0}.{1}.{2}", barcode[barcode.Length - 4], barcode[barcode.Length - 3], barcode[barcode.Length - 2]);
                     }
                 }
                 if (destination != "")
@@ -393,10 +393,9 @@ namespace IM_PJ
                 // HTML in phiếu gửi hàng
                 rowHtml += Environment.NewLine + String.Format("<div class='table {0}'>", bodyClass);
                 rowHtml += Environment.NewLine + String.Format("    <div class='top-left'>");
-                rowHtml += Environment.NewLine + String.Format("        <p>Người gửi: <span class='name'>{0}</span></p>", leader);
+                rowHtml += Environment.NewLine + String.Format("        <p>Người gửi: <span class='sender-name'>{0}</span></p>", leader);
                 rowHtml += Environment.NewLine + String.Format("        <p>{0}</p>", phone);
                 rowHtml += Environment.NewLine + String.Format("        <p class='agent-address'>{0}</p>", address);
-                rowHtml += Environment.NewLine + String.Format("        <p class='web'>ANN.COM.VN</p>");
                 rowHtml += Environment.NewLine + String.Format("    </div>");
                 rowHtml += Environment.NewLine + String.Format("    <div class='bottom-left'>");
                 rowHtml += Environment.NewLine + String.Format("    {0}", ShippingFeeInfo);
@@ -411,7 +410,7 @@ namespace IM_PJ
                 rowHtml += Environment.NewLine + String.Format("        {0}", ShipperFeeInfo);
                 rowHtml += Environment.NewLine + String.Format("    </div>");
                 rowHtml += Environment.NewLine + String.Format("    <div class='bottom-right'>");
-                rowHtml += Environment.NewLine + String.Format("        <p>Người nhận: <span class='name'>{0}</span></p>", order.CustomerName.ToTitleCase());
+                rowHtml += Environment.NewLine + String.Format("        <p>Người nhận: <span class='receiver-name'>{0}</span></p>", order.CustomerName.ToTitleCase());
                 rowHtml += Environment.NewLine + String.Format("        <p>Điện thoại: <span class='phone'>{0}</span></p>", receivingPhone);
                 rowHtml += Environment.NewLine + String.Format("        <p>Địa chỉ: <span class='address'>{0}</span></p>", addressTo);
                 rowHtml += Environment.NewLine + String.Format("    </div>");
@@ -423,7 +422,7 @@ namespace IM_PJ
                     cssClass = "margin-left-ghtk";
                 }
                 rowHtml += Environment.NewLine + String.Format("    <div class='rotated {0}'>", cssClass);
-                rowHtml += Environment.NewLine + String.Format("        KHO HÀNG SỈ ANN");
+                rowHtml += Environment.NewLine + String.Format("        ANN.COM.VN");
                 rowHtml += Environment.NewLine + String.Format("    </div>");
                 rowHtml += Environment.NewLine + String.Format("</div>");
                 // Kết thúc HTML in phiếu gửi hàng
