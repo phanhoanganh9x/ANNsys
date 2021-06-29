@@ -1676,7 +1676,6 @@
                             $btnGHTK.removeClass("hide");
                             $fee.prop('disabled', true).css("background-color", "#eeeeee").val(0);
                             $weight.removeClass("hide");
-                            $("#<%=txtWeight.ClientID%>").val(0);
                             $shippingCode.removeClass("hide");
                             break;
                         // Viettel
@@ -1690,6 +1689,7 @@
                             break;
                         // J&T
                         case "10":
+                            $weight.removeClass("hide");
                             break;
                         default:
                             break;
@@ -3006,14 +3006,17 @@
             }
 
             function onChangeWeight() {
-                let $txtWeight = $("#<%=txtWeight.ClientID%>");
-                let weight = +$txtWeight.val() || 0;
+                let shippingType = Number($("#<%=ddlShippingType.ClientID%>").val());
+                if (shippingType == 6) {
+                    let $txtWeight = $("#<%=txtWeight.ClientID%>");
+                    let weight = +$txtWeight.val() || 0;
 
-                if (weight)
-                    getShipGHTK();
-                else {
-                    $("#<%=pFeeShip.ClientID%>").val(0);
-                    countTotal();
+                    if (weight)
+                        getShipGHTK();
+                    else {
+                        $("#<%=pFeeShip.ClientID%>").val(0);
+                        countTotal();
+                    }
                 }
             }
         </script>

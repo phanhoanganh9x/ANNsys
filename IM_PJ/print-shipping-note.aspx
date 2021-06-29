@@ -9,7 +9,7 @@
   <style>
     
     body {
-        font-size: 15px;
+        font-size: 14px;
         font-family: Tahoma,sans-serif;
         margin-left: 0;
         margin-top: 0;
@@ -21,7 +21,7 @@
     }
     .table {
         display: block;
-        width: 170mm;
+        width: 165mm;
         height: 72mm;
         position: relative;
         border-left: dashed 2px #000;
@@ -30,10 +30,10 @@
         width: 185mm;
     }
     .table-ghtk .top-right {
-        right: 27mm;
+        right: 32mm;
     }
     .table-ghtk .bottom-right {
-        right: 27mm;
+        right: 32mm;
     }
     .table-note {
         display: block;
@@ -95,7 +95,7 @@
         text-transform: capitalize;
     }
     .agent-address {
-        font-size: 15px;
+        font-size: 14px;
     }
     .web {
         text-decoration: underline;
@@ -106,7 +106,7 @@
         font-size: 18px;
     }
     .sender-name {
-        font-size: 20px;
+        font-size: 19px;
         text-transform: uppercase;
         font-weight: bold;
     }
@@ -116,7 +116,7 @@
         font-weight: bold;
     }
     .phone {
-        font-size: 20px;
+        font-size: 19px;
         font-weight: bold;
     }
     .img {
@@ -181,7 +181,7 @@
         position: absolute;
         text-align: center;
         top: 31mm;
-        left: 129mm;
+        left: 124mm;
         font-size: 30px;
         font-weight: bold;
         border-top: dashed 2px #000;
@@ -189,11 +189,11 @@
         letter-spacing: 6px;
     }
     .margin-left-ghtk {
-        left: 142mm;
+        left: 136mm;
     }
     .ghtk {
         top: 30.5mm;
-        left: 130mm;
+        left: 125mm;
         padding-top: 0;
         text-align: center;
         font-size: 33px;
@@ -216,6 +216,9 @@
     .barcode-image {
         width: 65%;
         height: 50%;
+    }
+    .order-id {
+        font-size: 17px;
     }
     @media print { 
         body {
@@ -244,7 +247,7 @@
     <script src="/App_Themes/Ann/js/html2canvas.js"></script>
     <script type="text/javascript">
 
-        $(document).ready(printImage());
+        //$(document).ready(printImage());
 
         function printImage () {
             html2canvas(document.querySelector(".table"), {

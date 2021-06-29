@@ -414,7 +414,7 @@ namespace IM_PJ
                 rowHtml += Environment.NewLine + String.Format("    {0}", ShippingFeeInfo);
                 rowHtml += Environment.NewLine + String.Format("        <p>Nhân viên: {0}</p>", order.CreatedBy);
                 rowHtml += Environment.NewLine + String.Format("        <p><img src='{0}'></p>", createBarcode(order.ID.ToString()));
-                rowHtml += Environment.NewLine + String.Format("        <p>Mã đơn hàng: {0}</p>", order.ID);
+                rowHtml += Environment.NewLine + String.Format("        <p>Mã đơn hàng: <strong class='order-id'>{0}</strong></p>", order.ID);
                 rowHtml += Environment.NewLine + String.Format("    </div>");
                 rowHtml += Environment.NewLine + String.Format("    <div class='top-right'>");
                 rowHtml += Environment.NewLine + String.Format("        {0}", LogoANN);
