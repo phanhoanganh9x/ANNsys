@@ -6,7 +6,6 @@
   <title>Phiếu gửi hàng</title>
     <script src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
     <link href="/App_Themes/NewUI/js/sweet/sweet-alert.css" rel="stylesheet" type="text/css" />
-    <link href="/App_Themes/Ann/fonts/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
   <style>
     
     body {
