@@ -247,7 +247,7 @@
     <script src="/App_Themes/Ann/js/html2canvas.js"></script>
     <script type="text/javascript">
 
-        //$(document).ready(printImage());
+        $(document).ready(printImage());
 
         function printImage () {
             html2canvas(document.querySelector(".table"), {
