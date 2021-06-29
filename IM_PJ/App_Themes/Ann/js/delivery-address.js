@@ -557,7 +557,7 @@ function updateDeliveryAddress(phone) {
     if (!$hdfDeliveryAddress.val()) {
         let deliveryAddress = {
             "fullName": $name.val().trim(),
-            "phone": $phone.val().trim(),
+            "phone": $phone.val().trim().replace(/[^\d]/g, ""),
             "address": $address.val() ? $address.val().trim() : null,
             "provinceId": +$province.val() || 0,
             "districtId": +$district.val() || 0,
@@ -594,7 +594,7 @@ function updateDeliveryAddress(phone) {
         ) {
             let deliveryAddress = {
                 "fullName": $name.val().trim(),
-                "phone": $phone.val().trim(),
+                "phone": $phone.val().trim().replace(/[^\d]/g, ""),
                 "address": $address.val() ? $address.val().trim() : null,
                 "provinceId": +$province.val() || 0,
                 "districtId": +$district.val() || 0,

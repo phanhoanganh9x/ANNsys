@@ -222,7 +222,7 @@
             -ms-transform:rotate(-90deg);
             -o-transform:rotate(-90deg);
             transform:rotate(-90deg);
-            margin-top: 123mm;
+            margin-top: 110mm;
             margin-left: 4mm;
         }
     }
@@ -260,6 +260,13 @@
             $(".table-fragile-goods").hide();
         }
 
+        function replacePhone() {
+            var phone = $(".replace-phone").text();
+            var replacePhone = phone.replace(/[^\d]/g, "");
+            replacePhone = replacePhone.substr(0, 3) + "***" + replacePhone.substr(6, replacePhone.length - 6);
+            $(".replace-phone").text(replacePhone);
+        }
+
         function printIt() {
             $("#previewImage").hide();
             $("#previewNoteImage").hide();
@@ -274,6 +281,7 @@
             $(".show-transport-info").hide();
             $(".sweet-alert").hide().empty();
             $(".sweet-overlay").hide().empty();
+            replacePhone();
             window.print();
             window.close();
         }

@@ -153,7 +153,7 @@ namespace IM_PJ
                     var District = ProvinceController.GetByID(deliveryAddress.DistrictId);
                     var Ward = ProvinceController.GetByID(deliveryAddress.WardId);
 
-                    receivingPhone = deliveryAddress.Phone.Substring(0, 4) + "." + deliveryAddress.Phone.Substring(3, 3) + "." + deliveryAddress.Phone.Substring(6, 3);
+                    receivingPhone = deliveryAddress.Phone.Substring(0, 4) + "." + deliveryAddress.Phone.Substring(4, 3) + "." + deliveryAddress.Phone.Substring(7, deliveryAddress.Phone.Length - 7);
                     addressTo = String.Format("{0}, {1}, {2}, {3}", deliveryAddress.Address.ToTitleCase(), Ward.Name, District.Name, Province.Name);
                     provinceName = Province.Name;
                 }
@@ -161,7 +161,7 @@ namespace IM_PJ
                 {
                     var customer = CustomerController.GetByID(order.CustomerID.Value);
 
-                    receivingPhone = order.CustomerPhone;
+                    receivingPhone = order.CustomerPhone.Substring(0, 4) + "." + order.CustomerPhone.Substring(4, 3) + "." + order.CustomerPhone.Substring(7, order.CustomerPhone.Length - 7);
 
                     if (!String.IsNullOrEmpty(customer.CustomerPhone2))
                         receivingPhone += " - " + customer.CustomerPhone2;
@@ -194,6 +194,8 @@ namespace IM_PJ
                 string DeliveryInfo = "";
                 string ShippingFeeInfo = "";
                 string ShipperFeeInfo = "";
+
+                bool cssReplacePhone = false;
 
                 // BƯU ĐIỆN
                 if (order.ShippingType == 2)
@@ -295,6 +297,8 @@ namespace IM_PJ
                 // GHTK
                 else if (order.ShippingType == 6)
                 {
+                    cssReplacePhone = true;
+
                     if (!string.IsNullOrEmpty(order.ShippingCode))
                     {
                         string[] barcode = order.ShippingCode.Split('.');
@@ -334,6 +338,7 @@ namespace IM_PJ
                 // J&T
                 else if (order.ShippingType == 10)
                 {
+                    cssReplacePhone = true;
                     DeliveryInfo = String.Format("<p class='delivery'><strong>J&T</strong></p>");
                 }
 
@@ -376,13 +381,21 @@ namespace IM_PJ
                 if (order.ShippingType == 6 && !string.IsNullOrEmpty(order.ShippingCode))
                 {
                     string[] barcode = order.ShippingCode.Split('.');
-                    if (barcode.Length < 6 && barcode.Length > 3)
+                    if (barcode.Length == 6)
                     {
-                        destination = String.Format("{0}.{1}", barcode[barcode.Length - 3], barcode[barcode.Length - 2]);
+                        destination = String.Format("{0}.{1}.{2}.{3}", barcode[1], barcode[2], barcode[3], barcode[4]);
                     }
-                    else if (barcode.Length >= 6)
+                    else if (barcode.Length == 5)
                     {
-                        destination = String.Format("{0}.{1}.{2}", barcode[barcode.Length - 4], barcode[barcode.Length - 3], barcode[barcode.Length - 2]);
+                        destination = String.Format("{0}.{1}.{2}", barcode[1], barcode[2], barcode[3]);
+                    }
+                    else if (barcode.Length == 4)
+                    {
+                        destination = String.Format("{0}.{1}", barcode[1], barcode[2]);
+                    }
+                    else if (barcode.Length == 3)
+                    {
+                        destination = String.Format("{0}", barcode[1]);
                     }
                 }
                 if (destination != "")
@@ -411,7 +424,7 @@ namespace IM_PJ
                 rowHtml += Environment.NewLine + String.Format("    </div>");
                 rowHtml += Environment.NewLine + String.Format("    <div class='bottom-right'>");
                 rowHtml += Environment.NewLine + String.Format("        <p>Người nhận: <span class='receiver-name'>{0}</span></p>", order.CustomerName.ToTitleCase());
-                rowHtml += Environment.NewLine + String.Format("        <p><span class='phone'>{0}</span></p>", receivingPhone);
+                rowHtml += Environment.NewLine + String.Format("        <p><span class='phone {0}'>{1}</span></p>", cssReplacePhone == true ? "replace-phone" : "" , receivingPhone);
                 rowHtml += Environment.NewLine + String.Format("        <p><span class='address'>{0}</span></p>", addressTo);
                 rowHtml += Environment.NewLine + String.Format("    </div>");
                 if (destination != "")

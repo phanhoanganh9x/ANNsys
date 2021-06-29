@@ -430,7 +430,7 @@
         </AjaxSettings>
     </telerik:RadAjaxManager>
     <telerik:RadScriptBlock ID="sc" runat="server">
-        <script type="text/javascript" src="App_Themes/Ann/js/delivery-address.js?v=202106081810"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/delivery-address.js?v=28062021"></script>
         <script type="text/javascript">
             "use strict";
             // #region Private
