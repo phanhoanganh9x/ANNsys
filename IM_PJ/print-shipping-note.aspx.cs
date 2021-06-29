@@ -153,7 +153,7 @@ namespace IM_PJ
                     var District = ProvinceController.GetByID(deliveryAddress.DistrictId);
                     var Ward = ProvinceController.GetByID(deliveryAddress.WardId);
 
-                    receivingPhone = deliveryAddress.Phone;
+                    receivingPhone = deliveryAddress.Phone.Substring(0, 4) + "." + deliveryAddress.Phone.Substring(3, 3) + "." + deliveryAddress.Phone.Substring(6, 3);
                     addressTo = String.Format("{0}, {1}, {2}, {3}", deliveryAddress.Address.ToTitleCase(), Ward.Name, District.Name, Province.Name);
                     provinceName = Province.Name;
                 }
@@ -411,8 +411,8 @@ namespace IM_PJ
                 rowHtml += Environment.NewLine + String.Format("    </div>");
                 rowHtml += Environment.NewLine + String.Format("    <div class='bottom-right'>");
                 rowHtml += Environment.NewLine + String.Format("        <p>Người nhận: <span class='receiver-name'>{0}</span></p>", order.CustomerName.ToTitleCase());
-                rowHtml += Environment.NewLine + String.Format("        <p>Điện thoại: <span class='phone'>{0}</span></p>", receivingPhone);
-                rowHtml += Environment.NewLine + String.Format("        <p>Địa chỉ: <span class='address'>{0}</span></p>", addressTo);
+                rowHtml += Environment.NewLine + String.Format("        <p><span class='phone'>{0}</span></p>", receivingPhone);
+                rowHtml += Environment.NewLine + String.Format("        <p><span class='address'>{0}</span></p>", addressTo);
                 rowHtml += Environment.NewLine + String.Format("    </div>");
                 if (destination != "")
                 {

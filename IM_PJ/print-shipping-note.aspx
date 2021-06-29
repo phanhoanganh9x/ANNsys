@@ -6,6 +6,7 @@
   <title>Phiếu gửi hàng</title>
     <script src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
     <link href="/App_Themes/NewUI/js/sweet/sweet-alert.css" rel="stylesheet" type="text/css" />
+    <link href="/App_Themes/Ann/fonts/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
   <style>
     
     body {
@@ -21,13 +22,13 @@
     }
     .table {
         display: block;
-        width: 180mm;
+        width: 170mm;
         height: 72mm;
         position: relative;
         border-left: dashed 2px #000;
     }
     .table-ghtk {
-        width: 195mm;
+        width: 185mm;
     }
     .table-ghtk .top-right {
         right: 27mm;
@@ -63,20 +64,20 @@
         position: absolute;
         top: 0;
         left: 2mm;
-        width: 90mm;
+        width: 65mm;
     }
     .top-right {
         position: absolute;
         top: 1mm;
         right: 12mm;
-        width: 100mm;
+        width: 90mm;
         text-align: right;
     }
     .bottom-left {
         position: absolute;
         bottom: 1mm;
         left: 2mm;
-        width: 70mm;
+        width: 65mm;
     }
     .bottom-left img {
         width: 50mm;
@@ -85,7 +86,7 @@
         position: absolute;
         bottom: 1mm;
         right: 12mm;
-        width: 100mm;
+        width: 90mm;
     }
     .cod {
         font-size: 18px;
@@ -181,7 +182,7 @@
         position: absolute;
         text-align: center;
         top: 31mm;
-        left: 139mm;
+        left: 129mm;
         font-size: 30px;
         font-weight: bold;
         border-top: dashed 2px #000;
@@ -189,11 +190,11 @@
         letter-spacing: 6px;
     }
     .margin-left-ghtk {
-        left: 152mm;
+        left: 142mm;
     }
     .ghtk {
         top: 30.5mm;
-        left: 140mm;
+        left: 130mm;
         padding-top: 0;
         text-align: center;
         font-size: 33px;
@@ -214,7 +215,7 @@
         margin-top: 30px;
     }
     .barcode-image {
-        width: 55%;
+        width: 65%;
         height: 50%;
     }
     @media print { 
@@ -244,7 +245,7 @@
     <script src="/App_Themes/Ann/js/html2canvas.js"></script>
     <script type="text/javascript">
 
-        $(document).ready(printImage());
+        //$(document).ready(printImage());
 
         function printImage () {
             html2canvas(document.querySelector(".table"), {
