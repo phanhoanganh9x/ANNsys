@@ -424,7 +424,7 @@ namespace IM_PJ
                 rowHtml += Environment.NewLine + String.Format("    </div>");
                 rowHtml += Environment.NewLine + String.Format("    <div class='bottom-right'>");
                 rowHtml += Environment.NewLine + String.Format("        <p>Người nhận: <span class='receiver-name'>{0}</span></p>", order.CustomerName.ToTitleCase());
-                rowHtml += Environment.NewLine + String.Format("        <p><span class='phone {0}'>{1}</span></p>", cssReplacePhone == true ? "replace-phone" : "" , receivingPhone);
+                rowHtml += Environment.NewLine + String.Format("        <p>Điện thoại: <span class='phone {0}'>{1}</span></p>", cssReplacePhone == true ? "replace-phone" : "" , receivingPhone);
                 rowHtml += Environment.NewLine + String.Format("        <p><span class='address'>{0}</span></p>", addressTo);
                 rowHtml += Environment.NewLine + String.Format("    </div>");
                 if (destination != "")
