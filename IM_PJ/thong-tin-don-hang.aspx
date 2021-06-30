@@ -1612,6 +1612,7 @@
 
                 // J&T
                 if ($ddlShippingType.find(":selected").val() == 10) {
+                    $weight.removeClass("hide");
                     $transportCompany.addClass("hide");
                     $shippingCode.addClass("hide");
                 }
