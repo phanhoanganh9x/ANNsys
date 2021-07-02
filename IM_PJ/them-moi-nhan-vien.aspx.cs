@@ -16,10 +16,10 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["usernameLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem_ANN123"] != null)
                 {
                     int agentID = Request.QueryString["agentid"].ToInt(0);
-                    string username = Request.Cookies["usernameLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
@@ -65,7 +65,7 @@ namespace IM_PJ
         {
             DateTime currentDate = DateTime.Now;
             int agentID = ddlAgent.SelectedValue.ToInt();
-            string username_current = Request.Cookies["usernameLoginSystem"].Value;
+            string username_current = Request.Cookies["usernameLoginSystem_ANN123"].Value;
             bool ischeck = false;
             int username_current_role = 0;
             var acc = AccountController.GetByUsername(username_current);

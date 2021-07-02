@@ -11,7 +11,7 @@ namespace IM_PJ
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Request.Cookies["usernameLoginSystem"] != null)
+            if (Request.Cookies["usernameLoginSystem_ANN123"] != null)
             {
                 HttpCookie userLoginSystem = new HttpCookie("usernameLoginSystem");
                 userLoginSystem.Expires = DateTime.Now.AddDays(-1d);

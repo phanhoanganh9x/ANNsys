@@ -24,9 +24,9 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["usernameLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem_ANN123"] != null)
                 {
-                    string username = Request.Cookies["usernameLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
                     var acc = AccountController.GetByUsername(username);
 
                     if (acc != null)
@@ -114,7 +114,7 @@ namespace IM_PJ
         }
         public void LoadData()
         {
-            string username = Request.Cookies["usernameLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
@@ -266,7 +266,7 @@ namespace IM_PJ
         #region Paging
         public void pagingall(List<OrderList> acs, PaginationMetadataModel page)
         {
-            string username = Request.Cookies["usernameLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
             var acc = AccountController.GetByUsername(username);
 
             StringBuilder html = new StringBuilder();
@@ -620,7 +620,7 @@ namespace IM_PJ
         [WebMethod]
         public static string addOrderChoose(List<DeliverySession> deliverySession)
         {
-            var username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
+            var username = HttpContext.Current.Request.Cookies["usernameLoginSystem_ANN123"].Value;
             var acc = AccountController.GetByUsername(username);
 
             return SessionController.addDeliverySession(acc, deliverySession);
@@ -629,7 +629,7 @@ namespace IM_PJ
         [WebMethod]
         public static void updateOrderChoose(List<DeliverySession> deliverySession)
         {
-            var username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
+            var username = HttpContext.Current.Request.Cookies["usernameLoginSystem_ANN123"].Value;
             var acc = AccountController.GetByUsername(username);
 
             SessionController.updateDeliverySession(acc, deliverySession);
@@ -639,7 +639,7 @@ namespace IM_PJ
         [WebMethod]
         public static string deleteOrderChoose(List<DeliverySession> deliverySession)
         {
-            var username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
+            var username = HttpContext.Current.Request.Cookies["usernameLoginSystem_ANN123"].Value;
             var acc = AccountController.GetByUsername(username);
 
             return SessionController.deleteDeliverySession(acc, deliverySession);
@@ -648,7 +648,7 @@ namespace IM_PJ
         [WebMethod]
         public static void deleteAllOrderChoose()
         {
-            var username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
+            var username = HttpContext.Current.Request.Cookies["usernameLoginSystem_ANN123"].Value;
             var acc = AccountController.GetByUsername(username);
             SessionController.deleteDeliverySession(acc);
         }

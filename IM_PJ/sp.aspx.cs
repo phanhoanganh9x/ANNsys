@@ -389,7 +389,7 @@ namespace IM_PJ
         public static bool updateHidden(int productID, bool isHidden)
         {
             var loginHiddenPage = HttpContext.Current.Request.Cookies["loginHiddenPage"];
-            var usernameLoginSystem = HttpContext.Current.Request.Cookies["usernameLoginSystem"];
+            var usernameLoginSystem = HttpContext.Current.Request.Cookies["usernameLoginSystem_ANN123"];
             tbl_Account acc;
 
             if (loginHiddenPage != null)

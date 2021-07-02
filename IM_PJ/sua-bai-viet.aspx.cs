@@ -21,9 +21,9 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["usernameLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem_ANN123"] != null)
                 {
-                    string username = Request.Cookies["usernameLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
@@ -125,7 +125,7 @@ namespace IM_PJ
 
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-            string username = Request.Cookies["usernameLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
             var acc = AccountController.GetByUsername(username);
             int cateID = ViewState["cateID"].ToString().ToInt(0);
             int PostID = ViewState["ID"].ToString().ToInt(0);

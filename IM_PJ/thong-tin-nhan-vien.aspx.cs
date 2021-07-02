@@ -19,10 +19,10 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["usernameLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem_ANN123"] != null)
                 {
                     int agentID = Request.QueryString["agentid"].ToInt(0);
-                    string username = Request.Cookies["usernameLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
@@ -80,7 +80,7 @@ namespace IM_PJ
             DateTime currentDate = DateTime.Now;
             int agentID = Convert.ToInt32(ViewState["agentid"]);
             int UID = Convert.ToInt32(ViewState["UID"]);
-            string username_current = Request.Cookies["usernameLoginSystem"].Value;
+            string username_current = Request.Cookies["usernameLoginSystem_ANN123"].Value;
             string pass = txtPassword.Text.Trim();
             int Status = ddlStatus.SelectedValue.ToString().ToInt();
             int RoleID = ddlRole.SelectedValue.ToString().ToInt();

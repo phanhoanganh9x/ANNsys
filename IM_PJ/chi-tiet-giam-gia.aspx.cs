@@ -23,9 +23,9 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["usernameLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem_ANN123"] != null)
                 {
-                    string username = Request.Cookies["usernameLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
                     acc = AccountController.GetByUsername(username);
                     if (!AccountController.isPermittedLoading(acc, "chi-tiet-giam-gia"))
                         Response.Redirect("/trang-chu");
@@ -103,7 +103,7 @@ namespace IM_PJ
 
         protected void btnUpdateDiscountGroup_Click(object sender, EventArgs e)
         {
-            string username = Request.Cookies["usernameLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {

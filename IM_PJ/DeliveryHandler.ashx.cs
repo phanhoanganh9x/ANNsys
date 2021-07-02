@@ -47,7 +47,7 @@ namespace IM_PJ
                     delivery.Image = String.Empty;
                 }
 
-                string username = context.Request.Cookies["usernameLoginSystem"].Value;
+                string username = context.Request.Cookies["usernameLoginSystem_ANN123"].Value;
                 var acc = AccountController.GetByUsername(username);
 
                 // Update transfer infor

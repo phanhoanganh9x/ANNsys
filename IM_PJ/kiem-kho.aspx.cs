@@ -22,9 +22,9 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["usernameLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem_ANN123"] != null)
                 {
-                    string username = Request.Cookies["usernameLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
@@ -71,7 +71,7 @@ namespace IM_PJ
         public static string getProduct(string textsearch, int typeinout)
         {
             List<ProductGetOut> ps = new List<ProductGetOut>();
-            string username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
+            string username = HttpContext.Current.Request.Cookies["usernameLoginSystem_ANN123"].Value;
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
@@ -363,7 +363,7 @@ namespace IM_PJ
         protected void btnImport_Click(object sender, EventArgs e)
         {
             DateTime currentDate = DateTime.Now;
-            string username = Request.Cookies["usernameLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {

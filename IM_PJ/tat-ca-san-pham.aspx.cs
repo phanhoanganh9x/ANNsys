@@ -31,9 +31,9 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["usernameLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem_ANN123"] != null)
                 {
-                    string username = Request.Cookies["usernameLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
                     acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
@@ -1328,7 +1328,7 @@ namespace IM_PJ
         public static bool liquidateProduct(int productID)
         {
             var loginHiddenPage = HttpContext.Current.Request.Cookies["loginHiddenPage"];
-            var usernameLoginSystem = HttpContext.Current.Request.Cookies["usernameLoginSystem"];
+            var usernameLoginSystem = HttpContext.Current.Request.Cookies["usernameLoginSystem_ANN123"];
 
             if (loginHiddenPage != null)
                 acc = AccountController.GetByUsername(loginHiddenPage.Value);
@@ -1344,7 +1344,7 @@ namespace IM_PJ
         public static ProductSQL recoverLiquidatedProduct(int productID, string sku)
         {
             var loginHiddenPage = HttpContext.Current.Request.Cookies["loginHiddenPage"];
-            var usernameLoginSystem = HttpContext.Current.Request.Cookies["usernameLoginSystem"];
+            var usernameLoginSystem = HttpContext.Current.Request.Cookies["usernameLoginSystem_ANN123"];
 
             if (loginHiddenPage != null)
                 acc = AccountController.GetByUsername(loginHiddenPage.Value);

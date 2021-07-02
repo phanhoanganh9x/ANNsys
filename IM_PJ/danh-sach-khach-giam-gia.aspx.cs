@@ -29,9 +29,9 @@ namespace IM_PJ
 
             if (!IsPostBack)
             {
-                if (Request.Cookies["usernameLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem_ANN123"] != null)
                 {
-                    string username = Request.Cookies["usernameLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
                     acc = AccountController.GetByUsername(username);
                     if (!AccountController.isPermittedLoading(acc, "danh-sach-khach-giam-gia", discountGroupID))
                     {
@@ -50,7 +50,7 @@ namespace IM_PJ
         {
             if (discountGroupID > 0)
             {
-                string username = Request.Cookies["usernameLoginSystem"].Value;
+                string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
                 acc = AccountController.GetByUsername(username);
 
                 var discount = DiscountGroupController.GetByID(discountGroupID);
@@ -330,7 +330,7 @@ namespace IM_PJ
         {
             // Trường hợp là admin thì không cần filter theo người khởi tạo
             // chỉ cần khách hàng đạt chuẩn của mức chiết khấu là đc
-            var staffName = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
+            var staffName = HttpContext.Current.Request.Cookies["usernameLoginSystem_ANN123"].Value;
             if (String.IsNullOrEmpty(staffName))
                 return null;
 
@@ -356,7 +356,7 @@ namespace IM_PJ
         {
             // Trường hợp là admin thì không cần filter theo người khởi tạo
             // chỉ cần khách hàng đạt chuẩn của mức chiết khấu là đc
-            var staffName = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
+            var staffName = HttpContext.Current.Request.Cookies["usernameLoginSystem_ANN123"].Value;
             if (String.IsNullOrEmpty(staffName))
                 return null;
 

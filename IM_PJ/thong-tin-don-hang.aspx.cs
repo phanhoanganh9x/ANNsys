@@ -28,9 +28,9 @@ namespace IM_PJ
 
             if (!IsPostBack)
             {
-                if (Request.Cookies["usernameLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem_ANN123"] != null)
                 {
-                    string username = Request.Cookies["usernameLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
@@ -166,7 +166,7 @@ namespace IM_PJ
                     // hidden TransportCompanySubID
                     hdfTransportCompanySubID.Value = order.TransportCompanySubID.ToString();
 
-                    string username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
+                    string username = HttpContext.Current.Request.Cookies["usernameLoginSystem_ANN123"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if(acc.RoleID != 0)
                     {
@@ -723,7 +723,7 @@ namespace IM_PJ
         public static string UpdateStatus(int OrderID)
         {
             JavaScriptSerializer serializer = new JavaScriptSerializer();
-            string username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
+            string username = HttpContext.Current.Request.Cookies["usernameLoginSystem_ANN123"].Value;
             var acc = AccountController.GetByUsername(username);
             var order = OrderController.GetByID(OrderID);
             if (order != null)
@@ -770,7 +770,7 @@ namespace IM_PJ
         public static void Delete(List<tbl_OrderDetail> listOrderDetail)
         {
             DateTime currentDate = DateTime.Now;
-            string username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
+            string username = HttpContext.Current.Request.Cookies["usernameLoginSystem_ANN123"].Value;
             var acc = AccountController.GetByUsername(username);
             if (listOrderDetail != null && listOrderDetail.Count > 0)
             {
@@ -838,7 +838,7 @@ namespace IM_PJ
         protected void btnOrder_Click(object sender, EventArgs e)
         {
             DateTime currentDate = DateTime.Now;
-            string username = Request.Cookies["usernameLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
             var acc = AccountController.GetByUsername(username);
 
             if (acc != null)

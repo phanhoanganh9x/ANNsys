@@ -22,9 +22,9 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["usernameLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem_ANN123"] != null)
                 {
-                    string username = Request.Cookies["usernameLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
                     var acc = AccountController.GetByUsername(username);
 
                     if (acc != null)
@@ -97,7 +97,7 @@ namespace IM_PJ
         }
         public void LoadData()
         {
-            string username = Request.Cookies["usernameLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
@@ -200,7 +200,7 @@ namespace IM_PJ
         #region Paging
         public void pagingall(List<OrderList> acs, PaginationMetadataModel page)
         {
-            string username = Request.Cookies["usernameLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
             var acc = AccountController.GetByUsername(username);
 
             StringBuilder html = new StringBuilder();
@@ -537,7 +537,7 @@ namespace IM_PJ
         [WebMethod]
         public static void updateTransfer(BankTransfer transfer)
         {
-            string username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
+            string username = HttpContext.Current.Request.Cookies["usernameLoginSystem_ANN123"].Value;
             var acc = AccountController.GetByUsername(username);
 
             // Update transfer infor

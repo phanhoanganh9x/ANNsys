@@ -22,9 +22,9 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["usernameLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem_ANN123"] != null)
                 {
-                    Session["usernameLoginSystem"] = Request.Cookies["usernameLoginSystem"].Value;
+                    Session["usernameLoginSystem_ANN123"] = Request.Cookies["usernameLoginSystem_ANN123"].Value;
                 }
                 else
                 {
@@ -47,9 +47,9 @@ namespace IM_PJ
         }
         public void LoadData()
         {
-            if (Request.Cookies["usernameLoginSystem"] != null)
+            if (Request.Cookies["usernameLoginSystem_ANN123"] != null)
             {
-                string username = Request.Cookies["usernameLoginSystem"].Value;
+                string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
                 var acc = AccountController.GetByUsername(username);
                 if (acc != null)
                 {

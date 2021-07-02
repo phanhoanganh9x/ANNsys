@@ -17,7 +17,7 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["usernameLoginSystem"] == null)
+                if (Request.Cookies["usernameLoginSystem_ANN123"] == null)
                     Response.Redirect("/dang-nhap");
             }
         }

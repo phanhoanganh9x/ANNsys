@@ -21,9 +21,9 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["usernameLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem_ANN123"] != null)
                 {
-                    string username = Request.Cookies["usernameLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
@@ -115,7 +115,7 @@ namespace IM_PJ
                 {
                     this.Title = String.Format("{0} - Khách hàng", d.CustomerName.ToTitleCase());
 
-                    string username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
+                    string username = HttpContext.Current.Request.Cookies["usernameLoginSystem_ANN123"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if (acc.RoleID != 0)
                     {
@@ -159,7 +159,7 @@ namespace IM_PJ
 
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-            string username = Request.Cookies["usernameLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
 
             int id = ViewState["ID"].ToString().ToInt(0);
             if (id > 0)
