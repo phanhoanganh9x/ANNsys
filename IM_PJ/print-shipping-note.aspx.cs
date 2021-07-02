@@ -145,6 +145,7 @@ namespace IM_PJ
                 string receivingPhone = String.Empty;
                 var addressTo = String.Empty;
                 var provinceName = String.Empty;
+                var receiverName = String.Empty;
 
                 if (order.DeliveryAddressId.HasValue)
                 {
@@ -156,13 +157,14 @@ namespace IM_PJ
                     receivingPhone = deliveryAddress.Phone.Substring(0, 4) + "." + deliveryAddress.Phone.Substring(4, 3) + "." + deliveryAddress.Phone.Substring(7, deliveryAddress.Phone.Length - 7);
                     addressTo = String.Format("{0}, {1}, {2}, {3}", deliveryAddress.Address.ToTitleCase(), Ward.Name, District.Name, Province.Name);
                     provinceName = Province.Name;
+                    receiverName = deliveryAddress.FullName.ToTitleCase();
                 }
                 else
                 {
                     var customer = CustomerController.GetByID(order.CustomerID.Value);
 
                     receivingPhone = order.CustomerPhone.Substring(0, 4) + "." + order.CustomerPhone.Substring(4, 3) + "." + order.CustomerPhone.Substring(7, order.CustomerPhone.Length - 7);
-
+                    receiverName = order.CustomerName.ToTitleCase();
                     if (!String.IsNullOrEmpty(customer.CustomerPhone2))
                         receivingPhone += " - " + customer.CustomerPhone2;
 
@@ -423,7 +425,7 @@ namespace IM_PJ
                 rowHtml += Environment.NewLine + String.Format("        {0}", ShipperFeeInfo);
                 rowHtml += Environment.NewLine + String.Format("    </div>");
                 rowHtml += Environment.NewLine + String.Format("    <div class='bottom-right'>");
-                rowHtml += Environment.NewLine + String.Format("        <p>Người nhận: <span class='receiver-name'>{0}</span></p>", order.CustomerName.ToTitleCase());
+                rowHtml += Environment.NewLine + String.Format("        <p>Người nhận: <span class='receiver-name'>{0}</span></p>", receiverName);
                 rowHtml += Environment.NewLine + String.Format("        <p>Điện thoại: <span class='phone {0}'>{1}</span></p>", cssReplacePhone == true ? "replace-phone" : "" , receivingPhone);
                 rowHtml += Environment.NewLine + String.Format("        <p><span class='address'>{0}</span></p>", addressTo);
                 rowHtml += Environment.NewLine + String.Format("    </div>");
