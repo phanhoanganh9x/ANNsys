@@ -994,7 +994,12 @@ namespace IM_PJ
 
                     if (item.BestPrice > 0 && item.BestPrice < item.Price10)
                     {
-                        html.AppendLine("       <p class='p-paterials'><strong>Giá thùng:</strong> " + string.Format("{0:N0}", item.BestPrice) + "<p>");
+                        html.AppendLine("       <p class='p-paterials'><strong>Giá sỉ thùng:</strong> " + string.Format("{0:N0}", item.BestPrice) + "<p>");
+                    }
+
+                    if (item.RetailPrice > 0 && item.RetailPrice > item.RegularPrice)
+                    {
+                        html.AppendLine("       <p class='p-paterials'><strong>Giá bán lẻ:</strong> " + string.Format("{0:N0}", item.RetailPrice) + "<p>");
                     }
 
                     if (!String.IsNullOrEmpty(item.Tags))

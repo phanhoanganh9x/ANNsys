@@ -337,7 +337,7 @@ namespace IM_PJ
             html.AppendLine("<thead>");
             html.AppendLine("<tr>");
             html.AppendLine("    <th>Mã</th>");
-            html.AppendLine("    <th></th>");
+            //html.AppendLine("    <th></th>");
             html.AppendLine("    <th class='col-customer'>Khách hàng</th>");
             html.AppendLine("    <th>Mua</th>");
             html.AppendLine("    <th>Xử lý</th>");
@@ -364,12 +364,12 @@ namespace IM_PJ
                 foreach(var item in acs)
                 {
                     html.AppendLine("<tr>");
-                    html.AppendLine("   <td data-title='Mã đơn'><a target='_blank' href='/thong-tin-don-hang?id=" + item.ID + "'>" + item.ID + "</a></td>");
-                    html.AppendLine("   <td data-title='Loại đơn'>" + PJUtils.OrderTypeStatus(Convert.ToInt32(item.OrderType)) + "</td>");
+                    html.AppendLine("   <td data-title='Mã đơn'><strong>" + item.ID + "</strong></td>");
+                    //html.AppendLine("   <td data-title='Loại đơn'>" + PJUtils.OrderTypeStatus(Convert.ToInt32(item.OrderType)) + "</td>");
 
                     if (!string.IsNullOrEmpty(item.Nick))
                     {
-                        html.AppendLine("   <td data-title='Khách hàng' class='customer-td'><a class='col-customer-name-link' target='_blank' href='/thong-tin-don-hang?id=" + item.ID + "'>" + item.Nick.ToTitleCase() + "</a><br><span class='name-bottom-nick'>(" + item.CustomerName.ToTitleCase() + ")</span></td>");
+                        html.AppendLine("   <td data-title='Khách hàng' class='customer-td'><a class='col-customer-name-link' target='_blank' href='/thong-tin-don-hang?id=" + item.ID + "'>" + item.Nick.ToTitleCase() + "</a><br><span class='name-bottom-nick'>" + item.CustomerName.ToTitleCase() + "</span><span class='name-bottom-nick'>" + item.CustomerPhone + "</span></td>");
                     }
                     else
                     {
@@ -443,17 +443,17 @@ namespace IM_PJ
                     html.AppendLine("   <td data-title='Thao tác' class='update-button'>");
                     html.AppendLine("       <a href='/print-invoice?id=" + item.ID + "' title='In hóa đơn' target='_blank' class='btn primary-btn h45-btn'><i class='fa fa-print' aria-hidden='true'></i></a>");
                     html.AppendLine("       <a href='/print-shipping-note?id=" + item.ID + "' title='In phiếu gửi hàng' target='_blank' class='btn primary-btn btn-red h45-btn'><i class='fa fa-file-text-o' aria-hidden='true'></i></a>");
-                    html.AppendLine("       <a href='/chi-tiet-khach-hang?id=" + item.CustomerID + "' title='Thông tin khách hàng " + item.CustomerName + "' target='_blank' class='btn primary-btn btn-black h45-btn'><i class='fa fa-user-circle' aria-hidden='true'></i></a>");
+                    //html.AppendLine("       <a href='/chi-tiet-khach-hang?id=" + item.CustomerID + "' title='Thông tin khách hàng " + item.CustomerName + "' target='_blank' class='btn primary-btn btn-black h45-btn'><i class='fa fa-user-circle' aria-hidden='true'></i></a>");
                     if (item.DeliveryStatus.HasValue && item.DeliveryStatus.Value == 1 && !string.IsNullOrEmpty(item.InvoiceImage))
                         html.AppendLine("       <a href='javascript:;' onclick='openImageInvoice($(this))' data-link='" + item.InvoiceImage + "' title='Biên nhận gửi hàng' class='btn primary-btn btn-blue h45-btn'><i class='fa fa-file-text-o' aria-hidden='true'></i></a>");
-                    html.AppendLine("       <a href='javascript:;' onclick='copyInvoiceURL(" + item.ID + ", " + item.CustomerID + ")' title='Copy link hóa đơn' class='btn primary-btn btn-violet h45-btn'><i class='glyphicon glyphicon-list-alt' aria-hidden='true'></i></a>");
+                    //html.AppendLine("       <a href='javascript:;' onclick='copyInvoiceURL(" + item.ID + ", " + item.CustomerID + ")' title='Copy link hóa đơn' class='btn primary-btn btn-violet h45-btn'><i class='glyphicon glyphicon-list-alt' aria-hidden='true'></i></a>");
                     html.AppendLine("   </td>");
                     html.AppendLine("</tr>");
 
                     // thông tin thêm
                     html.AppendLine("<tr class='tr-more-info'>");
                     html.AppendLine("<td colspan='2'></td>");
-                    html.AppendLine("<td colspan='11'>");
+                    html.AppendLine("<td colspan='10'>");
 
                     if(item.TotalRefund != 0)
                     {
