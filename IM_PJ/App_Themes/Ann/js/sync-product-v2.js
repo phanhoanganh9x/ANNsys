@@ -1,7 +1,7 @@
 ﻿var API = "/api/v1/woocommerce/product/";
 var webList = ["ann.com.vn", "khohangsiann.com", "bosiquanao.net", "quanaogiaxuong.com", "bansithoitrang.net", "panpan.vn", "quanaoxuongmay.com", "annshop.vn", "thoitrangann.com", "nhapsionline.com"];
-var webCosmetics = ["khosimypham.com", "simyphamonline.com", "myphamann.com"];
-var cosmeticCategory = [44, 45, 56, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76];
+var webCosmetics = ["khosimypham.com", "simyphamonline.com", "nguonmypham.com"];
+var cosmeticCategory = [44, 45, 56, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77];
 
 function getWeblist(categoryID) {
     // San pham thuoc danh muc my pham, nuoc hoa, thuc pham chuc nang thi them web my pham vao
@@ -26,6 +26,8 @@ function showProductSyncModal(productSKU, productID, categoryID) {
     html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='renewProduct($(this))'><i class='fa fa-refresh' aria-hidden='true'></i> Làm mới</a>";
     html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='updateProductTag($(this))'><i class='fa fa-refresh' aria-hidden='true'></i> Thêm tag</a>";
     html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='updatePrice($(this))'><i class='fa fa-refresh' aria-hidden='true'></i> Sửa giá</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='toggleWhosalePrice($(this), `hide`)'><i class='fa fa-refresh' aria-hidden='true'></i> Ẩn giá sỉ</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='toggleWhosalePrice($(this), `show`)'><i class='fa fa-refresh' aria-hidden='true'></i> Hiện giá sỉ</a>";
     html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='updateProductSKU($(this))'><i class='fa fa-refresh' aria-hidden='true'></i> Sửa SKU</a>";
     html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='toggleProduct($(this), `hide`)'><i class='fa fa-refresh' aria-hidden='true'></i> Ẩn</a>";
     html += "        	<a href='javascript:;' class='btn primary-btn' onclick='toggleProduct($(this), `show`)'><i class='fa fa-refresh' aria-hidden='true'></i> Hiện</a>";
@@ -35,7 +37,7 @@ function showProductSyncModal(productSKU, productID, categoryID) {
     html += "</div>";
     html += "<div class='web-list'></div>";
 
-    showPopup(html, 8);
+    showPopup(html, 10);
     HoldOn.open();
     
     getWeblist(categoryID);
@@ -53,6 +55,8 @@ function showProductSyncModal(productSKU, productID, categoryID) {
         button += "<a href='javascript:;' onclick='editProduct($(this))' class='btn primary-btn btn-black'>Sửa</a>";
         button += "<a href='javascript:;' onclick='updateProductTag($(this))' class='btn primary-btn btn-black'>Thêm tag</a>";
         button += "<a href='javascript:;' onclick='updatePrice($(this))' class='btn primary-btn btn-black'>Sửa giá</a>";
+        button += "<a href='javascript:;' onclick='toggleWhosalePrice($(this), `hide`)' class='btn primary-btn btn-black'>Ẩn giá sỉ</a>";
+        button += "<a href='javascript:;' onclick='toggleWhosalePrice($(this), `show`)' class='btn primary-btn'>Hiện giá sỉ</a>";
         button += "<a href='javascript:;' onclick='updateProductSKU($(this))' class='btn primary-btn btn-black'>Sửa SKU</a>";
         button += "<a href='javascript:;' onclick='toggleProduct($(this), `hide`)' class='btn primary-btn btn-black'>Ẩn</a>";
         button += "<a href='javascript:;' onclick='toggleProduct($(this), `show`)' class='btn primary-btn'>Hiện</a>";
@@ -341,6 +345,77 @@ function ajaxToggleProduct(web, productID, toggle) {
                 }
                 else {
                     $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Đã " + status + " sản phẩm thất bại</span>");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").removeClass("hide");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
+                }
+            }
+            else {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
+            }
+        },
+        error: function (xhr, textStatus, error) {
+            HoldOn.close();
+            let data = xhr.responseJSON;
+            if (xhr.status === 500) {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
+            }
+            else if (xhr.status === 400) {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
+            }
+            else {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
+            }
+        }
+    });
+}
+
+function toggleWhosalePrice(obj, toggle) {
+    let web = obj.closest(".item-website").attr("data-web");
+    let productID = obj.closest(".item-website").attr("data-product-id");
+
+    if (web == "all") {
+        for (var i = 0; i < webList.length; i++) {
+            ajaxToggleWhosalePrice(webList[i], productID, toggle);
+        }
+    }
+    else {
+        ajaxToggleWhosalePrice(web, productID, toggle);
+    }
+}
+
+function ajaxToggleWhosalePrice(web, productID, toggle) {
+    let status = "ẩn";
+    if (toggle === "show") {
+        status = "hiện";
+    }
+
+    $.ajax({
+        type: "POST",
+        url: API + "/toggleWholesalePrice/" + productID + "/" + toggle,
+        headers: {
+            'domain': web,
+        },
+        async: true,
+        datatype: "json",
+        beforeSend: function () {
+            HoldOn.open();
+
+            $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-yellow'>Đang " + status + " giá sỉ</span>");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
+        },
+        success: function (data, textStatus, xhr) {
+            HoldOn.close();
+
+            // Thành công
+            if (xhr.status === 200) {
+                if (data.id > 0) {
+                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Đã " + status + " giá sỉ thành công</span>");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
+                }
+                else {
+                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Đã " + status + " giá sỉ thất bại</span>");
                     $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").removeClass("hide");
                     $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
                 }
