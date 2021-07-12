@@ -243,6 +243,7 @@ namespace IM_PJ
         {
             // Tên sản phẩm
             txtProductTitle.Text = product.ProductTitle;
+            txtCleanName.Text = product.CleanName;
             // Danh mục
             ddlCategory.SelectedValue = product.CategoryID.ToString();
             // Đồng bộ lên KiotViet
@@ -621,6 +622,7 @@ namespace IM_PJ
 
             // Tên sản phẩm
             updatedData.ProductTitle = Regex.Replace(txtProductTitle.Text, @"\s*\,\s*|\s*\;\s*", " - ");
+            updatedData.CleanName = Regex.Replace(txtCleanName.Text, @"\s*\,\s*|\s*\;\s*", " - ");
             // Danh mục
             updatedData.CategoryID = Convert.ToInt32(hdfParentID.Value);
             // Đồng bộ lên KiotViet

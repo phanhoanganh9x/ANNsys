@@ -170,6 +170,15 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
+                                    Tên sản phẩm 2
+                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" ControlToValidate="txtProductTitle" ForeColor="Red" SetFocusOnError="true" ErrorMessage="(*)" Display="Dynamic"></asp:RequiredFieldValidator>
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox ID="txtCleanName" runat="server" CssClass="form-control" placeholder="Tên sản phẩm 2" autocomplete="off"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
                                     Danh mục
                                 </div>
                                 <div class="row-right parent">

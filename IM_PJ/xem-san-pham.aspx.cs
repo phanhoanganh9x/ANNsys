@@ -148,6 +148,7 @@ namespace IM_PJ
 
                 ltrEdit2.Text = ltrEdit1.Text;
                 lbProductTitle.Text = p.ProductTitle;
+                lbCleanName.Text = p.CleanName;
 
                 string categoryName = "";
                 var category = CategoryController.GetByID(p.CategoryID.Value);

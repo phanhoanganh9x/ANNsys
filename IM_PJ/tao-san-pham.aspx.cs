@@ -426,6 +426,7 @@ namespace IM_PJ
                         else
                         {
                             string ProductTitle = Regex.Replace(txtProductTitle.Text.Trim(), @"\s*\,\s*|\s*\;\s*", " - ");
+                            string CleanName = Regex.Replace(txtCleanName.Text.Trim(), @"\s*\,\s*|\s*\;\s*", " - ");
                             var shortDescription = pSummary.Content.ToString().Trim();
                             string ProductContent = pContent.Content.ToString();
 
@@ -486,7 +487,8 @@ namespace IM_PJ
                                 SyncKiotViet = syncKiotViet,
                                 ShortDescription = shortDescription,
                                 Price10 = Price10,
-                                BestPrice = BestPrice
+                                BestPrice = BestPrice,
+                                CleanName = CleanName
                             };
 
                             string kq = ProductController.Insert(prodNew);

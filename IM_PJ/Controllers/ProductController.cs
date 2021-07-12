@@ -69,6 +69,7 @@ namespace IM_PJ.Controllers
                 ui.ShortDescription = product.ShortDescription;
                 ui.Price10 = product.Price10;
                 ui.BestPrice = product.BestPrice;
+                ui.CleanName = product.CleanName;
 
                 dbe.tbl_Product.Add(ui);
                 dbe.SaveChanges();
@@ -116,6 +117,7 @@ namespace IM_PJ.Controllers
                     ui.Price10 = product.Price10;
                     ui.BestPrice = product.BestPrice;
                     ui.FeaturedImage = String.IsNullOrEmpty(product.FeaturedImage) ? null : product.FeaturedImage;
+                    ui.CleanName = product.CleanName;
 
                     int kq = dbe.SaveChanges();
                     return kq.ToString();

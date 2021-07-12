@@ -21,7 +21,11 @@ function showProductSyncModal(productSKU, productID, categoryID) {
     html += "<div class='row'>";
     html += "    <div class='col-md-12 item-website' data-web='all' data-product-sku='" + productSKU + "' data-product-id='" + productID + "'>";
     html += "       <span>";
-    html += "        	<a href='javascript:;' class='btn primary-btn btn-green' onclick='postProduct($(this))'><i class='fa fa-cloud-upload' aria-hidden='true'></i> Đăng</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn btn-green' onclick='postProduct($(this), false)'><i class='fa fa-cloud-upload' aria-hidden='true'></i> Đăng</a>";
+    var inCosmeticCategory = cosmeticCategory.includes(categoryID);
+    if (inCosmeticCategory) {
+        html += "        	<a href='javascript:;' class='btn primary-btn btn-green' onclick='postProduct($(this), true)'><i class='fa fa-cloud-upload' aria-hidden='true'></i> Đăng 2</a>";
+    }
     html += "        	<a href='javascript:;' class='btn primary-btn btn-blue' onclick='upTopProduct($(this))'><i class='fa fa-upload' aria-hidden='true'></i> Up</a>";
     html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='renewProduct($(this))'><i class='fa fa-refresh' aria-hidden='true'></i> Làm mới</a>";
     html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='updateProductTag($(this))'><i class='fa fa-refresh' aria-hidden='true'></i> Thêm tag</a>";
@@ -46,7 +50,11 @@ function showProductSyncModal(productSKU, productID, categoryID) {
 
         var button = "";
         button += "<span class='btn-not-found hide'>";
-        button += "<a href='javascript:;' class='btn primary-btn btn-green' onclick='postProduct($(this))'>Đăng</a>";
+        button += "<a href='javascript:;' class='btn primary-btn btn-green' onclick='postProduct($(this), false)'>Đăng</a>";
+        var inCosmeticCategory = cosmeticCategory.includes(categoryID);
+        if (inCosmeticCategory) {
+            button += "<a href='javascript:;' class='btn primary-btn btn-green' onclick='postProduct($(this), true)'>Đăng 2</a>";
+        }
         button += "</span>";
         button += "<span class='btn-had-found hide'>";
         button += "<a href='javascript:;' onclick='upTopProduct($(this))' class='btn primary-btn btn-blue'>Up</a>";
@@ -103,24 +111,28 @@ function getProduct(web, productID) {
     });
 }
 
-function postProduct(obj) {
+function postProduct(obj, postProduct2) {
     let web = obj.closest(".item-website").attr("data-web");
     let productID = obj.closest(".item-website").attr("data-product-id");
 
     if (web == "all") {
         for (var i = 0; i < webList.length; i++) {
-            ajaxPostProduct(webList[i], productID);
+            ajaxPostProduct(webList[i], productID, postProduct2);
         }
     }
     else {
-        ajaxPostProduct(web, productID);
+        ajaxPostProduct(web, productID, postProduct2);
     }
 }
 
-function ajaxPostProduct(web, productID) {
+function ajaxPostProduct(web, productID, postProduct2) {
+    let post2 = '';
+    if (postProduct2 == true) {
+        post2 = '/post-2';
+    }
     $.ajax({
         type: "POST",
-        url: API + productID,
+        url: API + productID + post2,
         headers: {
             'domain': web,
         },
@@ -136,7 +148,7 @@ function ajaxPostProduct(web, productID) {
             HoldOn.close();
 
             // Thành công
-            if (xhr.status === 200) {
+            if (xhr.status == 200) {
                 if (data.id > 0) {
                     $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Đăng web thành công</span>");
                     $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
@@ -150,13 +162,13 @@ function ajaxPostProduct(web, productID) {
                 }
             }
             else {
-                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
             }
         },
         error: function (xhr, textStatus, error) {
             HoldOn.close();
 
-            if (xhr.status === 500) {
+            if (xhr.status != 500) {
                 let data = xhr.responseJSON;
                 $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
             }

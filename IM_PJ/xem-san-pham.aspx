@@ -65,6 +65,14 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
+                                    Tên sản phẩm 2
+                                </div>
+                                <div class="row-right">
+                                    <asp:Label ID="lbCleanName" runat="server" CssClass="form-control"></asp:Label>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
                                     Slug
                                 </div>
                                 <div class="row-right">

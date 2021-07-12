@@ -789,19 +789,19 @@ namespace IM_PJ
                 var category = CategoryController.GetByID(product.CategoryID.Value);
 
                 html.AppendLine("<p>" + product.ProductTitle + " - " + product.ProductSKU + "</p>\r\n");
-                html.AppendLine("<p>📌 𝖦ιá ѕἰ: " + (product.Regular_Price).ToString() + "</p>\r\n");
+                html.AppendLine("<p>📌 Giá sỉ: " + (product.Regular_Price).ToString() + "</p>\r\n");
 
                 if (product.Price10 > 0 && product.Price10 < product.Regular_Price)
                 {
-                    html.AppendLine("<p>📌 𝖦ιá ѕἰ 10 cái: " + (product.Price10).ToString() + "</p>\r\n");
+                    html.AppendLine("<p>📌 Giá sỉ 10 cái: " + (product.Price10).ToString() + "</p>\r\n");
                 }
 
                 if (product.BestPrice > 0 && product.BestPrice < product.Price10)
                 {
-                    html.AppendLine("<p>📌 𝖦ιá ѕἰ thùng: " + (product.BestPrice).ToString() + "</p>\r\n");
+                    html.AppendLine("<p>📌 Giá sỉ thùng: " + (product.BestPrice).ToString() + "</p>\r\n");
                 }
 
-                html.AppendLine("<p>📌 𝖦ιá l.ẻ: " + (product.Retail_Price).ToString() + "</p>\r\n");
+                html.AppendLine("<p>📌 Giá lẻ: " + (product.Retail_Price).ToString() + "</p>\r\n");
 
                 if (!cosmetics.Contains(category.Slug))
                 {
