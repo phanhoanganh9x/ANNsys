@@ -168,8 +168,11 @@ function ajaxPostProduct(web, productID, postProduct2) {
         error: function (xhr, textStatus, error) {
             HoldOn.close();
 
-            if (xhr.status != 500) {
+            if (xhr.status === 500) {
                 let data = xhr.responseJSON;
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
+            }
+            else if (xhr.status === 400) {
                 $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
             }
             else {
