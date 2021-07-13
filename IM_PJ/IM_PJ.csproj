@@ -349,6 +349,7 @@
     <Content Include="App_Themes\Ann\css\pages\dang-ky-ghtk\dang-ky-ghtk.css" />
     <Content Include="App_Themes\Ann\css\pages\dang-ky-chuyen-hoan\dang-ky-chuyen-hoan.css" />
     <Content Include="App_Themes\Ann\css\pages\dang-ky-gui-di\dang-ky-gui-di.css" />
+    <Content Include="App_Themes\Ann\css\pages\dang-ky-jt\dang-ky-jt.css" />
     <Content Include="App_Themes\Ann\css\pages\danh-sach-don-dat-hang\danh-sach-don-dat-hang.css" />
     <Content Include="App_Themes\Ann\css\pages\quan-ly-don-giao-hang\quan-ly-don-giao-hang.css" />
     <Content Include="App_Themes\Ann\css\pages\danh-sach-don-hang\danh-sach-don-hang.css" />
@@ -437,6 +438,7 @@
     <Content Include="App_Themes\Ann\js\pages\dang-ky-chuyen-hoan\dang-ky-chuyen-hoan.js" />
     <Content Include="App_Themes\Ann\js\pages\dang-ky-gui-di\dang-ky-gui-di.js" />
     <Content Include="App_Themes\Ann\js\pages\quan-ly-don-giao-hang\quan-ly-don-giao-hang.js" />
+    <Content Include="App_Themes\Ann\js\pages\dang-ky-jt\dang-ky-jt.js" />
     <Content Include="App_Themes\Ann\js\pages\danh-sach-don-ghtk\danh-sach-don-ghtk.js" />
     <Content Include="App_Themes\Ann\js\pages\thong-ke-ghtk\thong-ke-ghtk.js" />
     <Content Include="App_Themes\Ann\js\pages\thong-tin-don-dat-hang\thong-tin-don-dat-hang.js" />
@@ -560,6 +562,7 @@
     <Content Include="chuyen-kho.aspx" />
     <Content Include="dang-ky-chuyen-hoan.aspx" />
     <Content Include="dang-ky-gui-di.aspx" />
+    <Content Include="dang-ky-jt.aspx" />
     <Content Include="danh-sach-don-dat-hang.aspx" />
     <Content Include="quan-ly-don-giao-hang.aspx" />
     <Content Include="Models\IMMode.Context.tt">
@@ -584,6 +587,8 @@
     <Content Include="SQL\01CREATE_TABLE_ExchangeRate.sql" />
     <Content Include="SQL\01CREATE_TABLE_OrderStatus.sql" />
     <Content Include="SQL\01CREATE_TABLE_OrderType.sql" />
+    <Content Include="SQL\01CREATE_TABLE_JtExpressAddress.sql" />
+    <Content Include="SQL\01CREATE_TABLE_JtExpressReason.sql" />
     <Content Include="SQL\01CREATE_TABLE_PostVideo.sql" />
     <Content Include="SQL\01CREATE_TABLE_PreOrder.sql" />
     <Content Include="SQL\01CREATE_TABLE_PreOrderDetail.sql" />
@@ -1078,6 +1083,12 @@
     </Compile>
     <Compile Include="dang-ky-gui-di.aspx.designer.cs">
       <DependentUpon>dang-ky-gui-di.aspx</DependentUpon>
+    <Compile Include="dang-ky-jt.aspx.cs">
+      <DependentUpon>dang-ky-jt.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="dang-ky-jt.aspx.designer.cs">
+      <DependentUpon>dang-ky-jt.aspx</DependentUpon>
     </Compile>
     <Compile Include="danh-sach-don-dat-hang.aspx.cs">
       <DependentUpon>danh-sach-don-dat-hang.aspx</DependentUpon>
@@ -2556,7 +2567,7 @@
   <Import Project="..\packages\Microsoft.ApplicationInsights.WindowsServer.2.9.0\build\Microsoft.ApplicationInsights.WindowsServer.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.WindowsServer.2.9.0\build\Microsoft.ApplicationInsights.WindowsServer.targets')" />
   <Import Project="..\packages\Microsoft.ApplicationInsights.Web.2.9.0\build\Microsoft.ApplicationInsights.Web.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.Web.2.9.0\build\Microsoft.ApplicationInsights.Web.targets')" />
   <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

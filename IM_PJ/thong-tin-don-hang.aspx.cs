@@ -736,6 +736,17 @@ namespace IM_PJ
                     {
                         ltrPrint.Text += "<a target='_blank' href='https://proship.vn/quan-ly-van-don/?isInvoiceFilter=1&generalInfo=" + order.ShippingCode + "' class='btn primary-btn btn-proship fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-file-text-o' aria-hidden='true'></i> Xem đơn Proship</a>";
                     }
+                    #region J&T Express
+                    if (String.IsNullOrEmpty(order.ShippingCode) && order.ExcuteStatus == (int)ExcuteStatus.Done && order.ShippingType == (int)DeliveryType.JT)
+                    {
+                        ltrPrint.Text += "<a target='_blank' href='/dang-ky-jt?orderID=" + ID + "' class='btn primary-btn btn-ghtk fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-upload' aria-hidden='true'></i> Đẩy đơn J&T</a>";
+                    }
+                    if (order.ShippingType == (int)DeliveryType.JT && !String.IsNullOrEmpty(order.ShippingCode))
+                    {
+                        ltrPrint.Text += "<a id='btnShowJtExpress' target='_blank' href='https://vip.jtexpress.vn/#/service/expressTrack?id=" + order.ShippingCode + "' class='btn primary-btn btn-jt fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-upload' aria-hidden='true'></i> Xem đơn J&T</a>";
+                        ltrPrint.Text += "<a id='btnCancelJtExpress' href='javascript:;' onclick='cancelJtExpress(" + ID + ", `" + order.ShippingCode + "`)' class='btn primary-btn btn-red fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-trash' aria-hidden='true'></i> Hủy đơn J&T</a>";
+                    }
+                    #endregion
 
                     // Cài đặt thông tin địa chỉ giao hàng
                     _initDeliveryAddress(order.DeliveryAddressId);

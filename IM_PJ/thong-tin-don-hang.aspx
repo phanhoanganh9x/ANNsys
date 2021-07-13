@@ -66,6 +66,10 @@
             background-color: #F44336!important;
         }
 
+        *.select2-container.select2-container--default.select2-container--open {
+            z-index: 99991;
+        }
+
         @media (max-width: 769px) {
             label {
                 margin-bottom: 0;
@@ -467,7 +471,10 @@
                                 </div>
                                 <div class="post-row clear">
                                     <div class="left">Phí vận chuyển</div>
-                                    <div class="right shippingFee">
+                                    <div class="right totalDiscount">
+                                        <a class="btn btn-feeship link-btn btn-green hide" href="javascript:;" id="btnJtExpresFee" onclick="getJtExpresFee()">
+                                            <i class="fa fa-check-square-o" aria-hidden="true"></i> Lấy phí J&T
+                                        </a>
                                         <a class="btn btn-feeship link-btn btn-green hide" href="javascript:;" id="getShipGHTK" onclick="getShipGHTK()"><i class="fa fa-check-square-o" aria-hidden="true"></i> Lấy phí GHTK</a>
                                         <a class="btn btn-feeship link-btn" href="javascript:;" id="calfeeship" onclick="calFeeShip()"><i class="fa fa-check-square-o" aria-hidden="true"></i> Miễn phí</a>
                                         <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull input-coupon input-feeship" Skin="MetroTouch"
@@ -717,6 +724,10 @@
             <asp:HiddenField ID="hdfRecipientDistrictId" runat="server" />
             <asp:HiddenField ID="hdfRecipientWardId" runat="server" />
             <asp:HiddenField ID="hdfRecipientAddress" runat="server" />
+            <asp:HiddenField ID="hdfUpdateJtExpress" runat="server" Value="0" />
+            <asp:HiddenField ID="hdfJtRecipientProvince" runat="server" />
+            <asp:HiddenField ID="hdfJtRecipientDistrict" runat="server" />
+            <asp:HiddenField ID="hdfJtRecipientWard" runat="server" />
             <!-- Biến đăng ký địa chỉ nhận hàng -->
 
             <!-- Modal -->
@@ -804,6 +815,37 @@
                         <div class="modal-footer">
                             <button id="closeCoupon" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
                             <button id="insertCoupon" type="button" class="btn btn-primary" onclick="getCoupon()">Xác nhận</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- J&T Express Modal -->
+            <div class="modal fade" id="jtExpressModal" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Cập nhật địa chỉ giao hàng J&T Express</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row form-group">
+                                <label>Tỉnh thành</label>
+                                <asp:DropDownList ID="ddlJtRecipientProvince" runat="server" CssClass="form-control"></asp:DropDownList>
+                            </div>
+                            <div class="row form-group">
+                                <label>Quận huyện</label>
+                                <asp:DropDownList ID="ddlJtRecipientDistrict" runat="server" CssClass="form-control"></asp:DropDownList>
+                            </div>
+                            <div class="row form-group">
+                                <label>Phường xã</label>
+                                <asp:DropDownList ID="ddlJtRecipientWard" runat="server" CssClass="form-control"></asp:DropDownList>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="closeJtExpress" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                            <button id="updateJtExpress" type="button" class="btn btn-primary" onclick="updateJtRecipientAddress()">Cập nhật</button>
                         </div>
                     </div>
                 </div>
@@ -1352,9 +1394,22 @@
 
             // cal fee ship
             function calFeeShip() {
-                if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 6) {
-                    return swal("Thông báo", "Đơn này gửi <strong>GHTK</strong> nên không chọn miễn phí ship được!<br>Nếu cần miễn giảm phí thì hãy tính phí bình thường, sau đó chọn trừ phí ship trong phí khác!", "error");
+                let deliveryMethod = +$("#<%=ddlShippingType.ClientID%>").find(":selected").val() || 1;
+
+                if (deliveryMethod == 6 || deliveryMethod == 10) {
+                    let message = '';
+
+                    message += 'Đơn này gửi ';
+                    if (deliveryMethod == 6)
+                        message += '<strong>GHTK</strong>';
+                    else if (deliveryMethod == 10)
+                        message += '<strong>J&T Express</strong>';
+                    message += ' nên không chọn miễn phí ship được!';
+                    message += '<br>Nếu cần miễn giảm phí thì hãy tính phí bình thường, sau đó chọn trừ phí ship trong phí khác!';
+
+                    return swal("Thông báo", message, "error");
                 }
+
                 if ($("#<%=pFeeShip.ClientID%>").is(":disabled")) {
                     $("#<%=pFeeShip.ClientID%>").prop('disabled', false).css("background-color", "#fff").focus();
                     $("#calfeeship").html("Miễn phí").css("background-color", "#F44336");
@@ -1381,8 +1436,10 @@
             }
 
             function warningShippingNote(ID) {
+                let deliveryMethod = +$("#<%=ddlShippingType.ClientID%>").find(":selected").val() || 1;
+                let paymentType = +$("#<%=ddlPaymentType.ClientID%>").find(":selected").val() || 1;
 
-                if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 2 && $("#<%=ddlPaymentType.ClientID%>").find(":selected").val() != 3) {
+                if (deliveryMethod == 2 && paymentType != 3) {
                     swal({
                         title: "Ê nhỏ:",
                         text: "Đơn hàng này gửi Bưu điện nhưng <strong>Không Thu Hộ</strong> hở?",
@@ -1420,7 +1477,7 @@
                         }
                     });
                 }
-                else if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 6 && $("#<%=ddlPaymentType.ClientID%>").find(":selected").val() != 3) {
+                else if (deliveryMethod == 6 && paymentType != 3) {
                     swal({
                         title: "Ê nhỏ:",
                         text: "Đơn hàng này gửi GHTK nhưng <strong>Không Thu Hộ</strong> hở?",
@@ -1436,7 +1493,7 @@
                         window.open("/print-shipping-note?id=" + ID, "_blank");
                     });
                 }
-                else if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 10 && $("#<%=ddlPaymentType.ClientID%>").find(":selected").val() != 3) {
+                else if (deliveryMethod == 10 && paymentType != 3) {
                     swal({
                         title: "Ê nhỏ:",
                         text: "Đơn hàng này gửi J&T nhưng <strong>Không Thu Hộ</strong> hở?",
@@ -1558,6 +1615,7 @@
 
                 //#region Phương thức giao hàng
                 let $btnGHTK = $("#getShipGHTK");
+                let $btnJtExpresFee = $("#btnJtExpresFee");
                 let $weight = $(".weight-input");
                 let $ddlShippingType = $("#<%=ddlShippingType.ClientID%>");
                 let $transportCompany  = $(".transport-company");
@@ -1624,9 +1682,12 @@
 
                 // J&T
                 if ($ddlShippingType.find(":selected").val() == 10) {
+                    $btnJtExpresFee.removeClass("hide");
+                    $btnFreeShipping.addClass("hide");
+                    $fee.prop('disabled', true).css("background-color", "#eeeeee");
                     $weight.removeClass("hide");
                     $transportCompany.addClass("hide");
-                    $shippingCode.addClass("hide");
+                    $shippingCode.removeClass("hide");
                 }
 
                 // GHN
@@ -1646,6 +1707,7 @@
                 $ddlShippingType.change(function () {
                     // Phí vận chuyển
                     $btnGHTK.addClass("hide");
+                    $btnJtExpresFee.addClass("hide");
                     $btnFreeShipping.removeClass("hide");
                     $fee.removeAttr('style')
                     $fee.removeAttr('disabled')
@@ -1709,7 +1771,11 @@
                             break;
                         // J&T
                         case "10":
+                            $btnFreeShipping.addClass("hide");
+                            $btnJtExpresFee.removeClass("hide");
+                            $fee.prop('disabled', true).css("background-color", "#eeeeee").val(0);
                             $weight.removeClass("hide");
+                            $shippingCode.removeClass("hide");
                             break;
                         // GHN
                         case "11":
@@ -2101,7 +2167,7 @@
                     }
                 }
                 // Trường hợp giao hàng tiết kiệm
-                else if (shippingtype == 6) {
+                else if (shippingtype == 6 || shippingtype == 10) {
                     if (feeship == 0) {
                         $("#<%=pFeeShip.ClientID%>").focus();
                         swal({
@@ -3213,12 +3279,17 @@
 
             function onChangeWeight() {
                 let shippingType = Number($("#<%=ddlShippingType.ClientID%>").val());
-                if (shippingType == 6) {
+
+                if (shippingType == 6 || shippingType == 10) {
                     let $txtWeight = $("#<%=txtWeight.ClientID%>");
                     let weight = +$txtWeight.val() || 0;
 
-                    if (weight)
-                        getShipGHTK();
+                    if (weight) {
+                        if (shippingType == 6)
+                            getShipGHTK();
+                        else if (shippingType == 10)
+                            getJtExpresFee();
+                    }
                     else {
                         $("#<%=pFeeShip.ClientID%>").val(0);
                         countTotal();
@@ -3388,6 +3459,296 @@
              * Đối ứng chiết khấu từng dòng (END)
              * ============================================================
              */
+            //#region J&T Express
+            function _disabledJtRecipientDistrict(disabled) {
+                let province = $("#<%=hdfJtRecipientProvince.ClientID%>").val() || '';
+                let $ddlJtRecipientDistrict = $("#<%=ddlJtRecipientDistrict.ClientID%>");
+
+                if (disabled) {
+                    $ddlJtRecipientDistrict.attr('disabled', true);
+                    $ddlJtRecipientDistrict.attr('readonly', 'readonly');
+                    $ddlJtRecipientDistrict.val(null).trigger('change');
+                    $ddlJtRecipientDistrict.select2({
+                        width: "100%",
+                        placeholder: '(Bấm để chọn quận/huyện)'
+                    });
+                }
+                else {
+                    $ddlJtRecipientDistrict.removeAttr('disabled');
+                    $ddlJtRecipientDistrict.removeAttr('readonly');
+                    $ddlJtRecipientDistrict.val(null).trigger('change');
+                    $ddlJtRecipientDistrict.select2({
+                        width: "100%",
+                        placeholder: '(Bấm để chọn tỉnh/thành phố)',
+                        ajax: {
+                            delay: 500,
+                            method: 'GET',
+                            url: '/api/v1/jt-express/districts/select2',
+                            data: (params) => {
+                                var query = {
+                                    province: province,
+                                    page: params.page || 1
+                                }
+
+                                if (params.term)
+                                    query.search = params.term;
+
+                                return query;
+                            }
+                        }
+                    });
+                }
+            }
+
+            function _disabledJtRecipientWard(disabled) {
+                let province = $("#<%=hdfJtRecipientProvince.ClientID%>").val() || '';
+                let district = $("#<%=hdfJtRecipientDistrict.ClientID%>").val() || '';
+                let $ddlJtRecipientWard = $("#<%=ddlJtRecipientWard.ClientID%>");
+
+                if (disabled) {
+                    $ddlJtRecipientWard.attr('disabled', true);
+                    $ddlJtRecipientWard.attr('readonly', 'readonly');
+                    $ddlJtRecipientWard.val(null).trigger('change');
+                    $ddlJtRecipientWard.select2({
+                        width: "100%",
+                        placeholder: '(Bấm để chọn phường/xã)'
+                    });
+                }
+                else {
+                    $ddlJtRecipientWard.removeAttr('disabled');
+                    $ddlJtRecipientWard.removeAttr('readonly');
+                    $ddlJtRecipientWard.val(null).trigger('change');
+                    $ddlJtRecipientWard.select2({
+                        width: "100%",
+                        placeholder: '(Bấm để chọn phường/xã)',
+                        ajax: {
+                            delay: 500,
+                            method: 'GET',
+                            url: '/api/v1/jt-express/wards/select2',
+                            data: (params) => {
+                                var query = {
+                                    province: province,
+                                    district: district,
+                                    page: params.page || 1
+                                }
+
+                                if (params.term)
+                                    query.search = params.term;
+
+                                return query;
+                            }
+                        }
+                    });
+                }
+            }
+
+            function _initJtRecipientAddress() {
+                let $ddlJtRecipientProvince = $("#<%=ddlJtRecipientProvince.ClientID%>");
+
+                $ddlJtRecipientProvince.val(null).trigger('change');
+
+                // Danh sách tỉnh / thành phố
+                $ddlJtRecipientProvince.select2({
+                    width: "100%",
+                    placeholder: 'Chọn tỉnh thành',
+                    ajax: {
+                        delay: 500,
+                        method: 'GET',
+                        url: '/api/v1/jt-express/provinces/select2',
+                        data: (params) => {
+                            var query = {
+                                page: params.page || 1
+                            }
+
+                            if (params.term)
+                                query.search = params.term;
+
+                            return query;
+                        }
+                    }
+                });
+
+                // Danh sách quận / huyện
+                _disabledJtRecipientDistrict(true);
+
+                // Danh sách phường / xã
+                _disabledJtRecipientWard(true);
+            }
+
+            function _onChangetRecipientAddress() {
+                let $ddlJtRecipientDistrict = $("#<%=ddlJtRecipientDistrict.ClientID%>");
+                let $ddlJtRecipientWard = $("#<%=ddlJtRecipientWard.ClientID%>");
+
+                // Danh sách tỉnh / thành phố
+                $("#<%=ddlJtRecipientProvince.ClientID%>").on('select2:select', (e) => {
+                   $("#<%=hdfJtRecipientProvince.ClientID%>").val(e.params.data.id);
+
+                    // Danh sách quận / huyện
+                    _disabledJtRecipientDistrict(false);
+                    $ddlJtRecipientDistrict.select2('open');
+
+                    // Danh sách phường / xã
+                    _disabledJtRecipientWard(true);
+                });
+
+                // Danh sách quận / huyện
+                $ddlJtRecipientDistrict.on('select2:select', (e) => {
+                    $("#<%=hdfJtRecipientDistrict.ClientID%>").val(e.params.data.id);
+
+                    // Danh sách quận / huyện
+                    _disabledJtRecipientWard(false);
+                    $ddlJtRecipientWard.select2('open');
+                })
+
+                // Danh sách phường / xã
+                $ddlJtRecipientWard.on('select2:select', (e) => {
+                    $("#<%=hdfJtRecipientWard.ClientID%>").val(e.params.data.id)
+                });
+            }
+
+            function _openJtExpressModal() {
+                let $jtExpressModal = $('#jtExpressModal');
+
+                //#region Init
+                _initJtRecipientAddress();
+                _onChangetRecipientAddress();
+
+                $jtExpressModal.modal({ show: 'true', backdrop: 'static', keyboard: false });
+                //#endregion
+
+                $jtExpressModal.on('shown.bs.modal');
+            }
+
+            function getJtExpresFee() {
+                // Kiểm tra trọng lượng
+                if (!_checkWeight())
+                    return;
+
+                if (!checkDeliveryAddressValidation())
+                    return;
+
+                let province = $("#<%=hdfJtRecipientProvince.ClientID%>").val() || "";
+                let district = $("#<%=hdfJtRecipientDistrict.ClientID%>").val() || "";
+                let ward = $("#<%=hdfJtRecipientWard.ClientID%>").val() || "";
+
+                if (!province && !district && !ward)
+                {
+                    _openJtExpressModal();
+                    return;
+                }
+
+                let price = +$(".totalpriceorderall").html().replace(',', '') || 0
+                let paymentType = +$("select[id$='_ddlPaymentType']").val() || 1;
+                let weight = +$("input[id$='_txtWeight']").val() || 0;
+                let url = '/api/v1/jt-express/fee';
+                let query = '';
+
+                query += '&ward=' + ward;
+
+                if (price > 0)
+                {
+                    query += '&price=' + price.toString();
+
+                    if (paymentType == 6)
+                        query += '&cod=' + price.toString();
+                }
+
+                query += '&weight=' + weight.toString();
+
+                if (query)
+                    url = url + "?" + query.substring(1);
+
+                let titleAlert = "Tính phí giao hàng";
+
+                $.ajax({
+                    method: 'GET',
+                    url: url,
+                    beforeSend: function () {
+                        HoldOn.open();
+                    },
+                    success: (response, textStatus, xhr) => {
+                        HoldOn.close();
+
+                        if (xhr.status == 200 && response) {
+                            if (response.success) {
+                                let fee = response.data.fee;
+                                let strFee = formatNumber(fee.toString());
+
+                                $("#<%=pFeeShip.ClientID%>").val(strFee);
+                                countTotal();
+                            }
+                            else {
+                                _alterError(titleAlert, { message: response.message });
+                            }
+                        } else {
+                            _alterError(titleAlert);
+                        }
+                    },
+                    error: err => {
+                        HoldOn.close();
+                        _alterError(titleAlert);
+                    }
+                });
+            }
+
+            function updateJtRecipientAddress()
+            {
+                $("#<%=hdfUpdateJtExpress.ClientID%>").val(1);
+                $('#closeJtExpress').click();
+                getJtExpresFee();
+            }
+
+            function cancelJtExpress(orderId, code) {
+                let titleAlert = "Hủy đơn J&T Express";
+
+                $.ajax({
+                    method: 'POST',
+                    contentType: 'application/json',
+                    dataType: "json",
+                    data: JSON.stringify({ code: code, orderId: orderId }),
+                    url: "/api/v1/jt-express/order/cancel",
+                    beforeSend: function () {
+                        HoldOn.open();
+                    },
+                    success: (data, textStatus, xhr) => {
+                        HoldOn.close();
+
+                        if (xhr.status == 200 && data) {
+                            return swal({
+                                title: titleAlert,
+                                text: "Hủy thành công!<br>Đơn J&T Express '<strong>" + code + "</strong>'",
+                                icon: "success",
+                            }, function (isConfirm) {
+                                let $btnShowJt = $("#btnShowJtExpress");
+                                let $btnCancelJt = $("#btnCancelJtExpress");
+                                let $divParent = $btnShowJt.parent();
+                                let $txtShippingCode = $("input[id$='_txtShippingCode']");
+                                let btnRegisterJtHtml = "";
+
+                                btnRegisterJtHtml += "<a target='_blank'";
+                                btnRegisterJtHtml += "   href='/dang-ky-jt?orderID=" + orderId + "'";
+                                btnRegisterJtHtml += "   class='btn primary-btn btn-ghtk fw-btn not-fullwidth print-invoice-merged'";
+                                btnRegisterJtHtml += ">";
+                                btnRegisterJtHtml += "    <i class='fa fa-upload' aria-hidden='true'></i> Đẩy đơn J&T";
+                                btnRegisterJtHtml += "</a>";
+
+                                $btnShowJt.remove();
+                                $btnCancelJt.remove();
+                                $divParent.append(btnRegisterJtHtml);
+                                $txtShippingCode.val('');
+                            });
+                        } else {
+                            return _alterError(titleAlert);
+                        }
+                    },
+                    error: (xhr, textStatus, error) => {
+                        HoldOn.close();
+
+                        return _alterError(titleAlert);
+                    }
+                });
+            }
+            //#endregion
         </script>
     </telerik:RadScriptBlock>
 </asp:Content>

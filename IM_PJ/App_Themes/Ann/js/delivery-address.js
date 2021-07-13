@@ -1,4 +1,5 @@
 ﻿let deliveryAddresses = [];
+let hasJtExpress = $('[id*="_hdfJtRecipient"]').length == 3;
 
 // #region Private
 // #region Service
@@ -125,6 +126,7 @@ function _onChangeRecipientProvince() {
     let $ddlRecipientProvince = $("select[id$='_ddlRecipientProvince']"),
         $ddlRecipientDistrict = $("select[id$='_ddlRecipientDistrict']"),
         $ddlRecipientWard = $("select[id$='_ddlRecipientWard']"),
+        $hdfDeliveryAddressId = $("input[id$='_hdfDeliveryAddressId']");
         $hdfRecipientProvinceID = $("input[id$='_hdfRecipientProvinceID']"),
         $hdfRecipientDistrictID = $("input[id$='_hdfRecipientDistrictID']"),
         $hdfRecipientWardID = $("input[id$='_hdfRecipientWardID']");
@@ -139,6 +141,9 @@ function _onChangeRecipientProvince() {
         _disabledRecipientDistrict(false, data.id);
         $ddlRecipientDistrict.select2('open');
         _disabledRecipientWard(true, data.id);
+
+        // J&T
+        _clearJtDeliveryAddres();
 
         // Yêu cầu tính lại phí
         $("#notificationFee").removeClass('hide');
@@ -156,6 +161,9 @@ function _onChangeRecipientProvince() {
         _disabledRecipientWard(false, data.id);
         $ddlRecipientWard.select2('open');
 
+        // J&T
+        _clearJtDeliveryAddres();
+
         // Yêu cầu tính lại phí
         $("#notificationFee").removeClass('hide');
         $("input[id$='_pFeeShip']").val(0);
@@ -168,6 +176,9 @@ function _onChangeRecipientProvince() {
         let data = e.params.data;
 
         $hdfRecipientWardID.val(data.id);
+
+        // J&T
+        _clearJtDeliveryAddres();
 
         // Yêu cầu tính lại phí
         $("#notificationFee").removeClass('hide');
@@ -299,6 +310,14 @@ function _initDeliveryAddress(data) {
         $("input[id$='_hdfOldRecipientAddress']").val(data.address);
         $("input[id$='_hdfRecipientAddress']").val(data.address);
     }
+
+    // J&T Express
+    if (hasJtExpress)
+    {
+        $("input[id$='_hdfJtRecipientProvince']").val(data.jtProvince);
+        $("input[id$='_hdfJtRecipientDistrict']").val(data.jtDistrict);
+        $("input[id$='_hdfJtRecipientWard']").val(data.jtWard);
+    }
 }
 
 function _initDeliveryAddressByCustomer() {
@@ -372,6 +391,15 @@ function _gennerateDeliveryAddesses(deliveryAddresses) {
     return html;
 }
 
+function _clearJtDeliveryAddres() {
+    if (hasJtExpress)
+    {
+        $("input[id$='_hdfJtRecipientProvince']").val(null);
+        $("input[id$='_hdfJtRecipientDistrict']").val(null);
+        $("input[id$='_hdfJtRecipientWard']").val(null);
+    }
+}
+
 function _clearDeliveryAddress() {
     // #region thông tin địa chỉ giao hàng mới
     $("input[id$='_hdfDeliveryAddressId']").val(null);
@@ -381,6 +409,8 @@ function _clearDeliveryAddress() {
     $("input[id$='_hdfRecipientDistrictId']").val(null);
     $("input[id$='_hdfRecipientWardId']").val(null);
     $("input[id$='_hdfRecipientAddress']").val(null);
+    // J&T
+    _clearJtDeliveryAddres();
     // #endregion
 
     $("input[id$='_txtRecipientFullName']").val('');
@@ -545,25 +575,43 @@ function checkDeliveryAddressValidation() {
     return true;
 }
 
-function updateDeliveryAddress(phone) {
-    let $hdfDeliveryAddress = $("input[id$='_hdfDeliveryAddressId']");
-    let $name = $("input[id$='_txtRecipientFullName']");
-    let $phone = $("input[id$='_txtRecipientPhone']");
-    let $province = $("select[id$='_ddlRecipientProvince']");
-    let $district = $("select[id$='_ddlRecipientDistrict']");
-    let $ward = $("select[id$='_ddlRecipientWard']");
-    let $address = $("input[id$='_txtRecipientAddress']");
+function updateDeliveryAddress(createdBy) {
+    let deliveryAddressId = +$("input[id$='_hdfDeliveryAddressId']").val() || null,
+        name = $("input[id$='_txtRecipientFullName']").val() || "",
+        phone = $("input[id$='_txtRecipientPhone']").val() || "",
+        provinceId = +$("select[id$='_ddlRecipientProvince']").val() || null,
+        districtId = +$("select[id$='_ddlRecipientDistrict']").val() || null,
+        wardId = +$("select[id$='_ddlRecipientWard']").val() || null,
+        address = $("input[id$='_txtRecipientAddress']").val() || "",
+        updateJtExpress = false,
+        hdfJtProvince = "",
+        hdfJtDistrict = "",
+        hdfJtWard = "";
 
-    if (!$hdfDeliveryAddress.val()) {
+    if (hasJtExpress) {
+        updateJtExpress = $("input[id$='_hdfUpdateJtExpress']").val() == "1";
+        hdfJtProvince = $("input[id$='_hdfJtRecipientProvince']").val() || "";
+        hdfJtDistrict = $("input[id$='_hdfJtRecipientDistrict']").val() || "";
+        hdfJtWard = $("input[id$='_hdfJtRecipientWard']").val() || "";
+    }
+
+    if (!deliveryAddressId) {
         let deliveryAddress = {
-            "fullName": $name.val().trim(),
-            "phone": $phone.val().trim().replace(/[^\d]/g, ""),
-            "address": $address.val() ? $address.val().trim() : null,
-            "provinceId": +$province.val() || 0,
-            "districtId": +$district.val() || 0,
-            "wardId": +$ward.val() || null,
-            "createdBy": phone
+            "fullName": name.trim(),
+            "phone": phone.trim().replace(/[^\d]/g, ""),
+            "address": address ? address.trim() : null,
+            "provinceId": provinceId,
+            "districtId": districtId,
+            "wardId": wardId,
+            "createdBy": createdBy
         };
+
+        if (updateJtExpress) {
+            deliveryAddress.updateJtExpress = updateJtExpress;
+            deliveryAddress.jtProvince = hdfJtProvince;
+            deliveryAddress.jtDistrict = hdfJtDistrict;
+            deliveryAddress.jtWard = hdfJtWard;
+        }
 
         return _createDeliveryAddresses(deliveryAddress)
             .then(function (data) {
@@ -578,29 +626,37 @@ function updateDeliveryAddress(phone) {
             });
     }
     else {
-        let $hdfName = $("input[id$='_hdfRecipientFullName']");
-        let $hdfPhone = $("input[id$='_hdfRecipientPhone']");
-        let $hdfProvince = $("input[id$='_hdfRecipientProvinceId']");
-        let $hdfDistrict = $("input[id$='_hdfRecipientDistrictId']");
-        let $hdfWard = $("input[id$='_hdfRecipientWardId']");
-        let $hdfAddress = $("input[id$='_hdfRecipientAddress']");
+        let hdfName = $("input[id$='_hdfRecipientFullName']").val() || "",
+            hdfPhone = $("input[id$='_hdfRecipientPhone']").val() || "",
+            hdfProvinceId = +$("input[id$='_hdfRecipientProvinceId']").val() || null,
+            hdfDistrictId = +$("input[id$='_hdfRecipientDistrictId']").val() || null,
+            hdfWardId = +$("input[id$='_hdfRecipientWardId']").val() || null,
+            hdfAddress = $("input[id$='_hdfRecipientAddress']").val() || "";
 
-        if ($hdfName.val() !== $name.val()
-            || $hdfPhone.val() !== $phone.val()
-            || $hdfProvince.val() !== $province.val()
-            || $hdfDistrict.val() !== $district.val()
-            || $hdfWard.val() != $ward.val()
-            || $hdfAddress.val() !== $address.val()
+        if (hdfName !== name
+            || hdfPhone !== phone
+            || hdfProvinceId !== provinceId
+            || hdfDistrictId !== districtId
+            || hdfWardId != wardId
+            || hdfAddress !== address
+            || updateJtExpress
         ) {
             let deliveryAddress = {
-                "fullName": $name.val().trim(),
-                "phone": $phone.val().trim().replace(/[^\d]/g, ""),
-                "address": $address.val() ? $address.val().trim() : null,
-                "provinceId": +$province.val() || 0,
-                "districtId": +$district.val() || 0,
-                "wardId": +$ward.val() || null,
-                "createdBy": phone
+                "fullName": name.trim(),
+                "phone": phone.trim().replace(/[^\d]/g, ""),
+                "address": address ? address.trim() : null,
+                "provinceId": provinceId,
+                "districtId": districtId,
+                "wardId": wardId,
+                "createdBy": createdBy
             };
+
+            if (updateJtExpress) {
+                deliveryAddress.updateJtExpress = updateJtExpress;
+                deliveryAddress.jtProvince = hdfJtProvince;
+                deliveryAddress.jtDistrict = hdfJtDistrict;
+                deliveryAddress.jtWard = hdfJtWard;
+            }
 
             return _createDeliveryAddresses(deliveryAddress)
                 .then(function (data) {

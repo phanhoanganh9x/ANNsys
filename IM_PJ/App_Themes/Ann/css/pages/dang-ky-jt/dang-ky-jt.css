@@ -1,0 +1,74 @@
+﻿#total_money, #pick_money, #value {
+    font-weight: 600;
+}
+
+#total_money {
+    color: red;
+}
+
+.hide {
+    display: none;
+}
+
+.bg07 {
+    background-image: url(/uploads/images/bg07-ghtk.png);
+}
+
+.top-bar {
+    background-color: red;
+    margin-bottom: 15px;
+}
+
+.container-bg {
+    background: #fff;
+}
+
+.btn-submit {
+    background: #0093a8 !important;
+    border-color: #0093a8 !important;
+    margin-bottom: 15px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.table > tbody > .odd {
+    background-color: rgba(0,0,0,.05);
+}
+
+.table > tbody > tr > .index {
+    width: 30%;
+    vertical-align: middle;
+}
+
+.table > tbody > tr > .product-name {
+    width: 70%;
+}
+
+.table > tbody > tr > .label-weight {
+    width: 30%;
+    vertical-align: middle;
+}
+
+.table > tbody > tr > .input-weight {
+    width: 70%;
+}
+
+.table > tbody > tr > .label-weight-unit {
+    width: 10%;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table > tbody > tr > .label-number {
+    width: 10%;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table > tbody > tr > .input-number {
+    width: 25%;
+    vertical-align: middle;
+}
