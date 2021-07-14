@@ -196,6 +196,9 @@
           <Property Name="ModifiedBy" Type="nvarchar" MaxLength="15" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="JtProvince" Type="nvarchar" MaxLength="100" />
+          <Property Name="JtDistrict" Type="nvarchar" MaxLength="100" />
+          <Property Name="JtWard" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="DeliveryPostOffice">
           <Key>
@@ -287,6 +290,37 @@
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="JtExpressOrder">
+          <Key>
+            <PropertyRef Name="OrderId" />
+            <PropertyRef Name="Code" />
+          </Key>
+          <Property Name="OrderId" Type="int" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="SenderName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="SenderPhone" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="SenderAddress" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="SenderProvince" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="SenderDistrict" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="SenderWard" Type="nvarchar" MaxLength="100" />
+          <Property Name="ReceiverName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="ReceiverPhone" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="ReceiverAddress" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="ReceiverProvince" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="ReceiverDistrict" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="ReceiverWard" Type="nvarchar" MaxLength="100" />
+          <Property Name="PostalCode" Type="nvarchar" MaxLength="100" />
+          <Property Name="PostalBranchCode" Type="nvarchar" MaxLength="100" />
+          <Property Name="Fee" Type="money" Nullable="false" />
+          <Property Name="InsuranceFee" Type="money" Nullable="false" />
+          <Property Name="Cod" Type="money" Nullable="false" />
+          <Property Name="CodFee" Type="money" Nullable="false" />
+          <Property Name="ItemName" Type="nvarchar" MaxLength="100" />
+          <Property Name="ItemNumber" Type="int" Nullable="false" />
+          <Property Name="Weight" Type="float" Nullable="false" />
+          <Property Name="Note" Type="nvarchar(max)" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="Notification">
           <Key>
@@ -1528,6 +1562,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_JtExpressOrder_tbl_Order">
+          <End Role="tbl_Order" Type="Self.tbl_Order" Multiplicity="1" />
+          <End Role="JtExpressOrder" Type="Self.JtExpressOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Order">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="JtExpressOrder">
+              <PropertyRef Name="OrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_PostVideo_PostPublic">
           <End Role="PostPublic" Type="Self.PostPublic" Multiplicity="0..1" />
           <End Role="PostVideo" Type="Self.PostVideo" Multiplicity="*" />
@@ -1691,6 +1737,7 @@
           <EntitySet Name="Fee" EntityType="Self.Fee" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FeeType" EntityType="Self.FeeType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GroupNotifyPromotion" EntityType="Self.GroupNotifyPromotion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="JtExpressOrder" EntityType="Self.JtExpressOrder" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Notification" EntityType="Self.Notification" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NotificationCategory" EntityType="Self.NotificationCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NotifyNews" EntityType="Self.NotifyNews" Schema="dbo" store:Type="Tables" />
@@ -1768,6 +1815,10 @@
           <AssociationSet Name="FK_DeliveryAddress_Ward" Association="Self.FK_DeliveryAddress_Ward">
             <End Role="DeliverySaveAddress" EntitySet="DeliverySaveAddress" />
             <End Role="DeliveryAddress" EntitySet="DeliveryAddress" />
+          </AssociationSet>
+          <AssociationSet Name="FK_JtExpressOrder_tbl_Order" Association="Self.FK_JtExpressOrder_tbl_Order">
+            <End Role="tbl_Order" EntitySet="tbl_Order" />
+            <End Role="JtExpressOrder" EntitySet="JtExpressOrder" />
           </AssociationSet>
           <AssociationSet Name="FK_PostVideo_PostPublic" Association="Self.FK_PostVideo_PostPublic">
             <End Role="PostPublic" EntitySet="PostPublic" />
@@ -3255,6 +3306,11 @@
             <End Role="tbl_Order" EntitySet="tbl_Order" />
             <End Role="ViewOrder" EntitySet="ViewOrders" />
           </AssociationSet>
+          <EntitySet Name="JtExpressOrders" EntityType="inventorymanagementModel.JtExpressOrder" />
+          <AssociationSet Name="FK_JtExpressOrder_tbl_Order" Association="inventorymanagementModel.FK_JtExpressOrder_tbl_Order">
+            <End Role="tbl_Order" EntitySet="tbl_Order" />
+            <End Role="JtExpressOrder" EntitySet="JtExpressOrders" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="ExchangeRate">
           <Key>
@@ -3291,6 +3347,9 @@
           <NavigationProperty Name="DeliverySaveAddress2" Relationship="inventorymanagementModel.FK_DeliveryAddress_Ward" FromRole="DeliveryAddress" ToRole="DeliverySaveAddress" />
           <NavigationProperty Name="PreOrders" Relationship="inventorymanagementModel.FK_PreOrder_DeliveryAddress" FromRole="DeliveryAddress" ToRole="PreOrder" />
           <NavigationProperty Name="tbl_Order" Relationship="inventorymanagementModel.FK_tbl_Order_DeliveryAddress" FromRole="DeliveryAddress" ToRole="tbl_Order" />
+          <Property Name="JtProvince" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="JtDistrict" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="JtWard" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="PreOrder">
           <Key>
@@ -3640,6 +3699,7 @@
           <Property Name="Timestamp" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
           <NavigationProperty Name="DeliveryAddress" Relationship="inventorymanagementModel.FK_tbl_Order_DeliveryAddress" FromRole="tbl_Order" ToRole="DeliveryAddress" />
           <NavigationProperty Name="ViewOrders" Relationship="inventorymanagementModel.FK_ViewOrder_tbl_Order" FromRole="tbl_Order" ToRole="ViewOrder" />
+          <NavigationProperty Name="JtExpressOrders" Relationship="inventorymanagementModel.FK_JtExpressOrder_tbl_Order" FromRole="tbl_Order" ToRole="JtExpressOrder" />
         </EntityType>
         <Association Name="FK_tbl_Order_DeliveryAddress">
           <End Type="inventorymanagementModel.DeliveryAddress" Role="DeliveryAddress" Multiplicity="0..1" />
@@ -3661,6 +3721,50 @@
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="ViewOrder">
+              <PropertyRef Name="OrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="JtExpressOrder">
+          <Key>
+            <PropertyRef Name="OrderId" />
+            <PropertyRef Name="Code" />
+          </Key>
+          <Property Name="OrderId" Type="Int32" Nullable="false" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="SenderName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="SenderPhone" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="SenderAddress" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SenderProvince" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="SenderDistrict" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="SenderWard" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ReceiverName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ReceiverPhone" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="ReceiverAddress" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ReceiverProvince" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ReceiverDistrict" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ReceiverWard" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="PostalCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="PostalBranchCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Fee" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="InsuranceFee" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="Cod" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="CodFee" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="ItemName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ItemNumber" Type="Int32" Nullable="false" />
+          <Property Name="Weight" Type="Double" Nullable="false" />
+          <Property Name="Note" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="tbl_Order" Relationship="inventorymanagementModel.FK_JtExpressOrder_tbl_Order" FromRole="JtExpressOrder" ToRole="tbl_Order" />
+        </EntityType>
+        <Association Name="FK_JtExpressOrder_tbl_Order">
+          <End Type="inventorymanagementModel.tbl_Order" Role="tbl_Order" Multiplicity="1" />
+          <End Type="inventorymanagementModel.JtExpressOrder" Role="JtExpressOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Order">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="JtExpressOrder">
               <PropertyRef Name="OrderId" />
             </Dependent>
           </ReferentialConstraint>
@@ -5041,6 +5145,9 @@
           <EntitySetMapping Name="DeliveryAddresses">
             <EntityTypeMapping TypeName="inventorymanagementModel.DeliveryAddress">
               <MappingFragment StoreEntitySet="DeliveryAddress">
+                <ScalarProperty Name="JtWard" ColumnName="JtWard" />
+                <ScalarProperty Name="JtDistrict" ColumnName="JtDistrict" />
+                <ScalarProperty Name="JtProvince" ColumnName="JtProvince" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
@@ -5236,6 +5343,37 @@
                 <ScalarProperty Name="OrderType" ColumnName="OrderType" />
                 <ScalarProperty Name="AgentID" ColumnName="AgentID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="JtExpressOrders">
+            <EntityTypeMapping TypeName="inventorymanagementModel.JtExpressOrder">
+              <MappingFragment StoreEntitySet="JtExpressOrder">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="ItemName" ColumnName="ItemName" />
+                <ScalarProperty Name="CodFee" ColumnName="CodFee" />
+                <ScalarProperty Name="Cod" ColumnName="Cod" />
+                <ScalarProperty Name="InsuranceFee" ColumnName="InsuranceFee" />
+                <ScalarProperty Name="Fee" ColumnName="Fee" />
+                <ScalarProperty Name="PostalBranchCode" ColumnName="PostalBranchCode" />
+                <ScalarProperty Name="PostalCode" ColumnName="PostalCode" />
+                <ScalarProperty Name="ReceiverWard" ColumnName="ReceiverWard" />
+                <ScalarProperty Name="ReceiverDistrict" ColumnName="ReceiverDistrict" />
+                <ScalarProperty Name="ReceiverProvince" ColumnName="ReceiverProvince" />
+                <ScalarProperty Name="ReceiverAddress" ColumnName="ReceiverAddress" />
+                <ScalarProperty Name="ReceiverPhone" ColumnName="ReceiverPhone" />
+                <ScalarProperty Name="ReceiverName" ColumnName="ReceiverName" />
+                <ScalarProperty Name="SenderWard" ColumnName="SenderWard" />
+                <ScalarProperty Name="SenderDistrict" ColumnName="SenderDistrict" />
+                <ScalarProperty Name="SenderProvince" ColumnName="SenderProvince" />
+                <ScalarProperty Name="SenderAddress" ColumnName="SenderAddress" />
+                <ScalarProperty Name="SenderPhone" ColumnName="SenderPhone" />
+                <ScalarProperty Name="SenderName" ColumnName="SenderName" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

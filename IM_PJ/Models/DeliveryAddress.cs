@@ -34,6 +34,9 @@ namespace IM_PJ.Models
         public string ModifiedBy { get; set; }
         public System.DateTime ModifiedDate { get; set; }
         public bool IsActive { get; set; }
+        public string JtProvince { get; set; }
+        public string JtDistrict { get; set; }
+        public string JtWard { get; set; }
     
         public virtual DeliverySaveAddress DeliverySaveAddress { get; set; }
         public virtual DeliverySaveAddress DeliverySaveAddress1 { get; set; }
