@@ -18,6 +18,7 @@ namespace IM_PJ.Models
         public tbl_Order()
         {
             this.ViewOrders = new HashSet<ViewOrder>();
+            this.JtExpressOrders = new HashSet<JtExpressOrder>();
         }
     
         public int ID { get; set; }
@@ -74,5 +75,7 @@ namespace IM_PJ.Models
         public virtual DeliveryAddress DeliveryAddress { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ViewOrder> ViewOrders { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<JtExpressOrder> JtExpressOrders { get; set; }
     }
 }

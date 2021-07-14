@@ -72,4 +72,4 @@ GO
 
 ALTER TABLE [dbo].[DeliveryAddress] ADD [JtProvince] [NVARCHAR](100) NULL;
 ALTER TABLE [dbo].[DeliveryAddress] ADD [JtDistrict] [NVARCHAR](100) NULL;
-ALTER TABLE [dbo].[DeliveryAddress] ADD [JtWard] [NVARCHAR](255) NULL;
+ALTER TABLE [dbo].[DeliveryAddress] ADD [JtWard] [NVARCHAR](100) NULL;

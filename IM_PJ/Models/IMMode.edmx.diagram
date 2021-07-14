@@ -104,6 +104,8 @@
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_Order" Width="1.5" PointX="15.25" PointY="31.25" />
         <AssociationConnector Association="inventorymanagementModel.FK_tbl_Order_DeliveryAddress" />
         <AssociationConnector Association="inventorymanagementModel.FK_ViewOrder_tbl_Order" />
+        <EntityTypeShape EntityType="inventorymanagementModel.JtExpressOrder" Width="1.5" PointX="17.5" PointY="33.875" />
+        <AssociationConnector Association="inventorymanagementModel.FK_JtExpressOrder_tbl_Order" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

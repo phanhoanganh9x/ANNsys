@@ -109,5 +109,6 @@ namespace IM_PJ.Models
         public virtual DbSet<ProductVideo> ProductVideos { get; set; }
         public virtual DbSet<Video> Videos { get; set; }
         public virtual DbSet<tbl_Order> tbl_Order { get; set; }
+        public virtual DbSet<JtExpressOrder> JtExpressOrders { get; set; }
     }
 }
