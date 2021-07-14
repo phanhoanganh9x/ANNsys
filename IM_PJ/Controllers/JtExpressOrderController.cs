@@ -8,7 +8,7 @@ namespace IM_PJ.Controllers
 {
     public class JtExpressOrderController
     {
-        public JtExpressOrder getOrder(int orderId)
+        public static JtExpressOrder getOrder(int orderId)
         {
             using (var con = new inventorymanagementEntities())
             {
