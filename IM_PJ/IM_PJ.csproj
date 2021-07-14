@@ -568,6 +568,7 @@
     <Content Include="SQL\01CREATE_TABLE_DeliverySaveStatus.sql" />
     <Content Include="SQL\01CREATE_TABLE_ExchangeRate.sql" />
     <Content Include="SQL\01CREATE_TABLE_JtExpressAddress.sql" />
+    <Content Include="SQL\01CREATE_TABLE_JtExpressOrder.sql" />
     <Content Include="SQL\01CREATE_TABLE_JtExpressReason.sql" />
     <Content Include="SQL\01CREATE_TABLE_PostVideo.sql" />
     <Content Include="SQL\01CREATE_TABLE_PreOrder.sql" />
@@ -1046,6 +1047,7 @@
       <DependentUpon>chuyen-kho.aspx</DependentUpon>
     </Compile>
     <Compile Include="Controllers\CurrencyController.cs" />
+    <Compile Include="Controllers\JtExpressOrderController.cs" />
     <Compile Include="dang-ky-jt.aspx.cs">
       <DependentUpon>dang-ky-jt.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1133,6 +1135,9 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>IMMode.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\JtExpressOrder.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Notification.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
