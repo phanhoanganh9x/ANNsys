@@ -884,6 +884,15 @@
                 return updateDeliveryAddress($phone.val());
             }
 
+            /* ============================================================
+             * Lấy thông tin để cập nhật đơn hàng
+             *
+             * Date:   2021-07-19
+             * Author: Binh-TT
+             *
+             * Đối ứng triết khấu từng dòng
+             * ============================================================
+             */
             function _updateOrder() {
                 // Nếu có sản phẩm trong đơn hàng
                 if ($(".product-result").length > 0) {
@@ -893,6 +902,7 @@
                     var checkoutin = false;
 
                     $(".product-result").each(function () {
+                        // 2021-07-19: Đối ứng triết khấu từng dòng
                         let $discount = $(this).find(".discount");
 
                         var orderDetailID = $(this).attr("data-orderdetailid");
@@ -909,7 +919,7 @@
                         var quantity = parseFloat($(this).find(".in-quantity").val());
                         var quantityInstock = parseFloat($(this).attr("data-quantityinstock"));
                         var productvariableid = $(this).attr("data-productvariableid");
-                        // Chiết khấu của sản phẩm
+                        // 2021-07-19: Đối ứng triết khấu từng dòng
                         let discount = +$discount.val().replace(/,/g, '') || 0;
 
                         if (quantity > 0) {
@@ -2232,6 +2242,15 @@
                 }
             };
 
+            /* ============================================================
+             * Tính lại triết khấu
+             *
+             * Date:   2021-07-19
+             * Author: Binh-TT
+             *
+             * Đối ứng triết khấu từng dòng
+             * ============================================================
+             */
             function refreshDiscount() {
                 let $product = $(".product-result");
 
@@ -2289,7 +2308,22 @@
                 //#endregion
             }
 
-            // get all price
+            /* ============================================================
+             * Tính lại tiền đơn hàng
+             * Được gọi tại:
+             * 1) Thêm sản phẩm
+             * 2) Triết khấu
+             * 3) Coupon
+             * 4) Đổi trả hàng
+             * 5) Phí khác
+             * 6) Cập nhật đơn hàng
+             *
+             * Date:   2021-07-19
+             * Author: Binh-TT
+             *
+             * Đối ứng triết khấu từng dòng
+             * ============================================================
+             */
             function getAllPrice(isPayAllCall) {
                 let $products = $(".product-result");
 
@@ -2409,7 +2443,19 @@
                 reIndex(excuteStatus == 1);
             };
 
-            // Tính lại tiền đơn hàng
+            /* ============================================================
+             * Tính lại tiền đơn hàng
+             * Được gọi tại:
+             * 1) Xóa sản phẩm
+             * 2) Phí vận chuyển
+             * 3) Trọng lượng đơn hàng
+             *
+             * Date:   2021-07-19
+             * Author: Binh-TT
+             *
+             * Đối ứng triết khấu từng dòng
+             * ============================================================
+             */
             function countTotal() {
                 let $products = $(".product-result");
                 let $shoppingFee = $("#<%=pFeeShip.ClientID%>");
@@ -3118,10 +3164,10 @@
             }
 
             /* ============================================================
-             * Đối ứng triết khấu từng dòng
-             *
-             * Author: Binh-TT
              * Date:   2021-07-19
+             * Author: Binh-TT
+             *
+             * Đối ứng triết khấu từng dòng
              * ============================================================
              */
             function onBlurDiscount($input) {

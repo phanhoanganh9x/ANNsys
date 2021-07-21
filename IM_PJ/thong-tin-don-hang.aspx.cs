@@ -853,6 +853,14 @@ namespace IM_PJ
             }
         }
 
+        /// <summary>
+        /// Date:   2021-07-19
+        /// Author: Binh-TT
+        ///
+        /// Đối ứng triết khấu từng dòng
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void btnOrder_Click(object sender, EventArgs e)
         {
             DateTime currentDate = DateTime.Now;
@@ -1020,7 +1028,7 @@ namespace IM_PJ
                             {
                                 sl = hdfTotalQuantity.Value;
                             }
-                            // Tổng tiền chiết khấu
+                            // 2021-07-19: Đối ứng triết khấu từng dòng
                             var totalDiscount = Convert.ToDouble(hdfTotalDiscount.Value);
                             string FeeShipping = pFeeShip.Value.ToString();
                             double Weight = Convert.ToDouble(txtWeight.Value);
@@ -1093,7 +1101,9 @@ namespace IM_PJ
                                 ModifiedDate = currentDate,
                                 CreatedBy = username,
                                 ModifiedBy = acc.Username,
-                                DiscountPerProduct = 0, // Áp dụng chiết khấu từng dòng
+                                // 2021-07-19: Đối ứng triết khấu từng dòng
+                                DiscountPerProduct = 0,
+                                // 2021-07-19: Đối ứng triết khấu từng dòng
                                 TotalDiscount = totalDiscount,
                                 FeeShipping = FeeShipping,
                                 GuestPaid = order.GuestPaid.Value,
@@ -1270,7 +1280,7 @@ namespace IM_PJ
                                     double Price = Convert.ToDouble(itemValue[9]);
                                     string ProductVariableSave = itemValue[10];
                                     int OrderDetailID = itemValue[11].ToInt(0);
-                                    // Chiết khấu từng dòng
+                                    // 2021-07-19: Đối ứng triết khấu từng dòng
                                     var discount = Convert.ToDouble(itemValue[13]);
                                     #endregion
 
@@ -1286,6 +1296,7 @@ namespace IM_PJ
 
                                         if (orderDetail != null)
                                         {
+                                            // 2021-07-19: Đối ứng triết khấu từng dòng
                                             OrderDetailController.UpdateQuantity(OrderDetailID, Quantity, Price, discount, currentDate, username);
                                         }
                                         else
@@ -1301,6 +1312,7 @@ namespace IM_PJ
                                                 Quantity = Quantity,
                                                 Price = Price,
                                                 Status = 1,
+                                                // 2021-07-19: Đối ứng triết khấu từng dòng
                                                 DiscountPrice = discount,
                                                 ProductType = 2,
                                                 CreatedDate = currentDate,
@@ -1397,13 +1409,14 @@ namespace IM_PJ
                                                 });
                                         }
 
-                                        // cập nhật số lượng sản phẩm trong đơn hàng
+                                        // 2021-07-19: Đối ứng triết khấu từng dòng
                                         OrderDetailController.UpdateQuantity(OrderDetailID, Quantity, Price, discount, currentDate, username);
                                     }
                                     #endregion
                                     #region nếu sản phẩm này chưa có trong đơn thì thêm vào
                                     else
                                     {
+                                        // 2021-07-19: Đối ứng triết khấu từng dòng
                                         OrderDetailController.Insert(AgentID, OrderID, SKU, ProductID, ProductVariableID, ProductVariableSave, Quantity, Price, 1, discount, ProductType, currentDate, username, true);
 
                                         StockManagerController.Insert(
