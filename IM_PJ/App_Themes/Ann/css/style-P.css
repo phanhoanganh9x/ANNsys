@@ -180,16 +180,16 @@
 }
 .table > thead > tr > th:first-child {
     text-align: left;
-    padding: 5px 15px; 
+    padding: 5px 15px;
 }
 .table > thead > tr > th .checklb .ip-avata:before, .table > thead > tr > th .radiolb .ip-avata:before {
-    @inlcude transition(0s); 
+    @inlcude transition(0s);
 }
 .table > thead > tr > th .checklb input:checked + .ip-avata, .table > thead > tr > th .radiolb input:checked + .ip-avata {
-    background-color: #fff; 
+    background-color: #fff;
 }
 .table > thead > tr > th .checklb input:checked + .ip-avata:before, .table > thead > tr > th .radiolb input:checked + .ip-avata:before {
-    color: #78909c; 
+    color: #78909c;
 }
 table.shop_table_responsive > tbody > tr:nth-of-type(2n) td {
     border-top: none;
@@ -382,7 +382,7 @@ a.bg-button:hover {
 
 .scrollbar::-webkit-scrollbar-thumb
 {
-	background-color: #F90;	
+	background-color: #F90;
 	background-image: -webkit-linear-gradient(45deg,
 	                                          rgba(255, 255, 255, .2) 25%,
 											  transparent 25%,
@@ -406,7 +406,7 @@ a.bg-button:hover {
 
 .scrollbar::-webkit-scrollbar-thumb
 {
-	background-color: #F90;	
+	background-color: #F90;
 	background-image: -webkit-linear-gradient(45deg,
 	                                          rgba(255, 255, 255, .2) 25%,
 											  transparent 25%,
@@ -520,7 +520,7 @@ a.bg-button:hover {
     width: 100%;
 }
 .table-sale-order .name-item {
-    width: 30%;
+    width: 21%;
     text-align: left!important;
 }
 .table-sale-order .sku-item {
@@ -532,6 +532,10 @@ a.bg-button:hover {
     text-align: left!important;
 }
 .table-sale-order .price-item {
+    width: 9%;
+    text-align: left!important;
+}
+.table-sale-order .discount-item {
     width: 9%;
     text-align: left!important;
 }

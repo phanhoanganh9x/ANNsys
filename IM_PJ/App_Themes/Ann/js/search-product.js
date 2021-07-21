@@ -94,7 +94,7 @@ function pressKeyQuantityPopup(obj) {
             this.value = this.value.replace(/\D/g, '');
         }
         else if (e.which == 40) {
-            // press down 
+            // press down
             $(this).closest('tr').next().find('td:eq(' + $(this).closest('td').index() + ')').find(".in-quantity").focus().select();
         }
         else if (e.which == 38) {
@@ -213,6 +213,17 @@ function addHtmlProductResult(item) {
         html += "   <td class='price-item gia-san-pham' data-price='" + item.RegularPrice + "'>" + formatThousands(item.RegularPrice, ',') + "</td>";
     }
 
+    //#region Triết khấu
+    html += "    <td class='discount-item'> ";
+    html += "        <input type='text' class='form-control discount' ";
+    html += "               onclick='this.select()' ";
+    html += "               onblur='onBlurDiscount($(this))' ";
+    html += "               onkeyup='pressKeyDiscount($(this))' ";
+    html += "               onkeypress='return event.charCode >= 48 && event.charCode <= 57' ";
+    html += "               value='0' data-discount='0'/>";
+    html += "   </td>";
+    //#endregion
+
     // for page them-moi-don-hang
     if (_isStock) {
         html += "<td class='quantity-item'>" + formatThousands(item.QuantityCurrent, ',') + "</td>";
@@ -282,7 +293,7 @@ function pressKeyQuantity(obj) {
             this.value = this.value.replace(/\D/g, '');
         }
         else if (e.which == 40) {
-            // press down 
+            // press down
             $(this).closest('tr').next().find('td:eq(' + $(this).closest('td').index() + ')').find(".in-quantity").focus().select();
         }
         else if (e.which == 38) {

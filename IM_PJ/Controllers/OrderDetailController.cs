@@ -252,23 +252,24 @@ namespace IM_PJ.Controllers
             }
         }
 
-        public static string UpdateQuantity(int ID, double Quantity, double Price, DateTime ModifiedDate, string ModifiedBy)
+        public static string UpdateQuantity(int id, double quantity, double price, double discount, DateTime modifiedDate, string modifiedBy)
         {
-            using (var dbe = new inventorymanagementEntities())
+            using (var con = new inventorymanagementEntities())
             {
-                var ui = dbe.tbl_OrderDetail
-                    .Where(o => o.ID == ID)
+                var orderDetail = con.tbl_OrderDetail
+                    .Where(o => o.ID == id)
                     .SingleOrDefault();
 
-                if (ui == null)
+                if (orderDetail == null)
                     return "0";
 
-                dbe.Entry(ui).State = System.Data.Entity.EntityState.Modified;
-                ui.Quantity = Quantity;
-                ui.Price = Price;
-                ui.ModifiedDate = ModifiedDate;
-                ui.ModifiedBy = ModifiedBy;
-                var kq = dbe.SaveChanges();
+                con.Entry(orderDetail).State = System.Data.Entity.EntityState.Modified;
+                orderDetail.Quantity = quantity;
+                orderDetail.Price = price;
+                orderDetail.DiscountPrice = discount;
+                orderDetail.ModifiedDate = modifiedDate;
+                orderDetail.ModifiedBy = modifiedBy;
+                var kq = con.SaveChanges();
 
                 return kq.ToString();
             }
