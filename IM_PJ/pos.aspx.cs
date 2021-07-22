@@ -291,6 +291,8 @@ namespace IM_PJ
             public string stringGiabanle { get; set; }
             public double Giabansi { get; set; }
             public string stringGiabansi { get; set; }
+            // 2021-07-19: Đối ứng triết khấu từng dòng
+            public double Discount { get; set; }
         }
 
         public class ProductPOS
@@ -318,6 +320,14 @@ namespace IM_PJ
             public List<DiscountCustomerGet> AllDiscount { get; set; }
         }
 
+        /// <summary>
+        /// Date:   2021-07-19
+        /// Author: Binh-TT
+        ///
+        /// Đối ứng triết khấu từng dòng
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void btnOrder_Click(object sender, EventArgs e)
         {
             try
@@ -454,12 +464,9 @@ namespace IM_PJ
                         bool IsHidden = false;
                         int WayIn = 1;
 
-                        double DiscountPerProduct = Convert.ToDouble(pDiscount.Value);
-
-                        double TotalDiscount = Convert.ToDouble(pDiscount.Value) * Convert.ToDouble(hdfTotalQuantity.Value);
+                        // 2021-07-19: Đối ứng triết khấu từng dòng
+                        var totalDiscount = Convert.ToDouble(hdfTotalDiscount.Value);
                         string FeeShipping = pFeeShip.Value.ToString();
-                        double GuestPaid = Convert.ToDouble(pGuestPaid.Value);
-                        double GuestChange = Convert.ToDouble(totalPrice) - GuestPaid;
                         var couponID = hdfCouponID.Value.ToInt(0);
                         var couponValue = hdfCouponValue.Value.ToDecimal(0);
 
@@ -485,11 +492,12 @@ namespace IM_PJ
                             WayIn = WayIn,
                             CreatedDate = currentDate,
                             CreatedBy = username,
-                            DiscountPerProduct = DiscountPerProduct,
-                            TotalDiscount = TotalDiscount,
+                            // 2021-07-19: Đối ứng triết khấu từng dòng
+                            DiscountPerProduct = 0,
+                            TotalDiscount = totalDiscount,
                             FeeShipping = FeeShipping,
-                            GuestPaid = GuestPaid,
-                            GuestChange = GuestChange,
+                            GuestPaid = 0,
+                            GuestChange = 0,
                             PaymentType = PaymentType,
                             ShippingType = ShippingType,
                             OrderNote = String.Empty,
@@ -568,7 +576,8 @@ namespace IM_PJ
                                         Quantity = item.QuantityInstock,
                                         Price = item.Giabanle,
                                         Status = 1,
-                                        DiscountPrice = 0,
+                                        // 2021-07-19: Đối ứng triết khấu từng dòng
+                                        DiscountPrice = item.Discount,
                                         ProductType = item.ProductType,
                                         CreatedDate = currentDate,
                                         CreatedBy = username,

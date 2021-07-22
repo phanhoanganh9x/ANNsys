@@ -1454,36 +1454,32 @@
 
                 let discount = +$discount.val().replace(/,/g, '') || 0;
 
-                if (discount == 0)
-                {
-                    if ($discount.val() === '')
-                        $discount.val(0);
+                if (discount == 0 && $discount.val() === '')
+                    $discount.val(0);
 
-                    getAllPrice();
-                }
-                else
-                    swal({
-                        title: "Xác nhận",
-                        text: "Bạn muốn triết khấu này cho tất sản phẩm?",
-                        type: "warning",
-                        showCancelButton: true,
-                        closeOnConfirm: true,
-                        cancelButtonText: "Đợi em xem tí!",
-                        confirmButtonText: "Chắc chắn sếp ơi..",
-                    }, function (isConfirm) {
-                        if (isConfirm) {
-                            $product.each(function (index, item) {
-                                let discountDOM = item.querySelector('.discount');
+                swal({
+                    title: "Xác nhận",
+                    text: "Bạn muốn tính lại triết khấu cho tất sản phẩm?",
+                    type: "warning",
+                    showCancelButton: true,
+                    closeOnConfirm: true,
+                    cancelButtonText: "Đợi em xem tí!",
+                    confirmButtonText: "Chắc chắn sếp ơi..",
+                }, function (isConfirm) {
+                    if (isConfirm) {
+                        $product.each(function (index, item) {
+                            let discountDOM = item.querySelector('.discount');
 
+                            if (discount != 0)
                                 discountDOM.value = formatThousands(discount, ',');
-                            });
+                            else
+                                discountDOM.value = 0;
+                        });
 
-                            $discount.val(0);
-                            getAllPrice();
-                        }
-                        else
-                            $discount.focus().select();
-                    });
+                        $discount.val(0);
+                        getAllPrice();
+                    }
+                });
                 //#endregion
             }
 

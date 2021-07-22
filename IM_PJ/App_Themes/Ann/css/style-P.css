@@ -564,7 +564,7 @@ a.bg-button:hover {
     text-align: left!important;
 }
 .table-pos-order .name-item {
-    width: 28%;
+    width: 20%;
     text-align: left!important;
 }
 .table-pos-order .sku-item {
@@ -572,11 +572,15 @@ a.bg-button:hover {
     text-align: left!important;
 }
 .table-pos-order .variable-item {
-    width: 18%;
+    width: 17%;
     text-align: left!important;
 }
 .table-pos-order .price-item {
     width: 8%;
+    text-align: left!important;
+}
+.table-pos-order .discount-item {
+    width: 9%;
     text-align: left!important;
 }
 .table-pos-order .quantity-item {
