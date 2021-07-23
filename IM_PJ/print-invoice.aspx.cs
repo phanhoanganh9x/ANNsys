@@ -46,6 +46,255 @@ namespace IM_PJ
                 LoadData();
             }
         }
+
+        #region Private
+        /// <summary>
+        /// Date:   2021-07-19
+        /// Author: Binh-TT
+        ///
+        /// Đối ứng triết khấu từng dòng
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <param name="merge">0: In chi tiết | 1: In gộp</param>
+        /// <param name="defaultDiscount">Sử dụng cho các đơn hàng có 1 chiết khấu</param>
+        private string _createBodyHtml(int orderId, int merge, double defaultDiscount = 0)
+        {
+            try
+            {
+                using (var con = new inventorymanagementEntities())
+                {
+                    #region Lấy thông tin chi tiếc đơn hàng
+                    var orderDetails = con.tbl_OrderDetail
+                        .Where(o => o.OrderID == orderId)
+                        .Select(x => new
+                        {
+                            productType = x.ProductType.HasValue ? x.ProductType.Value : 0,
+                            sku = x.SKU,
+                            quantity = x.Quantity.HasValue ? x.Quantity.Value : 0,
+                            price = x.Price.HasValue ? x.Price.Value : 0,
+                            discount = x.DiscountPrice.HasValue ? x.DiscountPrice.Value : 0
+                        })
+                        .OrderBy(o => o.sku)
+                        .ThenByDescending(o => o.price);
+
+                    if (!orderDetails.Any())
+                        return String.Empty;
+                    #endregion
+
+                    #region Lấy thông tin tên sản phẩm và giá củ (đối với sản phẩm sale)
+                    var productSkus = orderDetails
+                        .Where(x => x.productType == 1)
+                        .GroupBy(x => x.sku)
+                        .Select(x => new { sku = x.Key });
+
+                    var products = con.tbl_Product
+                        .Join(
+                            productSkus,
+                            p => p.ProductSKU,
+                            f => f.sku,
+                            (p, f) => new
+                            {
+                                categoryId = p.CategoryID.HasValue ? p.CategoryID.Value : 0,
+                                sku = p.ProductSKU,
+                                name = p.ProductTitle,
+                                oldPrice = p.Old_Price.HasValue ? p.Old_Price.Value : 0
+                            }
+                        )
+                        .OrderBy(o => o.sku)
+                        .ToList();
+
+                    var variationSkus = orderDetails
+                        .Where(x => x.productType == 2)
+                        .GroupBy(x => x.sku)
+                        .Select(x => new { sku = x.Key });
+
+                    var variations = con.tbl_Product
+                        .Join(
+                            con.tbl_ProductVariable.Where(x => variationSkus.Any(y => x.SKU == y.sku)),
+                            p => p.ID,
+                            v => v.ProductID,
+                            (p, v) => new
+                            {
+                                categoryId = p.CategoryID.HasValue ? p.CategoryID.Value : 0,
+                                sku = v.SKU,
+                                name = p.ProductTitle,
+                                oldPrice = p.Old_Price.HasValue ? p.Old_Price.Value : 0
+                            }
+                        )
+                        .ToList();
+                    #endregion
+
+                    #region Tổng hợp dữ liệu
+                    var data = orderDetails.ToList()
+                        .GroupJoin(
+                            products,
+                            d => new { d.productType, d.sku },
+                            p => new { productType = 1, p.sku },
+                            (detail, product) => new { detail, product }
+                        )
+                        .SelectMany(
+                            x => x.product.DefaultIfEmpty(),
+                            (parent, child) => new { parent.detail, product = child }
+                        )
+                        .GroupJoin(
+                            variations,
+                            temp => new { temp.detail.productType, temp.detail.sku },
+                            v => new { productType = 2, v.sku },
+                            (temp, variation) => new { temp.detail, temp.product, variation }
+                        )
+                        .SelectMany(
+                            x => x.variation.DefaultIfEmpty(),
+                            (parent, child) => new { parent.detail, parent.product, variation = child }
+                        )
+                        .Select(x => {
+                            var categoryId = 0;
+                            var sku = String.Empty;
+                            var name = String.Empty;
+                            var oldPrice = 0D;
+
+                            if (x.detail.productType == 1)
+                            {
+                                categoryId = x.product.categoryId;
+                                sku = x.product.sku;
+                                name = x.product.name;
+                                oldPrice = x.product.oldPrice;
+                            }
+                            else
+                            {
+                                categoryId = x.variation.categoryId;
+                                sku = x.variation.sku;
+                                name = x.variation.name;
+                                oldPrice = x.variation.oldPrice;
+                            }
+
+                            return new
+                            {
+                                categoryId = categoryId,
+                                productType = x.detail.productType,
+                                sku = sku,
+                                name = name,
+                                oldPrice = oldPrice,
+                                quantity = x.detail.quantity,
+                                price = x.detail.price,
+                                discount = x.detail.discount > 0 ? x.detail.discount : defaultDiscount,
+                            };
+                        })
+                        .ToList();
+                    #endregion
+
+                    var index = 0;
+                    var bodyHtml = new StringBuilder();
+
+                    if (merge == 0)
+                    {
+                        foreach (var item in data)
+                        {
+                            index++;
+
+                            #region Sản phẩm
+                            var saleHtml = item.oldPrice > 0 ? "<span class='sale-icon'>SALE</span> " : String.Empty;
+                            var name = PJUtils.Truncate(item.name, item.productType == 1 ? 28 : 37);
+                            var total = (item.price - item.discount) * item.quantity;
+
+                            bodyHtml.AppendLine("<tr>");
+                            bodyHtml.AppendLine("    <td colspan='3'>");
+                            bodyHtml.AppendLine(String.Format("        {0}&ensp;<strong>{1}</strong> - {2}{3}", index, item.sku, saleHtml, name));
+                            bodyHtml.AppendLine("    </td>");
+                            bodyHtml.AppendLine("</tr>");
+                            #endregion
+                            bodyHtml.AppendLine("<tr>");
+                            // SL
+                            bodyHtml.AppendLine("    <td>" + item.quantity + "</td>");
+                            // Giá
+                            bodyHtml.AppendLine("    <td>" + String.Format("{0:N0}", item.price) + "</td>");
+                            // Chiết khấu
+                            bodyHtml.AppendLine("    <td>" + String.Format("{0:N0}", item.discount) + "</td>");
+                            // Tổng
+                            bodyHtml.AppendLine("    <td>" + String.Format("{0:N0}", total) + "</td>");
+                            bodyHtml.AppendLine("</tr>");
+                        }
+                    }
+                    else
+                    {
+                        #region Lấy thông tin danh mục
+                        var categoryIds = data.GroupBy(g => g.categoryId).Select(x => x.Key).ToList();
+                        var categories = con.tbl_Category
+                            .Where(x => categoryIds.Contains(x.ID))
+                            .Select(x => new
+                            {
+                                id = x.ID,
+                                name = x.CategoryName
+                            })
+                            .ToList();
+                        #endregion
+
+                        #region Tổng hợp dữ liệu gộp
+                        var groupData = data
+                            .GroupBy(g => new { g.categoryId, g.price })
+                            .Select(x => new {
+                                categoryId = x.Key.categoryId,
+                                price = x.Key.price,
+                                totalQuantity = x.Sum(s => s.quantity),
+                                totalDiscount = x.Sum(s => s.discount * s.quantity),
+                                total = x.Sum(s => (s.price - s.discount) * s.quantity)
+                            })
+                            .GroupJoin(
+                                categories,
+                                d => d.categoryId,
+                                c => c.id,
+                                (details, category) => new { details, category }
+                            )
+                            .SelectMany(
+                                x => x.category.DefaultIfEmpty(),
+                                (parent, child) => new { parent.details, category = child }
+                            )
+                            .Select(x => new
+                            {
+                                categoryName = x.category.name,
+                                price = x.details.price,
+                                totalQuantity = x.details.totalQuantity,
+                                totalDiscount = x.details.totalDiscount,
+                                total = x.details.total
+                            })
+                            .ToList();
+                        #endregion
+
+                        index++;
+
+                        foreach (var item in groupData)
+                        {
+                            #region Sản phẩm
+                            bodyHtml.AppendLine("<tr>");
+                            bodyHtml.AppendLine("    <td colspan='3'>");
+                            bodyHtml.AppendLine(String.Format("        {0}&ensp;<strong>{1} đồng giá {2:N0}</strong>", index, item.categoryName, item.price));
+                            bodyHtml.AppendLine("    </td>");
+                            bodyHtml.AppendLine("</tr>");
+                            #endregion
+
+                            bodyHtml.AppendLine("<tr>");
+                            // Số lượng
+                            bodyHtml.AppendLine("    <td>" + item.totalQuantity + "</td>");
+                            // Giá
+                            bodyHtml.AppendLine("    <td>" + String.Format("{0:N0}", (item.price * item.totalQuantity)) + "</td>");
+                            // Chiết khấu
+                            bodyHtml.AppendLine("    <td>" + String.Format("{0:N0}", item.totalDiscount) + "</td>");
+                            // Tổng
+                            bodyHtml.AppendLine("    <td>" + String.Format("{0:N0}", item.total) + "</td>");
+                            bodyHtml.AppendLine("</tr>");
+                        }
+                    }
+
+                    return bodyHtml.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
+        }
+        #endregion
+
         public static int getCategory(string SKU, int ProductType)
         {
             int categoryID = 0;
@@ -70,145 +319,6 @@ namespace IM_PJ
                 }
             }
             return categoryID;
-        }
-
-        /// <summary>
-        /// Date:   2021-07-19
-        /// Author: Binh-TT
-        ///
-        /// Đối ứng triết khấu từng dòng
-        /// </summary>
-        /// <param name="orderId"></param>
-        /// <param name="merge">0: In chi tiết | 1: In gộp</param>
-        public string createBodyHtml(int orderId, int merge)
-        {
-            var index = 0;
-            var bodyHtml = new StringBuilder();
-            var orderdetails = OrderDetailController.GetByIDSortBySKU(orderId);
-
-            if (orderdetails.Count > 0)
-            {
-                if (merge == 0)
-                {
-                    foreach (var item in orderdetails)
-                    {
-                        var productType = Convert.ToInt32(item.ProductType);
-                        var sku = item.SKU;
-                        var productName = String.Empty;
-                        var quantity = Convert.ToInt32(item.Quantity);
-                        var price = Convert.ToDouble(item.Price);
-                        // 2021-07-19: Đối ứng triết khấu từng dòng
-                        var discount = item.DiscountPrice.HasValue ? item.DiscountPrice.Value : 0;
-                        var total = (price - discount) * quantity;
-
-                        index++;
-                        #region Sản phẩm
-                        bodyHtml.AppendLine("<tr>");
-
-                        if (productType == 1)
-                        {
-                            var product = ProductController.GetBySKU(sku);
-
-                            if (product != null)
-                                productName = product.ProductTitle;
-
-                            bodyHtml.AppendLine("    <td colspan='3'>");
-                            bodyHtml.AppendLine("        " + index + "&ensp;<strong>" + sku + "</strong> - " + (product.Old_Price > 0 ? "<span class='sale-icon'>SALE</span>" : String.Empty));
-                            bodyHtml.AppendLine("        " + PJUtils.Truncate(productName, 28));
-                            bodyHtml.AppendLine("    </td>");
-                        }
-                        else
-                        {
-                            var productvariable = ProductVariableController.GetBySKU(sku);
-
-                            if (productvariable != null)
-                            {
-                                var parent_product = ProductController.GetByID(Convert.ToInt32(productvariable.ProductID));
-
-                                if (parent_product != null)
-                                    productName = parent_product.ProductTitle;
-
-                                bodyHtml.AppendLine("    <td colspan='3'>");
-                                bodyHtml.AppendLine("        " + + index + "&ensp;<strong>" + sku + "</strong> - " + (parent_product.Old_Price > 0 ? "<span class='sale-icon'>SALE</span> " : String.Empty));
-                                bodyHtml.AppendLine("        " + PJUtils.Truncate(productName, 37));
-                                bodyHtml.AppendLine("    </td>");
-                            }
-                        }
-                        bodyHtml.AppendLine("</tr>");
-                        #endregion
-                        bodyHtml.AppendLine("<tr>");
-                        // SL
-                        bodyHtml.AppendLine("    <td>" + item.Quantity + "</td>");
-                        // Giá
-                        bodyHtml.AppendLine("    <td>" + String.Format("{0:N0}", price) + "</td>");
-                        // Chiết khấu
-                        bodyHtml.AppendLine("    <td>" + String.Format("{0:N0}", discount) + "</td>");
-                        // Tổng
-                        bodyHtml.AppendLine("    <td>" + string.Format("{0:N0}", total) + "</td>");
-                        bodyHtml.AppendLine("</tr>");
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < orderdetails.Count; i++)
-                    {
-                        var item = orderdetails[i];
-
-                        if (item != null)
-                        {
-                            var categoryId = getCategory(item.SKU, Convert.ToInt32(item.ProductType));
-                            var category = CategoryController.GetByID(categoryId);
-                            var quantity = Convert.ToInt32(item.Quantity);
-                            var price = Convert.ToDouble(item.Price);
-                            var discount = Convert.ToDouble(item.DiscountPrice);
-                            var total = (price - discount) * quantity;
-
-                            for (int j = i + 1; j < orderdetails.Count; j++)
-                            {
-                                var item2 = orderdetails[j];
-
-                                if (item2 != null)
-                                {
-                                    var categoryId2 = getCategory(item2.SKU, Convert.ToInt32(item2.ProductType));
-                                    var quantity2 = Convert.ToInt32(item2.Quantity);
-                                    var price2 = Convert.ToDouble(item2.Price);
-                                    var discount2 = Convert.ToDouble(item2.DiscountPrice);
-
-                                    if (categoryId == categoryId2)
-                                    {
-                                        quantity += quantity2;
-                                        discount += discount2;
-                                        total += (price2 - discount2) * quantity2;
-                                        item2 = null;
-                                    }
-                                }
-                            }
-
-
-                            index++;
-                            #region Sản phẩm
-                            bodyHtml.AppendLine("<tr>");
-                            bodyHtml.AppendLine("    <td colspan='3'>");
-                            bodyHtml.AppendLine("        " + index + "&ensp;<strong>" + category.CategoryName + " đồng giá " + String.Format("{0:N0}", price) + "</strong>");
-                            bodyHtml.AppendLine("    </td>");
-                            bodyHtml.AppendLine("</tr>");
-                            #endregion
-                            bodyHtml.AppendLine("<tr>");
-                            // Số lượng
-                            bodyHtml.AppendLine("    <td>" + quantity + "</td>");
-                            // Giá
-                            bodyHtml.AppendLine("    <td>" + String.Format("{0:N0}", price) + "</td>");
-                            // Chiết khấu
-                            bodyHtml.AppendLine("    <td>" + String.Format("{0:N0}", discount) + "</td>");
-                            // Tổng
-                            bodyHtml.AppendLine("    <td>" + String.Format("{0:N0}", total) + "</td>");
-                            bodyHtml.AppendLine("</tr>");
-                        }
-                    }
-                }
-            }
-
-            return bodyHtml.ToString();
         }
 
         /// <summary>
@@ -354,7 +464,7 @@ namespace IM_PJ
                 orderHtml.AppendLine("                <th>Tổng</th>");
                 orderHtml.AppendLine("            </thead>");
                 orderHtml.AppendLine("            <tbody>");
-                orderHtml.AppendLine(createBodyHtml(orderId, mergep));
+                orderHtml.AppendLine(_createBodyHtml(orderId, mergep, order.DiscountPerProduct.HasValue ? order.DiscountPerProduct.Value : 0));
                 orderHtml.AppendLine("            </tbody>");
                 orderHtml.AppendLine("        </table>");
                 orderHtml.AppendLine("    </div>");
@@ -474,14 +584,14 @@ namespace IM_PJ
                 #endregion
 
                 #region Tổng tiền
-                var total = (totalPrice - totalDiscount + shoppingFee + totalOtherFee) - totalRefunds;
+                var total = totalPrice - totalDiscount + shoppingFee + totalOtherFee;
 
                 if (total != Convert.ToDouble(order.TotalPrice))
                     error += "Đơn hàng tính sai tổng tiền";
 
                 orderHtml.AppendLine("                <tr>");
                 orderHtml.AppendLine("                    <td class='strong' colspan='2'>TỔNG TIỀN</td>");
-                orderHtml.AppendLine("                    <td class='strong'>" + String.Format("{0:N0}", total) + "&nbsp;</td>");
+                orderHtml.AppendLine("                    <td class='strong'>" + String.Format("{0:N0}", total - totalRefunds) + "&nbsp;</td>");
                 orderHtml.AppendLine("                </tr>");
                 #endregion
 
