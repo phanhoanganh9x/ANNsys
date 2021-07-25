@@ -73,7 +73,7 @@
         text-align: right;
     }
     .top-right img {
-        max-width: 80%;
+        max-width: 88%;
     }
     .bottom-left {
         position: absolute;
