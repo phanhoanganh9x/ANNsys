@@ -555,22 +555,22 @@ function _submit() {
         beforeSend: function () {
             HoldOn.open();
         },
-        success: (data, textStatus, xhr) => {
+        success: (response, textStatus, xhr) => {
             HoldOn.close();
 
-            if (xhr.status == 200 && data) {
-                if (data.success)
+            if (xhr.status == 200 && response) {
+                if (response.success)
                     return swal({
                         title: titleAlert,
                         text: "Đồng bộ thành công",
                         icon: "success",
                     })
                     .then(() => {
-                        let code = data.code;
+                        let code = response.data.code;
                         window.location.href = "https://vip.jtexpress.vn/#/service/expressTrack?id=" + code;
                     });
                 else
-                    return _alterError(titleAlert, { message: data.message });
+                    return _alterError(titleAlert, { message: response.message });
             } else {
                 return _alterError(titleAlert);
             }
