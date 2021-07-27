@@ -7,9 +7,9 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-IF (EXISTS (SELECT NULL AS DUMMY 
-            FROM INFORMATION_SCHEMA.TABLES 
-            WHERE TABLE_SCHEMA = 'dbo' 
+IF (EXISTS (SELECT NULL AS DUMMY
+            FROM INFORMATION_SCHEMA.TABLES
+            WHERE TABLE_SCHEMA = 'dbo'
             AND  TABLE_NAME = 'PreOrderDetail'))
 BEGIN
     DROP TABLE [dbo].[PreOrderDetail]
@@ -37,7 +37,7 @@ CREATE TABLE [dbo].[PreOrderDetail](
     [ModifiedBy] [nvarchar](15) NOT NULL,
     [ModifiedDate] [datetime] NOT NULL,
     [Timestamp] [timestamp] NOT NULL,
- CONSTRAINT [PK_PreOrderDetail] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_PreOrderDetail] PRIMARY KEY CLUSTERED
 (
     [PreOrderId] DESC,
     [Id] ASC
@@ -82,3 +82,10 @@ GO
 ALTER TABLE [dbo].[PreOrderDetail] CHECK CONSTRAINT [FK_PreOrderDetail_ProductVariation]
 GO
 
+ALTER TABLE [dbo].[PreOrderDetail] ADD [Discount] [Money] NULL
+GO
+
+UPDATE [dbo].[PreOrderDetail] SET [Discount] = 0;
+
+ALTER TABLE [dbo].[PreOrderDetail] ALTER COLUMN [Discount] [Money] NOT NULL
+GO

@@ -325,16 +325,16 @@ function _initFooter(data) {
     totalPriceDOM.innerText = UtilsService.formatThousands(totalPrice, ',');
 
     // Chiết khấu
-    let discount = +data.totalDiscount || 0;
+    let totalDiscount = +data.totalDiscount || 0;
     let discountDOM = document.getElementById('discount');
 
-    if (discount > 0)
-        discountDOM.innerText = '-' + UtilsService.formatThousands(discount, ',');
+    if (totalDiscount > 0)
+        discountDOM.innerText = '-' + UtilsService.formatThousands(totalDiscount, ',');
     else
-        discountDOM.innerText = UtilsService.formatThousands(discount, ',');
+        discountDOM.innerText = UtilsService.formatThousands(totalDiscount, ',');
 
     // Sau chiết khấu
-    let totalAfterDiscount = totalPrice - (discount * quantity);
+    let totalAfterDiscount = totalPrice - totalDiscount;
     let totalAfterDiscountDOM = document.getElementById('totalAfterDiscount');
 
     totalAfterDiscountDOM.innerText = UtilsService.formatThousands(totalAfterDiscount, ',');
