@@ -38,7 +38,7 @@
     margin-bottom: 15px!important;
     background: #00BCD4!important;
     color: #fff!important;
-    padding: 3px!important; 
+    padding: 3px!important;
 }
 .print-order-image {
     font-size: 42px;
@@ -166,7 +166,7 @@ h1 {
         }
 
             .print-order-image .table-2 table col.order-item {
-                width: 6%;
+                width: 5%;
             }
 
             .print-order-image .table-2 table col.image {
@@ -174,19 +174,47 @@ h1 {
             }
 
             .print-order-image .table-2 table col.name {
-                width: 40%;
+                width: 33%;
             }
 
             .print-order-image .table-2 table col.quantity {
-                width: 7%;
+                width: 5%;
             }
 
             .print-order-image .table-2 table col.price {
-                width: 14%;
+                width: 12%;
+            }
+
+            .print-order-image .table-2 table col.discount {
+                width: 12%;
             }
 
             .print-order-image .table-2 table col.subtotal {
                 width: 16%;
+            }
+
+            .print-order-image .table-2 table col.merger-index {
+                width: 6%;
+            }
+
+            .print-order-image .table-2 table col.merger-name {
+                width: 38%;
+            }
+
+            .print-order-image .table-2 table col.merger-total-quantity {
+                width: 8%;
+            }
+
+            .print-order-image .table-2 table col.merger-total-price {
+                width: 15%;
+            }
+
+            .print-order-image .table-2 table col.merger-total-discount {
+                width: 15%;
+            }
+
+            .print-order-image .table-2 table col.merger-total {
+                width: 18%;
             }
 
             .print-order-image .table-2 table th,

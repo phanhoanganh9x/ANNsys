@@ -1137,6 +1137,16 @@
     <Compile Include="Models\NotifyUser.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Pages\print-order-image\CouponModel.cs" />
+    <Compile Include="Models\Pages\print-order-image\ShopModel.cs" />
+    <Compile Include="Models\Pages\print-order-image\CustomerModel.cs" />
+    <Compile Include="Models\Pages\print-order-image\OrderDetailModel.cs" />
+    <Compile Include="Models\Pages\print-order-image\OrderMergerDetailModel.cs" />
+    <Compile Include="Models\Pages\print-order-image\OrderModel.cs" />
+    <Compile Include="Models\Pages\print-order-image\OtherFeeModel.cs" />
+    <Compile Include="Models\Pages\print-order-image\PaginationModel.cs" />
+    <Compile Include="Models\Pages\print-order-image\RefundOrderModel.cs" />
+    <Compile Include="Models\Pages\print-order-image\StaffModel.cs" />
     <Compile Include="Models\Pages\thong-ke-chuyen-kho\SubStockTransferReport.cs" />
     <Compile Include="Models\Pages\thong-ke-chuyen-kho\StockTransferReport.cs" />
     <Compile Include="Models\PostCategory.cs">

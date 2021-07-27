@@ -455,5 +455,27 @@ namespace IM_PJ.Controllers
             public int PaymentStatus { get; set; }
 
         }
+
+        /// <summary>
+        /// Kiểm tra xem chi tiết đơn hàng có rỗng không
+        ///
+        /// Date:   2021-07-19
+        /// Author: Binh-TT
+        ///
+        /// Đối ứng triết khấu từng dòng
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
+        public static bool isOrderDetailEmpty(int orderId)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var any = con.tbl_OrderDetail
+                    .Where(x => x.OrderID == orderId)
+                    .Any();
+
+                return !any;
+            }
+        }
     }
 }
