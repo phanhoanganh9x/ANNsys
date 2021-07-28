@@ -48,9 +48,7 @@ namespace IM_PJ
 
         #region Private
         /// <summary>
-        /// Khởi tạo HTML chi tiết đơn hàng
-        /// Trường hợp ảnh chi tiết thì cứ 10 sản phẩm sẽ tạo bảng chi tiết đơn hàng
-        /// Trường hợp ảnh gộp thì cứ 20 sản phẩm sẽ tạo bảng chi tiết đơn hàng
+        /// Lấy dữ liệu chi tiết hóa đơn
         ///
         /// Date:   2021-07-19
         /// Author: Binh-TT
@@ -60,7 +58,7 @@ namespace IM_PJ
         /// <param name="orderId"></param>
         /// <param name="merger">false: Ảnh chi tiết | true: Ảnh gộp</param>
         /// <param name="defaultDiscount">Sử dụng cho các đơn hàng có 1 chiết khấu</param>
-        private IList<IOrderDetailModel> _getOrderDetails(int orderId, bool merger, decimal defaultDiscount = 0)
+        private IList<IOrderDetailModel> _getOrderDetails(int orderId, bool merger, decimal defaultDiscount)
         {
             try
             {
@@ -263,10 +261,10 @@ namespace IM_PJ
                         results = mergerData.Select(x => new OrderMergerDetailModel
                         {
                             name = x.categoryName,
-                            price = Convert.ToDecimal(x.price),
-                            totalQuantity = Convert.ToInt32(x.totalQuantity),
-                            totalDiscount = Convert.ToDecimal(x.totalDiscount),
-                            total = Convert.ToDecimal(x.total)
+                            price = x.price,
+                            totalQuantity = x.totalQuantity,
+                            totalDiscount = x.totalDiscount,
+                            total = x.total
                         })
                         .ToList<IOrderDetailModel>();
                     }
@@ -279,9 +277,18 @@ namespace IM_PJ
                 Console.WriteLine(ex.Message);
                 throw;
             }
-
         }
 
+        /// <summary>
+        /// Khởi tạo html hóa đơn
+        ///
+        /// Date:   2021-07-19
+        /// Author: Binh-TT
+        ///
+        /// Đối ứng triết khấu từng dòng
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="pagination"></param>
         private string _createOrderHtml(OrderModel data, PaginationModel pagination)
         {
             var html = new StringBuilder();
@@ -358,8 +365,8 @@ namespace IM_PJ
                 if (data.doneDate.HasValue)
                 {
                     html.AppendLine("                        <tr>");
-                    html.AppendLine("                            <td>Ngày tạo</td>");
-                    html.AppendLine(String.Format("                            <td>{0:dd/MM/yyyy HH:mm}</td>", data.createdDate));
+                    html.AppendLine("                            <td>Hoàn tất</td>");
+                    html.AppendLine(String.Format("                            <td>{0:dd/MM/yyyy HH:mm}</td>", data.doneDate));
                     html.AppendLine("                        </tr>");
                 }
                 #endregion
@@ -612,8 +619,12 @@ namespace IM_PJ
         /// </summary>
         public void LoadData()
         {
+            #region Lấy thông tin query params
+            var orderId = 0;
+            var merger = 0;
+
             #region Check ID đơn hàng
-            var orderId = Request.QueryString["id"].ToInt(0);
+            orderId = Request.QueryString["id"].ToInt(0);
 
             if (orderId == 0)
             {
@@ -630,6 +641,12 @@ namespace IM_PJ
             }
             #endregion
 
+            #region Lấy thông tin parameter in đơn hàng
+            if (!String.IsNullOrEmpty(Request.QueryString["merge"]))
+                merger = Request.QueryString["merge"].ToInt(0);
+            #endregion
+            #endregion
+
             #region Kiểm tra thông tin đơn hàng
             var isOrderDetailEmpty = OrderDetailController.isOrderDetailEmpty(orderId);
 
@@ -638,13 +655,6 @@ namespace IM_PJ
                 ltrPrintInvoice.Text = "Đơn hàng đang rỗng!";
                 return;
             }
-            #endregion
-
-            #region Lấy thông tin parameter in đơn hàng
-            var merger = 0;
-
-            if (!String.IsNullOrEmpty(Request.QueryString["merge"]))
-                merger = Request.QueryString["merge"].ToInt(0);
             #endregion
 
             #region Lấy dữ liệu cho việc tạo hình ảnh order

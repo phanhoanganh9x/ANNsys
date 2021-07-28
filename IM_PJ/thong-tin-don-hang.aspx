@@ -3244,8 +3244,8 @@
                 //#endregion
 
                 //#region Có sẵn chiết khấu
-                if (defaultDiscount !== undefined && discount < defaultDiscount)
-                    discount = defaultDiscount;
+                //if (defaultDiscount !== undefined && discount < defaultDiscount)
+                //    discount = defaultDiscount;
                 //#endregion
 
                 return discount;

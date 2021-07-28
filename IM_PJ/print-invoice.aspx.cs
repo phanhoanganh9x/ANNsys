@@ -59,7 +59,7 @@ namespace IM_PJ
         /// <param name="orderId"></param>
         /// <param name="merge">0: In chi tiết | 1: In gộp</param>
         /// <param name="defaultDiscount">Sử dụng cho các đơn hàng có 1 chiết khấu</param>
-        private string _createOrderDetailHtml(int orderId, int merge, double defaultDiscount = 0)
+        private string _createOrderDetailHtml(int orderId, int merge, double defaultDiscount)
         {
             try
             {
@@ -338,8 +338,12 @@ namespace IM_PJ
         /// </summary>
         public void LoadData()
         {
+            #region Lấy thông tin query params
+            var orderId = 0;
+            var merger = 0;
+
             #region Check ID đơn hàng
-            var orderId = Request.QueryString["id"].ToInt(0);
+            orderId = Request.QueryString["id"].ToInt(0);
 
             if (orderId == 0)
             {
@@ -356,6 +360,12 @@ namespace IM_PJ
             }
             #endregion
 
+            #region Lấy thông tin parameter in đơn hàng
+            if (!String.IsNullOrEmpty(Request.QueryString["merge"]))
+                merger = Request.QueryString["merge"].ToInt(0);
+            #endregion
+            #endregion
+
             #region Kiểm tra thông tin đơn hàng
             var isOrderDetailEmpty = OrderDetailController.isOrderDetailEmpty(orderId);
 
@@ -364,13 +374,6 @@ namespace IM_PJ
                 ltrPrintInvoice.Text = "Đơn hàng đang rỗng!";
                 return;
             }
-            #endregion
-
-            #region Lấy thông tin parameter in đơn hàng
-            var merge = 0;
-
-            if (!String.IsNullOrEmpty(Request.QueryString["merge"]))
-                merge = Request.QueryString["merge"].ToInt(0);
             #endregion
 
             var error = String.Empty;
@@ -386,7 +389,7 @@ namespace IM_PJ
             orderHtml.AppendLine("    <div class='table-1'>");
 
             #region Tiêu đề
-            if (merge == 1)
+            if (merger == 1)
                 orderHtml.AppendLine("        <h1>HÓA ĐƠN #" + order.ID + "<p class='merge-alert'>(Đã gộp sản phẩm)<p></h1>");
             else
                 orderHtml.AppendLine("        <h1>HÓA ĐƠN #" + order.ID + "</h1>");
@@ -464,7 +467,7 @@ namespace IM_PJ
 
             // Thông tin chi tiết đơn hàng
             var defaultDiscount = order.DiscountPerProduct.HasValue ? order.DiscountPerProduct.Value : 0;
-            orderHtml.AppendLine(_createOrderDetailHtml(orderId, merge, defaultDiscount));
+            orderHtml.AppendLine(_createOrderDetailHtml(orderId, merger, defaultDiscount));
 
             #region Thông tin tổng hợp đơn hàng
             orderHtml.AppendLine("    <div class='table-3'>");

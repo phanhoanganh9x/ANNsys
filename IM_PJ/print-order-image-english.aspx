@@ -4,13 +4,13 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
 <meta charset="utf-8" />
-    <link rel="stylesheet" href="/App_Themes/Ann/css/print-order-image.css?v=28062021" type="text/css"/>
+    <link rel="stylesheet" href="/App_Themes/Ann/css/print-order-image-english.css?v=202107281816" type="text/css"/>
     <link rel="stylesheet" href="/App_Themes/Ann/barcode/style.css" type="text/css"/>
     <link rel="stylesheet" href="/App_Themes/Ann/css/responsive.css" type="text/css"/>
     <script type="text/javascript" src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
     <script type="text/javascript" src="/App_Themes/Ann/js/html2canvas.js"></script>
     <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=28062021"></script>
-    <title>Lấy ảnh đơn hàng Tiếng Anh</title>    
+    <title>Lấy ảnh đơn hàng Tiếng Anh</title>
     <style>
         h3 {
             text-align: center;
@@ -102,7 +102,7 @@
             let currencyCode = 'USD';
             let query = window.location.search.substr(1).split('&').filter(x => x);
             let $dllCurrency = $("#dllCurrency");
-            
+
             query.forEach((value, index) => {
                 if (value.match(/^currencyCode=.*$/g)) {
                     currencyCode = value.split('=')[1] || '';
