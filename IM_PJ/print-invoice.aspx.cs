@@ -54,7 +54,7 @@ namespace IM_PJ
         /// Date:   2021-07-19
         /// Author: Binh-TT
         ///
-        /// Đối ứng triết khấu từng dòng
+        /// Đối ứng chiết khấu từng dòng
         /// </summary>
         /// <param name="orderId"></param>
         /// <param name="merge">0: In chi tiết | 1: In gộp</param>
@@ -334,7 +334,7 @@ namespace IM_PJ
         /// Date:   2021-07-19
         /// Author: Binh-TT
         ///
-        /// Đối ứng triết khấu từng dòng
+        /// Đối ứng chiết khấu từng dòng
         /// </summary>
         public void LoadData()
         {

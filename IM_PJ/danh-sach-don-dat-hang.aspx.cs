@@ -86,7 +86,7 @@ namespace IM_PJ
         }
 
         /// <summary>
-        /// Cài đặt bộ lọc triết khấu
+        /// Cài đặt bộ lọc chiết khấu
         /// </summary>
         private void _initDiscount()
         {

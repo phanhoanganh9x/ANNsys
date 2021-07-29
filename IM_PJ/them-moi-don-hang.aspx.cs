@@ -222,7 +222,7 @@ namespace IM_PJ
         /// Date:   2021-07-19
         /// Author: Binh-TT
         ///
-        /// Đối ứng triết khấu từng dòng
+        /// Đối ứng chiết khấu từng dòng
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -352,7 +352,7 @@ namespace IM_PJ
 
                     string totalPrice = hdfTotalPrice.Value.ToString();
                     string totalPriceNotDiscount = hdfTotalPriceNotDiscount.Value;
-                    // 2021-07-19: Đối ứng triết khấu từng dòng
+                    // 2021-07-19: Đối ứng chiết khấu từng dòng
                     var totalDiscount = Convert.ToDouble(hdfTotalDiscount.Value);
                     string FeeShipping = pFeeShip.Value.ToString();
 
@@ -391,9 +391,9 @@ namespace IM_PJ
                         WayIn = WayIn,
                         CreatedDate = currentDate,
                         CreatedBy = username,
-                        // 2021-07-19: Đối ứng triết khấu từng dòng
+                        // 2021-07-19: Đối ứng chiết khấu từng dòng
                         DiscountPerProduct = 0,
-                        // 2021-07-19: Đối ứng triết khấu từng dòng
+                        // 2021-07-19: Đối ứng chiết khấu từng dòng
                         TotalDiscount = totalDiscount,
                         FeeShipping = FeeShipping,
                         PaymentType = PaymentType,
@@ -486,7 +486,7 @@ namespace IM_PJ
                             string ProductVariable = itemValue[8];
                             double Price = Convert.ToDouble(itemValue[9]);
                             string ProductVariableSave = itemValue[10];
-                            // 2021-07-19: Đối ứng triết khấu từng dòng
+                            // 2021-07-19: Đối ứng chiết khấu từng dòng
                             var discount = Convert.ToDouble(itemValue[12]);
                             #endregion
 
@@ -507,7 +507,7 @@ namespace IM_PJ
                                 Quantity = Quantity,
                                 Price = Price,
                                 Status = 1,
-                                // 2021-07-19: Đối ứng triết khấu từng dòng
+                                // 2021-07-19: Đối ứng chiết khấu từng dòng
                                 DiscountPrice = discount,
                                 ProductType = ProductType,
                                 CreatedDate = currentDate,

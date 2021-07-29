@@ -142,7 +142,7 @@
                                                 <th class="sku-item">Mã</th>
                                                 <th class="variable-item">Thuộc tính</th>
                                                 <th class="price-item">Giá</th>
-                                                <th class="discount-item">Triết khấu</th>
+                                                <th class="discount-item">Chiết khấu</th>
                                                 <th class="quantity-item">Kho</th>
                                                 <th class="quantity-item">Số lượng</th>
                                                 <th class="total-item">Thành tiền</th>
@@ -259,7 +259,7 @@
             <asp:HiddenField ID="hdfTotalPriceNotDiscount" runat="server" />
             <asp:HiddenField ID="hdfListProduct" runat="server" />
             <asp:HiddenField ID="hdfOrderNote" runat="server" />
-            <%-- Khách hàng có nằm trong nhóm triết khấu không --%>
+            <%-- Khách hàng có nằm trong nhóm chiết khấu không --%>
             <asp:HiddenField ID="hdfIsDiscount" runat="server" />
             <%-- Chiết khấu của nhóm --%>
             <asp:HiddenField ID="hdfDiscountAmount" runat="server" />
@@ -1257,7 +1257,7 @@
              * Date:   2021-07-19
              * Author: Binh-TT
              *
-             * Đối ứng triết khấu từng dòng
+             * Đối ứng chiết khấu từng dòng
              * ============================================================
              */
             function payAll() {
@@ -1288,7 +1288,7 @@
                     var count = 0;
                     var ordertype = $(".customer-type").val();
                     $(".product-result").each(function () {
-                        // 2021-07-19: Đối ứng triết khấu từng dòng
+                        // 2021-07-19: Đối ứng chiết khấu từng dòng
                         let $discount = $(this).find(".discount");
 
                         var id = $(this).attr("data-productid");
@@ -1304,7 +1304,7 @@
                         var quantity = parseFloat($(this).find(".in-quantity").val());
                         var quantityInstock = parseFloat($(this).attr("data-quantityinstock"));
                         var productvariableid = $(this).attr("data-productvariableid");
-                        // 2021-07-19: Đối ứng triết khấu từng dòng
+                        // 2021-07-19: Đối ứng chiết khấu từng dòng
                         let discount = +$discount.val().replace(/,/g, '') || 0;
 
                         if (quantity > 0) {
@@ -1422,18 +1422,18 @@
             }
 
             /* ============================================================
-             * Tính lại triết khấu
+             * Tính lại chiết khấu
              *
              * Date:   2021-07-19
              * Author: Binh-TT
              *
-             * Đối ứng triết khấu từng dòng
+             * Đối ứng chiết khấu từng dòng
              * ============================================================
              */
             function refreshDiscount() {
                 swal({
                     title: "Xác nhận",
-                    text: "Bạn muốn tính lại triết khấu cho tất sản phẩm?",
+                    text: "Bạn muốn tính lại chiết khấu cho tất sản phẩm?",
                     type: "warning",
                     showCancelButton: true,
                     closeOnConfirm: true,
@@ -1449,7 +1449,7 @@
              * Tính lại tiền đơn hàng
              * Được gọi tại:
              * 1) Thêm sản phẩm
-             * 2) Triết khấu
+             * 2) chiết khấu
              * 3) Coupon
              * 4) Đổi trả hàng
              * 5) Phí khác
@@ -1458,7 +1458,7 @@
              * Date:   2021-07-19
              * Author: Binh-TT
              *
-             * Đối ứng triết khấu từng dòng
+             * Đối ứng chiết khấu từng dòng
              * ============================================================
              */
             function getAllPrice(isPayAllCall) {
@@ -1477,7 +1477,7 @@
                 ,   subTotal = 0;
 
                 if ($products.length > 0) {
-                    // Fix bug: Tính triết khấu
+                    // Fix bug: Tính chiết khấu
                     $products.find('.in-quantity').each(function (index, item) {
                         totalQuantity += (+item.value || 0);
                     });
@@ -1494,7 +1494,7 @@
                             let discount = +$discount.val().replace(/,/g, '') || 0;
                             let totalRow = 0;
 
-                            // Tính triết khấu
+                            // Tính chiết khấu
                             if (!(typeof (isPayAllCall) === "boolean" && isPayAllCall))
                             {
                                 let tempDiscount = getDiscount(totalQuantity);
@@ -1582,7 +1582,7 @@
              * Date:   2021-07-19
              * Author: Binh-TT
              *
-             * Đối ứng triết khấu từng dòng
+             * Đối ứng chiết khấu từng dòng
              * ============================================================
              */
             function countTotal() {
@@ -2126,7 +2126,7 @@
              * Date:   2021-07-19
              * Author: Binh-TT
              *
-             * Đối ứng triết khấu từng dòng
+             * Đối ứng chiết khấu từng dòng
              * ============================================================
              */
             function onBlurDiscount($input) {
@@ -2223,7 +2223,7 @@
 
                 swal({
                     title: "Xác nhận",
-                    text: "Bạn muốn triết khấu <strong>" + formatThousands(discount, ',') + " đ</strong> cho tất sản phẩm?",
+                    text: "Bạn muốn chiết khấu <strong>" + formatThousands(discount, ',') + " đ</strong> cho tất sản phẩm?",
                     type: "warning",
                     showCancelButton: true,
                     closeOnConfirm: true,
@@ -2248,7 +2248,7 @@
                 //#endregion
             }
             /* ============================================================
-             * Đối ứng triết khấu từng dòng (END)
+             * Đối ứng chiết khấu từng dòng (END)
              * ============================================================
              */
         </script>

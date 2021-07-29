@@ -213,7 +213,7 @@ function addHtmlProductResult(item) {
         html += "   <td class='price-item gia-san-pham' data-price='" + item.RegularPrice + "'>" + formatThousands(item.RegularPrice, ',') + "</td>";
     }
 
-    //#region Triết khấu
+    //#region chiết khấu
     let discount = 0;
 
     if (typeof getDiscount === "function")

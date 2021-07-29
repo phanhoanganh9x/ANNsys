@@ -291,7 +291,7 @@ namespace IM_PJ
             public string stringGiabanle { get; set; }
             public double Giabansi { get; set; }
             public string stringGiabansi { get; set; }
-            // 2021-07-19: Đối ứng triết khấu từng dòng
+            // 2021-07-19: Đối ứng chiết khấu từng dòng
             public double Discount { get; set; }
         }
 
@@ -324,7 +324,7 @@ namespace IM_PJ
         /// Date:   2021-07-19
         /// Author: Binh-TT
         ///
-        /// Đối ứng triết khấu từng dòng
+        /// Đối ứng chiết khấu từng dòng
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -464,7 +464,7 @@ namespace IM_PJ
                         bool IsHidden = false;
                         int WayIn = 1;
 
-                        // 2021-07-19: Đối ứng triết khấu từng dòng
+                        // 2021-07-19: Đối ứng chiết khấu từng dòng
                         var totalDiscount = Convert.ToDouble(hdfTotalDiscount.Value);
                         string FeeShipping = pFeeShip.Value.ToString();
                         var couponID = hdfCouponID.Value.ToInt(0);
@@ -492,7 +492,7 @@ namespace IM_PJ
                             WayIn = WayIn,
                             CreatedDate = currentDate,
                             CreatedBy = username,
-                            // 2021-07-19: Đối ứng triết khấu từng dòng
+                            // 2021-07-19: Đối ứng chiết khấu từng dòng
                             DiscountPerProduct = 0,
                             TotalDiscount = totalDiscount,
                             FeeShipping = FeeShipping,
@@ -576,7 +576,7 @@ namespace IM_PJ
                                         Quantity = item.QuantityInstock,
                                         Price = item.Giabanle,
                                         Status = 1,
-                                        // 2021-07-19: Đối ứng triết khấu từng dòng
+                                        // 2021-07-19: Đối ứng chiết khấu từng dòng
                                         DiscountPrice = item.Discount,
                                         ProductType = item.ProductType,
                                         CreatedDate = currentDate,

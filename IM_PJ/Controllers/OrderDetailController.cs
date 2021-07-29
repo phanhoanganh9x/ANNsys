@@ -462,7 +462,7 @@ namespace IM_PJ.Controllers
         /// Date:   2021-07-19
         /// Author: Binh-TT
         ///
-        /// Đối ứng triết khấu từng dòng
+        /// Đối ứng chiết khấu từng dòng
         /// </summary>
         /// <param name="orderId"></param>
         /// <returns></returns>

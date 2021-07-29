@@ -65,7 +65,7 @@ namespace IM_PJ
         /// Date:   2021-07-19
         /// Author: Binh-TT
         ///
-        /// Đối ứng triết khấu từng dòng
+        /// Đối ứng chiết khấu từng dòng
         /// </summary>
         /// <param name="orderId"></param>
         /// <param name="merger">false: Ảnh chi tiết | true: Ảnh gộp</param>
@@ -298,7 +298,7 @@ namespace IM_PJ
         /// Date:   2021-07-19
         /// Author: Binh-TT
         ///
-        /// Đối ứng triết khấu từng dòng
+        /// Đối ứng chiết khấu từng dòng
         /// </summary>
         /// <param name="data"></param>
         /// <param name="pagination"></param>
@@ -593,7 +593,7 @@ namespace IM_PJ
         /// Date:   2021-07-19
         /// Author: Binh-TT
         ///
-        /// Đối ứng triết khấu từng dòng
+        /// Đối ứng chiết khấu từng dòng
         /// </summary>
         public void LoadData()
         {
@@ -685,7 +685,7 @@ namespace IM_PJ
             data.currencyRate = currency.SellingRate;
             // Tổng giá trị đơn hàng
             data.totalPrice = Convert.ToDecimal(order.TotalPriceNotDiscount);
-            // Triết khấu mặc định
+            // chiết khấu mặc định
             data.defaultDiscount = Convert.ToDecimal(order.DiscountPerProduct);
             // Tổng chiết khấu
             data.totalDiscount = Convert.ToDecimal(order.TotalDiscount);

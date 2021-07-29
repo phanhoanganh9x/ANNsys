@@ -22,7 +22,7 @@ namespace IM_PJ.Models.Pages.print_order_image
         public string note { get; set; }
         public int totalQuantity { get; set; }
         public decimal totalPrice { get; set; }
-        // Dùng cho các đơn hàng củ không có triết khấu từng dòng
+        // Dùng cho các đơn hàng củ không có chiết khấu từng dòng
         public decimal defaultDiscount { get; set; }
         public decimal totalDiscount { get; set; }
         public decimal shippingFee { get; set; }
