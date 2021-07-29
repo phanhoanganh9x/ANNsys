@@ -91,38 +91,6 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>Tỉnh thành</label>
-                                            <select id="ddlProvince" class="form-control" disabled="disabled">
-                                                <option value="" title="Chọn Tỉnh Thành">Chọn tỉnh Thành</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>Quận huyện</label>
-                                            <select id="ddlDistrict" class="form-control" disabled="disabled">
-                                                <option value="" title="Chọn quận huyện">Chọn quận huyện</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>Phường xã</label>
-                                            <select id="ddlWard" class="form-control" disabled="disabled">
-                                                <option value="" title="Chọn phường xã">Chọn phường xã</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>Địa chỉ</label>
-                                            <input type="text" id="txtAddress" class="form-control capitalize" placeholder="Địa chỉ khách hàng" disabled="disabled"/>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
                                     <div id="divCustomerView" class="col-md-12 view-detail">
                                     </div>
                                 </div>
@@ -207,6 +175,7 @@
                                                 <th class="sku-item">Mã</th>
                                                 <th class="variable-item">Thuộc tính</th>
                                                 <th class="price-item">Giá</th>
+                                                <th class="discount-item">Triết khấu</th>
                                                 <th class="quantity-item">Kho</th>
                                                 <th class="quantity-item">Số lượng</th>
                                                 <th class="total-item">Thành tiền</th>
@@ -298,6 +267,14 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div id="row-order-note" class="form-row">
+                                    <div class="row-left">
+                                        Ghi chú đơn hàng
+                                    </div>
+                                    <div class="row-right">
+                                        <asp:TextBox ID="txtOrderNote" runat="server" CssClass="form-control" placeholder="Ghi chú" disabled="disabled"></asp:TextBox>
+                                    </div>
+                                </div>
                                 <div id="row-createdby" class="form-row">
                                     <div class="row-left">
                                         Nhân viên phụ trách
@@ -344,6 +321,6 @@
         <script type="text/javascript" src="/App_Themes/Ann/js/services/common/order-service.js?v=202101081451"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/services/thong-tin-don-dat-hang/thong-tin-don-dat-hang-service.js?v=202101081451"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/controllers/thong-tin-don-dat-hang/thong-tin-don-dat-hang-controller.js?v=202101081451"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/pages/thong-tin-don-dat-hang/thong-tin-don-dat-hang.js?v=202107280142"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/pages/thong-tin-don-dat-hang/thong-tin-don-dat-hang.js?v=202107291639"></script>
     </telerik:RadScriptBlock>
 </asp:Content>

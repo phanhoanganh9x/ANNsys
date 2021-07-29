@@ -8,18 +8,18 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 
-IF (EXISTS (SELECT NULL AS DUMMY 
-            FROM INFORMATION_SCHEMA.TABLES 
-            WHERE TABLE_SCHEMA = 'dbo' 
+IF (EXISTS (SELECT NULL AS DUMMY
+            FROM INFORMATION_SCHEMA.TABLES
+            WHERE TABLE_SCHEMA = 'dbo'
             AND  TABLE_NAME = 'PreOrderDetail'))
 BEGIN
     DROP TABLE [dbo].[PreOrderDetail]
 END
 GO
 
-IF (EXISTS (SELECT NULL AS DUMMY 
-            FROM INFORMATION_SCHEMA.TABLES 
-            WHERE TABLE_SCHEMA = 'dbo' 
+IF (EXISTS (SELECT NULL AS DUMMY
+            FROM INFORMATION_SCHEMA.TABLES
+            WHERE TABLE_SCHEMA = 'dbo'
             AND  TABLE_NAME = 'PreOrder'))
 BEGIN
     DROP TABLE [dbo].[PreOrder]
@@ -46,7 +46,7 @@ CREATE TABLE [dbo].[PreOrder](
     [ModifiedBy] [nvarchar](15) NOT NULL,
     [ModifiedDate] [datetime] NOT NULL,
     [Timestamp] [timestamp] NOT NULL,
- CONSTRAINT [PK_PreOrder] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_PreOrder] PRIMARY KEY CLUSTERED
 (
     [Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
@@ -115,4 +115,14 @@ GO
 
 ALTER TABLE [dbo].[PreOrder]
 ADD [Total] AS ISNULL(ISNULL([PreOrder].[TotalPrice], 0) - ISNULL([PreOrder].[TotalDiscount], 0) - ISNULL([PreOrder].[CouponPrice], 0) + ISNULL([PreOrder].ShippingFee, 0), 0)
+GO
+
+-- =============================================
+-- Author:      Binh-TT
+-- Create date: 2021-07-27
+-- Description: Add the discount column
+-- ==========================================
+ALTER TABLE [dbo].[PreOrder] ALTER COLUMN [DeliveryAddressId] [bigint] NULL
+GO
+ALTER TABLE [dbo].[PreOrder] ADD [Note] [NVARCHAR](MAX) NULL
 GO

@@ -82,6 +82,11 @@ GO
 ALTER TABLE [dbo].[PreOrderDetail] CHECK CONSTRAINT [FK_PreOrderDetail_ProductVariation]
 GO
 
+-- =============================================
+-- Author:      Binh-TT
+-- Create date: 2021-07-27
+-- Description: Add the discount column
+-- ==========================================
 ALTER TABLE [dbo].[PreOrderDetail] ADD [Discount] [Money] NULL
 GO
 
