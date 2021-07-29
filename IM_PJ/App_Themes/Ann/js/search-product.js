@@ -214,13 +214,22 @@ function addHtmlProductResult(item) {
     }
 
     //#region Triết khấu
+    let discount = 0;
+
+    if (typeof getDiscount === "function")
+    {
+        let totalQuantity = +$("input[id$='_hdfTotalQuantity']").val() || 0;
+
+        discount = getDiscount(totalQuantity);
+    }
+
     html += "    <td class='discount-item'> ";
     html += "        <input type='text' class='form-control discount' ";
     html += "               onclick='this.select()' ";
     html += "               onblur='onBlurDiscount($(this))' ";
     html += "               onkeyup='pressKeyDiscount($(this))' ";
     html += "               onkeypress='return event.charCode >= 48 && event.charCode <= 57' ";
-    html += "               value='0' data-discount='0'/>";
+    html += "               value='" + formatThousands(discount, ",") + "' />";
     html += "   </td>";
     //#endregion
 
@@ -270,11 +279,10 @@ function reIndex(reverse) {
 function checkQuantiy(obj) {
     var current = obj.val();
 
-    if (current == 0 || current === "" || current === null) {
+    if (current == 0 || current === "" || current === null)
         obj.val("1");
-    }
 
-    getAllPrice();
+    getAllPrice(true);
 }
 
 function clickrow(obj) {
@@ -382,7 +390,7 @@ function addProduct(products) {
         }
     });
 
-    getAllPrice();
+    getAllPrice(true);
     $("#txtSearch").val("");
 }
 

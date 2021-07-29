@@ -355,6 +355,7 @@
     <Content Include="App_Themes\Ann\css\pages\thong-ke-ghtk\thong-ke-ghtk.css" />
     <Content Include="App_Themes\Ann\css\pages\thong-tin-don-dat-hang\thong-tin-don-dat-hang.css" />
     <Content Include="App_Themes\Ann\css\print-delivery.css" />
+    <Content Include="App_Themes\Ann\css\print-order-image-english.css" />
     <Content Include="App_Themes\Ann\css\print-return-order-image.css" />
     <Content Include="App_Themes\Ann\css\print-order-image.css" />
     <Content Include="App_Themes\Ann\css\reset.css" />
@@ -1137,6 +1138,15 @@
     <Compile Include="Models\NotifyUser.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Pages\print-order-image-english\CouponModel.cs" />
+    <Compile Include="Models\Pages\print-order-image-english\CustomerModel.cs" />
+    <Compile Include="Models\Pages\print-order-image-english\OrderDetailModel.cs" />
+    <Compile Include="Models\Pages\print-order-image-english\OrderMergerDetailModel.cs" />
+    <Compile Include="Models\Pages\print-order-image-english\OrderModel.cs" />
+    <Compile Include="Models\Pages\print-order-image-english\OtherFeeModel.cs" />
+    <Compile Include="Models\Pages\print-order-image-english\PaginationModel.cs" />
+    <Compile Include="Models\Pages\print-order-image-english\RefundOrderModel.cs" />
+    <Compile Include="Models\Pages\print-order-image-english\StaffModel.cs" />
     <Compile Include="Models\Pages\print-order-image\CouponModel.cs" />
     <Compile Include="Models\Pages\print-order-image\ShopModel.cs" />
     <Compile Include="Models\Pages\print-order-image\CustomerModel.cs" />

@@ -445,7 +445,7 @@
                                         <a href="javascript:;" class="btn btn-cal-discount link-btn" onclick="refreshDiscount()"><i class="fa fa-refresh" aria-hidden="true"></i> Tính lại</a>
                                         <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull input-discount" Skin="MetroTouch"
                                             ID="pDiscount" MinValue="0" NumberFormat-GroupSizes="3" Value="0" NumberFormat-DecimalDigits="0"
-                                            onblur="refreshDiscount()" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
+                                            onblur="onBlurPDiscount($(this))" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
                                         </telerik:RadNumericTextBox>
                                     </div>
                                 </div>
@@ -2252,32 +2252,6 @@
              * ============================================================
              */
             function refreshDiscount() {
-                let $product = $(".product-result");
-
-                //#region Xóa đi giảm giá củ của đơn hàng
-                if ($product.length == 0)
-                    return;
-
-                $product.each(function (index, item) {
-                    try {
-                        let discountDOM = item.querySelector('.discount');
-
-                        discountDOM.dataset["discount"] = 0;
-                    }
-                    catch (err) {
-                        console.error(err.mesage);
-                    }
-                });
-                //#endregion
-
-                //#region Tính lại chiết khấu
-                let $discount = $("#<%=pDiscount.ClientID%>");
-
-                let discount = +$discount.val().replace(/,/g, '') || 0;
-
-                if (discount == 0 && $discount.val() === '')
-                    $discount.val(0);
-
                 swal({
                     title: "Xác nhận",
                     text: "Bạn muốn tính lại triết khấu cho tất sản phẩm?",
@@ -2287,21 +2261,9 @@
                     cancelButtonText: "Đợi em xem tí!",
                     confirmButtonText: "Chắc chắn sếp ơi..",
                 }, function (isConfirm) {
-                    if (isConfirm) {
-                        $product.each(function (index, item) {
-                            let discountDOM = item.querySelector('.discount');
-
-                            if (discount != 0)
-                                discountDOM.value = formatThousands(discount, ',');
-                            else
-                                discountDOM.value = 0;
-                        });
-
-                        $discount.val(0);
+                    if (isConfirm)
                         getAllPrice();
-                    }
                 });
-                //#endregion
             }
 
             /* ============================================================
@@ -2354,8 +2316,7 @@
                             // Tính triết khấu
                             if (!(typeof (isPayAllCall) === "boolean" && isPayAllCall))
                             {
-                                let defaultDiscount = +$discount.data("discount") || 0;
-                                let tempDiscount = getDiscount(totalQuantity, defaultDiscount);
+                                let tempDiscount = getDiscount(totalQuantity);
 
                                 if (discount < tempDiscount)
                                 {
@@ -3177,7 +3138,7 @@
                     $input.val(formatThousands(value, ','));
                 }
 
-                getAllPrice();
+                getAllPrice(true);
             }
 
             function pressKeyDiscount($input) {
@@ -3208,7 +3169,7 @@
             }
 
             // Lấy ra mức chiết khấu của khách hàng
-            function getDiscount(totalQuantity, defaultDiscount) {
+            function getDiscount(totalQuantity) {
                 let discount = 0;
 
                 //#region Lấy các mức chiết khấu của hệ thống
@@ -3243,12 +3204,46 @@
                 }
                 //#endregion
 
-                //#region Có sẵn chiết khấu
-                if (defaultDiscount !== undefined && discount < defaultDiscount)
-                    discount = defaultDiscount;
-                //#endregion
-
                 return discount;
+            }
+
+            function onBlurPDiscount($discount) {
+                let $product = $(".product-result");
+
+                if ($product.length == 0)
+                    return;
+
+                //#region Tính lại chiết khấu
+                let discount = +$discount.val().replace(/,/g, '') || 0;
+
+                if (discount == 0 && $discount.val() === '')
+                    $discount.val(0);
+
+                swal({
+                    title: "Xác nhận",
+                    text: "Bạn muốn triết khấu <strong>" + formatThousands(discount, ',') + " đ</strong> cho tất sản phẩm?",
+                    type: "warning",
+                    showCancelButton: true,
+                    closeOnConfirm: true,
+                    cancelButtonText: "Đợi em xem tí!",
+                    confirmButtonText: "Chắc chắn sếp ơi..",
+                    html: true
+                }, function (isConfirm) {
+                    if (isConfirm) {
+                        $product.each(function (index, item) {
+                            let discountDOM = item.querySelector('.discount');
+
+                            if (discount != 0)
+                                discountDOM.value = formatThousands(discount, ',');
+                            else
+                                discountDOM.value = 0;
+                        });
+
+                        $discount.val(0);
+                        getAllPrice(true);
+                    }
+                });
+                //#endregion
             }
             /* ============================================================
              * Đối ứng triết khấu từng dòng (END)

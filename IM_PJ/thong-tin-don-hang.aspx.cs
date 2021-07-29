@@ -526,7 +526,7 @@ namespace IM_PJ
                         html.AppendLine(String.Format("                onblur='onBlurDiscount($(this))'"));
                         html.AppendLine(String.Format("                onkeyup='pressKeyDiscount($(this))'"));
                         html.AppendLine(String.Format("                onkeypress='return event.charCode >= 48 && event.charCode <= 57'"));
-                        html.AppendLine(String.Format("                value='{0:N0}' data-discount='{0}'/>", discount));
+                        html.AppendLine(String.Format("                value='{0:N0}' />", discount));
                         html.AppendLine(String.Format("    </td>"));
                         html.AppendLine(String.Format("    <td class='quantity-item soluong'>{0}</td>", QuantityInstockString));
                         html.AppendLine(String.Format("    <td class='quantity-item'>"));
