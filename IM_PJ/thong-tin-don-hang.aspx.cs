@@ -340,6 +340,7 @@ namespace IM_PJ
                         int ProductType = Convert.ToInt32(item.ProductType);
                         double ItemPrice = Convert.ToDouble(item.Price);
                         string SKU = item.SKU;
+                        var costOfGoods = 0d;
                         double Giacu = 0;
                         double Giabansi = 0;
                         double Giabanle = 0;
@@ -366,6 +367,9 @@ namespace IM_PJ
                             var product = ProductController.GetBySKU(SKU);
                             if (product != null)
                             {
+                                // Giá gốc
+                                costOfGoods = Convert.ToDouble(product.CostOfGood);
+
                                 double mainstock = PJUtils.TotalProductQuantityInstock(1, SKU);
 
                                 if (customerType == 1)
@@ -407,6 +411,8 @@ namespace IM_PJ
                             if (productvariable != null)
                             {
                                 SKU = productvariable.SKU.Trim().ToUpper();
+                                // Giá gốc
+                                costOfGoods = Convert.ToDouble(productvariable.CostOfGood);
 
                                 double mainstock = PJUtils.TotalProductQuantityInstock(1, SKU);
 
@@ -494,6 +500,7 @@ namespace IM_PJ
                         #region Khởi tạo HTML dòng đơn hàng
                         html.AppendLine(String.Format("<tr ondblclick='clickrow($(this))' class='product-result'"));
                         html.AppendLine(String.Format("        data-orderdetailid='{0}'", item.ID));
+                        html.AppendLine(String.Format("        data-cost-of-goods='{0}'", costOfGoods));
                         html.AppendLine(String.Format("        data-giabansi='{0}'", Giabansi));
                         html.AppendLine(String.Format("        data-giabanle='{0}'", Giabanle));
                         html.AppendLine(String.Format("        data-quantityinstock='{0}'", QuantityInstock));
@@ -523,7 +530,7 @@ namespace IM_PJ
                         html.AppendLine(String.Format("    <td class='discount-item'>"));
                         html.AppendLine(String.Format("        <input type='text' class='form-control discount'"));
                         html.AppendLine(String.Format("                onclick='this.select()'"));
-                        html.AppendLine(String.Format("                onblur='onBlurDiscount($(this))'"));
+                        html.AppendLine(String.Format("                onchange='onChangeDiscount($(this))'"));
                         html.AppendLine(String.Format("                onkeyup='pressKeyDiscount($(this))'"));
                         html.AppendLine(String.Format("                onkeypress='return event.charCode >= 48 && event.charCode <= 57'"));
                         html.AppendLine(String.Format("                value='{0:N0}' />", discount));
@@ -532,7 +539,7 @@ namespace IM_PJ
                         html.AppendLine(String.Format("    <td class='quantity-item'>"));
                         html.AppendLine(String.Format("        <input type='text' class='form-control in-quantity'"));
                         html.AppendLine("                              pattern='[0-9]{1,3}'");
-                        html.AppendLine(String.Format("                onblur='checkQuantiy($(this))'"));
+                        html.AppendLine(String.Format("                onchange='checkQuantiy($(this))'"));
                         html.AppendLine(String.Format("                onkeyup='pressKeyQuantity($(this))'"));
                         html.AppendLine(String.Format("                onkeypress='return event.charCode >= 48 && event.charCode <= 57'"));
                         html.AppendLine(String.Format("                value='{0}'/>", item.Quantity));

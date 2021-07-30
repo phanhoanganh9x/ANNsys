@@ -11,6 +11,10 @@
         .coupon .right {
             display: flex;
         }
+
+        .red {
+            background-color: #F44336!important;
+        }
     </style>
     <asp:Panel ID="parent" runat="server">
         <main id="main-wrap">
@@ -166,7 +170,7 @@
                                 <div class="post-row clear">
                                     <div class="left">Chiết khấu</div>
                                     <div class="right">
-                                        <a href="javascript:;" class="btn btn-cal-discount link-btn" onclick="refreshDiscount()"><i class="fa fa-refresh" aria-hidden="true"></i> Tính lại</a>
+                                        <a href="javascript:;" class="btn btn-cal-discount link-btn" onclick="refreshDiscount()"><i class="fa fa-refresh" aria-hidden="true"></i> Gợi ý</a>
                                         <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull input-discount" Skin="MetroTouch"
                                             ID="pDiscount" MinValue="0" NumberFormat-GroupSizes="3" Value="0" NumberFormat-DecimalDigits="0"
                                             onblur="onBlurPDiscount($(this))" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
@@ -650,16 +654,27 @@
             }
 
             function _checkDiscount() {
-                let $discount = $("#<%=pDiscount.ClientID%>");
-                let discount = parseFloat($discount.val().replace(/\,/g, ''));
-                let $role = $("#<%=hdfRoleID.ClientID%>");
+                let $products = $(".product-result");
 
-                if (discount > 20000 && $role.val() != 0) {
-                    $("#closeOrderInfo").click();
-                    $discount.select();
+                let errorDiscount = false;
+
+                $products.each(function () {
+                    errorDiscount = Boolean($(this).attr("data-error-discount"));
+
+                    if (errorDiscount)
+                        return false;
+                });
+
+                if (errorDiscount)
+                {
+                    let message = "";
+
+                    message += "Chiết khấu sao nhiều vậy nè?";
+                    message += "<br><br>Nếu có lý do thì báo chị Ngọc nha!";
+
                     swal({
                         title: "Lạ vậy:",
-                        text: "Sao chiết khấu lại lớn hơn <strong>20.000đ</strong> nè?<br><br>Nếu có lý do thì báo chị Ngọc nha!",
+                        text: message,
                         type: "warning",
                         showCancelButton: false,
                         confirmButtonColor: "#DD6B55",
@@ -884,7 +899,7 @@
                 fees.push(fee);
                 $("#fee-list").before(createFeeHTML(fee));
                 $("#<%=hdfOtherFees.ClientID%>").val(JSON.stringify(fees));
-                getAllPrice();
+                getAllPrice(true);
             }
 
             // Update Fee
@@ -925,7 +940,7 @@
                     }
                 });
                 $("#<%=hdfOtherFees.ClientID%>").val(JSON.stringify(fees));
-                getAllPrice();
+                getAllPrice(true);
             }
 
             function init() {
@@ -1095,21 +1110,22 @@
                 else {
                     $("#<%=pFeeShip.ClientID%>").prop('disabled', true).css("background-color", "#eeeeee").val(0);
                     swal("Thông báo", "Đã chọn miễn phí vận chuyển cho đơn hàng này<br><strong>Hãy ghi chú lý do miễn phí vận chuyển!!!</strong>", "success");
-                    getAllPrice();
+                    getAllPrice(true);
                     $("#calfeeship").html("<i class='fa fa-pencil-square-o' aria-hidden='true'></i> Tính phí").css("background-color", "#f87703");
                 }
             }
+
             // remove other fee by click button
             function removeOtherFee(uuid) {
                 $("#" + uuid).remove();
                 fees = fees.filter((item) => { return item.UUID != uuid; });
                 $("#<%=hdfOtherFees.ClientID%>").val(JSON.stringify(fees));
-                getAllPrice();
+                getAllPrice(true);
             }
+
             // edit other fee by click button
             function editOtherFee(uuid) {
                 $("#" + uuid).find(".otherfee-value").click();
-                //getAllPrice();
             }
 
             // search return order
@@ -1220,7 +1236,7 @@
                     $(".totalpriceorderrefund").html(formatThousands(refundGood.TotalPrice, ","));
 
                     $("#closeOrderReturn").click();
-                    getAllPrice();
+                    getAllPrice(true);
                 }
             }
 
@@ -1248,7 +1264,7 @@
                 $(".totalpricedetail").removeClass("price-red");
 
                 swal("Thông báo", "Đã bỏ qua đơn hàng đổi trả này!", "info");
-                getAllPrice();
+                getAllPrice(true);
             }
 
             /* ============================================================
@@ -1398,7 +1414,7 @@
                 }, function (isConfirm) {
                     if (isConfirm) {
                         $(".product-result").remove();
-                        getAllPrice();
+                        getAllPrice(true);
                         $(".totalproductQuantity").html("0");
                         $(".totalpriceorder").html("0");
                         $("#<%=pDiscount.ClientID%>").val(0);
@@ -1418,7 +1434,7 @@
                 var current = obj.val();
                 if (current == 0 || current == "" || current == null)
                     obj.val("1");
-                getAllPrice();
+                getAllPrice(true);
             }
 
             /* ============================================================
@@ -1431,17 +1447,56 @@
              * ============================================================
              */
             function refreshDiscount() {
+                let totalQuantity = +$("#<%=hdfTotalQuantity.ClientID%>").val() || 0;
+                let discount = getDiscount(totalQuantity);
+                let message = "";
+
+                message += "Khách hàng đang được hưởng chiết khấu <strong>" + formatThousands(discount, ',') + "đ</strong>";
+                message += "<br/>Bạn có muốn áp dụng chiết khấu cho tất cả sản phẩm không?"
+
                 swal({
                     title: "Xác nhận",
-                    text: "Bạn muốn tính lại chiết khấu cho tất sản phẩm?",
+                    text: message,
                     type: "warning",
                     showCancelButton: true,
                     closeOnConfirm: true,
                     cancelButtonText: "Đợi em xem tí!",
                     confirmButtonText: "Chắc chắn sếp ơi..",
+                    html: true
                 }, function (isConfirm) {
                     if (isConfirm)
+                    {
+                        $(".product-result").each(function() {
+                            try {
+                                //#region Cài đặt chiết khấu
+                                let $discount = $(this).find(".discount");
+
+                                if (discount != 0)
+                                    $discount.val(formatThousands(discount, ','));
+                                else
+                                    $discount.val(0);
+                                //#endregion
+
+                                //#region Kiểm tra chiết khấu
+                                let costOfGoods = $(this).data("costOfGoods");
+                                let price = +$(this).find(".gia-san-pham").data("price") || 0;
+
+                                if ((price - discount) < costOfGoods) {
+                                    $(this).attr("data-error-discount", true);
+                                    $(this).find('td').each(function () { $(this).addClass('red'); });
+                                }
+                                else if (Boolean($(this).attr("data-error-discount"))) {
+                                    $(this).removeAttr("data-error-discount");
+                                    $(this).find('td').each(function () { $(this).removeClass('red'); });
+                                }
+                                //#endregion
+                            }
+                            catch (err) {
+                                console.error(err.message);
+                            }
+                        });
                         getAllPrice();
+                    }
                 });
             }
 
@@ -1711,7 +1766,7 @@
                             $(this).find(".gia-san-pham").attr("data-price", giasi).html(formatThousands(giasi, ','));
                         }
                     });
-                    getAllPrice();
+                    getAllPrice(true);
                 }
             }
 
@@ -1749,8 +1804,9 @@
                 let newValue = +$("#<%=txtShippingFeeModal.ClientID%>").val() || 0;
                 let shippingFeeDOM = $("#<%=pFeeShip.ClientID%>");
                 shippingFeeDOM.val(newValue);
-                getAllPrice();
+                getAllPrice(true);
             }
+
             function onchangePaymentType(payType) {
                 $("#<%=ddlBank.ClientID%>").val(0);
 
@@ -1797,7 +1853,7 @@
                     {
                         $("#<%=pFeeShip.ClientID%>").val(0);
 
-                        getAllPrice();
+                        getAllPrice(true);
                     }
                 }
             }
@@ -1946,7 +2002,7 @@
                                 shippingFeeDOM.val(formatNumber(data.shippingFee));
                                 $("#<%=pFeeShip.ClientID%>").val(formatNumber(data.shippingFee));
 
-                                getAllPrice();
+                                getAllPrice(true);
                             }
                         }
                         else {
@@ -2067,7 +2123,7 @@
                                 document.querySelector('#btnRemoveCouponCode').classList.remove('hide');
                                 document.querySelector('#btnGenerateCouponG25').classList.add('hide');
 
-                                getAllPrice();
+                                getAllPrice(true);
                             }
                         }
                         else {
@@ -2094,7 +2150,7 @@
                 document.querySelector('#btnRemoveCouponCode').classList.add('hide');
                 document.querySelector('#btnGenerateCouponG25').classList.remove('hide');
 
-                getAllPrice();
+                getAllPrice(true);
             }
 
             function checkCouponCondition() {
@@ -2129,18 +2185,31 @@
              * Đối ứng chiết khấu từng dòng
              * ============================================================
              */
-            function onBlurDiscount($input) {
-                var value = $input.val();
+            function onChangeDiscount($input) {
+                let value = $input.val();
 
                 if (value === "" || value === null)
                     $input.val("0");
                 else
                 {
-                    value = value.replace(/,/g, '');
+                    value = +value.replace(/,/g, '') || 0;
                     $input.val(formatThousands(value, ','));
+
+                    let $row = $input.closest('tr');
+                    let costOfGoods = +$row.data('costOfGoods') || 0;
+                    let price = +$row.find('.gia-san-pham').data('price') || 0;
+
+                    if ((price - value) < costOfGoods) {
+                        $row.attr("data-error-discount", true);
+                        $row.find('td').each(function () { $(this).addClass('red'); });
+                    }
+                    else if (Boolean($row.attr("data-error-discount"))) {
+                        $row.removeAttr("data-error-discount");
+                        $row.find('td').each(function () { $(this).removeClass('red'); });
+                    }
                 }
 
-                getAllPrice();
+                getAllPrice(true);
             }
 
             function pressKeyDiscount($input) {
@@ -2209,17 +2278,17 @@
                 return discount;
             }
 
-            function onBlurPDiscount($discount) {
+            function onBlurPDiscount($pDiscount) {
                 let $product = $(".product-result");
 
                 if ($product.length == 0)
                     return;
 
                 //#region Tính lại chiết khấu
-                let discount = +$discount.val().replace(/,/g, '') || 0;
+                let discount = +$pDiscount.val().replace(/,/g, '') || 0;
 
-                if (discount == 0 && $discount.val() === '')
-                    $discount.val(0);
+                if (discount == 0 && $pDiscount.val() === '')
+                    $pDiscount.val(0);
 
                 swal({
                     title: "Xác nhận",
@@ -2232,16 +2301,37 @@
                     html: true
                 }, function (isConfirm) {
                     if (isConfirm) {
-                        $product.each(function (index, item) {
-                            let discountDOM = item.querySelector('.discount');
+                        $product.each(function () {
+                            try {
+                                //#region Cài đặt chiết khấu
+                                let $discount = $(this).find('.discount');
 
-                            if (discount != 0)
-                                discountDOM.value = formatThousands(discount, ',');
-                            else
-                                discountDOM.value = 0;
+                                if (discount != 0)
+                                    $discount.val(formatThousands(discount, ','));
+                                else
+                                    $discount.val(0);
+                                //#endregion
+
+                                //#region Kiểm tra chiết khấu
+                                let costOfGoods = $(this).data("costOfGoods");
+                                let price = +$(this).find(".gia-san-pham").data("price") || 0;
+
+                                if ((price - discount) < costOfGoods) {
+                                    $(this).attr("data-error-discount", true);
+                                    $(this).find('td').each(function () { $(this).addClass('red'); });
+                                }
+                                else if (Boolean($(this).attr("data-error-discount"))) {
+                                    $(this).removeAttr("data-error-discount");
+                                    $(this).find('td').each(function () { $(this).removeClass('red'); });
+                                }
+                                //#endregion
+                            }
+                            catch (err) {
+                                console.error(err.message);
+                            }
                         });
 
-                        $discount.val(0);
+                        $pDiscount.val(0);
                         getAllPrice(true);
                     }
                 });
