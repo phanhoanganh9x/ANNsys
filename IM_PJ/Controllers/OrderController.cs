@@ -2758,23 +2758,29 @@ namespace IM_PJ.Controllers
             var list = new List<OrderReport>();
             var sql = new StringBuilder();
 
-            sql.AppendLine(String.Format("SELECT Ord.ID, SUM(ISNULL(OrdDetail.Quantity, 0)) AS Quantity, SUM(OrdDetail.Quantity * ISNULL(Product.CostOfGood, Variable.CostOfGood)) AS TotalCost, SUM(OrdDetail.Quantity * (OrdDetail.Price - Ord.DiscountPerProduct)) AS TotalRevenue"));
-            sql.AppendLine(String.Format("FROM tbl_Order AS Ord"));
-            sql.AppendLine(String.Format("INNER JOIN tbl_OrderDetail AS OrdDetail"));
-            sql.AppendLine(String.Format("ON     Ord.ID = OrdDetail.OrderID"));
-            sql.AppendLine(String.Format("LEFT JOIN tbl_ProductVariable AS Variable"));
-            sql.AppendLine(String.Format("ON     OrdDetail.SKU = Variable.SKU"));
-            sql.AppendLine(String.Format("LEFT JOIN tbl_Product AS Product"));
-            sql.AppendLine(String.Format("ON     OrdDetail.SKU = Product.ProductSKU"));
-            sql.AppendLine(String.Format("WHERE 1 = 1"));
+            sql.AppendLine("SELECT");
+            sql.AppendLine("    Ord.ID");
+            sql.AppendLine(",   SUM(ISNULL(OrdDetail.Quantity, 0)) AS Quantity");
+            sql.AppendLine(",   SUM(ISNULL(OrdDetail.TotalCostOfGood, 0)) AS TotalCost");
+            sql.AppendLine(",   SUM(");
+            sql.AppendLine("        IIF(");
+            sql.AppendLine("            ISNULL(OrdDetail.DiscountPrice, 0) > 0");
+            sql.AppendLine("        ,   (ISNULL(OrdDetail.Price, 0) - ISNULL(OrdDetail.DiscountPrice, 0)) * ISNULL(OrdDetail.Quantity, 0)");
+            sql.AppendLine("        ,   (ISNULL(OrdDetail.Price, 0) - ISNULL(Ord.DiscountPerProduct, 0)) * ISNULL(OrdDetail.Quantity, 0)");
+            sql.AppendLine("        )");
+            sql.AppendLine("    ) AS TotalRevenue");
+            sql.AppendLine("FROM tbl_Order AS Ord");
+            sql.AppendLine("INNER JOIN tbl_OrderDetail AS OrdDetail");
+            sql.AppendLine("ON     Ord.ID = OrdDetail.OrderID");
+            sql.AppendLine("WHERE 1 = 1");
             if (!String.IsNullOrEmpty(CreatedBy))
             {
                 sql.AppendLine(String.Format("    AND Ord.CreatedBy = '{0}'", CreatedBy));
             }
-            sql.AppendLine(String.Format("    AND Ord.ExcuteStatus = 2"));
-            sql.AppendLine(String.Format("    AND (Ord.PaymentStatus = 2 OR Ord.PaymentStatus = 3 OR Ord.PaymentStatus = 4)"));
-            sql.AppendLine(String.Format("    AND    CONVERT(NVARCHAR(10), Ord.DateDone, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121)", fromDate, toDate));
-            sql.AppendLine(String.Format("GROUP BY Ord.ID"));
+            sql.AppendLine("    AND Ord.ExcuteStatus = 2");
+            sql.AppendLine("    AND (Ord.PaymentStatus = 2 OR Ord.PaymentStatus = 3 OR Ord.PaymentStatus = 4)");
+            sql.AppendLine(String.Format("    AND CONVERT(NVARCHAR(10), Ord.DateDone, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121)", fromDate, toDate));
+            sql.AppendLine("GROUP BY Ord.ID");
 
             var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
             while (reader.Read())
