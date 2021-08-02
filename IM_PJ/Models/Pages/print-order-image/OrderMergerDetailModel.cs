@@ -5,7 +5,7 @@
         public string name { get; set; }
         public decimal price { get; set; }
         public decimal totalQuantity { get; set; }
-        public decimal totalDiscount { get; set; }
+        public decimal discount { get; set; }
         public decimal total { get; set; }
     }
 }

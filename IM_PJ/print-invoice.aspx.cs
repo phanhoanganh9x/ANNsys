@@ -65,7 +65,7 @@ namespace IM_PJ
             {
                 using (var con = new inventorymanagementEntities())
                 {
-                    #region Lấy thông tin chi tiếc đơn hàng
+                    #region Lấy thông tin chi tiết đơn hàng
                     var orderDetails = con.tbl_OrderDetail
                         .Where(o => o.OrderID == orderId)
                         .Select(x => new

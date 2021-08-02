@@ -2274,17 +2274,17 @@
                 let discount = getDiscount(totalQuantity);
                 let message = "";
 
-                message += "Khách hàng đang được hưởng chiết khấu <strong>" + formatThousands(discount, ',') + "đ</strong>";
-                message += "<br/>Bạn có muốn áp dụng chiết khấu cho tất cả sản phẩm không?"
+                message += "Khách hàng được chiết khấu <strong>" + formatThousands(discount, ',') + "/cái</strong>";
+                message += "<br/>Áp dụng cho tất cả sản phẩm?"
 
                 swal({
-                    title: "Xác nhận",
+                    title: "Gợi ý chiết khấu",
                     text: message,
                     type: "warning",
                     showCancelButton: true,
                     closeOnConfirm: true,
-                    cancelButtonText: "Đợi em xem tí!",
-                    confirmButtonText: "Chắc chắn sếp ơi..",
+                    cancelButtonText: "Bỏ qua",
+                    confirmButtonText: "Xác nhận",
                     html: true
                 }, function (isConfirm) {
                     if (isConfirm)
@@ -3289,13 +3289,13 @@
                     $pDiscount.val(0);
 
                 swal({
-                    title: "Xác nhận",
-                    text: "Bạn muốn chiết khấu <strong>" + formatThousands(discount, ',') + " đ</strong> cho tất sản phẩm?",
+                    title: "Chiết khấu",
+                    text: "Áp dụng chiết khấu <strong>" + formatThousands(discount, ',') + "/cái</strong> cho tất sản phẩm?",
                     type: "warning",
                     showCancelButton: true,
                     closeOnConfirm: true,
-                    cancelButtonText: "Đợi em xem tí!",
-                    confirmButtonText: "Chắc chắn sếp ơi..",
+                    cancelButtonText: "Bỏ qua",
+                    confirmButtonText: "Xác nhận",
                     html: true
                 }, function (isConfirm) {
                     if (isConfirm) {

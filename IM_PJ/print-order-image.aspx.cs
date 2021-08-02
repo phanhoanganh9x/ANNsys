@@ -234,7 +234,7 @@ namespace IM_PJ
                                 categoryId = x.Key.categoryId,
                                 price = x.Key.price,
                                 totalQuantity = x.Sum(s => s.quantity),
-                                totalDiscount = x.Sum(s => s.discount * s.quantity),
+                                discount = x.Select(s => s.discount).First(),
                                 total = x.Sum(s => (s.price - s.discount) * s.quantity)
                             })
                             .GroupJoin(
@@ -252,7 +252,7 @@ namespace IM_PJ
                                 categoryName = x.category.name,
                                 price = x.details.price,
                                 totalQuantity = x.details.totalQuantity,
-                                totalDiscount = x.details.totalDiscount,
+                                discount = x.details.discount,
                                 total = x.details.total
                             })
                             .ToList();
@@ -263,7 +263,7 @@ namespace IM_PJ
                             name = x.categoryName,
                             price = x.price,
                             totalQuantity = x.totalQuantity,
-                            totalDiscount = x.totalDiscount,
+                            discount = x.discount,
                             total = x.total
                         })
                         .ToList<IOrderDetailModel>();
@@ -424,9 +424,9 @@ namespace IM_PJ
             if (!data.merger)
                 html.AppendLine("                        <th>Hình ảnh</th>");
             html.AppendLine("                        <th>Sản phẩm</th>");
-            html.AppendLine("                        <th>SL</th>");
+            html.AppendLine("                        <th>Mua</th>");
             html.AppendLine("                        <th>Giá</th>");
-            html.AppendLine("                        <th>CK</th>");
+            html.AppendLine("                        <th>Chiết khấu</th>");
             html.AppendLine("                        <th>Tổng</th>");
             html.AppendLine("                    </thead>");
             html.AppendLine("                    <tbody>");
@@ -446,7 +446,7 @@ namespace IM_PJ
                 {
                     var avatarUrl = Thumbnail.getURL(item.avatar, Thumbnail.Size.Large);
                     var saleHtml = item.oldPrice > 0 ? "<span class='sale-icon'>SALE</span> " : String.Empty;
-                    var name = PJUtils.Truncate(item.name, 30);
+                    var name = PJUtils.Truncate(item.name, 40);
                     var description = item.productType == 2 && !String.IsNullOrEmpty(item.description)
                         ? String.Format("{0}", item.description.Replace("|", ". "))
                         : String.Empty;
@@ -493,7 +493,7 @@ namespace IM_PJ
                     html.AppendLine(String.Format("                        <td>{0} {1:N0}</td>", item.name, item.price));
                     html.AppendLine(String.Format("                        <td>{0:N0}</td>", item.totalQuantity));
                     html.AppendLine(String.Format("                        <td>{0:N0}</td>", (item.price * item.totalQuantity)));
-                    html.AppendLine(String.Format("                        <td>{0:N0}</td>", item.totalDiscount));
+                    html.AppendLine(String.Format("                        <td>{0:N0}</td>", item.discount));
                     html.AppendLine(String.Format("                        <td>{0:N0}</td>", item.total));
                     html.AppendLine("                    </tr>");
 

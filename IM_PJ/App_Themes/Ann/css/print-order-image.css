@@ -170,15 +170,15 @@ h1 {
             }
 
             .print-order-image .table-2 table col.image {
-                width: 17%;
+                width: 16%;
             }
 
             .print-order-image .table-2 table col.name {
-                width: 33%;
+                width: 30%;
             }
 
             .print-order-image .table-2 table col.quantity {
-                width: 5%;
+                width: 7%;
             }
 
             .print-order-image .table-2 table col.price {
@@ -186,7 +186,7 @@ h1 {
             }
 
             .print-order-image .table-2 table col.discount {
-                width: 12%;
+                width: 16%;
             }
 
             .print-order-image .table-2 table col.subtotal {

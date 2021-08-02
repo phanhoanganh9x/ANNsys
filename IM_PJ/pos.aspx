@@ -115,7 +115,7 @@
                             <div class="post-row clear discount hide">
                                 <div class="left">Chiết khấu</div>
                                 <div class="right">
-                                    <a href="javascript:;" class="btn btn-cal-discount link-btn" onclick="refreshDiscount()"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+                                    <a href="javascript:;" class="btn btn-cal-discount link-btn" onclick="refreshDiscount()"><i class="fa fa-refresh" aria-hidden="true"></i> Gợi ý</a>
                                     <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull input-discount" Skin="MetroTouch"
                                         ID="pDiscount" MinValue="0" NumberFormat-GroupSizes="3" Value="0" NumberFormat-DecimalDigits="0"
                                         onblur="onBlurPDiscount($(this))" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
@@ -1229,7 +1229,6 @@
             function showDiscount() {
                 $(".subtotal").removeClass("hide");
                 $(".discount").removeClass("hide");
-                $("#<%=pDiscount.ClientID%>").focus();
             }
 
             // remove other fee by click button
@@ -1407,17 +1406,17 @@
                 let discount = getDiscount(totalQuantity);
                 let message = "";
 
-                message += "Khách hàng đang được hưởng chiết khấu <strong>" + formatThousands(discount, ',') + "đ</strong>";
-                message += "<br/>Bạn có muốn áp dụng chiết khấu cho tất cả sản phẩm không?"
+                message += "Khách hàng được chiết khấu <strong>" + formatThousands(discount, ',') + "/cái</strong>";
+                message += "<br/>Áp dụng cho tất cả sản phẩm?"
 
                 swal({
-                    title: "Xác nhận",
+                    title: "Gợi ý chiết khấu",
                     text: message,
                     type: "warning",
                     showCancelButton: true,
                     closeOnConfirm: true,
-                    cancelButtonText: "Đợi em xem tí!",
-                    confirmButtonText: "Chắc chắn sếp ơi..",
+                    cancelButtonText: "Bỏ qua",
+                    confirmButtonText: "Xác nhận",
                     html: true
                 }, function (isConfirm) {
                     if (isConfirm)
@@ -2027,13 +2026,13 @@
                     $pDiscount.val(0);
 
                 swal({
-                    title: "Xác nhận",
-                    text: "Bạn muốn chiết khấu <strong>" + formatThousands(discount, ',') + " đ</strong> cho tất sản phẩm?",
+                    title: "Chiết khấu",
+                    text: "Áp dụng chiết khấu <strong>" + formatThousands(discount, ',') + "/cái</strong> cho tất sản phẩm?",
                     type: "warning",
                     showCancelButton: true,
                     closeOnConfirm: true,
-                    cancelButtonText: "Đợi em xem tí!",
-                    confirmButtonText: "Chắc chắn sếp ơi..",
+                    cancelButtonText: "Bỏ qua",
+                    confirmButtonText: "Xác nhận",
                     html: true
                 }, function (isConfirm) {
                     if (isConfirm) {
