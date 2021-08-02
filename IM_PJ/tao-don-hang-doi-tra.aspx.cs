@@ -59,7 +59,7 @@ namespace IM_PJ
             if (HttpContext.Current.Items["xem-don-hang-doi-tra"] != null)
             {
                 this.hdfListProduct.Value = HttpContext.Current.Items["xem-don-hang-doi-tra"].ToString();
-                
+
                 this.Title = String.Format("Làm lại đơn hàng trả");
             }
 
@@ -141,7 +141,7 @@ namespace IM_PJ
                                 product,
                                 productVariable
                             })
-                        .SelectMany(x => 
+                        .SelectMany(x =>
                             x.productVariable.DefaultIfEmpty(),
                             (parent, child) => new RefundDetailModel
                             {
@@ -174,17 +174,29 @@ namespace IM_PJ
 
                     var order = con.tbl_OrderDetail
                         .Join(
-                            con.tbl_Order.Where(x => x.CustomerID == customerID),
+                            con.tbl_Order
+                                .Where(x => x.CustomerID == customerID)
+                                .Where(x => x.ExcuteStatus == (int)ExcuteStatus.Done),
                             od => od.OrderID,
                             o => o.ID,
-                            (od, o) => od
+                            (od, o) => new
+                            {
+                                sku = od.SKU,
+                                orderId = od.OrderID.Value,
+                                saleDate = od.CreatedDate.Value,
+                                price = od.Price.HasValue ? od.Price.Value : 0,
+                                discount = od.DiscountPrice.HasValue && od.DiscountPrice.Value > 0
+                                    ? od.DiscountPrice.Value
+                                    : (o.DiscountPerProduct.HasValue ? o.DiscountPerProduct.Value : 0)
+                            }
                         )
-                        .Where(x => x.SKU.Contains(sku.Trim().ToUpper()))
+                        .Where(x => x.sku.Contains(sku.Trim().ToUpper()))
                         .Select(x => new
                         {
-                            sku = x.SKU,
-                            orderID = x.OrderID.Value,
-                            saleDate = x.CreatedDate.Value
+                            sku = x.sku,
+                            orderID = x.orderId,
+                            saleDate = x.saleDate,
+                            price = x.price - x.discount
                         })
                         .Distinct()
                         .OrderByDescending(o => o.sku)
@@ -218,7 +230,7 @@ namespace IM_PJ
                             ChildSKU = x.ChildSKU,
                             VariableValue = properties,
                             Price = x.Price,
-                            ReducedPrice = x.ReducedPrice,
+                            ReducedPrice = orderFilter != null ? Convert.ToDouble(orderFilter.price) : x.ReducedPrice,
                             QuantityRefund = x.QuantityRefund,
                             ChangeType = x.ChangeType,
                             FeeRefund = x.FeeRefund,
@@ -300,7 +312,7 @@ namespace IM_PJ
                             double totalPrice = Convert.ToDouble(hdfTotalPrice.Value);
                             double totalRefund = Convert.ToDouble(hdfTotalRefund.Value);
                             int OrderSaleID = hdfOrderSaleID.Value.ToInt(0);
-                            
+
                             var agent = AgentController.GetByID(agentID);
                             string agentName = String.Empty;
 

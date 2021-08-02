@@ -39,7 +39,7 @@ function showProductVariable(productVariables) {
         html += "         <td class='quantity-column'>";
         html += "             <input type='text' class='form-control quantity in-quantity' "
                                   + "pattern='[0-9]{1,3}' "
-                                  + "onblur='changeQuantityPopup($(this))' "
+                                  + "onchange='changeQuantityPopup($(this))' "
                                   + "onkeyup='pressKeyQuantityPopup($(this))' "
                                   + "onkeypress='return event.charCode >= 48 && event.charCode <= 57' "
                                   + "value='1' >";
@@ -94,7 +94,7 @@ function pressKeyQuantityPopup(obj) {
             this.value = this.value.replace(/\D/g, '');
         }
         else if (e.which == 40) {
-            // press down 
+            // press down
             $(this).closest('tr').next().find('td:eq(' + $(this).closest('td').index() + ')').find(".in-quantity").focus().select();
         }
         else if (e.which == 38) {
@@ -174,21 +174,22 @@ function addHtmlProductResult(item) {
         html += "          " + data_orderdetail + " ";
     }
 
-    html += "          data-giabansi='" + item.RegularPrice + "' "
-                    + "data-giabanle='" + item.RetailPrice + "' "
-                    + "data-quantityinstock='" + item.QuantityCurrent + "' "
-                    + "data-productimageorigin='" + item.ProductImage + "' "
-                    + "data-productvariable='" + item.VariableValue + "' "
-                    + "data-productname='" + item.ProductTitle + "' "
-                    + "data-sku='" + SKU + "' "
-                    + "data-producttype='" + item.ProductStyle + "' "
-                    + "data-productid='" + item.ProductID + "' "
-                    + "data-productvariableid='" + item.ProductVariableID + "' "
-                    + "data-productvariablename='" + ProductVariableName + "' "
-                    + "data-productvariablevalue ='" + ProductVariableValue + "' "
-                    + "data-price10 ='" + item.Price10 + "' "
-                    + "data-bestprice ='" + item.BestPrice + "' "
-                    + "data-productvariablesave ='" + ProductVariableSave + "'>";
+    html += "    data-cost-of-goods='" + item.CostOfGood + "' ";
+    html += "    data-giabansi='" + item.RegularPrice + "' ";
+    html += "    data-giabanle='" + item.RetailPrice + "' ";
+    html += "    data-quantityinstock='" + item.QuantityCurrent + "' ";
+    html += "    data-productimageorigin='" + item.ProductImage + "' ";
+    html += "    data-productvariable='" + item.VariableValue + "' ";
+    html += "    data-productname='" + item.ProductTitle + "' ";
+    html += "    data-sku='" + SKU + "' ";
+    html += "    data-producttype='" + item.ProductStyle + "' ";
+    html += "    data-productid='" + item.ProductID + "' ";
+    html += "    data-productvariableid='" + item.ProductVariableID + "' ";
+    html += "    data-productvariablename='" + ProductVariableName + "' ";
+    html += "    data-productvariablevalue ='" + ProductVariableValue + "' ";
+    html += "    data-price10 ='" + item.Price10 + "' ";
+    html += "    data-bestprice ='" + item.BestPrice + "' ";
+    html += "    data-productvariablesave ='" + ProductVariableSave + "'>";
 
     // for page them-moi-don-hang
     if (_isStock) {
@@ -213,6 +214,28 @@ function addHtmlProductResult(item) {
         html += "   <td class='price-item gia-san-pham' data-price='" + item.RegularPrice + "'>" + formatThousands(item.RegularPrice, ',') + "</td>";
     }
 
+    //#region chiết khấu
+    let discount = 0;
+
+    if (typeof getDiscount === "function")
+    {
+        let totalQuantity = +$("input[id$='_hdfTotalQuantity']").val() || 0;
+
+        totalQuantity += (+item.Quantity || 1);
+
+        discount = getDiscount(totalQuantity);
+    }
+
+    html += "    <td class='discount-item'> ";
+    html += "        <input type='text' class='form-control discount' ";
+    html += "               onclick='this.select()' ";
+    html += "               onchange='onChangeDiscount($(this))' ";
+    html += "               onkeyup='pressKeyDiscount($(this))' ";
+    html += "               onkeypress='return event.charCode >= 48 && event.charCode <= 57' ";
+    html += "               value='" + formatThousands(discount, ",") + "' />";
+    html += "   </td>";
+    //#endregion
+
     // for page them-moi-don-hang
     if (_isStock) {
         html += "<td class='quantity-item'>" + formatThousands(item.QuantityCurrent, ',') + "</td>";
@@ -221,7 +244,7 @@ function addHtmlProductResult(item) {
     html += "   <td class='quantity-item'> "
     html += "       <input type='text' class='form-control in-quantity' "
                         + "pattern='[0-9]{1,3}' "
-                        + "onblur='checkQuantiy($(this))' "
+                        + "onchange='checkQuantiy($(this))' "
                         + "onkeyup='pressKeyQuantity($(this))' "
                         + "onkeypress='return event.charCode >= 48 && event.charCode <= 57' ";
 
@@ -259,11 +282,10 @@ function reIndex(reverse) {
 function checkQuantiy(obj) {
     var current = obj.val();
 
-    if (current == 0 || current === "" || current === null) {
+    if (current == 0 || current === "" || current === null)
         obj.val("1");
-    }
 
-    getAllPrice();
+    getAllPrice(true);
 }
 
 function clickrow(obj) {
@@ -282,7 +304,7 @@ function pressKeyQuantity(obj) {
             this.value = this.value.replace(/\D/g, '');
         }
         else if (e.which == 40) {
-            // press down 
+            // press down
             $(this).closest('tr').next().find('td:eq(' + $(this).closest('td').index() + ')').find(".in-quantity").focus().select();
         }
         else if (e.which == 38) {
@@ -371,7 +393,7 @@ function addProduct(products) {
         }
     });
 
-    getAllPrice();
+    getAllPrice(true);
     $("#txtSearch").val("");
 }
 

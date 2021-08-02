@@ -15,7 +15,7 @@ namespace IM_PJ.Models
         public string search { get; set; } = String.Empty;
         // Thể loại đơn hàng( 1: Lẻ | 2: Sỉ)
         public int orderType { get; set; } = 0;
-        // Triết khấu ( 'yes': Có | 'no': Không)
+        // chiết khấu ( 'yes': Có | 'no': Không)
         public string discount { get; set; } = String.Empty;
         // Phí khác ( 'yes': Có | 'no': Không)
         public string otherFee { get; set; } = String.Empty;

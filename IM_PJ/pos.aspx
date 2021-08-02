@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=202106081515"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=202107221117"></script>
     <script src="/App_Themes/Ann/js/search-product.js?v=28062021"></script>
     <script src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=28062021"></script>
 </asp:Content>
@@ -10,6 +10,10 @@
     <style>
         .coupon .right {
             display: flex;
+        }
+
+        .red {
+            background-color: #F44336!important;
         }
     </style>
     <asp:Panel ID="parent" runat="server">
@@ -110,13 +114,17 @@
                             </div>
                             <div class="post-row clear discount hide">
                                 <div class="left">Chiết khấu</div>
-                                <div class="right totalDiscount">
-                                    <a href="javascript:;" class="btn btn-feeship link-btn" onclick="refreshDiscount()"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+                                <div class="right">
+                                    <a href="javascript:;" class="btn btn-cal-discount link-btn" onclick="refreshDiscount()"><i class="fa fa-refresh" aria-hidden="true"></i> Gợi ý</a>
                                     <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull input-discount" Skin="MetroTouch"
                                         ID="pDiscount" MinValue="0" NumberFormat-GroupSizes="3" Value="0" NumberFormat-DecimalDigits="0"
-                                        oninput="countTotal()" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
+                                        onblur="onBlurPDiscount($(this))" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
                                     </telerik:RadNumericTextBox>
                                 </div>
+                            </div>
+                            <div class="post-row clear discount hide">
+                                <div class="left">Tổng chiết khấu</div>
+                                <div class="right totalDiscount"></div>
                             </div>
                             <div class="post-row clear discount hide">
                                 <div class="left">Sau chiết khấu</div>
@@ -124,7 +132,7 @@
                             </div>
                             <div class="post-row clear shipping hide">
                                 <div class="left">Phí vận chuyển</div>
-                                <div class="right totalDiscount">
+                                <div class="right">
                                     <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull input-feeship" Skin="MetroTouch"
                                         ID="pFeeShip" MinValue="0" NumberFormat-GroupSizes="3" Value="0" NumberFormat-DecimalDigits="0"
                                         oninput="countTotal()" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
@@ -160,19 +168,6 @@
                                 <div class="left">Tổng tiền còn lại</div>
                                 <div class="right totalpricedetail"></div>
                             </div>
-                            <div class="post-row clear hide">
-                                <div class="left">Tiền khách trả (F4)</div>
-                                <div class="right totalDiscount">
-                                    <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull" Skin="MetroTouch"
-                                        ID="pGuestPaid" MinValue="0" NumberFormat-GroupSizes="3" Width="100%" Value="0" NumberFormat-DecimalDigits="0"
-                                        oninput="countGuestChange()" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
-                                    </telerik:RadNumericTextBox>
-                                </div>
-                            </div>
-                            <div class="post-row clear hide">
-                                <div class="left">Tiền thối lại</div>
-                                <div class="right totalGuestChange"></div>
-                            </div>
                             <div class="post-table-links clear">
                                 <a href="javascript:;" class="btn link-btn" style="background-color: #ffad00" onclick="searchReturnOrder()" title="Nhập đơn hàng đổi trả"><i class="fa fa-refresh"></i> Đổi trả</a>
                                 <a href="javascript:;" class="btn link-btn" style="background-color: #00a2b7" onclick="showShipping()" title="Nhập phí vận chuyển"><i class="fa fa-truck"></i> Ship</a>
@@ -205,6 +200,7 @@
                                             <th class="sku-item">Mã</th>
                                             <th class="variable-item">Thuộc tính</th>
                                             <th class="price-item">Giá</th>
+                                            <th class="discount-item">Chiết khấu</th>
                                             <th class="quantity-item">Mua</th>
                                             <th class="total-item">Tổng</th>
                                             <th class="trash-item"></th>
@@ -229,13 +225,14 @@
             <asp:HiddenField ID="hdfTotalPrice" runat="server" />
             <asp:HiddenField ID="hdfTotalPriceNotDiscount" runat="server" />
             <asp:HiddenField ID="hdfListProduct" runat="server" />
+            <%-- Khách hàng có nằm trong nhóm chiết khấu không --%>
             <asp:HiddenField ID="hdfIsDiscount" runat="server" />
+            <%-- Chiết khấu của nhóm --%>
             <asp:HiddenField ID="hdfDiscountAmount" runat="server" />
+            <%-- Khối lượng yêu cầu để hưởng chiết khẩu của nhóm --%>
             <asp:HiddenField ID="hdfQuantityRequirement" runat="server" />
-            <asp:HiddenField ID="hdfTotalPriceNotDiscountNotFee" runat="server" />
             <asp:HiddenField ID="hdfListSearch" runat="server" />
             <asp:HiddenField ID="hdfTotalQuantity" runat="server" />
-            <asp:HiddenField ID="hdfcheck" runat="server" />
             <asp:HiddenField ID="hdfChietKhau" runat="server" />
             <asp:HiddenField ID="hdfListUser" runat="server" />
             <asp:HiddenField ID="hdfDonHangTra" runat="server" />
@@ -249,6 +246,8 @@
             <asp:HiddenField ID="hdfCouponValue" runat="server" />
             <asp:HiddenField ID="hdfCouponProductNumber" runat="server" />
             <asp:HiddenField ID="hdfCouponPriceMin" runat="server" />
+            <%-- Tổng chiết khấu của đơn hàng --%>
+            <asp:HiddenField ID="hdfTotalDiscount" runat="server" />
 
             <!-- Biến đăng ký địa chỉ nhận hàng -->
             <asp:HiddenField ID="hdfDeliveryAddressId" runat="server" />
@@ -492,15 +491,27 @@
             }
 
             function _checkDiscount() {
-                // check discount
-                let $discount = $("#<%=pDiscount.ClientID%>");
-                let discount = parseFloat($discount.val().replace(/\,/g, ''));
+                let $products = $(".product-result");
 
-                if (discount > 20000 && $("#<%=hdfRoleID.ClientID%>").val() != 0) {
-                    $discount.focus();
+                let errorDiscount = false;
+
+                $products.each(function () {
+                    errorDiscount = Boolean($(this).attr("data-error-discount"));
+
+                    if (errorDiscount)
+                        return false;
+                });
+
+                if (errorDiscount)
+                {
+                    let message = "";
+
+                    message += "Chiết khấu sao nhiều vậy nè?";
+                    message += "<br><br>Nếu có lý do thì báo chị Ngọc nha!";
+
                     swal({
                         title: "Lạ vậy:",
-                        text: "Sao chiết khấu lại lớn hơn <strong>20.000đ</strong> nè?<br><br>Nếu có lý do thì báo chị Ngọc nha!",
+                        text: message,
                         type: "warning",
                         showCancelButton: false,
                         confirmButtonColor: "#DD6B55",
@@ -514,6 +525,15 @@
                 return true;
             }
 
+            /* ============================================================
+            * Lấy thông tin để tạo đơn hàng
+            *
+            * Date:   2021-07-19
+            * Author: Binh-TT
+            *
+            * Đối ứng chiết khấu từng dòng
+            * ============================================================
+            */
             function _insertOrder() {
                 let orderDetails = "";
                 let ordertype = $(".customer-type").val();
@@ -521,6 +541,9 @@
                 orderDetails += '{ "productPOS" : ['
 
                 $(".product-result").each(function () {
+                    // 2021-07-19: Đối ứng chiết khấu từng dòng
+                    let $discount = $(this).find(".discount");
+
                     let productID = $(this).attr("data-productid");
                     let productVariableID = $(this).attr("data-productvariableid");
                     let sku = $(this).attr("data-sku");
@@ -533,6 +556,8 @@
                     let productvariable = $(this).attr("data-productvariable");
                     let price = $(this).find(".gia-san-pham").attr("data-price");
                     let productvariablesave = $(this).attr("data-productvariablesave");
+                    // 2021-07-19: Đối ứng chiết khấu từng dòng
+                    let discount = +$discount.val().replace(/,/g, '') || 0;
 
                     if (quantity > 0) {
                         let order = new OrderDetail(
@@ -547,6 +572,7 @@
                                 , productimageorigin
                                 , price
                                 , productvariablesave
+                                , discount
                         );
 
                         orderDetails += order.stringJSON() + ",";
@@ -577,7 +603,7 @@
                 if (!_checkFeeShip())
                     return false;
 
-                // Kiểm tra triết khấu
+                // Kiểm tra chiết khấu
                 if (!_checkDiscount())
                     return false;
 
@@ -769,7 +795,7 @@
                 fees.push(fee);
                 $("#fee-list").append(createFeeHTML(fee));
                 $("#<%=hdfOtherFees.ClientID%>").val(JSON.stringify(fees));
-                getAllPrice();
+                getAllPrice(true);
             }
 
             // Update Fee
@@ -810,7 +836,7 @@
                     }
                 });
                 $("#<%=hdfOtherFees.ClientID%>").val(JSON.stringify(fees));
-                getAllPrice();
+                getAllPrice(true);
             }
 
             // focus to searchProduct input when page on ready
@@ -975,17 +1001,6 @@
                 }
             });
 
-            // quickly input change
-            $("#<%=pGuestPaid.ClientID%>").keydown(function (e) {
-                if (e.which == 13) {
-                    var value = $("#<%=pGuestPaid.ClientID%>").val() + "000";
-                    $("#<%=pGuestPaid.ClientID%>").val(value);
-                    getAllPrice();
-                    $("#<%=pGuestPaid.ClientID%>").blur();
-                    return false;
-                }
-            });
-
             function changeUser() {
                 var username = $("#<%=hdfUsername.ClientID%>").val();
                 var usernamecurrent = $("#<%=hdfUsernameCurrent.ClientID%>").val();
@@ -1011,7 +1026,7 @@
                             $(".discount-info").html("").hide();
                             $(".refund-info").html("").hide();
                             $(".link-facebook").html("").hide();
-                            getAllPrice();
+                            getAllPrice(true);
                         }
                         else {
                             swal.close();
@@ -1047,7 +1062,7 @@
                 $(".discount-info").html("").hide();
                 $(".refund-info").html("").hide();
                 $(".link-facebook").html("").hide();
-                getAllPrice();
+                getAllPrice(true);
                 closePopup();
                 swal("Thông báo", "Em đã chọn tính tiền giúp nhân viên " + selectedUser + "", "info");
             }
@@ -1171,7 +1186,7 @@
                     $(".totalpriceorderrefund").html(formatThousands(refundGood.TotalPrice, ","));
 
                     $("#closeOrderReturn").click();
-                    getAllPrice();
+                    getAllPrice(true);
                 }
             }
 
@@ -1197,10 +1212,9 @@
                 $(".returnorder").addClass("hide");
                 $(".totalpriceorderall").addClass("price-red");
                 $(".totalpricedetail").removeClass("price-red");
-                $("#<%=pGuestPaid.ClientID%>").val(0);
 
                 swal("Thông báo", "Đã bỏ qua đơn hàng đổi trả này!", "info");
-                getAllPrice();
+                getAllPrice(true);
             }
             //end return Order
 
@@ -1215,19 +1229,19 @@
             function showDiscount() {
                 $(".subtotal").removeClass("hide");
                 $(".discount").removeClass("hide");
-                $("#<%=pDiscount.ClientID%>").focus();
             }
+
             // remove other fee by click button
             function removeOtherFee(uuid) {
                 $("#" + uuid).remove();
                 fees = fees.filter((item) => { return item.UUID != uuid; });
                 $("#<%=hdfOtherFees.ClientID%>").val(JSON.stringify(fees));
-                getAllPrice();
+                getAllPrice(true);
             }
+
             // edit other fee by click button
             function editOtherFee(uuid) {
                 $("#" + uuid).find(".otherfee-value").click();
-                //getAllPrice();
             }
 
             function showConfirmOrder() {
@@ -1331,7 +1345,9 @@
                     , ProductName
                     , ProductImageOrigin
                     , Giabanle
-                    , ProductVariableSave) {
+                    , ProductVariableSave
+                    , Discount
+                ) {
                     this.ProductID = ProductID;
                     this.ProductVariableID = ProductVariableID;
                     this.SKU = SKU;
@@ -1343,6 +1359,7 @@
                     this.ProductImageOrigin = ProductImageOrigin;
                     this.Giabanle = Giabanle;
                     this.ProductVariableSave = ProductVariableSave;
+                    this.Discount = Discount;
                 }
 
                 stringJSON() {
@@ -1364,26 +1381,6 @@
                     });
             }
 
-// count guest change
-function countGuestChange() {
-    notEmpty();
-    var totalrefund = 0;
-    if (parseFloat($("#<%=hdfDonHangTra.ClientID%>").val()) > 0) {
-                    totalrefund = parseFloat($("#<%=hdfDonHangTra.ClientID%>").val());
-                }
-                var gp1 = $("#<%=pGuestPaid.ClientID%>").val();
-                var gp = parseFloat(gp1.replace(/\,/g, ''));
-                if (gp > 0) {
-                    var totalprice = parseFloat($("#<%= hdfTotalPrice.ClientID%>").val());
-                    var leftchange = gp - totalprice + totalrefund;
-                    $(".totalGuestChange").html(formatThousands(leftchange, ","));
-                } else {
-                    var totalprice = parseFloat($("#<%= hdfTotalPrice.ClientID%>").val());
-                    var leftchange = -totalprice + totalrefund;
-                    $(".totalGuestChange").html(formatThousands(leftchange, ","));
-                }
-            }
-
             function searchProduct() {
                 let textsearch = $("#txtSearch").val().trim().toUpperCase();
 
@@ -1395,182 +1392,314 @@ function countGuestChange() {
                 searchProductMaster(textsearch, false);
             }
 
+            /* ============================================================
+             * Tính lại chiết khấu
+             *
+             * Date:   2021-07-19
+             * Author: Binh-TT
+             *
+             * Đối ứng chiết khấu từng dòng
+             * ============================================================
+             */
             function refreshDiscount() {
-                $("#<%=hdfcheck.ClientID%>").val(0);
-                getAllPrice();
+                let totalQuantity = +$("#<%=hdfTotalQuantity.ClientID%>").val() || 0;
+                let discount = getDiscount(totalQuantity);
+                let message = "";
+
+                message += "Khách hàng được chiết khấu <strong>" + formatThousands(discount, ',') + "/cái</strong>";
+                message += "<br/>Áp dụng cho tất cả sản phẩm?"
+
+                swal({
+                    title: "Gợi ý chiết khấu",
+                    text: message,
+                    type: "warning",
+                    showCancelButton: true,
+                    closeOnConfirm: true,
+                    cancelButtonText: "Bỏ qua",
+                    confirmButtonText: "Xác nhận",
+                    html: true
+                }, function (isConfirm) {
+                    if (isConfirm)
+                    {
+                        $(".product-result").each(function() {
+                            try {
+                                //#region Cài đặt chiết khấu
+                                let $discount = $(this).find(".discount");
+
+                                if (discount != 0)
+                                    $discount.val(formatThousands(discount, ','));
+                                else
+                                    $discount.val(0);
+                                //#endregion
+
+                                //#region Kiểm tra chiết khấu
+                                let costOfGoods = $(this).data("costOfGoods");
+                                let price = +$(this).find(".gia-san-pham").data("price") || 0;
+
+                                if ((price - discount) < costOfGoods) {
+                                    $(this).attr("data-error-discount", true);
+                                    $(this).find('td').each(function () { $(this).addClass('red'); });
+                                }
+                                else if (Boolean($(this).attr("data-error-discount"))) {
+                                    $(this).removeAttr("data-error-discount");
+                                    $(this).find('td').each(function () { $(this).removeClass('red'); });
+                                }
+                                //#endregion
+                            }
+                            catch (err) {
+                                console.error(err.message);
+                            }
+                        });
+                        getAllPrice();
+                    }
+                });
             }
 
-            // get all price
-            function getAllPrice(refresh_discount) {
-                if ($(".product-result").length > 0) {
+            /* ============================================================
+             * Tính lại tiền đơn hàng
+             * Được gọi tại:
+             * 1) Thêm sản phẩm
+             * 2) chiết khấu
+             * 3) Coupon
+             * 4) Đổi trả hàng
+             * 5) Phí khác
+             * 6) Khởi tạo đơn hàng
+             *
+             * Date:   2021-07-19
+             * Author: Binh-TT
+             *
+             * Đối ứng chiết khấu từng dòng
+             * ============================================================
+             */
+            function getAllPrice(isPayAllCall) {
+                let $products = $(".product-result");
 
-                    var totalprice = 0;
-                    var productquantity = 0;
+                let totalQuantity = 0
+                ,   totalPrice = 0
+                ,   totalDiscount = 0
+                ,   totalLeft = 0
+                ,   shippingFee = 0
+                ,   otherFee = 0
+                ,   couponValue = 0
+                ,   total = 0;
+                // Trường hợp có đơn hàng đổi trả
+                let totalRefund = 0
+                ,   subTotal = 0;
+
+                if ($products.length > 0) {
+                    // Fix bug: Tính chiết khấu
+                    $products.find('.in-quantity').each(function (index, item) {
+                        totalQuantity += (+item.value || 0);
+                    });
+
+                    let totalprice = 0;
+                    let productquantity = 0;
                     $(".product-result").each(function () {
-                        var price = parseFloat($(this).find(".gia-san-pham").attr("data-price"));
-                        var quantity = parseFloat($(this).find(".in-quantity").val());
+                        try {
+                            let $discount = $(this).find(".discount");
+                            let $totalRow = $(this).find(".totalprice-view");
 
-                        var total = price * quantity;
-                        $(this).find(".totalprice-view").html(formatThousands(total, '.'));
-                        productquantity += quantity;
-                        totalprice += total;
-                    });
-                    $("#<%=hdfTotalPriceNotDiscount.ClientID%>").val(totalprice);
-                    $(".totalproductQuantity").html(formatThousands(productquantity, ',') + " cái");
-                    $("#<%=hdfTotalPriceNotDiscountNotFee.ClientID%>").val(totalprice);
-                    $(".totalpriceorder").html(formatThousands(totalprice, ','));
-                    $("#<%=hdfTotalQuantity.ClientID%>").val(productquantity);
-                    var totalDiscount = 0;
-                    var totalleft = 0;
-                    var totalck = 0;
-                    var amount = 0;
-                    let isDiscount = +$("#<%=hdfIsDiscount.ClientID%>").val() || 0;
-                    var amountdiscount = +$("#<%=hdfDiscountAmount.ClientID%>").val() || 0;
-                    let quantityRequirement = +$("#<%=hdfQuantityRequirement.ClientID%>").val() || 0;;
-                    var ChietKhau = document.getElementById('<%= hdfChietKhau.ClientID%>').defaultValue;
+                            let quantity = +$(this).find(".in-quantity").val() || 0;
+                            let price = +$(this).find(".gia-san-pham").attr("data-price") || 0;
+                            let discount = +$discount.val().replace(/,/g, '') || 0;
+                            let totalRow = 0;
 
-                    var listck = ChietKhau.split('|');
-                    for (var i = 0; i < listck.length - 1; i++) {
-                        var item = listck[i].split('-');
-                        if (i < listck.length - 2) {
-                            var item2 = listck[i + 1].split('-');
-                            if (productquantity > (parseFloat(item[0]) - 1) && productquantity <= (parseFloat(item2[0]) - 1)) {
-                                amount = parseFloat(item[1]);
+                            // Tính chiết khấu
+                            if (!(typeof (isPayAllCall) === "boolean" && isPayAllCall))
+                            {
+                                let tempDiscount = getDiscount(totalQuantity);
+
+                                if (discount < tempDiscount)
+                                {
+                                    discount = tempDiscount;
+                                    $discount.val(formatThousands(discount, ','))
+                                }
                             }
-                        } else {
-                            if (productquantity > (parseFloat(item[0]) - 1)) {
-                                amount = parseFloat(item[1]);
-                            }
+
+                            totalDiscount += (discount * quantity);
+                            totalPrice += (price * quantity);
+                            totalRow = (price - discount) * quantity;
+
+                            $totalRow.html(formatThousands(totalRow, ','));
                         }
-                    }
-
-                    // Nếu khách hàng năm trong nhóm chiết khấu và đạt số lượng yêu cầu không
-                    if (isDiscount && productquantity >= quantityRequirement) {
-                        amount = amount >= amountdiscount ? amount : amountdiscount;
-                    }
-
-                    if (amount > 0) {
-                        totalDiscount = amount;
-                        totalck = amount * productquantity;
-                        totalleft = totalprice - totalck;
-                        $(".subtotal").removeClass("hide");
-                        $(".discount").removeClass("hide");
-                    } else {
-                        totalDiscount = 0;
-                        totalleft = totalprice;
-                    }
-
-                    if ($("#<%=hdfcheck.ClientID%>").val() != 0) {
-                        var dis = $("#<%=pDiscount.ClientID%>").val();
-                        var discount = parseFloat(dis.replace(/\,/g, ''));
-                        var totalck = discount * productquantity;
-                        var totalleft = totalprice - totalck;
-                        var totalDiscount = discount;
-                    }
-                    var fs = $("#<%=pFeeShip.ClientID%>").val();
-                    var feeship = parseFloat(fs.replace(',', ''));
-                    var feeship = parseFloat(fs.replace(/\,/g, ''));
-
-                    let otherfee = 0;
-                    fees.forEach((item) => {
-                        otherfee += item.FeePrice;
+                        catch (err) {
+                            console.error(err.mesage);
+                        }
                     });
 
-                    var priceafterchietkhau = totalleft;
-                    var totalmoney = totalleft + feeship + otherfee;
-                    $("#<%=hdfTotalPrice.ClientID%>").val(totalmoney);
+                    // Tổng tiền sau chiết khấu
+                    totalLeft = totalPrice - totalDiscount;
+                    // Tổng phí
+                    shippingFee = +$("#<%=pFeeShip.ClientID%>").val().replace(/\,/g, '') || 0;
+                    otherFee = 0;
 
+                    fees.forEach((item) => { otherFee += item.FeePrice; });
                     // Phiếu giảm giá
                     checkCouponCondition();
-                    let priceCoupon = +$("#<%=hdfCouponValue.ClientID%>").val() || 0;
-
-                    totalmoney -= priceCoupon;
-
-                    $("#<%=pDiscount.ClientID%>").val(formatThousands(totalDiscount, ','));
-                    $(".totalpriceorderall").html(formatThousands(totalmoney, ','));
-                    $(".priceafterchietkhau").html(formatThousands(priceafterchietkhau, ','));
-                    $("#<%=hdfTotalPrice.ClientID%>").val(totalmoney);
-                    var refund = 0;
-                    if (parseFloat($("#<%=hdfDonHangTra.ClientID%>").val()) > 0) {
-                        refund = parseFloat($("#<%=hdfDonHangTra.ClientID%>").val());
-                    }
-
-                    $(".totalpricedetail").html(formatThousands((totalmoney - refund), ","));
-                    $("#<%=hdfTongTienConLai.ClientID%>").val(totalmoney - refund);
-                    countGuestChange();
-                } else {
-                    $(".totalproductQuantity").html(formatThousands(0, ',') + " cái");
-                    $(".totalpriceorder").html(formatThousands(0, ','));
-                    $(".totalGuestChange").html(formatThousands(0, ','));
-                    $(".totalpriceorderall").html(formatThousands(0, ','));
-                    $(".priceafterchietkhau").html(formatThousands(0, ','));
-
-                    $('[id$="_hdfTotalQuantity"]').val(formatThousands(0, ','));
-                    $('[id$="_hdfTotalPrice"]').val(formatThousands(0, ','));
-                    checkCouponCondition();
+                    couponValue = +$("#<%=hdfCouponValue.ClientID%>").val() || 0;
+                    // Tổng tiền
+                    total = totalLeft + shippingFee + otherFee - couponValue;
+                    // Trường hợp có đơn hàng đổi trả
+                    totalRefund = +$("#<%=hdfDonHangTra.ClientID%>").val() || 0;
+                    subTotal = total - totalRefund;
                 }
+
+                // Tổng số lượng
+                let $hdfTotalQuantity = $("#<%=hdfTotalQuantity.ClientID%>");
+                let $totalQuantity = $(".totalproductQuantity");
+
+                $hdfTotalQuantity.val(totalQuantity);
+                $totalQuantity.html(formatThousands(totalQuantity, ',') + " cái");
+                // Tổng tiền chưa chiết khấu
+                let $hdfTotalPrice = $("#<%=hdfTotalPriceNotDiscount.ClientID%>");
+                let $totalPrice = $(".totalpriceorder");
+
+                $hdfTotalPrice.val(totalPrice);
+                $totalPrice.html(formatThousands(totalPrice, ','));
+                // Tổng tiền chiết khấu
+                let $hdfTotalDiscount = $("#<%=hdfTotalDiscount.ClientID%>");
+                let $totalDiscount = $(".totalDiscount");
+
+                $hdfTotalDiscount.val(totalDiscount);
+                $totalDiscount.html(formatThousands(totalDiscount, ','));
+                // Tổng tiền sau chiết khấu
+                let $totalLeft = $(".priceafterchietkhau");
+
+                $totalLeft.html(formatThousands(totalLeft, ','))
+                // Tổng tiền
+                let $hdfTotal = $("#<%=hdfTotalPrice.ClientID%>");
+                let $total = $(".totalpriceorderall");
+
+                $hdfTotal.val(total);
+                $total.html(formatThousands(total, ','));
+                // Trường hợp có đơn hàng đổi trả
+                let $hdfSubTotal = $("#<%=hdfTongTienConLai.ClientID%>");
+                let $subTotal = $(".totalpricedetail");
+
+                $hdfSubTotal.val(subTotal);
+                $subTotal.html(formatThousands(subTotal, ","));
             }
 
-            // check empty
-            function notEmpty() {
-                if ($("#<%=pDiscount.ClientID%>").val() == '') {
-                    var dis = 0;
-                    $("#<%=pDiscount.ClientID%>").val(formatThousands(dis, ','));
+            /* ============================================================
+             * Tính lại tiền đơn hàng
+             * Được gọi tại:
+             * 1) Xóa sản phẩm
+             * 2) Phí vận chuyển
+             * 3) Trọng lượng đơn hàng
+             *
+             * Date:   2021-07-19
+             * Author: Binh-TT
+             *
+             * Đối ứng chiết khấu từng dòng
+             * ============================================================
+             */
+            function countTotal() {
+                let $products = $(".product-result");
+                let $shoppingFee = $("#<%=pFeeShip.ClientID%>");
+
+                let totalQuantity = 0
+                ,   totalPrice = 0
+                ,   totalDiscount = 0
+                ,   totalLeft = 0
+                ,   shippingFee = 0
+                ,   otherFee = 0
+                ,   couponValue = 0
+                ,   total = 0;
+                // Trường hợp có đơn hàng đổi trả
+                let totalRefund = 0
+                ,   subTotal = 0;
+
+                if ($products.length > 0) {
+                    // Tính tiền từng sản phẩm
+                    $products.each(function () {
+                        try {
+                            let $discount = $(this).find(".discount");
+                            let $totalRow = $(this).find(".totalprice-view");
+
+                            let quantity = +$(this).find(".in-quantity").val() || 0;
+                            let price = +$(this).find(".gia-san-pham").attr("data-price") || 0;
+                            let discount = +$discount.val().replace(/,/g, '') || 0;
+                            let totalRow = 0;
+
+
+                            totalQuantity += quantity;
+                            totalDiscount += (discount * quantity);
+                            totalPrice += (price * quantity);
+                            totalRow = (price - discount) * quantity;
+
+                            $totalRow.html(formatThousands(totalRow, ','));
+                        }
+                        catch (err) {
+                            console.error(err.message);
+                        }
+                    });
+
+                    // Tổng tiền sau chiết khấu
+                    totalLeft = totalPrice - totalDiscount;
+                    // Tổng phí
+                    shippingFee = +$shoppingFee.val().replace(/\,/g, '') || 0;
+                    otherFee = 0;
+
+                    fees.forEach((item) => { otherFee += item.FeePrice; });
+                    // Phiếu giảm giá
+                    checkCouponCondition();
+                    couponValue = +$("#<%=hdfCouponValue.ClientID%>").val() || 0;
+                    // Tổng tiền
+                    total = totalLeft + shippingFee + otherFee - couponValue;
+                    // Trường hợp có đơn hàng đổi trả
+                    totalRefund = +$("#<%=hdfDonHangTra.ClientID%>").val() || 0;
+                    subTotal = total - totalRefund;
                 }
-                if ($("#<%=pFeeShip.ClientID%>").val() == '') {
-                    var fee = 0;
-                    $("#<%=pFeeShip.ClientID%>").val(formatThousands(fee, ','));
-                }
-                if ($("#<%=pGuestPaid.ClientID%>").val() == '') {
-                    var pain = 0;
-                    $("#<%=pGuestPaid.ClientID%>").val(formatThousands(pain, ','));
-                }
+
+                // Tổng số lượng
+                let $hdfTotalQuantity = $("#<%=hdfTotalQuantity.ClientID%>");
+                let $totalQuantity = $(".totalproductQuantity");
+
+                $hdfTotalQuantity.val(totalQuantity);
+                $totalQuantity.html(formatThousands(totalQuantity, ',') + " cái");
+                // Tổng tiền chưa chiết khấu
+                let $hdfTotalPrice = $("#<%=hdfTotalPriceNotDiscount.ClientID%>");
+                let $totalPrice = $(".totalpriceorder");
+
+                $hdfTotalPrice.val(totalPrice);
+                $totalPrice.html(formatThousands(totalPrice, ','));
+                // Chiết khấu
+                let $discount = $("#<%=pDiscount.ClientID%>");
+
+                if ($discount.val() === '')
+                    $discount.val(0);
+                // Tổng tiền chiết khấu
+                let $hdfTotalDiscount = $("#<%=hdfTotalDiscount.ClientID%>");
+                let $totalDiscount = $(".totalDiscount");
+
+                $hdfTotalDiscount.val(totalDiscount);
+                $totalDiscount.html(formatThousands(totalDiscount, ','));
+                // Tổng tiền sau chiết khấu
+                let $totalLeft = $(".priceafterchietkhau");
+
+                $totalLeft.html(formatThousands(totalLeft, ','))
+                // Phí giao hàng
+                if ($shoppingFee.val() === '')
+                    $shoppingFee.val(0);
+                // Phí khác
                 fees.forEach((item) => {
-                    if (item.price == "") {
+                    if (item.price === '') {
                         item.FeePrice = 0;
-                        $("#" + item.UUID).val(0);
+                        $('#' + item.UUID).val(0);
                     }
                 })
+                // Tổng tiền
+                let $hdfTotal = $("#<%=hdfTotalPrice.ClientID%>");
+                let $total = $(".totalpriceorderall");
 
-            }
+                $hdfTotal.val(total);
+                $total.html(formatThousands(total, ','));
+                // Trường hợp có đơn hàng đổi trả
+                let $hdfSubTotal = $("#<%=hdfTongTienConLai.ClientID%>");
+                let $subTotal = $(".totalpricedetail");
 
-            // count total order
-            function countTotal() {
-                var total = parseFloat($("#<%=hdfTotalPriceNotDiscount.ClientID%>").val());
-                var quantity = parseFloat($("#<%=hdfTotalQuantity.ClientID%>").val());
-                notEmpty();
-                var dis = $("#<%=pDiscount.ClientID%>").val();
-                var fs = $("#<%=pFeeShip.ClientID%>").val();
-
-
-                var discount = parseFloat(dis.replace(/\,/g, ''));
-                var feeship = parseFloat(fs.replace(/\,/g, ''));
-
-                let otherfee = 0;
-                fees.forEach((item) => {
-                    otherfee += item.FeePrice;
-                });
-
-                $("#<%=hdfcheck.ClientID%>").val(discount);
-
-                // Phiếu giảm giá
-                let priceCoupon = +$("#<%=hdfCouponValue.ClientID%>").val() || 0;
-
-                var totalleft = total + feeship + otherfee - discount * quantity - priceCoupon;
-                var priceafterchietkhau = total - discount * quantity;
-
-                $(".totalpriceorderall").html(formatThousands(totalleft, ','));
-                $(".priceafterchietkhau").html(formatThousands(priceafterchietkhau, ','));
-
-                var refund = 0;
-                if (parseFloat($("#<%=hdfDonHangTra.ClientID%>").val()) > 0) {
-                    refund = parseFloat($("#<%=hdfDonHangTra.ClientID%>").val());
-                }
-
-                $(".totalpricedetail").html(formatThousands((totalleft - refund), ","));
-                $("#<%=hdfTongTienConLai.ClientID%>").val(totalleft - refund);
-                $("#<%=hdfTotalPrice.ClientID%>").val(totalleft);
-                countGuestChange();
+                $hdfSubTotal.val(subTotal);
+                $subTotal.html(formatThousands(subTotal, ","));
             }
 
             // get product price
@@ -1589,7 +1718,7 @@ function countGuestChange() {
                             $(this).find(".gia-san-pham").attr("data-price", giasi).html(formatThousands(giasi, ','));
                         }
                     });
-                    getAllPrice();
+                    getAllPrice(true);
                 }
             }
 
@@ -1730,7 +1859,7 @@ function countGuestChange() {
                                 document.querySelector('#btnRemoveCouponCode').classList.remove('hide');
                                 document.querySelector('#btnGenerateCouponG25').classList.add('hide');
 
-                                getAllPrice();
+                                getAllPrice(true);
                             }
                         }
                         else {
@@ -1757,7 +1886,7 @@ function countGuestChange() {
                 document.querySelector('#btnRemoveCouponCode').classList.add('hide');
                 document.querySelector('#btnGenerateCouponG25').classList.remove('hide');
 
-                getAllPrice();
+                getAllPrice(true);
             }
 
             function checkCouponCondition() {
@@ -1784,6 +1913,169 @@ function countGuestChange() {
 
                 generateCouponG25(customerName, customerID);
             }
+
+            /* ============================================================
+             * Date:   2021-07-19
+             * Author: Binh-TT
+             *
+             * Đối ứng chiết khấu từng dòng
+             * ============================================================
+             */
+            function onChangeDiscount($input) {
+                let value = $input.val();
+
+                if (value === "" || value === null)
+                    $input.val("0");
+                else {
+                    value = +value.replace(/,/g, '') || 0;
+                    $input.val(formatThousands(value, ','));
+
+                    let $row = $input.closest('tr');
+                    let costOfGoods = +$row.data('costOfGoods') || 0;
+                    let price = +$row.find('.gia-san-pham').data('price') || 0;
+
+                    if ((price - value) < costOfGoods) {
+                        $row.attr("data-error-discount", true);
+                        $row.find('td').each(function () { $(this).addClass('red'); });
+                    }
+                    else if (Boolean($row.attr("data-error-discount"))) {
+                        $row.removeAttr("data-error-discount");
+                        $row.find('td').each(function () { $(this).removeClass('red'); });
+                    }
+                }
+
+                getAllPrice(true);
+            }
+
+            function pressKeyDiscount($input) {
+                let notNumberReg = new RegExp(/\D/g);
+
+                if (notNumberReg.test($input.val()))
+                    $input.val().replace(notNumberReg, '');
+
+                let keyCode = $input.which;
+                let $row = $input.closest('tr');
+
+                $input.keyup(function (e) {
+                    if (e.which == 40) {
+                        // press down
+                        let $nextRow = $row.next();
+                        let $inputDown = $nextRow.find('.discount-item').find('input');
+
+                        $inputDown.focus().select();
+                    }
+                    else if (e.which == 38) {
+                        // press up
+                        let $prevRow = $row.prev();
+                        let $inputAbove = $prevRow.find('.discount-item').find('input');
+
+                        $inputAbove.focus().select();
+                    }
+                });
+            }
+
+            // Lấy ra mức chiết khấu của khách hàng
+            function getDiscount(totalQuantity) {
+                let discount = 0;
+
+                //#region Lấy các mức chiết khấu của hệ thống
+                let discountPolicy = $("input[id$='_hdfChietKhau']").val() || "";
+
+                if (discountPolicy) {
+                    let quantityDiscounts = discountPolicy.split('|').filter(x => x);
+
+                    // Lấy chiết khấu thỏa điều kiện
+                    quantityDiscounts = quantityDiscounts
+                        .filter(x => parseInt(x.split('-')[0]) <= totalQuantity);
+
+                    if (quantityDiscounts.length > 0) {
+                        // Lấy chiết khấu cuối
+                        let lastQuantityDiscount = quantityDiscounts.slice(-1).pop();
+
+                        discount = +lastQuantityDiscount.split('-')[1] || 0;
+                    }
+                }
+                //#endregion
+
+                //#region Lấy chiết khấu theo nhóm chiết khấu khách hàng
+                let isDiscount = +$("#<%=hdfIsDiscount.ClientID%>").val() || 0;
+                let quantityRequirement = +$("#<%=hdfQuantityRequirement.ClientID%>").val() || 0;
+
+                if (isDiscount && totalQuantity >= quantityRequirement)
+                {
+                    let groupDiscount = +$("#<%=hdfDiscountAmount.ClientID%>").val() || 0;
+
+                    if (discount < groupDiscount)
+                        discount = groupDiscount;
+                }
+                //#endregion
+
+                return discount;
+            }
+
+            function onBlurPDiscount($pDiscount) {
+                let $product = $(".product-result");
+
+                if ($product.length == 0)
+                    return;
+
+                //#region Tính lại chiết khấu
+                let discount = +$pDiscount.val().replace(/,/g, '') || 0;
+
+                if (discount == 0 && $pDiscount.val() === '')
+                    $pDiscount.val(0);
+
+                swal({
+                    title: "Chiết khấu",
+                    text: "Áp dụng chiết khấu <strong>" + formatThousands(discount, ',') + "/cái</strong> cho tất sản phẩm?",
+                    type: "warning",
+                    showCancelButton: true,
+                    closeOnConfirm: true,
+                    cancelButtonText: "Bỏ qua",
+                    confirmButtonText: "Xác nhận",
+                    html: true
+                }, function (isConfirm) {
+                    if (isConfirm) {
+                        $product.each(function () {
+                            try {
+                                //#region Cài đặt chiết khấu
+                                let $discount = $(this).find('.discount');
+
+                                if (discount != 0)
+                                    $discount.val(formatThousands(discount, ','));
+                                else
+                                    $discount.val(0);
+                                //#endregion
+
+                                //#region Kiểm tra chiết khấu
+                                let costOfGoods = $(this).data("costOfGoods");
+                                let price = +$(this).find(".gia-san-pham").data("price") || 0;
+
+                                if ((price - discount) < costOfGoods) {
+                                    $(this).attr("data-error-discount", true);
+                                    $(this).find('td').each(function () { $(this).addClass('red'); });
+                                }
+                                else if (Boolean($(this).attr("data-error-discount"))) {
+                                    $(this).removeAttr("data-error-discount");
+                                    $(this).find('td').each(function () { $(this).removeClass('red'); });
+                                }
+                                //#endregion
+                            }
+                            catch (err) {
+                                console.error(err.message);
+                            }
+                        });
+
+                        $pDiscount.val(0);
+                        getAllPrice(true);
+                    }
+                });
+                //#endregion
+            }
+            /* ============================================================
+             * Đối ứng chiết khấu từng dòng (END)
+             * ============================================================
+             */
         </script>
     </telerik:RadScriptBlock>
 </asp:Content>

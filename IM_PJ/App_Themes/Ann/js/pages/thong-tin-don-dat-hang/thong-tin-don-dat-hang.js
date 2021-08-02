@@ -161,37 +161,6 @@ function _initCustomer(customer) {
 
     facebookDOM.innerHTML = facebookHTML;
 
-    // Thông tin địa chỉ khách hàng
-    if (customer.address) {
-        // Tỉnh thành
-        if (customer.address.provinceID) {
-            let ddlProvinceDOM = document.getElementById('ddlProvince');
-
-            ddlProvinceDOM.innerHTML = '<option value="' + customer.address.provinceID + '" title="' + customer.address.provinceName + '">' + customer.address.provinceName + '</option>';
-
-            // Quận huyện
-            if (customer.address.districtID) {
-                let ddlDistrictDOM = document.getElementById('ddlDistrict');
-
-                ddlDistrictDOM.innerHTML = '<option value="' + customer.address.districtID + '" title="' + customer.address.districtName + '">' + customer.address.districtName + '</option>';
-
-                // Phường xã
-                if (customer.address.wardID) {
-                    let ddlWardDOM = document.getElementById('ddlWard');
-
-                    ddlWardDOM.innerHTML = '<option value="' + customer.address.wardID + '" title="' + customer.address.wardName + '">' + customer.address.wardName + '</option>';
-                }
-            }
-        }
-
-        // Địa chỉ
-        if (customer.address.address) {
-            let addressDOM = document.getElementById('txtAddress');
-
-            addressDOM.value = customer.address.address
-        }
-    }
-
     // Customer View
     let customerViewHTML = '';
     let customerViewDOM = document.getElementById('divCustomerView');
@@ -283,6 +252,9 @@ function _generatePreOrderDetailHTML(item, index) {
     html += '    <td class="price-item gia-san-pham">';
     html += '        ' + UtilsService.formatThousands(+item.price || 0, ',');
     html += '    </td>';
+    html += '    <td class="discount-item">';
+    html += '        ' + UtilsService.formatThousands(+item.discount || 0, ',');
+    html += '    </td>';
     html += '    <td class="quantity-item soluong">';
     html += '        ' + UtilsService.formatThousands(+item.stock || 0, ',');
     html += '    </td>';
@@ -325,16 +297,16 @@ function _initFooter(data) {
     totalPriceDOM.innerText = UtilsService.formatThousands(totalPrice, ',');
 
     // Chiết khấu
-    let discount = +data.totalDiscount || 0;
+    let totalDiscount = +data.totalDiscount || 0;
     let discountDOM = document.getElementById('discount');
 
-    if (discount > 0)
-        discountDOM.innerText = '-' + UtilsService.formatThousands(discount, ',');
+    if (totalDiscount > 0)
+        discountDOM.innerText = '-' + UtilsService.formatThousands(totalDiscount, ',');
     else
-        discountDOM.innerText = UtilsService.formatThousands(discount, ',');
+        discountDOM.innerText = UtilsService.formatThousands(totalDiscount, ',');
 
     // Sau chiết khấu
-    let totalAfterDiscount = totalPrice - (discount * quantity);
+    let totalAfterDiscount = totalPrice - totalDiscount;
     let totalAfterDiscountDOM = document.getElementById('totalAfterDiscount');
 
     totalAfterDiscountDOM.innerText = UtilsService.formatThousands(totalAfterDiscount, ',');
@@ -360,6 +332,13 @@ function _initFooter(data) {
 
     preOrderIdDOM.innerText = data.preOrderId
     totalFooterDOM.innerText = UtilsService.formatThousands(total, ',')
+
+    // Ghi chú
+    if (data.note) {
+        let noteDOM = document.querySelector("[id$='_txtOrderNote']");
+
+        noteDOM.value = data.note;
+    }
 }
 
 function _initPreOrderStatus(data) {

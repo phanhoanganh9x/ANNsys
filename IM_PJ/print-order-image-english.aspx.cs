@@ -1,6 +1,7 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
-using IM_PJ.Models.Common;
+using CommonModel = IM_PJ.Models.Common;
+using IM_PJ.Models.Pages.print_order_image_english;
 using IM_PJ.Utils;
 using MB.Extensions;
 using NHST.Bussiness;
@@ -8,11 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Web;
-using System.Web.Script.Serialization;
-using System.Web.Services;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace IM_PJ
@@ -50,277 +46,577 @@ namespace IM_PJ
                 LoadData();
             }
         }
-        
+
         #region Private
-        private int _getCategory(string SKU, int ProductType)
+        /// <summary>
+        /// Chuyển đổi tiền tệ
+        /// </summary>
+        /// <param name="money">Số tiền cần chuyển</param>
+        /// <param name="currencyRate">Tỉ giá tiền tệ</param>
+        /// <returns></returns>
+        private decimal _currencyConversion(decimal money, decimal currencyRate)
         {
-            int categoryID = 0;
+            return Math.Ceiling((decimal)1e2 * money / currencyRate) * (decimal)1e-2;
+        }
 
-            if (ProductType == 1)
+        /// <summary>
+        /// Lấy dữ liệu chi tiết hóa đơn
+        ///
+        /// Date:   2021-07-19
+        /// Author: Binh-TT
+        ///
+        /// Đối ứng chiết khấu từng dòng
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <param name="merger">false: Ảnh chi tiết | true: Ảnh gộp</param>
+        /// <param name="currencyRate">Tỉ giá tiền</param>
+        /// <param name="defaultDiscount">Sử dụng cho các đơn hàng có 1 chiết khấu</param>
+        private IList<IOrderDetailModel> _getOrderDetails(int orderId, bool merger, decimal currencyRate, decimal defaultDiscount)
+        {
+            try
             {
-                var product = ProductController.GetBySKU(SKU);
-                if (product != null)
+                using (var con = new inventorymanagementEntities())
                 {
-                    categoryID = Convert.ToInt32(product.CategoryID);
+                    IList<IOrderDetailModel> results;
+
+                    if (!merger)
+                        results = new List<OrderDetailModel>() as IList<IOrderDetailModel>;
+                    else
+                        results = new List<OrderMergerDetailModel>() as IList<IOrderDetailModel>;
+
+                    #region Lấy thông tin chi tiếc đơn hàng
+                    var orderDetails = con.tbl_OrderDetail
+                        .Where(o => o.OrderID == orderId)
+                        .Select(x => new
+                        {
+                            productType = x.ProductType.HasValue ? x.ProductType.Value : 0,
+                            sku = x.SKU,
+                            productDescription = x.ProductVariableDescrition,
+                            quantity = x.Quantity.HasValue ? x.Quantity.Value : 0,
+                            price = x.Price.HasValue ? x.Price.Value : 0,
+                            discount = x.DiscountPrice.HasValue ? x.DiscountPrice.Value : 0
+                        })
+                        .OrderBy(o => o.sku)
+                        .ThenByDescending(o => o.price);
+
+                    if (!orderDetails.Any())
+                        return results;
+                    #endregion
+
+                    #region Lấy thông tin tên sản phẩm và giá củ (đối với sản phẩm sale)
+                    var productSkus = orderDetails
+                        .Where(x => x.productType == 1)
+                        .GroupBy(x => x.sku)
+                        .Select(x => new { sku = x.Key });
+
+                    var products = con.tbl_Product
+                        .Join(
+                            productSkus,
+                            p => p.ProductSKU,
+                            f => f.sku,
+                            (p, f) => new
+                            {
+                                categoryId = p.CategoryID.HasValue ? p.CategoryID.Value : 0,
+                                sku = p.ProductSKU,
+                                name = p.ProductTitle,
+                                avatar = p.ProductImage,
+                                oldPrice = p.Old_Price.HasValue ? p.Old_Price.Value : 0
+                            }
+                        )
+                        .OrderBy(o => o.sku)
+                        .ToList();
+
+                    var variationSkus = orderDetails
+                        .Where(x => x.productType == 2)
+                        .GroupBy(x => x.sku)
+                        .Select(x => new { sku = x.Key });
+
+                    var variations = con.tbl_Product
+                        .Join(
+                            con.tbl_ProductVariable.Where(x => variationSkus.Any(y => x.SKU == y.sku)),
+                            p => p.ID,
+                            v => v.ProductID,
+                            (p, v) => new
+                            {
+                                categoryId = p.CategoryID.HasValue ? p.CategoryID.Value : 0,
+                                sku = v.SKU,
+                                name = p.ProductTitle,
+                                avatar = String.IsNullOrEmpty(v.Image) ? p.ProductImage : v.Image,
+                                oldPrice = p.Old_Price.HasValue ? p.Old_Price.Value : 0
+                            }
+                        )
+                        .ToList();
+                    #endregion
+
+                    #region Tổng hợp dữ liệu
+                    var data = orderDetails.ToList()
+                        .GroupJoin(
+                            products,
+                            d => new { d.productType, d.sku },
+                            p => new { productType = 1, p.sku },
+                            (detail, product) => new { detail, product }
+                        )
+                        .SelectMany(
+                            x => x.product.DefaultIfEmpty(),
+                            (parent, child) => new { parent.detail, product = child }
+                        )
+                        .GroupJoin(
+                            variations,
+                            temp => new { temp.detail.productType, temp.detail.sku },
+                            v => new { productType = 2, v.sku },
+                            (temp, variation) => new { temp.detail, temp.product, variation }
+                        )
+                        .SelectMany(
+                            x => x.variation.DefaultIfEmpty(),
+                            (parent, child) => new { parent.detail, parent.product, variation = child }
+                        )
+                        .Select(x =>
+                        {
+                            var categoryId = 0;
+                            var sku = String.Empty;
+                            var name = String.Empty;
+                            var avatar = String.Empty;
+                            var oldPrice = 0D;
+
+                            if (x.detail.productType == 1)
+                            {
+                                categoryId = x.product.categoryId;
+                                sku = x.product.sku;
+                                name = x.product.name;
+                                avatar = x.product.avatar;
+                                oldPrice = x.product.oldPrice;
+                            }
+                            else
+                            {
+                                categoryId = x.variation.categoryId;
+                                sku = x.variation.sku;
+                                name = x.variation.name;
+                                avatar = x.variation.avatar;
+                                oldPrice = x.variation.oldPrice;
+                            }
+
+                            return new
+                            {
+                                categoryId = categoryId,
+                                productType = x.detail.productType,
+                                sku = sku,
+                                name = name,
+                                avatar = avatar,
+                                description = x.detail.productDescription,
+                                quantity = Convert.ToInt32(x.detail.quantity),
+                                price = Convert.ToDecimal(x.detail.price),
+                                oldPrice = Convert.ToDecimal(oldPrice),
+                                discount = x.detail.discount > 0 ? Convert.ToDecimal(x.detail.discount) : defaultDiscount,
+                            };
+                        })
+                        .ToList();
+                    #endregion
+
+                    if (!merger)
+                        results = data.Select(x => new OrderDetailModel
+                        {
+                            avatar = x.avatar,
+                            productType = x.productType,
+                            sku = x.sku,
+                            name = x.name,
+                            description = x.description,
+                            quantity = x.quantity,
+                            price = x.price,
+                            oldPrice = x.oldPrice,
+                            discount = x.discount
+                        })
+                        .ToList<IOrderDetailModel>();
+                    else
+                    {
+                        #region Lấy thông tin danh mục
+                        var categoryIds = data.GroupBy(g => g.categoryId).Select(x => x.Key).ToList();
+                        var categories = con.tbl_Category
+                            .Where(x => categoryIds.Contains(x.ID))
+                            .Select(x => new
+                            {
+                                id = x.ID,
+                                name = x.CategoryName
+                            })
+                            .ToList();
+                        #endregion
+
+                        #region Tổng hợp dữ liệu gộp
+                        var mergerData = data
+                            .GroupBy(g => new { g.categoryId, g.price })
+                            .Select(x => new {
+                                categoryId = x.Key.categoryId,
+                                price = x.Key.price,
+                                totalQuantity = x.Sum(s => s.quantity),
+                                totalDiscount = x.Sum(s => s.discount * s.quantity),
+                                total = x.Sum(s => (s.price - s.discount) * s.quantity)
+                            })
+                            .GroupJoin(
+                                categories,
+                                d => d.categoryId,
+                                c => c.id,
+                                (details, category) => new { details, category }
+                            )
+                            .SelectMany(
+                                x => x.category.DefaultIfEmpty(),
+                                (parent, child) => new { parent.details, category = child }
+                            )
+                            .Select(x => new
+                            {
+                                categoryName = x.category.name,
+                                price = x.details.price,
+                                totalQuantity = x.details.totalQuantity,
+                                totalDiscount = x.details.totalDiscount,
+                                total = x.details.total
+                            })
+                            .ToList();
+                        #endregion
+
+                        results = mergerData.Select(x => new OrderMergerDetailModel
+                        {
+                            name = x.categoryName,
+                            price = x.price,
+                            totalQuantity = x.totalQuantity,
+                            totalDiscount = x.totalDiscount,
+                            total = x.total
+                        })
+                        .ToList<IOrderDetailModel>();
+                    }
+
+                    return results;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Khởi tạo html hóa đơn
+        ///
+        /// Date:   2021-07-19
+        /// Author: Binh-TT
+        ///
+        /// Đối ứng chiết khấu từng dòng
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="pagination"></param>
+        private string _createOrderHtml(OrderModel data, PaginationModel pagination)
+        {
+            var html = new StringBuilder();
+
+            html.AppendLine("<div class='print-order-image'>");
+            html.AppendLine(String.Format("    <div class='all print print-{0}'>", pagination.page - 1));
+            html.AppendLine("        <div class='body'>");
+
+            #region Header
+            if (pagination.page == 1)
+            {
+                html.AppendLine("            <div class='table-1'>");
+
+                #region Title đơn hàng
+                html.AppendLine(String.Format("                <h1>INVOICE #{0}</h1>", data.id));
+                html.AppendLine("                <div class='note'></div>");
+                #endregion
+
+                #region Thông tin khách hàng - nhân viên - đơn hàng
+                html.AppendLine("                <table>");
+                html.AppendLine("                    <colgroup >");
+                html.AppendLine("                        <col class='col-left' />");
+                html.AppendLine("                        <col class='col-right' />");
+                html.AppendLine("                    </colgroup>");
+                html.AppendLine("                    <tbody>");
+
+                #region Tên khách hàng
+                html.AppendLine("                        <tr>");
+                html.AppendLine("                            <td>Customer name</td>");
+                html.AppendLine(String.Format("                            <td class='customer-name'>{0}</td>", data.customer.name));
+                html.AppendLine("                        </tr>");
+                #endregion
+
+                #region SĐT
+                html.AppendLine("                        <tr>");
+                html.AppendLine("                            <td>Phone number</td>");
+                html.AppendLine(String.Format("                            <td>{0}</td>", data.customer.phone));
+                html.AppendLine("                        </tr>");
+                #endregion
+
+                #region Ngày tạo đơn
+                html.AppendLine("                        <tr>");
+                html.AppendLine("                            <td>Invoice date</td>");
+                html.AppendLine(String.Format("                            <td>{0:dd/MM/yyyy HH:mm}</td>", data.createdDate));
+                html.AppendLine("                        </tr>");
+                #endregion
+
+                #region Nhân viên tạo đơn
+                html.AppendLine("                        <tr>");
+                html.AppendLine("                            <td>Staff</td>");
+                html.AppendLine(String.Format("                            <td>{0}</td>", data.staff.name));
+                html.AppendLine("                        </tr>");
+                #endregion
+
+                #region Ghi chú
+                if (!String.IsNullOrEmpty(data.note))
+                {
+                    html.AppendLine("                        <tr>");
+                    html.AppendLine("                            <td>Note</td>");
+                    html.AppendLine(String.Format("                            <td>{0}</td>", data.note));
+                    html.AppendLine("                        </tr>");
+                }
+                #endregion
+
+                html.AppendLine("                </table>");
+                #endregion
+
+                html.AppendLine("            </div>");
+            }
+            #endregion
+
+            #region Body
+            html.AppendLine("            <div class='table-2'>");
+            html.AppendLine("                <table>");
+            html.AppendLine("                    <colgroup>");
+            if (!data.merger)
+            {
+                html.AppendLine("                        <col class='order-item' />");
+                html.AppendLine("                        <col class='image' />");
+                html.AppendLine("                        <col class='name' />");
+                html.AppendLine("                        <col class='quantity' />");
+                html.AppendLine("                        <col class='price' />");
+                html.AppendLine("                        <col class='discount' />");
+                html.AppendLine("                        <col class='subtotal' />");
+            }
+            else
+            {
+                html.AppendLine("                        <col class='merger-index' />");
+                html.AppendLine("                        <col class='merger-name' />");
+                html.AppendLine("                        <col class='merger-total-quantity' />");
+                html.AppendLine("                        <col class='merger-total-price' />");
+                html.AppendLine("                        <col class='merger-total-discount' />");
+                html.AppendLine("                        <col class='merger-total' />");
+            }
+            html.AppendLine("                    </colgroup>");
+            html.AppendLine("                    <thead>");
+            html.AppendLine("                        <th>#</th>");
+            if (!data.merger)
+                html.AppendLine("                        <th>Image</th>");
+            html.AppendLine("                        <th>Item</th>");
+            html.AppendLine("                        <th>Qty</th>");
+            html.AppendLine("                        <th>Price</th>");
+            html.AppendLine("                        <th>Discount</th>");
+            html.AppendLine("                        <th>Amount</th>");
+            html.AppendLine("                    </thead>");
+            html.AppendLine("                    <tbody>");
+
+            #region Thông tin chi tiết đơn hàng
+            var index = ((pagination.page - 1) * pagination.pageSize) + 1;
+
+            if (!data.merger)
+            {
+                var details = data.details
+                    .Skip((pagination.page - 1) * pagination.pageSize)
+                    .Take(pagination.pageSize)
+                    .Select(x => (OrderDetailModel)x)
+                    .ToList();
+
+                foreach (var item in details)
+                {
+                    var avatarUrl = Thumbnail.getURL(item.avatar, Thumbnail.Size.Large);
+                    var saleHtml = item.oldPrice > 0 ? "<span class='sale-icon'>SALE</span> " : String.Empty;
+                    var name = PJUtils.Truncate(item.name, 30);
+                    var description = item.productType == 2 && !String.IsNullOrEmpty(item.description)
+                        ? String.Format("{0}", item.description.Replace("|", ". "))
+                        : String.Empty;
+                    var productName = String.Format("<strong>{0}</strong> - {1}{2}", item.sku, saleHtml, name);
+                    var total = (item.price - item.discount) * item.quantity;
+
+                    html.AppendLine("                    <tr>");
+                    // STT
+                    html.AppendLine(String.Format("                        <td id='{0}'>{1}</td>", item.sku, index));
+                    // Hình ảnh
+                    if (!data.merger)
+                        html.AppendLine(String.Format("                        <td><image src='{0}' /></td>", avatarUrl));
+                    // Sản phẩm
+                    if (item.productType == 1)
+                        html.AppendLine(String.Format("                        <td>{0}</td>", productName));
+                    else
+                        html.AppendLine(String.Format("                        <td><p>{0}</p><p class='variable'>{1}</p></td>", productName, description));
+                    // Số lượng
+                    html.AppendLine(String.Format("                        <td>{0:N0}</td>", item.quantity));
+                    // Giá
+                    html.AppendLine(String.Format("                        <td>{0:0.00}</td>", _currencyConversion(item.price, data.currencyRate)));
+                    // Chiết khấu
+                    html.AppendLine(String.Format("                        <td>{0:0.00}</td>", _currencyConversion(item.discount, data.currencyRate)));
+                    // html
+                    html.AppendLine(String.Format("                        <td>{0:0.00}</td>", _currencyConversion(total, data.currencyRate)));
+                    html.AppendLine("                    </tr>");
+
+                    index++;
                 }
             }
             else
             {
-                var productvariable = ProductVariableController.GetBySKU(SKU);
-                if (productvariable != null)
+                var details = data.details
+                    .Skip((pagination.page - 1) * pagination.pageSize)
+                    .Take(pagination.pageSize)
+                    .Select(x => (OrderMergerDetailModel)x)
+                    .ToList();
+
+                foreach (var item in details)
                 {
-                    var product1 = ProductController.GetByID(Convert.ToInt32(productvariable.ProductID));
-                    if (product1 != null)
-                    {
-                        categoryID = Convert.ToInt32(product1.CategoryID);
-                    }
+                    html.AppendLine("                    <tr>");
+                    // STT
+                    html.AppendLine(String.Format("                        <td>{0}</td>", index));
+                    html.AppendLine(String.Format("                        <td>{0} {1:0.00}</td>", item.name, _currencyConversion(item.price, data.currencyRate)));
+                    html.AppendLine(String.Format("                        <td>{0:N0}</td>", item.totalQuantity));
+                    html.AppendLine(String.Format("                        <td>{0:0.00}</td>", _currencyConversion(item.price * item.totalQuantity, data.currencyRate)));
+                    html.AppendLine(String.Format("                        <td>{0:0.00}</td>", _currencyConversion(item.totalDiscount, data.currencyRate)));
+                    html.AppendLine(String.Format("                        <td>{0:0.00}</td>", _currencyConversion(item.total, data.currencyRate)));
+                    html.AppendLine("                    </tr>");
+
+                    index++;
                 }
             }
-            return categoryID;
-        }
+            #endregion
 
-        private void _printProduct(List<tbl_OrderDetail> orderdetails, ref double TotalQuantity, ref double TotalOrder, ref string Print) {
-            var t = 0;
-            var print = 1;
-
-            foreach (var item in orderdetails)
+            #region Thông tin tổng hợp của đơn hàng
+            if (pagination.page == pagination.totalPages)
             {
-                TotalQuantity += Convert.ToDouble(item.Quantity);
+                var total = 0m;
+                var colspan = 6;
 
-                var ProductType = Convert.ToInt32(item.ProductType);
-                var ItemPrice = Convert.ToDouble(item.Price);
-                var SKU = item.SKU;
-                var ProductName = String.Empty;
-                var ProductImage = String.Empty;
-                var SubTotal = Convert.ToInt32(ItemPrice) * Convert.ToInt32(item.Quantity);
+                if (data.merger)
+                    colspan = 5;
 
-                t++;
-                Print += "<tr>";
-                Print += "<td id='" + SKU + "'>" + t + "</td>";
+                #region Tổng số lượng
+                html.AppendLine("                    <tr>");
+                html.AppendLine(String.Format("                        <td colspan='{0}' class='align-right'>Total quantity</td>", colspan));
+                html.AppendLine(String.Format("                        <td>{0:N0}</td>", data.totalQuantity));
+                html.AppendLine("                    </tr>");
+                #endregion
 
-                if (ProductType == 1)
+                #region Thành tiền
+                total += data.totalPrice;
+
+                html.AppendLine("                    <tr>");
+                html.AppendLine(String.Format("                        <td colspan='{0}' class='align-right'>Subtotal</td>", colspan));
+                html.AppendLine(String.Format("                        <td>{0:0.00}</td>", _currencyConversion(data.totalPrice, data.currencyRate)));
+                html.AppendLine("                    </tr>");
+                #endregion
+
+                #region Chiết khấu
+                total -= data.totalDiscount;
+
+                html.AppendLine("                    <tr>");
+                html.AppendLine(String.Format("                        <td colspan='{0}' class='align-right'>Total discount</td>", colspan));
+                html.AppendLine(String.Format("                        <td>-{0:0.00}</td>", _currencyConversion(data.totalDiscount, data.currencyRate)));
+                html.AppendLine("                    </tr>");
+                html.AppendLine("                    <tr>");
+                html.AppendLine(String.Format("                        <td colspan='{0}' class='align-right'>After discount</td>", colspan));
+                html.AppendLine(String.Format("                        <td>{0:0.00}</td>", _currencyConversion(total, data.currencyRate)));
+                html.AppendLine("                    </tr>");
+                #endregion
+
+                #region Đơn hàng đổi trả
+                if (data.refundOrder != null)
                 {
-                    var product = ProductController.GetBySKU(SKU);
+                    total -= data.refundOrder.totalPrice;
 
-                    if (product != null)
-                    {
-                        if (String.IsNullOrEmpty(product.EnName))
-                        {
-                            var category = CategoryController.GetByID(product.CategoryID.Value);
-
-                            if (category == null)
-                                ProductName = SKU;
-                            else
-                                ProductName = String.Format("{0} - {1}", SKU, category.EnName);
-                        }
-                        else {
-                            ProductName = product.EnName;
-                        }
-                        
-                        if (!String.IsNullOrEmpty(product.ProductImage))
-                            ProductImage = product.ProductImage;
-
-                        Print += "<td><image src='" + Thumbnail.getURL(ProductImage, Thumbnail.Size.Large) + "' /></td> ";
-                        Print += "<td><strong>" + SKU + "</strong> - " + (product.Old_Price > 0 ? "<span class='sale-icon'>SALE</span> " : "") + PJUtils.Truncate(ProductName, 30) + "</td> ";
-                    }
+                    html.AppendLine("                    <tr>");
+                    html.AppendLine(String.Format("                        <td colspan='{0}' class='align-right'>Return order (ID {1})</td>", colspan, data.refundOrder.id));
+                    html.AppendLine(String.Format("                        <td>-{0:0.00}</td>", _currencyConversion(data.refundOrder.totalPrice, data.currencyRate)));
+                    html.AppendLine("                    </tr>");
+                    html.AppendLine("                    <tr>");
+                    html.AppendLine(String.Format("                        <td colspan='{0}' class='align-right'>Total remaining</td>", colspan));
+                    html.AppendLine(String.Format("                        <td>{0:0.00}</td>", _currencyConversion(total, data.currencyRate)));
+                    html.AppendLine("                    </tr>");
                 }
-                else
+                #endregion
+
+                #region Phí giao hàng
+                total += data.shippingFee;
+
+                html.AppendLine("                    <tr>");
+                html.AppendLine(String.Format("                        <td colspan='{0}' class='align-right'>Shipping</td>", colspan));
+                html.AppendLine(String.Format("                        <td>{0:0.00}</td>", _currencyConversion(data.shippingFee, data.currencyRate)));
+                html.AppendLine("                    </tr>");
+                #endregion
+
+                #region Phí khác
+                foreach (var otherFee in data.otherFees)
                 {
-                    var productvariable = ProductVariableController.GetBySKU(SKU);
+                    total += otherFee.fee;
 
-                    if (productvariable != null)
-                    {
-                        var parent_product = ProductController.GetByID(Convert.ToInt32(productvariable.ProductID));
-                        
-                        if (parent_product != null)
-                        {
-                            if (String.IsNullOrEmpty(parent_product.EnName))
-                            {
-                                var category = CategoryController.GetByID(parent_product.CategoryID.Value);
-
-                                if (category == null)
-                                    ProductName = SKU;
-                                else
-                                    ProductName = String.Format("{0} - {1}", SKU, category.EnName);
-                            }
-                            else
-                            {
-                                ProductName = parent_product.EnName;
-                            }
-
-                            if (string.IsNullOrEmpty(productvariable.Image))
-                                ProductImage = parent_product.ProductImage;
-                            else
-                                ProductImage = productvariable.Image;
-                        }
-
-                        Print += "<td id='" + parent_product.ProductSKU + "'><image src='" + Thumbnail.getURL(ProductImage, Thumbnail.Size.Large) + "' /></td>";
-                        Print += "<td><p><strong>" + SKU + "</strong> - " + (parent_product.Old_Price > 0 ? "<span class='sale-icon'>SALE</span> " : "") + PJUtils.Truncate(ProductName, 30) + "</p><p class='variable'>" + item.ProductVariableDescrition.Replace("|", ". ") + "</p></td> ";
-                    }
+                    html.AppendLine("                    <tr>");
+                    html.AppendLine(String.Format("                        <td colspan='{0}' class='align-right'>{1}</td>", colspan, otherFee.name));
+                    html.AppendLine(String.Format("                        <td>{0:0.00}</td>", _currencyConversion(otherFee.fee, data.currencyRate)));
+                    html.AppendLine("                    </tr>");
                 }
+                #endregion
 
-                Print += "<td>" + item.Quantity + "</td>";
-                Print += "<td>" + string.Format("{0:N0}", ItemPrice) + "</td>";
-                Print += "<td>" + string.Format("{0:N0}", SubTotal) + "</td>";
-                Print += "</tr>";
-
-                TotalOrder += SubTotal;
-
-                if (t % 10 == 0)
+                #region Coupon
+                if (data.coupon != null)
                 {
-                    if (t == print * 10)
-                    {
-                        continue;
-                    }
-                    Print += "</tbody>";
-                    Print += "</table>";
-                    Print += "</div>";
-                    Print += "</div>";
-                    Print += "</div>";
-                    Print += "</div>";
+                    total -= data.coupon.value;
 
-                    Print += "<div class='print-order-image'>";
-                    Print += "<div class='all print print-" + print + "'>";
-                    Print += "<div class='body'>";
-                    Print += "<div class='table-2'>";
-                    Print += "<table>";
-                    Print += "<colgroup>";
-                    Print += "<col class='order-item' />";
-                    Print += "<col class='image' />";
-                    Print += "<col class='name' />";
-                    Print += "<col class='quantity' />";
-                    Print += "<col class='price' />";
-                    Print += "<col class='subtotal' />";
-                    Print += "</colgroup>";
-                    Print += "<thead>";
-                    Print += "<th>#</th>";
-                    Print += "<th>Image</th>";
-                    Print += "<th>Item</th>";
-                    Print += "<th>Qty</th>";
-                    Print += "<th>Unit Price</th>";
-                    Print += "<th>Amount</th>";
-                    Print += "</thead>";
-                    Print += "<tbody>";
-                    print++;
+                    html.AppendLine("                    <tr>");
+                    html.AppendLine(String.Format("                        <td colspan='{0}' class='align-right'>Coupon code: {1}</td>", colspan, data.coupon.code));
+                    html.AppendLine(String.Format("                        <td>-{0:0.00}</td>", _currencyConversion(data.coupon.value, data.currencyRate)));
+                    html.AppendLine("                    </tr>");
                 }
+                #endregion
+
+                #region Tổng cộng
+                html.AppendLine("                    <tr>");
+                html.AppendLine(String.Format("                        <td colspan='{0}' class='align-right'>TOTAL</td>", colspan));
+                html.AppendLine(String.Format("                        <td>{0:0.00}</td>", _currencyConversion(total, data.currencyRate)));
+                html.AppendLine("                    </tr>");
+                #endregion
             }
-        } 
+            #endregion
 
-        private void _printProductGroup(List<tbl_OrderDetail> orderdetails, ref double TotalQuantity, ref double TotalOrder, ref string Print)
-        {
-            int t = 0;
-            int print = 1;
+            html.AppendLine("                    </tbody>");
+            html.AppendLine("                </table>");
+            html.AppendLine("            </div>");
+            #endregion
 
-            for (int i = 0; i < orderdetails.Count; i++)
-            {
-                if (orderdetails[i] != null)
-                {
-                    t++;
-                    Print += "<tr>";
-                    Print += "<td>" + t + "</td>";
+            html.AppendLine("        </div>");
+            html.AppendLine("    </div>");
+            html.AppendLine("</div>");
 
-                    double ItemPrice1 = Convert.ToDouble(orderdetails[i].Price);
-                    int categoryID1 = _getCategory(orderdetails[i].SKU, Convert.ToInt32(orderdetails[i].ProductType));
-
-                    int quantity = Convert.ToInt32(orderdetails[i].Quantity);
-
-                    for (int j = i + 1; j < orderdetails.Count; j++)
-                    {
-                        if (orderdetails[j] != null)
-                        {
-                            int categoryID2 = _getCategory(orderdetails[j].SKU, Convert.ToInt32(orderdetails[j].ProductType));
-
-                            double ItemPrice2 = Convert.ToDouble(orderdetails[j].Price);
-
-                            if (categoryID1 == categoryID2 && orderdetails[i].Price == orderdetails[j].Price)
-                            {
-                                quantity += Convert.ToInt32(orderdetails[j].Quantity);
-                                orderdetails[j] = null;
-                            }
-                        }
-                    }
-
-                    var category = CategoryController.GetByID(categoryID1);
-                    double SubTotal = ItemPrice1 * quantity;
-                    Print += "<td>" + category.CategoryName + " " + string.Format("{0:N0}", ItemPrice1) + "</td>";
-                    Print += "<td>" + quantity + "</td>";
-                    Print += "<td>" + string.Format("{0:N0}", ItemPrice1) + "</td>";
-                    Print += "<td>" + string.Format("{0:N0}", SubTotal) + "</td>";
-                    Print += "</tr>";
-                    TotalOrder += SubTotal;
-                    TotalQuantity += quantity;
-                }
-
-                if (t % 20 == 0)
-                {
-                    if (t == print * 20)
-                    {
-                        continue;
-                    }
-                    Print += "</tbody>";
-                    Print += "</table>";
-                    Print += "</div>";
-                    Print += "</div>";
-                    Print += "</div>";
-                    Print += "</div>";
-
-                    Print += "<div class=\"print-order-image\">";
-                    Print += "<div class=\"all print print-" + print + "\">";
-                    Print += "<div class=\"body\">";
-                    Print += "<div class=\"table-2\">";
-                    Print += "<table>";
-                    Print += "<colgroup>";
-                    Print += "<col class=\"order-item\" />";
-                    Print += "<col class=\"name\" />";
-                    Print += "<col class=\"quantity\" />";
-                    Print += "<col class=\"price\" />";
-                    Print += "<col class=\"subtotal\"/>";
-                    Print += "</colgroup>";
-                    Print += "<thead>";
-                    Print += "<th>#</th>";
-                    Print += "<th>Image</th>";
-                    Print += "<th>Item</th>";
-                    Print += "<th>Qty</th>";
-                    Print += "<th>Unit Price</th>";
-                    Print += "<th>Amount</th>";
-                    Print += "</thead>";
-                    Print += "<tbody>";
-                    print++;
-                }
-            }
-        }
-
-        private void _printBody(int mergeprint, List<tbl_OrderDetail> orderdetails, ref double TotalQuantity, ref double TotalOrder, ref string Print)
-        {
-            if (mergeprint == 0)
-                _printProduct(orderdetails, ref TotalQuantity, ref TotalOrder, ref Print);
-            else
-                _printProductGroup(orderdetails, ref TotalQuantity, ref TotalOrder, ref Print);
+            return html.ToString();
         }
         #endregion
 
+        /// <summary>
+        /// Date:   2021-07-19
+        /// Author: Binh-TT
+        ///
+        /// Đối ứng chiết khấu từng dòng
+        /// </summary>
         public void LoadData()
         {
             #region Lấy thông tin query params
-            var ID = 0;
-            var mergeprint = 0;
-            var currencyCode = Currency.USD;
+            var orderId = 0;
+            var merger = 0;
+            var currencyCode = CommonModel.Currency.USD;
 
             #region Lấy thông tin đơn hàng
             if (!String.IsNullOrEmpty(Request.QueryString["id"]))
-                ID = Request.QueryString["id"].ToInt(0);
-            
-            if (ID <= 0)
+                orderId = Request.QueryString["id"].ToInt(0);
+
+            if (orderId <= 0)
             {
                 ltrPrintInvoice.Text = "Xảy ra lỗi!!!";
                 return;
             }
 
-            var order = OrderController.GetByID(ID);
+            var order = OrderController.GetByID(orderId);
 
             if (order == null)
             {
-                ltrPrintInvoice.Text = "Không tìm thấy đơn hàng " + ID;
+                ltrPrintInvoice.Text = "Không tìm thấy đơn hàng " + orderId;
                 return;
             }
             #endregion
@@ -336,305 +632,213 @@ namespace IM_PJ
                 ltrPrintInvoice.Text = String.Format("Không tìm thấy tỉ giá tiền tệ của mã {0} này.", currencyCode);
                 return;
             }
-            
-            var currencyRate = Convert.ToDouble(currency.SellingRate);
             #endregion
 
             if (!String.IsNullOrEmpty(Request.QueryString["merge"]))
-                mergeprint = Request.QueryString["merge"].ToInt(0);
+                merger = Request.QueryString["merge"].ToInt(0);
             #endregion
-                            
-            #region Tạo hoá đơn
-            var error = String.Empty;
-            var Print = String.Empty;
 
-            #region Lấy ghi chú đơn hàng cũ
-            var oldOrders = OrderController.GetAllNoteByCustomerID(Convert.ToInt32(order.CustomerID), ID);
-            
-            if (oldOrders.Count() > 1)
+            #region Kiểm tra thông tin đơn hàng
+            var isOrderDetailEmpty = OrderDetailController.isOrderDetailEmpty(orderId);
+
+            if (isOrderDetailEmpty)
             {
-                StringBuilder notestring = new StringBuilder();
-                foreach (var item in oldOrders)
-                {
-                    notestring.AppendLine(String.Format("<li>Đơn <strong><a href='/thong-tin-don-hang?id={0}' target='_blank'>{0}</a></strong> (<em>{1}<em>): {2}</li>", item.ID, item.DateDone, item.OrderNote));
-                }
-
-                StringBuilder notehtml = new StringBuilder();
-                notehtml.AppendLine("<div id='old-order-note'>");
-                notehtml.AppendLine("   <h2>" + oldOrders.Count() + " đơn hàng cũ gần nhất có ghi chú:</h2>");
-                notehtml.AppendLine("   <ul>");
-                notehtml.AppendLine(String.Format("{0}", notestring));
-                notehtml.AppendLine("   </ul>");
-                notehtml.AppendLine("</div>");
-
-                ltrOldOrderNote.Text = notehtml.ToString();
-            }
-            #endregion
-
-            #region Support buttons
-            ltrCopyInvoiceURL.Text = "<a href='javascript:;' onclick='copyInvoiceURLEnglish(" + order.ID + ", " + order.CustomerID + ")' title='Copy link hóa đơn' class='btn btn-violet h45-btn'>Copy link hóa đơn</a>";
-
-            #region Currencies Drop Down List
-            ltrEnglishInvoice.Text += "<select id='dllCurrency' onchange='onChangeCurrency($(this).val())'>";
-            ltrEnglishInvoice.Text += "    <option value='VND'>VND - Việt Nam Đồng</option>";
-            ltrEnglishInvoice.Text += "    <option value='USD'>$ - US Dollar</option>";
-            ltrEnglishInvoice.Text += "    <option value='AUD'>A$ - Australian Dollar</option>";
-            ltrEnglishInvoice.Text += "    <option value='JPY'>¥ - Japanese Yen</option>";
-            ltrEnglishInvoice.Text += "    <option value='SGD'>SGD - Singapore Dollar</option>";
-            ltrEnglishInvoice.Text += "    <option value='MYR'>MYR - Malaysian Ringgit</option>";
-            ltrEnglishInvoice.Text += "    <option value='TWD'>NT$ - TWD - Taiwan New Dollar</option>";
-            ltrEnglishInvoice.Text += "</select>";
-            #endregion
-            #endregion
-
-            #region Thông tin đơn hơn    
-            var productPrint = String.Empty;
-            var shtml = String.Empty;   
-            var TotalQuantity = 0D;
-            var TotalOrder = 0D;
-            var orderdetails = OrderDetailController.GetByIDSortBySKU(ID)
-                .Select(x => {
-                    var price = x.Price.HasValue ? x.Price.Value : 0;
-
-                    x.Price = Math.Ceiling(1e2 * price / currencyRate) * 1e-2;
-                    
-                    return x; 
-                })
-                .ToList();
-
-            if (orderdetails.Count == 0)
+                ltrPrintInvoice.Text = "Đơn hàng đang rỗng!";
                 return;
-            
-            #region Title của hoá đơn
-            productPrint += "<div class=\"body\">";
-            productPrint += "<div class=\"table-1\">";
-            productPrint += "<h1>INVOICE #" + order.ID + "</h1>";
-            productPrint += "<div class=\"note\">";
-            productPrint += "</div>";
-            #endregion
-
-            #region Thông tin khách hàng
-            productPrint += "<table>";
-            productPrint += "<colgroup >";
-            productPrint += "<col class=\"col-left\"/>";
-            productPrint += "<col class=\"col-right\"/>";
-            productPrint += "</colgroup>";
-            productPrint += "<tbody>";
-            productPrint += "<tr>";
-            productPrint += "<td>Customer name</td>";
-            productPrint += "<td class=\"customer-name\">" + order.CustomerName + "</td>";
-            productPrint += "</tr>";
-            productPrint += "<tr>";
-            productPrint += "<td>Phone number</td>";
-            productPrint += "<td>" + order.CustomerPhone + "</td>";
-            productPrint += "</tr>";
-            productPrint += "<tr>";
-            productPrint += "<td>Invoice date</td>";
-            productPrint += String.Format("<td>{0:dd/MM/yyyy HH:mm}</td>", order.CreatedDate);
-            productPrint += "</tr>";  
-            productPrint += "</tr>";
-            productPrint += "<tr>";
-            productPrint += "<td>Staff</td>";
-            productPrint += "<td>" + order.CreatedBy + "</td>";
-            productPrint += "</tr>";
-
-            if (!string.IsNullOrEmpty(order.OrderNote)) {
-                productPrint += "<tr>";
-                productPrint += "<td>Note</td>";
-                productPrint += "<td>" + order.OrderNote + "</td>";
-                productPrint += "</tr>";
-            }
-
-            productPrint += "</tbody>";
-            productPrint += "</table>";
-            productPrint += "</div>";
-            #endregion
-
-            #region Thông tin sản phẩm
-            productPrint += "<div class=\"table-2\">";
-            productPrint += "<table>";
-            productPrint += "<colgroup>";
-            productPrint += "<col class=\"order-item\" />";
-
-            if(mergeprint == 0)
-                productPrint += "<col class=\"image\" />";
-            
-            productPrint += "<col class=\"name\" />";
-            productPrint += "<col class=\"quantity\" />";
-            productPrint += "<col class=\"price\" />";
-            productPrint += "<col class=\"subtotal\"/>";
-            productPrint += "</colgroup>";
-            productPrint += "<thead>";
-            productPrint += "<th>#</th>";
-
-            if (mergeprint == 0)
-                productPrint += "<th>Image</th>";
-            
-            productPrint += "<th>Item</th>";
-            productPrint += "<th>Qty</th>";
-            productPrint += "<th>Unit Price</th>";
-            productPrint += "<th>Amount</th>";
-            productPrint += "</thead>";
-            productPrint += "<tbody>";
-            _printBody(mergeprint, orderdetails, ref TotalQuantity, ref TotalOrder, ref Print);
-            productPrint += Print;
-            productPrint += "<tr>";
-
-            string colspan = "5";
-            if (mergeprint == 1)
-            {
-                colspan = "4";
             }
             #endregion
 
-            #region Thông tin tổng hợp đơn hàng
-            productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Total quantity</td>";
-            productPrint += "<td>" + TotalQuantity + "</td>";
-            productPrint += "</tr>";
-            productPrint += "<tr>";
-            productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Subtotal</td>";
-            productPrint += "<td>" + string.Format("{0:N0}", TotalOrder) + "</td>";
-            productPrint += "</tr>";
+            #region Lấy dữ liệu cho việc tạo hình ảnh order
+            var data = new OrderModel();
 
-            #region Thông tin triết khấu 
-            double TotalPrice = TotalOrder;
+            // Merger
+            data.merger = merger == 1;
+            // ID đơn hàng
+            data.id = order.ID;
+            #region Nhân viên khởi tạo đơn hàng
+            data.staff = new StaffModel() { name = order.CreatedBy };
 
-            if (order.DiscountPerProduct > 0)
+            var staffAccount = AccountController.GetByUsername(order.CreatedBy);
+
+            if (staffAccount != null)
             {
-                var TotalDiscount = 0D;
-                var discount = order.DiscountPerProduct.HasValue ? order.DiscountPerProduct.Value : 0;
-                
-                discount = Math.Floor(1e2 * discount / currencyRate) * 1e-2;
-                TotalDiscount = discount * TotalQuantity;
-                TotalOrder = TotalOrder - TotalDiscount;
-                TotalPrice = TotalPrice - TotalDiscount;
-                productPrint += "<tr>";
-                productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Discount per unit</td>";
-                productPrint += String.Format("<td>{0:N0}</td>", discount);
-                productPrint += "</tr>";
-                productPrint += "<tr>";
-                productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Total discount</td>";
-                productPrint += "<td>-" + string.Format("{0:N0}", TotalDiscount) + "</td>";
-                productPrint += "</tr>";
-                productPrint += "<tr>";
-                productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">After discount</td>";
-                productPrint += "<td>" + string.Format("{0:N0}", TotalOrder) + "</td>";
-                productPrint += "</tr>";
+                var staffInfo = AccountInfoController.GetByUserID(staffAccount.ID);
+
+                if (staffInfo != null && !String.IsNullOrEmpty(staffInfo.Phone))
+                    data.staff.phone = staffInfo.Phone;
             }
             #endregion
-
-            #region Thông tin đổi trả hàng
-            if (order.RefundsGoodsID != null && order.RefundsGoodsID != 0)
+            // Thông tin khách hàng
+            data.customer = new CustomerModel()
             {
-                var refund = RefundGoodController.GetByID(Convert.ToInt32(order.RefundsGoodsID));
+                id = Convert.ToInt32(order.CustomerID),
+                name = order.CustomerName,
+                phone = order.CustomerPhone
+            };
+            // Ngày khởi tạo đơn hàng
+            data.createdDate = order.CreatedDate.Value;
+            // Chú thích
+            data.note = order.OrderNote;
+            // Tổng số lượng
+            data.totalQuantity = order.TotalQuantity;
+            // Tỷ giá tiền tệ
+            data.currencyRate = currency.SellingRate;
+            // Tổng giá trị đơn hàng
+            data.totalPrice = Convert.ToDecimal(order.TotalPriceNotDiscount);
+            // chiết khấu mặc định
+            data.defaultDiscount = Convert.ToDecimal(order.DiscountPerProduct);
+            // Tổng chiết khấu
+            data.totalDiscount = Convert.ToDecimal(order.TotalDiscount);
+            // Phí giao hàng
+            data.shippingFee = Convert.ToDecimal(order.FeeShipping);
+            #region Lấy thông tin phí khác
+            data.otherFees = new List<OtherFeeModel>();
 
-                if (refund != null)
+            var otherFees = FeeController.getFeeInfo(data.id);
+
+            foreach (var item in otherFees)
+            {
+                var otherFee = new OtherFeeModel()
                 {
-                    var totalRefund = Convert.ToDouble(refund.TotalPrice);
-                    
-                    totalRefund = Math.Floor(1e2 * totalRefund / currencyRate) * 1e-2;
-                    TotalOrder = TotalOrder - totalRefund;
+                    name = item.Name,
+                    fee = item.Price
+                };
 
-                    productPrint += "<tr>";
-                    productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Return order (ID " + order.RefundsGoodsID + ")</td>";
-                    productPrint += String.Format("<td>-{0:N0}</td>", totalRefund);
-                    productPrint += "</tr>";
-
-                    productPrint += "<tr>";
-                    productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Total remaining</td>";
-                    productPrint += "<td>" + string.Format("{0:N0}", TotalOrder) + "</td>";
-                    productPrint += "</tr>";
-                }
-                else
-                {
-                    error += "Không tìm thấy đơn hàng đổi trả " + order.RefundsGoodsID.ToString();
-                }
+                data.otherFees.Add(otherFee);
             }
             #endregion
-
-            #region Thông tin phí giao hàng
-            var feeShipping = Convert.ToDouble(order.FeeShipping);
-            
-            feeShipping = Math.Ceiling(1e2 * feeShipping / currencyRate) * 1e-2;
-
-            if (feeShipping > 0)
-            {
-                TotalOrder = TotalOrder + feeShipping;
-                TotalPrice = TotalPrice + feeShipping;
-                productPrint += "<tr>";
-                productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Shipping</td>";
-                productPrint += String.Format("<td>{0:N0}</td>", feeShipping);
-                productPrint += "</tr>";
-            }
-            #endregion
-
-            #region Thông tin phí khách
-            var fees = FeeController.getFeeInfo(ID);
-
-            foreach (var fee in fees)
-            {
-                var feeOther = Convert.ToDouble(fee.Price);
-
-                feeOther = Math.Ceiling(1e2 * feeOther / currencyRate) * 1e-2;
-
-                if (feeOther > 0)
-                {
-                    TotalOrder = TotalOrder + feeOther;
-                    TotalPrice = TotalPrice + feeOther;
-                    productPrint += "<tr>";
-                    productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">" + fee.Name + "</td>";
-                    productPrint += String.Format("<td>{0:N0}</td>", feeOther);
-                    productPrint += "</tr>";
-                }
-            }
-            #endregion
-
-            #region Thông tin giảm giá
-            if (order.CouponID.HasValue && order.CouponID.Value > 0)
+            #region Lấy thông tin giảm giá
+            if (order.CouponID.HasValue)
             {
                 var coupon = CouponController.getCoupon(order.CouponID.Value);
-                var couponValue = Convert.ToDouble(coupon.Value);
 
-                couponValue = Math.Floor(1e2 * couponValue / currencyRate) * 1e-2;
-                TotalOrder = TotalOrder - couponValue;
-                TotalPrice = TotalPrice - couponValue;
-                productPrint += "<tr>";
-                productPrint += String.Format("<td colspan='{0}' class='align-right'>Coupon code: {1}</td>", colspan, coupon.Code);
-                productPrint += String.Format("<td>-{0:N0}</td>", couponValue);
-                productPrint += "</tr>";
+                if (coupon != null)
+                    data.coupon = new CouponModel()
+                    {
+                        code = coupon.Code,
+                        value = coupon.Value
+                    };
             }
             #endregion
-
-            if (TotalPrice != Convert.ToDouble(order.TotalPrice))
+            #region Đơn hàn đổi trả
+            if (order.RefundsGoodsID.HasValue)
             {
+                var refundOrder = RefundGoodController.GetByID(order.RefundsGoodsID.Value);
+
+                if (refundOrder != null)
+                    data.refundOrder = new RefundOrderModel()
+                    {
+                        id = refundOrder.ID,
+                        totalPrice = Convert.ToDecimal(refundOrder.TotalPrice)
+                    };
+            }
+            #endregion
+            // Lấy danh sách các đơn hàng đã mua (Bao gồm đơn hiện tại)
+            data.oldOrderNumber = OrderController.GetByCustomerID(data.customer.id).Count;
+            // Danh sách chi tiết đơn hàng
+            data.details = _getOrderDetails(data.id, data.merger, data.currencyRate, data.defaultDiscount);
+            #endregion
+
+            #region Kiểm tra các điều kiện của đơn hàng
+            var error = String.Empty;
+
+            #region Kiểm tra đơn đổi trả
+            if (order.RefundsGoodsID.HasValue && data.refundOrder == null)
+                error += String.Format("Không tìm thấy đơn hàng đổi trả #{0}", order.RefundsGoodsID);
+            #endregion
+
+            #region Kiểm tra tổng tiền có đúng không
+            var total = data.totalPrice - data.totalDiscount + data.shippingFee;
+
+            if (data.otherFees.Any())
+                total += data.otherFees.Sum(s => s.fee);
+
+            if (data.coupon != null)
+                total -= data.coupon.value;
+
+            if (total != Convert.ToDecimal(order.TotalPrice))
                 error += "Đơn hàng tính sai tổng tiền";
+            #endregion
+
+            if (!String.IsNullOrEmpty(error))
+            {
+                ltrPrintInvoice.Text = "Xảy ra lỗi: " + error;
+                return;
+            }
+            #endregion
+
+            #region Header
+            #region Lấy ghi chú đơn hàng cũ
+            var recentNotes = OrderController.GetAllNoteByCustomerID(data.customer.id, data.id);
+
+            if (recentNotes.Any())
+            {
+                var noteHtml = new StringBuilder();
+                noteHtml.AppendLine("<div id='old-order-note'>");
+                noteHtml.AppendLine(String.Format("    <h2>{0:N0} đơn hàng cũ gần nhất có ghi chú:</h2>", recentNotes.Count()));
+                noteHtml.AppendLine("    <ul>");
+                foreach (var item in recentNotes)
+                    noteHtml.AppendLine(String.Format("        <li>Đơn <strong><a href='/thong-tin-don-hang?id={0}' target='_blank'>{0}</a></strong> (<em>{1}<em>): {2}</li>", item.ID, item.DateDone, item.OrderNote));
+                noteHtml.AppendLine("    </ul>");
+                noteHtml.AppendLine("</div>");
+
+                ltrOldOrderNote.Text = noteHtml.ToString();
+            }
+            #endregion
+
+            #region Button copy link hóa đơn
+            var btnCopyHtml = new StringBuilder();
+
+            btnCopyHtml.AppendLine("<a href='javascript:;'");
+            btnCopyHtml.AppendLine("   class='btn btn-violet h45-btn'");
+            btnCopyHtml.AppendLine(String.Format("   onclick='copyInvoiceURLEnglish({0}, {1})'", data.id, data.customer.id));
+            btnCopyHtml.AppendLine("   title='Copy link hóa đơn'");
+            btnCopyHtml.AppendLine(">");
+            btnCopyHtml.AppendLine("    Copy link hóa đơn");
+            btnCopyHtml.AppendLine("</a>");
+
+            ltrCopyInvoiceURL.Text = btnCopyHtml.ToString();
+            #endregion
+
+            #region Currencies Drop Down List
+            var ddlLanguageHtml = new StringBuilder();
+
+            ddlLanguageHtml.AppendLine("<select class='currency-select' id='dllCurrency' onchange='onChangeCurrency($(this).val())'>");
+            ddlLanguageHtml.AppendLine("    <option value='VND'>VND - Việt Nam</option>");
+            ddlLanguageHtml.AppendLine("    <option value='USD'>USD - Mỹ</option>");
+            ddlLanguageHtml.AppendLine("    <option value='AUD'>AUD - Úc</option>");
+            ddlLanguageHtml.AppendLine("    <option value='JPY'>JPY - Nhật</option>");
+            ddlLanguageHtml.AppendLine("    <option value='SGD'>SGD - Singapore</option>");
+            ddlLanguageHtml.AppendLine("    <option value='MYR'>MYR - Malaysia</option>");
+            ddlLanguageHtml.AppendLine("    <option value='TWD'>TWD - Đài Loan</option>");
+            ddlLanguageHtml.AppendLine("</select>");
+
+            ltrEnglishInvoice.Text = ddlLanguageHtml.ToString();
+            #endregion
+            #endregion
+
+            #region Body
+            var invoiceHtml = new StringBuilder();
+            var pagination = new PaginationModel()
+            {
+                totalCount = data.details.Count,
+                page = 1,
+                pageSize = data.merger ? 20 : 10
+            };
+
+            // Tổng số trang
+            pagination.totalPages = (int)Math.Ceiling((decimal)pagination.totalCount / (decimal)pagination.pageSize);
+
+            for (int i = 0; i < pagination.totalPages; i++)
+            {
+                var orderHtml = String.Empty;
+
+                pagination.page = i + 1;
+                orderHtml = _createOrderHtml(data, pagination);
+                invoiceHtml.AppendLine(orderHtml);
             }
 
-            productPrint += "<tr>";
-            productPrint += "<td colspan=\"" + colspan + "\" class=\"strong align-right\">TOTAL</td>";
-            productPrint += "<td class=\"strong\">" + string.Format("{0:N0}", TotalOrder) + "</td>";
-            productPrint += "</tr>";
-            
-            
-            productPrint += "</tbody>";
-            productPrint += "</table>";
-            productPrint += "</div>";
-            productPrint += "</div>";
-            #endregion
-            #endregion
-            #endregion
-
-            #region Xuất hoá đơn
-            shtml += "<div class=\"print-order-image\">";
-            shtml += "<div class=\"all print print-0\">";
-            shtml += productPrint;
-            shtml += "</div>";
-            shtml += "</div>";
-
-            if (String.IsNullOrEmpty(error))
-                ltrPrintInvoice.Text = "Xảy ra lỗi: " + error;
-            else
-                ltrPrintInvoice.Text = shtml;
+            ltrPrintInvoice.Text = invoiceHtml.ToString();
             #endregion
         }
     }

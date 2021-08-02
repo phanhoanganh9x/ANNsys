@@ -80,6 +80,7 @@ table.shop_table_responsive > tbody > tr:nth-of-type(2n+1) td {
     .table-sale-order .sku-item,
     .table-sale-order .variable-item,
     .table-sale-order .price-item,
+    .table-sale-order .discount-item,
     .table-sale-order .quantity-item,
     .table-sale-order .total-item,
     .table-sale-order .trash-item {

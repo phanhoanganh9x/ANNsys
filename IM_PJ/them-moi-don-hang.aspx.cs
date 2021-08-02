@@ -217,6 +217,15 @@ namespace IM_PJ
             public double Giabansi { get; set; }
             public string stringGiabansi { get; set; }
         }
+
+        /// <summary>
+        /// Date:   2021-07-19
+        /// Author: Binh-TT
+        ///
+        /// Đối ứng chiết khấu từng dòng
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void btnOrder_Click(object sender, EventArgs e)
         {
             DateTime currentDate = DateTime.Now;
@@ -343,8 +352,8 @@ namespace IM_PJ
 
                     string totalPrice = hdfTotalPrice.Value.ToString();
                     string totalPriceNotDiscount = hdfTotalPriceNotDiscount.Value;
-                    double DiscountPerProduct = Convert.ToDouble(pDiscount.Value);
-                    double TotalDiscount = Convert.ToDouble(pDiscount.Value) * Convert.ToDouble(hdfTotalQuantity.Value);
+                    // 2021-07-19: Đối ứng chiết khấu từng dòng
+                    var totalDiscount = Convert.ToDouble(hdfTotalDiscount.Value);
                     string FeeShipping = pFeeShip.Value.ToString();
 
                     bool IsHidden = false;
@@ -382,8 +391,10 @@ namespace IM_PJ
                         WayIn = WayIn,
                         CreatedDate = currentDate,
                         CreatedBy = username,
-                        DiscountPerProduct = Convert.ToDouble(pDiscount.Value),
-                        TotalDiscount = TotalDiscount,
+                        // 2021-07-19: Đối ứng chiết khấu từng dòng
+                        DiscountPerProduct = 0,
+                        // 2021-07-19: Đối ứng chiết khấu từng dòng
+                        TotalDiscount = totalDiscount,
                         FeeShipping = FeeShipping,
                         PaymentType = PaymentType,
                         ShippingType = ShippingType,
@@ -475,6 +486,8 @@ namespace IM_PJ
                             string ProductVariable = itemValue[8];
                             double Price = Convert.ToDouble(itemValue[9]);
                             string ProductVariableSave = itemValue[10];
+                            // 2021-07-19: Đối ứng chiết khấu từng dòng
+                            var discount = Convert.ToDouble(itemValue[12]);
                             #endregion
 
                             #region Cập nhật avatar cho đơn hàng
@@ -494,7 +507,8 @@ namespace IM_PJ
                                 Quantity = Quantity,
                                 Price = Price,
                                 Status = 1,
-                                DiscountPrice = 0,
+                                // 2021-07-19: Đối ứng chiết khấu từng dòng
+                                DiscountPrice = discount,
                                 ProductType = ProductType,
                                 CreatedDate = currentDate,
                                 CreatedBy = username,

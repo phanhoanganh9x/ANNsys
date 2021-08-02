@@ -505,22 +505,25 @@ namespace IM_PJ.Controllers
             var list = new List<RefundReport>();
             var sql = new StringBuilder();
 
-            sql.AppendLine(String.Format("SELECT Ord.ID, SUM(ISNULL(OrdDetail.Quantity, 0)) AS Quantity, SUM(OrdDetail.Quantity * ISNULL(Product.CostOfGood, Variable.CostOfGood)) AS TotalCost, SUM(OrdDetail.Quantity * OrdDetail.SoldPricePerProduct) AS TotalRevenue, SUM(OrdDetail.Quantity * OrdDetail.RefundFeePerProduct) AS TotalRefundFee"));
-            sql.AppendLine(String.Format("FROM tbl_RefundGoods AS Ord"));
-            sql.AppendLine(String.Format("INNER JOIN tbl_RefundGoodsDetails AS OrdDetail"));
-            sql.AppendLine(String.Format("ON     Ord.ID = OrdDetail.RefundGoodsID"));
-            sql.AppendLine(String.Format("LEFT JOIN tbl_ProductVariable AS Variable"));
-            sql.AppendLine(String.Format("ON     OrdDetail.SKU = Variable.SKU"));
-            sql.AppendLine(String.Format("LEFT JOIN tbl_Product AS Product"));
-            sql.AppendLine(String.Format("ON     OrdDetail.SKU = Product.ProductSKU"));
-            sql.AppendLine(String.Format("WHERE 1 = 1"));
+            sql.AppendLine("SELECT");
+            sql.AppendLine("    Ord.ID");
+            sql.AppendLine(",   SUM(ISNULL(OrdDetail.Quantity, 0)) AS Quantity");
+            sql.AppendLine(",   SUM(ISNULL(OrdDetail.TotalCostOfGood, 0)) AS TotalCost");
+            sql.AppendLine(",   SUM(ISNULL(OrdDetail.SoldPricePerProduct, 0) * ISNULL(OrdDetail.Quantity, 0)) AS TotalRevenue");
+            sql.AppendLine(",   SUM(ISNULL(OrdDetail.RefundFeePerProduct, 0) * ISNULL(OrdDetail.Quantity, 0)) AS TotalRefundFee");
+            sql.AppendLine("FROM tbl_RefundGoods AS Ord");
+            sql.AppendLine("INNER JOIN tbl_RefundGoodsDetails AS OrdDetail");
+            sql.AppendLine("ON     Ord.ID = OrdDetail.RefundGoodsID");
+            sql.AppendLine("WHERE 1 = 1");
 
             if (!String.IsNullOrEmpty(CreatedBy))
             {
                 sql.AppendLine(String.Format("    AND Ord.CreatedBy = '{0}'", CreatedBy));
             }
-            sql.AppendLine(String.Format("    AND    (CONVERT(NVARCHAR(10), Ord.CreatedDate, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121))", fromDate, toDate));
-            sql.AppendLine(String.Format("GROUP BY Ord.ID, OrdDetail.RefundFeePerProduct"));
+            sql.AppendLine(String.Format("    AND (CONVERT(NVARCHAR(10), Ord.CreatedDate, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121))", fromDate, toDate));
+            sql.AppendLine("GROUP BY");
+            sql.AppendLine("    Ord.ID");
+            sql.AppendLine(",   OrdDetail.RefundFeePerProduct");
 
             var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
             while (reader.Read())

@@ -257,7 +257,7 @@ namespace IM_PJ
                     ltrCustomerType.Text += "</select>";
 
 
-                    double ProductQuantity = 0;
+                    double totalQuantity = 0;
                     double totalPrice = Convert.ToDouble(order.TotalPrice);
                     double totalPriceNotDiscount = Convert.ToDouble(order.TotalPriceNotDiscount);
 
@@ -276,13 +276,6 @@ namespace IM_PJ
                         ltrtotalpricedetail.Text = string.Format("{0:N0}", totalPrice - totalrefund);
 
                         ltrTotalPriceRefund.Text = string.Format("-{0:N0}", totalrefund);
-                    }
-
-                    hdfDiscountInOrder.Value = "";
-
-                    if (order.DiscountPerProduct > 0)
-                    {
-                        hdfDiscountInOrder.Value = order.DiscountPerProduct.ToString();
                     }
 
                     int paymentStatus = Convert.ToInt32(order.PaymentStatus);
@@ -336,203 +329,228 @@ namespace IM_PJ
                     if (excuteStatus == (int)ExcuteStatus.Doing)
                         orderdetails.Reverse();
 
-                    StringBuilder html = new StringBuilder();
-                    if (orderdetails.Count > 0)
+                    var html = new StringBuilder();
+
+                    for (var index = 0; index < orderdetails.Count; index++)
                     {
-                        int orderitem = 0;
-                        foreach (var item in orderdetails)
+                        var item = orderdetails[index];
+
+                        totalQuantity += Convert.ToDouble(item.Quantity);
+
+                        int ProductType = Convert.ToInt32(item.ProductType);
+                        double ItemPrice = Convert.ToDouble(item.Price);
+                        string SKU = item.SKU;
+                        var costOfGoods = 0d;
+                        double Giacu = 0;
+                        double Giabansi = 0;
+                        double Giabanle = 0;
+                        double Price10 = 0;
+                        double BestPrice = 0;
+                        double discount = 0;
+                        string stringGiabansi = "";
+                        string stringGiabanle = "";
+                        double QuantityInstock = 0;
+                        string ProductImageOrigin = "";
+                        string ProductVariable = "";
+                        string ProductName = "";
+                        string ProductVariableName = "";
+                        string ProductVariableValue = "";
+                        string ProductVariableSave = "";
+                        double QuantityMainInstock = 0;
+                        string ProductImage = "";
+                        string QuantityMainInstockString = "";
+                        string QuantityInstockString = "";
+                        string productVariableDescription = item.ProductVariableDescrition;
+
+                        if (ProductType == 1)
                         {
-                            ProductQuantity += Convert.ToDouble(item.Quantity);
-
-                            int ProductType = Convert.ToInt32(item.ProductType);
-                            double ItemPrice = Convert.ToDouble(item.Price);
-                            string SKU = item.SKU;
-                            double Giacu = 0;
-                            double Giabansi = 0;
-                            double Giabanle = 0;
-                            double Price10 = 0;
-                            double BestPrice = 0;
-                            string stringGiabansi = "";
-                            string stringGiabanle = "";
-                            double QuantityInstock = 0;
-                            string ProductImageOrigin = "";
-                            string ProductVariable = "";
-                            string ProductName = "";
-                            string ProductVariableName = "";
-                            string ProductVariableValue = "";
-                            string ProductVariableSave = "";
-                            double QuantityMainInstock = 0;
-                            string ProductImage = "";
-                            string QuantityMainInstockString = "";
-                            string QuantityInstockString = "";
-                            string productVariableDescription = item.ProductVariableDescrition;
-
-                            if (ProductType == 1)
+                            var product = ProductController.GetBySKU(SKU);
+                            if (product != null)
                             {
-                                var product = ProductController.GetBySKU(SKU);
-                                if (product != null)
+                                // Giá gốc
+                                costOfGoods = Convert.ToDouble(product.CostOfGood);
+
+                                double mainstock = PJUtils.TotalProductQuantityInstock(1, SKU);
+
+                                if (customerType == 1)
                                 {
-                                    double mainstock = PJUtils.TotalProductQuantityInstock(1, SKU);
+                                    Giacu = 0;
+                                    Giabansi = Convert.ToDouble(product.Regular_Price);
+                                    Giabanle = ItemPrice;
+                                }
+                                else
+                                {
+                                    Giacu = Convert.ToDouble(product.Old_Price);
+                                    Giabansi = ItemPrice;
+                                    Giabanle = Convert.ToDouble(product.Retail_Price);
+                                }
+                                stringGiabansi = string.Format("{0:N0}", Giabansi);
+                                stringGiabanle = string.Format("{0:N0}", Giabanle);
+                                string variablename = "";
+                                string variablevalue = "";
+                                string variable = "";
+
+                                QuantityInstock = mainstock;
+                                QuantityInstockString = string.Format("{0:N0}", mainstock);
+                                ProductImage = "<img src='" + Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Small) + "'>";
+                                ProductImageOrigin = Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Source);
+                                ProductVariable = variable;
+                                ProductName = product.ProductTitle;
+                                QuantityMainInstock = mainstock;
+                                QuantityMainInstockString = string.Format("{0:N0}", mainstock);
+                                ProductVariableSave = item.ProductVariableDescrition;
+                                Price10 = product.Price10.HasValue ? product.Price10.Value : 0;
+                                BestPrice = product.BestPrice.HasValue ? product.BestPrice.Value : 0;
+                                ProductVariableName = variablename;
+                                ProductVariableValue = variablevalue;
+                            }
+                        }
+                        else
+                        {
+                            var productvariable = ProductVariableController.GetBySKU(SKU);
+                            if (productvariable != null)
+                            {
+                                SKU = productvariable.SKU.Trim().ToUpper();
+                                // Giá gốc
+                                costOfGoods = Convert.ToDouble(productvariable.CostOfGood);
+
+                                double mainstock = PJUtils.TotalProductQuantityInstock(1, SKU);
+
+                                if (customerType == 1)
+                                {
+                                    Giabansi = Convert.ToDouble(productvariable.Regular_Price);
+                                    Giabanle = ItemPrice;
+                                }
+                                else
+                                {
+                                    Giabansi = ItemPrice;
+                                    Giabanle = Convert.ToDouble(productvariable.RetailPrice);
+                                }
+                                stringGiabansi = string.Format("{0:N0}", Giabansi);
+                                stringGiabanle = string.Format("{0:N0}", Giabanle);
+
+
+                                string variablename = "";
+                                string variablevalue = "";
+                                string variable = "";
+
+                                string[] vs = productVariableDescription.Split('|');
+                                if (vs.Length - 1 > 0)
+                                {
+                                    for (int i = 0; i < vs.Length - 1; i++)
+                                    {
+                                        string[] items = vs[i].Split(':');
+                                        variable += items[0] + ":" + items[1] + "<br/>";
+                                        variablename += items[0] + "|";
+                                        variablevalue += items[1] + "|";
+                                    }
+                                }
+
+                                QuantityInstock = mainstock;
+                                QuantityInstockString = string.Format("{0:N0}", mainstock);
+
+                                var _product = ProductController.GetByID(Convert.ToInt32(productvariable.ProductID));
+
+                                if (_product != null)
+                                {
+                                    ProductName = _product.ProductTitle;
 
                                     if (customerType == 1)
                                     {
                                         Giacu = 0;
-                                        Giabansi = Convert.ToDouble(product.Regular_Price);
-                                        Giabanle = ItemPrice;
                                     }
                                     else
                                     {
-                                        Giacu = Convert.ToDouble(product.Old_Price);
-                                        Giabansi = ItemPrice;
-                                        Giabanle = Convert.ToDouble(product.Retail_Price);
+                                        Giacu = Convert.ToDouble(_product.Old_Price);
                                     }
-                                    stringGiabansi = string.Format("{0:N0}", Giabansi);
-                                    stringGiabanle = string.Format("{0:N0}", Giabanle);
-                                    string variablename = "";
-                                    string variablevalue = "";
-                                    string variable = "";
-
-                                    QuantityInstock = mainstock;
-                                    QuantityInstockString = string.Format("{0:N0}", mainstock);
-                                    ProductImage = "<img src='" + Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Small) + "'>";
-                                    ProductImageOrigin = Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Source);
-                                    ProductVariable = variable;
-                                    ProductName = product.ProductTitle;
-                                    QuantityMainInstock = mainstock;
-                                    QuantityMainInstockString = string.Format("{0:N0}", mainstock);
-                                    ProductVariableSave = item.ProductVariableDescrition;
-                                    Price10 = product.Price10.HasValue ? product.Price10.Value : 0;
-                                    BestPrice = product.BestPrice.HasValue ? product.BestPrice.Value : 0;
-                                    ProductVariableName = variablename;
-                                    ProductVariableValue = variablevalue;
+                                    Price10 = _product.Price10.HasValue ? _product.Price10.Value : 0;
+                                    BestPrice = _product.BestPrice.HasValue ? _product.BestPrice.Value : 0;
                                 }
-                            }
-                            else
-                            {
-                                var productvariable = ProductVariableController.GetBySKU(SKU);
-                                if (productvariable != null)
+
+                                if (!string.IsNullOrEmpty(productvariable.Image))
                                 {
-                                    SKU = productvariable.SKU.Trim().ToUpper();
-
-                                    double mainstock = PJUtils.TotalProductQuantityInstock(1, SKU);
-
-                                    if (customerType == 1)
-                                    {
-                                        Giabansi = Convert.ToDouble(productvariable.Regular_Price);
-                                        Giabanle = ItemPrice;
-                                    }
-                                    else
-                                    {
-                                        Giabansi = ItemPrice;
-                                        Giabanle = Convert.ToDouble(productvariable.RetailPrice);
-                                    }
-                                    stringGiabansi = string.Format("{0:N0}", Giabansi);
-                                    stringGiabanle = string.Format("{0:N0}", Giabanle);
-
-
-                                    string variablename = "";
-                                    string variablevalue = "";
-                                    string variable = "";
-
-                                    string[] vs = productVariableDescription.Split('|');
-                                    if (vs.Length - 1 > 0)
-                                    {
-                                        for (int i = 0; i < vs.Length - 1; i++)
-                                        {
-                                            string[] items = vs[i].Split(':');
-                                            variable += items[0] + ":" + items[1] + "<br/>";
-                                            variablename += items[0] + "|";
-                                            variablevalue += items[1] + "|";
-                                        }
-                                    }
-
-                                    QuantityInstock = mainstock;
-                                    QuantityInstockString = string.Format("{0:N0}", mainstock);
-
-                                    var _product = ProductController.GetByID(Convert.ToInt32(productvariable.ProductID));
-
-                                    if (_product != null)
-                                    {
-                                        ProductName = _product.ProductTitle;
-
-                                        if (customerType == 1)
-                                        {
-                                            Giacu = 0;
-                                        }
-                                        else
-                                        {
-                                            Giacu = Convert.ToDouble(_product.Old_Price);
-                                        }
-                                        Price10 = _product.Price10.HasValue? _product.Price10.Value : 0;
-                                        BestPrice = _product.BestPrice.HasValue ? _product.BestPrice.Value : 0;
-                                    }
-
-                                    if (!string.IsNullOrEmpty(productvariable.Image))
-                                    {
-                                        ProductImage = "<img src='" + Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Small) + "'>";
-                                        ProductImageOrigin = Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Source);
-                                    }
-                                    else if (_product != null && !string.IsNullOrEmpty(_product.ProductImage))
-                                    {
-                                        ProductImage = "<img src='" + Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Small) + "'>";
-                                        ProductImageOrigin = Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Source);
-                                    }
-
-                                    ProductVariable = variable;
-
-                                    QuantityMainInstock = mainstock;
-                                    QuantityMainInstockString = string.Format("{0:N0}", mainstock);
-                                    ProductVariableSave = item.ProductVariableDescrition;
-
-                                    ProductVariableName = variablename;
-                                    ProductVariableValue = variablevalue;
+                                    ProductImage = "<img src='" + Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Small) + "'>";
+                                    ProductImageOrigin = Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Source);
                                 }
+                                else if (_product != null && !string.IsNullOrEmpty(_product.ProductImage))
+                                {
+                                    ProductImage = "<img src='" + Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Small) + "'>";
+                                    ProductImageOrigin = Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Source);
+                                }
+
+                                ProductVariable = variable;
+
+                                QuantityMainInstock = mainstock;
+                                QuantityMainInstockString = string.Format("{0:N0}", mainstock);
+                                ProductVariableSave = item.ProductVariableDescrition;
+
+                                ProductVariableName = variablename;
+                                ProductVariableValue = variablevalue;
                             }
-
-                            orderitem++;
-                            int k = Convert.ToInt32(ItemPrice) * Convert.ToInt32(item.Quantity);
-
-                            html.AppendLine(String.Format("<tr ondblclick='clickrow($(this))' class='product-result'"));
-                            html.AppendLine(String.Format("        data-orderdetailid='{0}'", item.ID));
-                            html.AppendLine(String.Format("        data-giabansi='{0}'", Giabansi));
-                            html.AppendLine(String.Format("        data-giabanle='{0}'", Giabanle));
-                            html.AppendLine(String.Format("        data-quantityinstock='{0}'", QuantityInstock));
-                            html.AppendLine(String.Format("        data-productimageorigin='{0}'", ProductImageOrigin));
-                            html.AppendLine(String.Format("        data-productvariable='{0}'", ProductVariable));
-                            html.AppendLine(String.Format("        data-productname='{0}'", ProductName));
-                            html.AppendLine(String.Format("        data-sku='{0}'", SKU));
-                            html.AppendLine(String.Format("        data-producttype='{0}'", ProductType));
-                            html.AppendLine(String.Format("        data-productid='{0}'", item.ProductID));
-                            html.AppendLine(String.Format("        data-productvariableid='{0}'", item.ProductVariableID));
-                            html.AppendLine(String.Format("        data-productvariablename='{0}'", ProductVariableName));
-                            html.AppendLine(String.Format("        data-productvariablevalue ='{0}'", ProductVariableValue));
-                            html.AppendLine(String.Format("        data-productvariablesave ='{0}'", ProductVariableSave));
-                            html.AppendLine(String.Format("        data-price10 ='{0}'", Price10));
-                            html.AppendLine(String.Format("        data-bestprice ='{0}'", BestPrice));
-                            html.AppendLine(String.Format("        data-quantitymaininstock='{0}'>", QuantityMainInstock));
-                            html.AppendLine(String.Format("    <td class='order-item'>{0}</td>", excuteStatus == (int)ExcuteStatus.Doing ? (orderdetails.Count - orderitem + 1) : orderitem));
-                            html.AppendLine(String.Format("    <td class='image-item'>{0}</td>", ProductImage));
-                            html.AppendLine(String.Format("    <td class='name-item'>{0}</td>", "<a href='/xem-san-pham?id=" + item.ProductID + "&variableid=" + item.ProductVariableID + "' target='_blank'>" + (Giacu > 0 ? "<span class='sale-icon'>SALE</span> " : "") + ProductName + "</a>"));
-                            html.AppendLine(String.Format("    <td class='sku-item'>{0}</td>", SKU));
-                            html.AppendLine(String.Format("    <td class='variable-item'>{0}</td>", ProductVariable));
-                            html.AppendLine(String.Format("    <td class='price-item gia-san-pham' data-price='{0}'>{0:N0}</td>", ItemPrice));
-                            html.AppendLine(String.Format("    <td class='quantity-item soluong'>{0}</td>", QuantityInstockString));
-                            html.AppendLine(String.Format("    <td class='quantity-item'>"));
-                            html.AppendLine(String.Format("        <input type='text' class='form-control in-quantity'"));
-                            html.AppendLine("                              pattern='[0-9]{1,3}'");
-                            html.AppendLine(String.Format("                onblur='checkQuantiy($(this))'"));
-                            html.AppendLine(String.Format("                onkeyup='pressKeyQuantity($(this))'"));
-                            html.AppendLine(String.Format("                onkeypress='return event.charCode >= 48 && event.charCode <= 57'"));
-                            html.AppendLine(String.Format("                value='{0}'/>", item.Quantity));
-                            html.AppendLine(String.Format("    </td>"));
-                            html.AppendLine(String.Format("    <td class='total-item totalprice-view'>{0:N0}</td>", k));
-                            html.AppendLine(String.Format("   <td class='trash-item'><a href='javascript:;' class='link-btn' onclick='deleteRow($(this))'><i class='fa fa-trash'></i></a></td>"));
-                            html.AppendLine(String.Format("</tr>"));
                         }
 
-                        ltrProducts.Text = html.ToString();
+                        // Tính chiết khấu: ưu tiên theo từng chi tiết đơn hàng
+                        if (item.DiscountPrice > 0)
+                            discount = item.DiscountPrice.HasValue ? item.DiscountPrice.Value : 0;
+                        else
+                            discount = order.DiscountPerProduct.HasValue ? order.DiscountPerProduct.Value : 0;
 
+                        int total = Convert.ToInt32(ItemPrice - discount) * Convert.ToInt32(item.Quantity);
+
+                        #region Khởi tạo HTML dòng đơn hàng
+                        html.AppendLine(String.Format("<tr ondblclick='clickrow($(this))' class='product-result'"));
+                        html.AppendLine(String.Format("        data-orderdetailid='{0}'", item.ID));
+                        html.AppendLine(String.Format("        data-cost-of-goods='{0}'", costOfGoods));
+                        html.AppendLine(String.Format("        data-giabansi='{0}'", Giabansi));
+                        html.AppendLine(String.Format("        data-giabanle='{0}'", Giabanle));
+                        html.AppendLine(String.Format("        data-quantityinstock='{0}'", QuantityInstock));
+                        html.AppendLine(String.Format("        data-productimageorigin='{0}'", ProductImageOrigin));
+                        html.AppendLine(String.Format("        data-productvariable='{0}'", ProductVariable));
+                        html.AppendLine(String.Format("        data-productname='{0}'", ProductName));
+                        html.AppendLine(String.Format("        data-sku='{0}'", SKU));
+                        html.AppendLine(String.Format("        data-producttype='{0}'", ProductType));
+                        html.AppendLine(String.Format("        data-productid='{0}'", item.ProductID));
+                        html.AppendLine(String.Format("        data-productvariableid='{0}'", item.ProductVariableID));
+                        html.AppendLine(String.Format("        data-productvariablename='{0}'", ProductVariableName));
+                        html.AppendLine(String.Format("        data-productvariablevalue ='{0}'", ProductVariableValue));
+                        html.AppendLine(String.Format("        data-productvariablesave ='{0}'", ProductVariableSave));
+                        html.AppendLine(String.Format("        data-price10 ='{0}'", Price10));
+                        html.AppendLine(String.Format("        data-bestprice ='{0}'", BestPrice));
+                        html.AppendLine(String.Format("        data-quantitymaininstock='{0}'>", QuantityMainInstock));
+                        // Trường hợp đơn đang xử lý: chi tiết đơn sẽ từ mới nhất tới củ
+                        if (excuteStatus == (int)ExcuteStatus.Doing)
+                            html.AppendLine(String.Format("    <td class='order-item'>{0}</td>", orderdetails.Count - index));
+                        else
+                            html.AppendLine(String.Format("    <td class='order-item'>{0}</td>", index + 1));
+                        html.AppendLine(String.Format("    <td class='image-item'>{0}</td>", ProductImage));
+                        html.AppendLine(String.Format("    <td class='name-item'>{0}</td>", "<a href='/xem-san-pham?id=" + item.ProductID + "&variableid=" + item.ProductVariableID + "' target='_blank'>" + (Giacu > 0 ? "<span class='sale-icon'>SALE</span> " : "") + ProductName + "</a>"));
+                        html.AppendLine(String.Format("    <td class='sku-item'>{0}</td>", SKU));
+                        html.AppendLine(String.Format("    <td class='variable-item'>{0}</td>", ProductVariable));
+                        html.AppendLine(String.Format("    <td class='price-item gia-san-pham' data-price='{0}'>{0:N0}</td>", ItemPrice));
+                        html.AppendLine(String.Format("    <td class='discount-item'>"));
+                        html.AppendLine(String.Format("        <input type='text' class='form-control discount'"));
+                        html.AppendLine(String.Format("                onclick='this.select()'"));
+                        html.AppendLine(String.Format("                onchange='onChangeDiscount($(this))'"));
+                        html.AppendLine(String.Format("                onkeyup='pressKeyDiscount($(this))'"));
+                        html.AppendLine(String.Format("                onkeypress='return event.charCode >= 48 && event.charCode <= 57'"));
+                        html.AppendLine(String.Format("                value='{0:N0}' />", discount));
+                        html.AppendLine(String.Format("    </td>"));
+                        html.AppendLine(String.Format("    <td class='quantity-item soluong'>{0}</td>", QuantityInstockString));
+                        html.AppendLine(String.Format("    <td class='quantity-item'>"));
+                        html.AppendLine(String.Format("        <input type='text' class='form-control in-quantity'"));
+                        html.AppendLine("                              pattern='[0-9]{1,3}'");
+                        html.AppendLine(String.Format("                onchange='checkQuantiy($(this))'"));
+                        html.AppendLine(String.Format("                onkeyup='pressKeyQuantity($(this))'"));
+                        html.AppendLine(String.Format("                onkeypress='return event.charCode >= 48 && event.charCode <= 57'"));
+                        html.AppendLine(String.Format("                value='{0}'/>", item.Quantity));
+                        html.AppendLine(String.Format("    </td>"));
+                        html.AppendLine(String.Format("    <td class='total-item totalprice-view'>{0:N0}</td>", total));
+                        html.AppendLine(String.Format("   <td class='trash-item'><a href='javascript:;' class='link-btn' onclick='deleteRow($(this))'><i class='fa fa-trash'></i></a></td>"));
+                        html.AppendLine(String.Format("</tr>"));
+                        #endregion
                     }
+
+                    ltrProducts.Text = html.ToString();
                     #endregion
                     #region HiddenField
 
@@ -542,8 +560,8 @@ namespace IM_PJ
                     hdfTotalPriceNotDiscount.Value = totalPriceNotDiscount.ToString();
                     hdfPaymentStatus.Value = paymentStatus.ToString();
                     hdfExcuteStatus.Value = excuteStatus.ToString();
-                    hdftotal.Value = ProductQuantity.ToString();
-                    hdfTotalQuantity.Value = ProductQuantity.ToString();
+                    hdftotal.Value = totalQuantity.ToString();
+                    hdfTotalQuantity.Value = totalQuantity.ToString();
                     hdfRoleID.Value = acc.RoleID.ToString();
 
                     #endregion
@@ -565,16 +583,23 @@ namespace IM_PJ
                     txtShippingCode.Text = order.ShippingCode;
                     txtOrderNote.Text = order.OrderNote;
 
-                    ltrProductQuantity.Text = string.Format("{0:N0}", ProductQuantity) + " cái";
+                    // Tổng số lượng
+                    ltrProductQuantity.Text = string.Format("{0:N0}", totalQuantity) + " cái";
+                    // Tổng tiền chưa chiết khấu
                     ltrTotalNotDiscount.Text = string.Format("{0:N0}", Convert.ToDouble(order.TotalPriceNotDiscount));
-                    ltrTotalprice.Text = string.Format("{0:N0}", Convert.ToDouble(order.TotalPrice));
-                    pDiscount.Value = order.DiscountPerProduct;
+                    // Tổng tiền chiết khấu
+                    ltrTotalDiscount.Text = String.Format("{0:N0}", order.TotalDiscount);
+                    // Tổng tiền sau chiết khấu
+                    ltrTotalAfterCK.Text = string.Format("{0:N0}", (Convert.ToDouble(order.TotalPriceNotDiscount) - Convert.ToDouble(order.TotalDiscount)));
+                    // Phí giao hàng
                     pFeeShip.Value = Convert.ToDouble(order.FeeShipping);
+                    // Tổng tiền
+                    ltrTotalprice.Text = string.Format("{0:N0}", Convert.ToDouble(order.TotalPrice));
+                    // Trọng lượng
                     txtWeight.Value = order.Weight.HasValue ? order.Weight.Value : 0;
+
                     // Get fee info
                     hdfOtherFees.Value = FeeController.getFeesJSON(ID);
-
-                    ltrTotalAfterCK.Text = string.Format("{0:N0}", (Convert.ToDouble(order.TotalPriceNotDiscount) - Convert.ToDouble(order.TotalDiscount)));
 
                     ltrCreateBy.Text = order.CreatedBy;
                     ltrCreateDate.Text = order.CreatedDate.ToString();
@@ -584,7 +609,7 @@ namespace IM_PJ
                         ltrDateDone.Text = order.DateDone.ToString();
                     }
                     ltrOrderNote.Text = order.OrderNote;
-                    ltrOrderQuantity.Text = ProductQuantity.ToString();
+                    ltrOrderQuantity.Text = totalQuantity.ToString();
 
                     // Thông tin giảm mã giảm giá
                     hdfCouponID.Value = order.CouponID.ToString();
@@ -835,6 +860,14 @@ namespace IM_PJ
             }
         }
 
+        /// <summary>
+        /// Date:   2021-07-19
+        /// Author: Binh-TT
+        ///
+        /// Đối ứng chiết khấu từng dòng
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void btnOrder_Click(object sender, EventArgs e)
         {
             DateTime currentDate = DateTime.Now;
@@ -1002,7 +1035,8 @@ namespace IM_PJ
                             {
                                 sl = hdfTotalQuantity.Value;
                             }
-                            double TotalDiscount = Convert.ToDouble(pDiscount.Value) * Convert.ToDouble(sl);
+                            // 2021-07-19: Đối ứng chiết khấu từng dòng
+                            var totalDiscount = Convert.ToDouble(hdfTotalDiscount.Value);
                             string FeeShipping = pFeeShip.Value.ToString();
                             double Weight = Convert.ToDouble(txtWeight.Value);
 
@@ -1074,8 +1108,10 @@ namespace IM_PJ
                                 ModifiedDate = currentDate,
                                 CreatedBy = username,
                                 ModifiedBy = acc.Username,
-                                DiscountPerProduct = Convert.ToDouble(pDiscount.Value),
-                                TotalDiscount = TotalDiscount,
+                                // 2021-07-19: Đối ứng chiết khấu từng dòng
+                                DiscountPerProduct = 0,
+                                // 2021-07-19: Đối ứng chiết khấu từng dòng
+                                TotalDiscount = totalDiscount,
                                 FeeShipping = FeeShipping,
                                 GuestPaid = order.GuestPaid.Value,
                                 GuestChange = order.GuestChange.Value,
@@ -1251,6 +1287,8 @@ namespace IM_PJ
                                     double Price = Convert.ToDouble(itemValue[9]);
                                     string ProductVariableSave = itemValue[10];
                                     int OrderDetailID = itemValue[11].ToInt(0);
+                                    // 2021-07-19: Đối ứng chiết khấu từng dòng
+                                    var discount = Convert.ToDouble(itemValue[13]);
                                     #endregion
 
                                     #region Cập nhật avatar cho đơn hàng
@@ -1265,7 +1303,8 @@ namespace IM_PJ
 
                                         if (orderDetail != null)
                                         {
-                                            OrderDetailController.UpdateQuantity(OrderDetailID, Quantity, Price, currentDate, username);
+                                            // 2021-07-19: Đối ứng chiết khấu từng dòng
+                                            OrderDetailController.UpdateQuantity(OrderDetailID, Quantity, Price, discount, currentDate, username);
                                         }
                                         else
                                         {
@@ -1280,7 +1319,8 @@ namespace IM_PJ
                                                 Quantity = Quantity,
                                                 Price = Price,
                                                 Status = 1,
-                                                DiscountPrice = 0,
+                                                // 2021-07-19: Đối ứng chiết khấu từng dòng
+                                                DiscountPrice = discount,
                                                 ProductType = 2,
                                                 CreatedDate = currentDate,
                                                 CreatedBy = username,
@@ -1376,14 +1416,15 @@ namespace IM_PJ
                                                 });
                                         }
 
-                                        // cập nhật số lượng sản phẩm trong đơn hàng
-                                        OrderDetailController.UpdateQuantity(OrderDetailID, Quantity, Price, currentDate, username);
+                                        // 2021-07-19: Đối ứng chiết khấu từng dòng
+                                        OrderDetailController.UpdateQuantity(OrderDetailID, Quantity, Price, discount, currentDate, username);
                                     }
                                     #endregion
                                     #region nếu sản phẩm này chưa có trong đơn thì thêm vào
                                     else
                                     {
-                                        OrderDetailController.Insert(AgentID, OrderID, SKU, ProductID, ProductVariableID, ProductVariableSave, Quantity, Price, 1, 0, ProductType, currentDate, username, true);
+                                        // 2021-07-19: Đối ứng chiết khấu từng dòng
+                                        OrderDetailController.Insert(AgentID, OrderID, SKU, ProductID, ProductVariableID, ProductVariableSave, Quantity, Price, 1, discount, ProductType, currentDate, username, true);
 
                                         StockManagerController.Insert(
                                             new tbl_StockManager
