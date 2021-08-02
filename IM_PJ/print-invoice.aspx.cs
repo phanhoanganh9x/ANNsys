@@ -243,7 +243,7 @@ namespace IM_PJ
                                 categoryId = x.Key.categoryId,
                                 price = x.Key.price,
                                 totalQuantity = x.Sum(s => s.quantity),
-                                totalDiscount = x.Sum(s => s.discount * s.quantity),
+                                discount = x.Sum(s => s.discount * s.quantity) / x.Sum(s => s.quantity),
                                 total = x.Sum(s => (s.price - s.discount) * s.quantity)
                             })
                             .GroupJoin(
@@ -261,7 +261,7 @@ namespace IM_PJ
                                 categoryName = x.category.name,
                                 price = x.details.price,
                                 totalQuantity = x.details.totalQuantity,
-                                totalDiscount = x.details.totalDiscount,
+                                discount = x.details.discount,
                                 total = x.details.total
                             })
                             .ToList();
@@ -286,7 +286,7 @@ namespace IM_PJ
                             // Giá
                             bodyHtml.AppendLine("    <td>" + String.Format("{0:N0}", (item.price * item.totalQuantity)) + "</td>");
                             // Chiết khấu
-                            bodyHtml.AppendLine("    <td>" + String.Format("{0:N0}", item.totalDiscount) + "</td>");
+                            bodyHtml.AppendLine("    <td>" + String.Format("{0:N0}", item.discount) + "</td>");
                             // Tổng
                             bodyHtml.AppendLine("    <td>" + String.Format("{0:N0}", item.total) + "</td>");
                             bodyHtml.AppendLine("</tr>");

@@ -234,7 +234,7 @@ namespace IM_PJ
                                 categoryId = x.Key.categoryId,
                                 price = x.Key.price,
                                 totalQuantity = x.Sum(s => s.quantity),
-                                discount = x.Select(s => s.discount).First(),
+                                discount = x.Sum(s => s.discount * s.quantity) / x.Sum(s => s.quantity),
                                 total = x.Sum(s => (s.price - s.discount) * s.quantity)
                             })
                             .GroupJoin(
