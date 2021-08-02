@@ -1398,7 +1398,7 @@
                                 addHtmlProductResult(product);
                             }
 
-                            getAllPrice();
+                            getAllPrice(true);
                         }
                     });
                 }
@@ -1415,7 +1415,7 @@
                         addHtmlProductResult(product);
                     }
 
-                    getAllPrice();
+                    getAllPrice(true);
                 }
             }
         </script>

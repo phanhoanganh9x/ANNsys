@@ -59,7 +59,7 @@ namespace IM_PJ
             if (HttpContext.Current.Items["xem-don-hang-doi-tra"] != null)
             {
                 this.hdfListProduct.Value = HttpContext.Current.Items["xem-don-hang-doi-tra"].ToString();
-                
+
                 this.Title = String.Format("Làm lại đơn hàng trả");
             }
 
@@ -141,7 +141,7 @@ namespace IM_PJ
                                 product,
                                 productVariable
                             })
-                        .SelectMany(x => 
+                        .SelectMany(x =>
                             x.productVariable.DefaultIfEmpty(),
                             (parent, child) => new RefundDetailModel
                             {
@@ -174,7 +174,9 @@ namespace IM_PJ
 
                     var order = con.tbl_OrderDetail
                         .Join(
-                            con.tbl_Order.Where(x => x.CustomerID == customerID),
+                            con.tbl_Order
+                                .Where(x => x.CustomerID == customerID)
+                                .Where(x => x.ExcuteStatus == (int)ExcuteStatus.Done),
                             od => od.OrderID,
                             o => o.ID,
                             (od, o) => od
@@ -184,7 +186,10 @@ namespace IM_PJ
                         {
                             sku = x.SKU,
                             orderID = x.OrderID.Value,
-                            saleDate = x.CreatedDate.Value
+                            saleDate = x.CreatedDate.Value,
+                            price = x.Price.HasValue
+                                ? x.Price.Value - (x.DiscountPrice.HasValue ? x.DiscountPrice.Value : 0)
+                                : 0
                         })
                         .Distinct()
                         .OrderByDescending(o => o.sku)
@@ -218,7 +223,7 @@ namespace IM_PJ
                             ChildSKU = x.ChildSKU,
                             VariableValue = properties,
                             Price = x.Price,
-                            ReducedPrice = x.ReducedPrice,
+                            ReducedPrice = orderFilter != null ? Convert.ToDouble(orderFilter.price) : x.ReducedPrice,
                             QuantityRefund = x.QuantityRefund,
                             ChangeType = x.ChangeType,
                             FeeRefund = x.FeeRefund,
@@ -300,7 +305,7 @@ namespace IM_PJ
                             double totalPrice = Convert.ToDouble(hdfTotalPrice.Value);
                             double totalRefund = Convert.ToDouble(hdfTotalRefund.Value);
                             int OrderSaleID = hdfOrderSaleID.Value.ToInt(0);
-                            
+
                             var agent = AgentController.GetByID(agentID);
                             string agentName = String.Empty;
 
