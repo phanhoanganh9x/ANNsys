@@ -179,17 +179,24 @@ namespace IM_PJ
                                 .Where(x => x.ExcuteStatus == (int)ExcuteStatus.Done),
                             od => od.OrderID,
                             o => o.ID,
-                            (od, o) => od
+                            (od, o) => new
+                            {
+                                sku = od.SKU,
+                                orderId = od.OrderID.Value,
+                                saleDate = od.CreatedDate.Value,
+                                price = od.Price.HasValue ? od.Price.Value : 0,
+                                discount = od.DiscountPrice.HasValue && od.DiscountPrice.Value > 0
+                                    ? od.DiscountPrice.Value
+                                    : (o.DiscountPerProduct.HasValue ? o.DiscountPerProduct.Value : 0)
+                            }
                         )
-                        .Where(x => x.SKU.Contains(sku.Trim().ToUpper()))
+                        .Where(x => x.sku.Contains(sku.Trim().ToUpper()))
                         .Select(x => new
                         {
-                            sku = x.SKU,
-                            orderID = x.OrderID.Value,
-                            saleDate = x.CreatedDate.Value,
-                            price = x.Price.HasValue
-                                ? x.Price.Value - (x.DiscountPrice.HasValue ? x.DiscountPrice.Value : 0)
-                                : 0
+                            sku = x.sku,
+                            orderID = x.orderId,
+                            saleDate = x.saleDate,
+                            price = x.price - x.discount
                         })
                         .Distinct()
                         .OrderByDescending(o => o.sku)
