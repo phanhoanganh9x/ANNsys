@@ -2,8 +2,8 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script type="text/javascript" src="/App_Themes/Ann/js/search-customer.js?v=202107221117"></script>
-    <script type="text/javascript" src="/App_Themes/Ann/js/search-product.js?v=28062021"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/search-customer.js?v=202108040205"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/search-product.js?v=202108040205"></script>
     <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=28062021"></script>
     <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=28062021"></script>
     <style>
@@ -2292,12 +2292,19 @@
                         $(".product-result").each(function() {
                             try {
                                 //#region Cài đặt chiết khấu
-                                let $discount = $(this).find(".discount");
+                                /* ============================================================
+                                 * Date:   2021-07-19
+                                 * Author: Binh-TT
+                                 *
+                                 * Kiểm tra từng dòng coi chiết khấu nào nhỏ hơn thì áp vào, lớn hơn thì bỏ qua
+                                 * ============================================================
+                                 */
+                                //let $discount = $(this).find(".discount");
 
-                                if (discount != 0)
-                                    $discount.val(formatThousands(discount, ','));
-                                else
-                                    $discount.val(0);
+                                //if (discount != 0)
+                                //    $discount.val(formatThousands(discount, ','));
+                                //else
+                                //    $discount.val(0);
                                 //#endregion
 
                                 //#region Kiểm tra chiết khấu
