@@ -94,3 +94,11 @@ UPDATE [dbo].[PreOrderDetail] SET [Discount] = 0;
 
 ALTER TABLE [dbo].[PreOrderDetail] ALTER COLUMN [Discount] [Money] NOT NULL
 GO
+
+-- =============================================
+-- Author:      Binh-TT
+-- Create date: 2021-08-06
+-- Description: Add the total column
+-- ==========================================
+ALTER TABLE [dbo].[PreOrderDetail] ADD [Total] AS ISNULL((ISNULL([Price], 0) - ISNULL([Discount], 0)) * ISNULL([Quantity], 0), 0)
+GO

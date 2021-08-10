@@ -262,7 +262,7 @@ function _generatePreOrderDetailHTML(item, index) {
     html += '        ' + UtilsService.formatThousands(+item.quantity || 0, ',');
     html += '    </td>';
     html += '    <td class="total-item totalprice-view">';
-    html += '        ' + UtilsService.formatThousands(+item.totalPrice || 0, ',');
+    html += '        ' + UtilsService.formatThousands(+item.total || 0, ',');
     html += '    </td>';
     html += '</tr>';
 
