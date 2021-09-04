@@ -58,7 +58,8 @@ namespace IM_PJ.Models
         Viettel = 7,                // Viettel
         Grab = 8,                   // Grab
         AhaMove = 9,                // AhaMove
-        JT = 10,                     // J&T
+        JT = 10,                    // J&T
+        GHN = 11                    // Giao hang nhanh
     }
 
     public enum DeliveryStatus

@@ -58,6 +58,7 @@
                                         <asp:ListItem Value="8" Text="Grab"></asp:ListItem>
                                         <asp:ListItem Value="9" Text="AhaMove"></asp:ListItem>
                                         <asp:ListItem Value="10" Text="J&T"></asp:ListItem>
+                                        <asp:ListItem Value="11" Text="GHN"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2">

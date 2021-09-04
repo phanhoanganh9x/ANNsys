@@ -2,10 +2,10 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script type="text/javascript" src="/App_Themes/Ann/js/search-customer.js?v=202108040205"></script>
-    <script type="text/javascript" src="/App_Themes/Ann/js/search-product.js?v=202108040205"></script>
-    <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=28062021"></script>
-    <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=28062021"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/search-customer.js?v=04092021"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/search-product.js?v=04092021"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=04092021"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=04092021"></script>
     <style>
         .panel-post {
             margin-bottom: 20px;
@@ -590,6 +590,7 @@
                                             <asp:ListItem Value="8" Text="Grab"></asp:ListItem>
                                             <asp:ListItem Value="9" Text="AhaMove"></asp:ListItem>
                                             <asp:ListItem Value="10" Text="J&T"></asp:ListItem>
+                                            <asp:ListItem Value="11" Text="GHN"></asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
                                 </div>
@@ -836,7 +837,7 @@
     </telerik:RadAjaxManager>
     <telerik:RadScriptBlock ID="sc" runat="server">
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-        <script type="text/javascript" src="App_Themes/Ann/js/delivery-address.js?v=28062021"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/delivery-address.js?v=04092021"></script>
         <script type="text/javascript">
             // #region Private
             // Kiểm tra xác nhận thông tin khách hàng
@@ -1644,6 +1645,13 @@
                     $shippingCode.addClass("hide");
                 }
 
+                // GHN
+                if ($ddlShippingType.find(":selected").val() == 11) {
+                    $weight.removeClass("hide");
+                    $transportCompany.addClass("hide");
+                    $shippingCode.removeClass("hide");
+                }
+
                 // Event onChange
                 let $ddlPaymentType = $("#<%=ddlPaymentType.ClientID%>");
                 let $ddlPostalDeliveryType = $("#<%=ddlPostalDeliveryType.ClientID%>");
@@ -1718,6 +1726,11 @@
                         // J&T
                         case "10":
                             $weight.removeClass("hide");
+                            break;
+                        // GHN
+                        case "11":
+                            $weight.removeClass("hide");
+                            $shippingCode.removeClass("hide");
                             break;
                         default:
                             break;
@@ -2081,7 +2094,7 @@
                 var feeship = parseFloat(fs.replace(/\,/g, ''));
 
                 // kiểm tra nhập phí vận chuyển chưa
-                if (shippingtype == 2 || shippingtype == 3 || shippingtype == 7) {
+                if (shippingtype == 2 || shippingtype == 3 || shippingtype == 7 || shippingtype == 11) {
                     if (feeship == 0 && $("#<%=pFeeShip.ClientID%>").is(":disabled") == false) {
                         $("#<%=pFeeShip.ClientID%>").focus();
                         swal({

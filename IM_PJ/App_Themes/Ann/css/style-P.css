@@ -1220,6 +1220,15 @@ img {
     font-size: 12px;
     border-radius: 6px;
 }
+.bg-ghn {
+    background-color: #f26523;
+    color: #fff;
+    display: block;
+    padding: 5px 6px;
+    white-space: nowrap;
+    font-size: 12px;
+    border-radius: 6px;
+}
 .bg-jt {
     background-color: red;
     color: #fff;

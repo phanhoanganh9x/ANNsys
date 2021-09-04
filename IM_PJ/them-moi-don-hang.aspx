@@ -2,9 +2,9 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=202108040205"></script>
-    <script src="/App_Themes/Ann/js/search-product.js?v=202108040205"></script>
-    <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=28062021"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=04092021"></script>
+    <script src="/App_Themes/Ann/js/search-product.js?v=04092021"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=04092021"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <style>
@@ -535,7 +535,7 @@
     </telerik:RadAjaxManager>
     <telerik:RadScriptBlock ID="sc" runat="server">
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-        <script type="text/javascript" src="App_Themes/Ann/js/delivery-address.js?v=28062021"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/delivery-address.js?v=04092021"></script>
         <script type="text/javascript">
             "use strict";
 
@@ -547,8 +547,8 @@
                 if (excuteStatus == 2) {
                     let shippingType = $("#<%=ddlShippingType.ClientID%>").val();
 
-                    // 2: Bưu điện | 7: Viettel | 8: Grab | 9: AhaMove | 10: J&T
-                    if (shippingType == 2 || shippingType == 7 || shippingType == 8 || shippingType == 9 || shippingType == 10) {
+                    // 2: Bưu điện | 7: Viettel | 8: Grab | 9: AhaMove | 10: J&T | 11: GHN
+                    if (shippingType == 2 || shippingType == 7 || shippingType == 8 || shippingType == 9 || shippingType == 10 || shippingType == 11) {
                         let $feeShip = $("#<%=pFeeShip.ClientID%>");
                         let feeShip = parseFloat($feeShip.val().replace(/\,/g, ''));
 
@@ -557,7 +557,7 @@
                             $("#<%=txtShippingFeeModal.ClientID%>").select();
                             swal({
                                 title: "Có vấn đề:",
-                                text: "Chưa nhập phí vận chuyển!<br><br>Hỏng lẻ miễn phí vận chuyển luôn?",
+                                text: "Chưa nhập phí vận chuyển!<br><br>Hay miễn phí vận chuyển luôn?",
                                 type: "warning",
                                 showCancelButton: true,
                                 confirmButtonColor: "#DD6B55",

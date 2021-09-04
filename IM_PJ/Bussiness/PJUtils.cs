@@ -346,6 +346,10 @@ namespace NHST.Bussiness
             {
                 ret = "<span class='bg-jt'>J&T</span>";
             }
+            else if (ShippingType == 11)
+            {
+                ret = "<span class='bg-ghn'>GHN</span>";
+            }
             else
             {
                 ret = "<span class='bg-red'>Chưa xác định</span>";

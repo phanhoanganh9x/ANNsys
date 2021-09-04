@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=202108040205"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=04092021"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:Panel ID="parent" runat="server">
@@ -312,6 +312,7 @@
                                             <asp:ListItem Value="8" Text="Grab"></asp:ListItem>
                                             <asp:ListItem Value="9" Text="AhaMove"></asp:ListItem>
                                             <asp:ListItem Value="10" Text="J&T"></asp:ListItem>
+                                            <asp:ListItem Value="11" Text="GHN"></asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
                                 </div>

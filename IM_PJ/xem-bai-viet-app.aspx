@@ -98,9 +98,9 @@
 
         <asp:HiddenField ID="hdfPostId" runat="server" />
     </main>
-    <script src="/App_Themes/Ann/js/sync-post.js?v=28062021"></script>
-    <script src="/App_Themes/Ann/js/copy-post-app-info.js?v=28062021"></script>
-    <script src="/App_Themes/Ann/js/download-post-app-image.js?v=28062021"></script>
+    <script src="/App_Themes/Ann/js/sync-post.js?v=04092021"></script>
+    <script src="/App_Themes/Ann/js/copy-post-app-info.js?v=04092021"></script>
+    <script src="/App_Themes/Ann/js/download-post-app-image.js?v=04092021"></script>
 
     <script>
         $(document).ready(function () {

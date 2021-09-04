@@ -343,6 +343,12 @@ namespace IM_PJ
                     cssReplacePhone = true;
                     DeliveryInfo = String.Format("<p class='delivery'><strong>J&T</strong></p>");
                 }
+                // GHN
+                else if (order.ShippingType == 11)
+                {
+                    cssReplacePhone = true;
+                    DeliveryInfo = String.Format("<p class='delivery'><strong>GHN</strong></p>");
+                }
 
                 // Lấy tiền THU HỘ
                 if (order.PaymentType == 3)

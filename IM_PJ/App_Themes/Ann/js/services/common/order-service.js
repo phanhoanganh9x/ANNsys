@@ -89,6 +89,8 @@
             return "<span class='bg-ahamove'>AhaMove</span>";
         else if (deliveryMethod == 10)
             return "<span class='bg-jt'>J&T</span>";
+        else if (deliveryMethod == 11)
+            return "<span class='bg-ghn'>GHN</span>";
         else
             return "<span class='bg-red'>Chưa xác định</span>";
     }
