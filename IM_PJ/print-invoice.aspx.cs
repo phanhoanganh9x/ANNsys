@@ -196,12 +196,19 @@ namespace IM_PJ
 
                             #region Dòng 1
                             var saleHtml = item.oldPrice > 0 ? "<span class='sale-icon'>SALE</span> " : String.Empty;
+
                             var name = PJUtils.Truncate(item.name, item.productType == 1 ? 28 : 37);
+                            int[] cosmeticCategories = {44, 61, 62, 63, 64, 75, 45, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 76, 77, 78, 56};
+                            if (cosmeticCategories.Contains(item.categoryId))
+                            {
+                                name = PJUtils.Truncate(item.name, 75);
+                            }
+
                             var total = (item.price - item.discount) * item.quantity;
 
                             bodyHtml.AppendLine("<tr>");
-                            bodyHtml.AppendLine("    <td colspan='3'>");
-                            bodyHtml.AppendLine(String.Format("        {0}&ensp;<strong>{1}</strong> - {2}{3}", index, item.sku, saleHtml, name));
+                            bodyHtml.AppendLine("    <td colspan='4'>");
+                            bodyHtml.AppendLine(String.Format("        {0})&ensp;<strong>{1}</strong> - {2}{3}", index, item.sku, saleHtml, name));
                             bodyHtml.AppendLine("    </td>");
                             bodyHtml.AppendLine("</tr>");
                             #endregion

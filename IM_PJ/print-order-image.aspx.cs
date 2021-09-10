@@ -446,7 +446,7 @@ namespace IM_PJ
                 {
                     var avatarUrl = Thumbnail.getURL(item.avatar, Thumbnail.Size.Large);
                     var saleHtml = item.oldPrice > 0 ? "<span class='sale-icon'>SALE</span> " : String.Empty;
-                    var name = PJUtils.Truncate(item.name, 40);
+                    var name = PJUtils.Truncate(item.name, 80);
                     var description = item.productType == 2 && !String.IsNullOrEmpty(item.description)
                         ? String.Format("{0}", item.description.Replace("|", ". "))
                         : String.Empty;
@@ -455,7 +455,7 @@ namespace IM_PJ
 
                     html.AppendLine("                    <tr>");
                     // STT
-                    html.AppendLine(String.Format("                        <td id='{0}'>{1}</td>", item.sku, index));
+                    html.AppendLine(String.Format("                        <td id='{0}'>{1})</td>", item.sku, index));
                     // Hình ảnh
                     if (!data.merger)
                         html.AppendLine(String.Format("                        <td><image src='{0}' /></td>", avatarUrl));

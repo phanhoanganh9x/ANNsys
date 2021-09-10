@@ -121,6 +121,12 @@
                                             <input type="text" id="txtRecipientPhone" class="form-control" placeholder="Số điện thoại người nhận hàng" disabled="disabled"/>
                                         </div>
                                     </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Địa chỉ</label>
+                                            <input type="text" id="txtRecipientAddress" class="form-control capitalize" placeholder="Địa chỉ khách hàng" disabled="disabled"/>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-3">
@@ -145,12 +151,6 @@
                                             <select id="ddlRecipientWard" class="form-control" disabled="disabled">
                                                 <option value="" title="Chọn phường xã">Chọn phường xã</option>
                                             </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>Địa chỉ</label>
-                                            <input type="text" id="txtRecipientAddress" class="form-control capitalize" placeholder="Địa chỉ khách hàng" disabled="disabled"/>
                                         </div>
                                     </div>
                                 </div>
