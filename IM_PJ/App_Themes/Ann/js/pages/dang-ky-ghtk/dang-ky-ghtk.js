@@ -811,7 +811,7 @@ function _submit() {
         error: (xhr, textStatus, error) => {
             HoldOn.close();
 
-            return _alterError(titleAlert, xhr.responseJSON);
+            return _alterError(titleAlert);
         }
     });
 }
