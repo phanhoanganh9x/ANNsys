@@ -377,7 +377,7 @@ namespace IM_PJ
                     }
 
                     html.AppendLine("   <td data-title='Đã mua'>" + item.Quantity + "</td>");
-                    if (acc.RoleID == 0 && item.ExcuteStatus == 2)
+                    if (item.ExcuteStatus == 2)
                         html.AppendLine("   <td data-title='Xử lý'><span class='bg-green' style='cursor: pointer' onclick='onClick_spFinishStatusOrder(this, " + item.ID + ")'>Đã hoàn tất</span></td>");
                     else
                         html.AppendLine("   <td data-title='Xử lý'>" + PJUtils.OrderExcuteStatus(Convert.ToInt32(item.ExcuteStatus)) + "</td>");

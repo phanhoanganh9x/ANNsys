@@ -2110,6 +2110,11 @@
                         });
                         checkAllValue = false;
                     }
+                    // GHN
+                    if (shippingtype == 11) {
+                        if (!_checkWeight())
+                            checkAllValue = false;
+                    }
                 }
                 // Trường hợp giao hàng tiết kiệm
                 else if (shippingtype == 6) {
@@ -2149,6 +2154,11 @@
                             }
                         }
                     }
+                }
+                else if (shippingtype == 10) {
+                    // J&T
+                    if (!_checkWeight())
+                        checkAllValue = false;
                 }
 
                 // kiểm tra phí vận chuyển có nhỏ hơn 10k
