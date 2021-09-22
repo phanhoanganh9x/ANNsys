@@ -1,8 +1,8 @@
-﻿<%@ Page Title="Đăng ký gửi đi" Language="C#" MasterPageFile="~/MasterPage.Master"  AutoEventWireup="true" CodeBehind="dang-ky-gui-di.aspx.cs" Inherits="IM_PJ.dang_ky_gui_di" EnableSessionState="ReadOnly" EnableEventValidation="false" %>
+﻿<%@ Page Title="Đăng ký chuyển hoàn" Language="C#" MasterPageFile="~/MasterPage.Master"  AutoEventWireup="true" CodeBehind="dang-ky-chuyen-hoan.aspx.cs" Inherits="IM_PJ.dang_ky_chuyen_hoan" EnableSessionState="ReadOnly" EnableEventValidation="false" %>
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <link rel="stylesheet" href="App_Themes/Ann/css/pages/dang-ky-gui-di/dang-ky-gui-di.css?v=202109201406" />
+    <link rel="stylesheet" href="App_Themes/Ann/css/pages/dang-ky-chuyen-hoan/dang-ky-chuyen-hoan.css?v=202109201406" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
@@ -11,7 +11,7 @@
                 <div class="col-md-12">
                     <div class="panel panelborderheading">
                         <div class="panel-heading clear">
-                            <h3 class="page-title left not-margin-bot">Thông tin đơn hàng gửi</h3>
+                            <h3 class="page-title left not-margin-bot">Thông tin đơn chuyển hoàn</h3>
                         </div>
                         <div class="panel-body">
                             <div class="row">
@@ -33,8 +33,8 @@
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group">
-                                        <label>Ngày gửi</label>
-                                        <telerik:RadDatePicker RenderMode="Lightweight" ID="rSentDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate">
+                                        <label>Ngày chuyển hoàn</label>
+                                        <telerik:RadDatePicker RenderMode="Lightweight" ID="rRefundDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate">
                                             <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
                                             </DateInput>
                                         </telerik:RadDatePicker>
@@ -60,6 +60,7 @@
                                     <th class="col-delivery-method">Kiểu vận chuyển</th>
                                     <th class="col-shipping-code">Mã vận đơn</th>
                                     <th class="col-sent-date">Ngày gửi</th>
+                                    <th class="col-refund-date">Ngày chuyền hoàn</th>
                                     <th class="col-btn"></th>
                                 </tr>
                             </thead>
@@ -78,10 +79,12 @@
             </div>
         </div>
 
+        <asp:HiddenField ID="hdfSentDate" runat="server" />
         <asp:HiddenField ID="hdfStaff" runat="server" />
+        <asp:HiddenField ID="hdfIsNew" runat="server" value="1"/>
         <script type="text/javascript" src="App_Themes/Ann/js/utils/string-format.js?v=202109210018"></script>
-        <script type="text/javascript" src="App_Themes/Ann/js/services/dang-ky-gui-di/dang-ky-gui-di-service.js?v=202109210018"></script>
-        <script type="text/javascript" src="App_Themes/Ann/js/controllers/dang-ky-gui-di/dang-ky-gui-di-controller.js?v=202109210018"></script>
-        <script type="text/javascript" src="App_Themes/Ann/js/pages/dang-ky-gui-di/dang-ky-gui-di.js?v=202109210018"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/services/dang-ky-chuyen-hoan/dang-ky-chuyen-hoan-service.js?v=202109210018"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/controllers/dang-ky-chuyen-hoan/dang-ky-chuyen-hoan-controller.js?v=202109210018"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/pages/dang-ky-chuyen-hoan/dang-ky-chuyen-hoan.js?v=202109210018"></script>
     </main>
 </asp:Content>

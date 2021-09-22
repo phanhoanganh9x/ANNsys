@@ -10,7 +10,7 @@ const DeliveryMethodEnum = {
 let loading = false;
 let stopOnBlurCode = false;
 let stringFormat = new StringFormat();
-let controller = new DeliveryRegisterController();
+let controller = new DeliveryRefundController();
 
 document.addEventListener("DOMContentLoaded", function (event) {
     _initDeliveryMethod();
@@ -38,8 +38,10 @@ function _updateDelivery() {
     let codeDOM = document.querySelector("[id$='_txtCode']");
     let deliveryMethodDOM = document.querySelector("[id$='_ddlDeliveryMethod']");
     let shippingCodeDOM = document.querySelector("[id$='_txtShippingCode']");
-    let sentDateDOM = document.querySelector("[id$='_rSentDate']");
+    let sentDateDOM = document.querySelector("[id$='_hdfSentDate']");
+    let refundDateDOM = document.querySelector("[id$='_rRefundDate']");
     let staffDOM = document.querySelector("[id$='_hdfStaff']");
+    let isNewDOM = document.querySelector("[id$='_hdfIsNew']");
     let data = {
         orderType: {
             key: parseInt(orderTypeDOM.value),
@@ -52,7 +54,9 @@ function _updateDelivery() {
         },
         shippingCode: shippingCodeDOM.value,
         sentDate: sentDateDOM.value,
-        staff: staffDOM.value
+        refundDate: refundDateDOM.value,
+        staff: staffDOM.value,
+        isNew: parseInt(isNewDOM.value)
     };
 
     controller.setDelivery(data);
@@ -92,7 +96,7 @@ function _updateDeliveryMethod(callback) {
                 type: 'error',
                 showCloseButton: true,
                 html: true,
-            }, function() {
+            }, function () {
                 if (stopOnBlurCode)
                     stopOnBlurCode = false;
             });
@@ -111,23 +115,52 @@ function _checkDelivery(callback) {
                     loading = false;
                 }
 
-                let message = '';
+                let deliveryMethodDOM = document.querySelector("[id$='_ddlDeliveryMethod']");
+                let shippingCodeDOM = document.querySelector("[id$='_txtShippingCode']");
+                let sentDateDOM = document.querySelector("[id$='_hdfSentDate']");
+                let isNewDOM = document.querySelector("[id$='_hdfIsNew']");
 
-                message += 'Đơn hàng ' + response.orderType.value + ' <strong>#' + response.code + '</strong><br>';
-                message += 'đã được đăng ký trạng thái <strong>"' + response.status.value + '"</strong>';
-                swal({
-                    title: 'Error',
-                    text: message,
-                    type: 'error',
-                    showCloseButton: true,
-                    html: true,
-                }, function () {
-                    if (stopOnBlurCode)
-                        stopOnBlurCode = false;
-                });
+                deliveryMethodDOM.value = response.deliveryMethod.key;
+                shippingCodeDOM.value = response.shippingCode;
+                sentDateDOM.value = response.sentDate;
+                isNewDOM.value = 0;
+
+                if (typeof callback === 'function')
+                    callback();
             }
             else {
-                _updateDeliveryMethod(callback);
+                let orderTypeDOM = document.querySelector("[id$='_ddlOrderType']");
+                let codeDOM = document.querySelector("[id$='_txtCode']");
+                let orderType = orderTypeDOM.options[orderTypeDOM.selectedIndex].text;
+                let code = codeDOM.value.trim();
+                let message = '';
+
+                message += 'Đơn hàng ' + orderType + ' <strong>#' + code + '</strong><br>';
+                message += 'chưa đăng ký <strong>"Gửi đi"</strong>.';
+                swal({
+                    title: 'Lưu ý',
+                    text: message,
+                    type: 'warning',
+                    showCancelButton: true,
+                    closeOnConfirm: false,
+                    cancelButtonText: "Để em suy nghỉ lại!",
+                    confirmButtonText: "Tiếp tục",
+                    html: true,
+                }, function (confirm) {
+                    if (confirm) {
+                        swal.close();
+                        _updateDeliveryMethod(callback);
+                    }
+                    else {
+                        if (loading) {
+                            HoldOn.close();
+                            loading = false;
+                        }
+
+                        if (stopOnBlurCode)
+                            stopOnBlurCode = false;
+                    }
+                });
             }
         })
         .catch(function (err) {
@@ -300,15 +333,21 @@ function _createDeliveryHtml(index, data) {
     html += '    data-code="' + data.code + '"';
     html += '    data-delivery-method="' + String(data.deliveryMethod.key) + '"';
     html += '    data-shipping-code="' + data.shippingCode + '"';
-    html += '    data-sent-date="' + data.sentDate + '"';
+    html += '    data-sent-date="' + data.sentDate ? data.sentDate : '' + '"';
+    html += '    data-refund-date="' + data.refundDate + '"';
     html += '    data-staff="' + data.staff + '"';
+    html += '    data-is-new="' + String(data.isNew) + '"';
     html += '>';
     html += '    <td>' + String(index) + '</td>';
     html += '    <td>' + data.orderType.value + '</td>';
     html += '    <td>' + data.code + '</td>';
     html += '    <td>' + data.deliveryMethod.value + '</td>';
     html += '    <td>' + data.shippingCode + '</td>';
-    html += '    <td>' + stringFormat.datetimeToString(data.sentDate, 'dd/MM/yyyy') + '</td>';
+    if (data.sentDate)
+        html += '    <td>' + stringFormat.datetimeToString(data.sentDate, 'dd/MM/yyyy') + '</td>';
+    else
+        html += '    <td></td>';
+    html += '    <td>' + stringFormat.datetimeToString(data.refundDate, 'dd/MM/yyyy') + '</td>';
     html += '    <td>';
     html += '        <a href="javascript:;"';
     html += '           title="Xóa"';
@@ -334,9 +373,13 @@ function _addDelivery(data) {
 function _clearDelivery() {
     let codeDOM = document.querySelector("[id$='_txtCode']");
     let shippingCodeDOM = document.querySelector("[id$='_txtShippingCode']");
+    let sentDateDOM = document.querySelector("[id$='_hdfSentDate']");
+    let isNewDOM = document.querySelector("[id$='_hdfIsNew']");
 
     codeDOM.value = '';
     shippingCodeDOM.value = '';
+    sentDateDOM.value = ''
+    isNewDOM.value = '1';
     _updateDelivery();
 }
 
@@ -480,7 +523,9 @@ function submitDeliveries() {
             deliveryMethod: parseInt(dataset.deliveryMethod),
             shippingCode: dataset.shippingCode,
             sentDate: dataset.sentDate,
-            staff: dataset.staff
+            refundDate: dataset.refundDate,
+            staff: dataset.staff,
+            isNew: parseInt(dataset.isNew)
         }
 
         deliveries.push(data);
@@ -491,7 +536,7 @@ function submitDeliveries() {
     HoldOn.open();
     loading = true;
 
-    controller.registerDeliveries(deliveries)
+    controller.refundDeliveries(deliveries)
         .then(function (response) {
             if (loading) {
                 HoldOn.close();
@@ -500,7 +545,7 @@ function submitDeliveries() {
 
             swal({
                 title: 'Thông báo',
-                text: 'Đăng ký danh sách đơn gửi đi.<br><strong>Thành công!</strong>',
+                text: 'Đăng ký danh sách đơn chuyển hoàn.<br><strong>Thành công!</strong>',
                 type: 'success',
                 showCloseButton: true,
                 html: true,
