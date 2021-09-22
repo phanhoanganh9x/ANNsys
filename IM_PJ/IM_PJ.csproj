@@ -347,6 +347,7 @@
     <Content Include="App_Themes\Ann\css\pages\chi-tiet-giam-gia\chi-tiet-giam-gia.css" />
     <Content Include="App_Themes\Ann\css\pages\cron-job-product-status\cron-job-product-status.css" />
     <Content Include="App_Themes\Ann\css\pages\dang-ky-ghtk\dang-ky-ghtk.css" />
+    <Content Include="App_Themes\Ann\css\pages\dang-ky-gui-di\dang-ky-gui-di.css" />
     <Content Include="App_Themes\Ann\css\pages\danh-sach-don-dat-hang\danh-sach-don-dat-hang.css" />
     <Content Include="App_Themes\Ann\css\pages\danh-sach-don-hang\danh-sach-don-hang.css" />
     <Content Include="App_Themes\Ann\css\pages\danh-sach-khach-giam-gia\danh-sach-khach-giam-gia.css" />
@@ -403,6 +404,7 @@
     <Content Include="App_Themes\Ann\js\bootstrap.min.js" />
     <Content Include="App_Themes\Ann\js\Chart.min.js" />
     <Content Include="App_Themes\Ann\js\chartjs.min.js" />
+    <Content Include="App_Themes\Ann\js\controllers\dang-ky-gui-di\dang-ky-gui-di-controller.js" />
     <Content Include="App_Themes\Ann\js\controllers\danh-sach-don-ghtk\danh-sach-don-ghtk-controller.js" />
     <Content Include="App_Themes\Ann\js\controllers\thong-ke-ghtk\thong-ke-ghtk-controller.js" />
     <Content Include="App_Themes\Ann\js\controllers\thong-tin-don-dat-hang\thong-tin-don-dat-hang-controller.js" />
@@ -428,6 +430,7 @@
     <Content Include="App_Themes\Ann\js\models\common\discount-group-model.js" />
     <Content Include="App_Themes\Ann\js\models\common\order-model.js" />
     <Content Include="App_Themes\Ann\js\pages\dang-ky-ghtk\dang-ky-ghtk.js" />
+    <Content Include="App_Themes\Ann\js\pages\dang-ky-gui-di\dang-ky-gui-di.js" />
     <Content Include="App_Themes\Ann\js\pages\danh-sach-don-ghtk\danh-sach-don-ghtk.js" />
     <Content Include="App_Themes\Ann\js\pages\thong-ke-ghtk\thong-ke-ghtk.js" />
     <Content Include="App_Themes\Ann\js\pages\thong-tin-don-dat-hang\thong-tin-don-dat-hang.js" />
@@ -440,6 +443,7 @@
     <Content Include="App_Themes\Ann\js\pages\danh-sach-nhom-khach-hang\danh-sach-nhom-khach-hang.js" />
     <Content Include="App_Themes\Ann\js\pages\them-moi-giam-gia\them-moi-giam-gia.js" />
     <Content Include="App_Themes\Ann\js\delivery-address.js" />
+    <Content Include="App_Themes\Ann\js\services\dang-ky-gui-di\dang-ky-gui-di-service.js" />
     <Content Include="App_Themes\Ann\js\services\danh-sach-don-ghtk\danh-sach-don-ghtk-service.js" />
     <Content Include="App_Themes\Ann\js\services\thong-ke-ghtk\thong-ke-ghtk-service.js" />
     <Content Include="App_Themes\Ann\js\services\thong-tin-don-dat-hang\thong-tin-don-dat-hang-service.js" />
@@ -546,6 +550,7 @@
     <Content Include="bao-cao.aspx" />
     <Content Include="bv.aspx" />
     <Content Include="chuyen-kho.aspx" />
+    <Content Include="dang-ky-gui-di.aspx" />
     <Content Include="danh-sach-don-dat-hang.aspx" />
     <Content Include="Models\IMMode.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -1042,6 +1047,13 @@
       <DependentUpon>chuyen-kho.aspx</DependentUpon>
     </Compile>
     <Compile Include="Controllers\CurrencyController.cs" />
+    <Compile Include="dang-ky-gui-di.aspx.cs">
+      <DependentUpon>dang-ky-gui-di.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="dang-ky-gui-di.aspx.designer.cs">
+      <DependentUpon>dang-ky-gui-di.aspx</DependentUpon>
+    </Compile>
     <Compile Include="danh-sach-don-dat-hang.aspx.cs">
       <DependentUpon>danh-sach-don-dat-hang.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1138,6 +1150,7 @@
     <Compile Include="Models\NotifyUser.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Pages\dang-ky-gui-di\KeyValueModel.cs" />
     <Compile Include="Models\Pages\print-order-image-english\CouponModel.cs" />
     <Compile Include="Models\Pages\print-order-image-english\CustomerModel.cs" />
     <Compile Include="Models\Pages\print-order-image-english\OrderDetailModel.cs" />

@@ -1,0 +1,58 @@
+﻿.input-group {
+    display: flex
+}
+
+.input-group .dropdown-order-type {
+    background-color: #e1e1e1;
+    width: 150px;
+    height: 46.2px;
+}
+
+.input-group .input-code {
+    width: calc(100% - 150px);
+    height: 46.2px;
+}
+
+.input-group .dropdown-delivery-method {
+    background-color: #e1e1e1;
+    width: 150px;
+    height: 46.2px;
+}
+
+.input-group .input-shipping-code {
+    width: calc(100% - 150px);
+    height: 46.2px;
+}
+
+.btn-add {
+    padding-top: 15px;
+    height: 46.2px;
+}
+
+table > thead > tr > th.col-index {
+    width: 5%
+}
+
+table > thead > tr > th.col-order-type {
+    width: 20%
+}
+
+table > thead > tr > th.col-code {
+    width: 15%
+}
+
+table > thead > tr > th.col-delivery-method {
+    width: 15%
+}
+
+table > thead > tr > th.col-shipping-code {
+    width: 20%
+}
+
+table > thead > tr > th.col-sent-date {
+    width: 15%
+}
+
+table > thead > tr > th.col-btn {
+    width: 10%
+}
