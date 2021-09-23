@@ -574,12 +574,16 @@
     </Content>
     <Content Include="print-order-image-english.aspx" />
     <Content Include="SQL\01CREATE_TABLE_DeliveryAddress.sql" />
+    <Content Include="SQL\01CREATE_TABLE_DeliveryManager.sql" />
+    <Content Include="SQL\01CREATE_TABLE_DeliveryMethod.sql" />
     <Content Include="SQL\01CREATE_TABLE_DeliverySaveAddress.sql" />
     <Content Include="SQL\01CREATE_TABLE_DeliverySaveNotification.sql" />
     <Content Include="SQL\01CREATE_TABLE_DeliverySaveReason.sql" />
     <Content Include="SQL\01CREATE_TABLE_DeliverySaveReport.sql" />
     <Content Include="SQL\01CREATE_TABLE_DeliverySaveStatus.sql" />
+    <Content Include="SQL\01CREATE_TABLE_DeliveryStatus.sql" />
     <Content Include="SQL\01CREATE_TABLE_ExchangeRate.sql" />
+    <Content Include="SQL\01CREATE_TABLE_OrderType.sql" />
     <Content Include="SQL\01CREATE_TABLE_PostVideo.sql" />
     <Content Include="SQL\01CREATE_TABLE_PreOrder.sql" />
     <Content Include="SQL\01CREATE_TABLE_PreOrderDetail.sql" />
