@@ -557,6 +557,7 @@ namespace IM_PJ.Controllers
                         TotalQuantity = x.TotalQuantity,
                         TotalCostOfGood = x.TotalCostOfGood,
                         TotalPriceNotDiscount = String.IsNullOrEmpty(x.TotalPriceNotDiscount) ? "0" : x.TotalPriceNotDiscount,
+                        DeliveryAddressId = x.DeliveryAddressId
                     });
                 #endregion
 
@@ -759,7 +760,8 @@ namespace IM_PJ.Controllers
                     TotalCostOfGood = x.TotalCostOfGood,
                     RefundsGoodsID = x.RefundsGoodsID,
                     CouponID = x.CouponID,
-                    ShippingCode = x.ShippingCode
+                    ShippingCode = x.ShippingCode,
+                    DeliveryAddressId = x.DeliveryAddressId
                 })
                 .ToList();
                 #endregion
@@ -806,6 +808,23 @@ namespace IM_PJ.Controllers
                                 orderFilter = orderFilter.Where(x => x.ID.ToString() == search).ToList();
                             else
                             {
+                                var deliveryAddressFilter = con.DeliveryAddresses
+                                    .Join(
+                                        orders
+                                            .Where(x => x.DeliveryAddressId.HasValue)
+                                            .Select(x => new { deliveryAddressId = x.DeliveryAddressId.Value })
+                                            .GroupBy(g => g.deliveryAddressId)
+                                            .Select(x => new { deliveryAddressId = x.Key }),
+                                        da => da.Id,
+                                        f => f.deliveryAddressId,
+                                        (da, f) => new
+                                        {
+                                            id = da.Id,
+                                            phone = da.Phone
+                                        }
+                                    )
+                                    .ToList();
+
                                 orderFilter = orderFilter
                                     .Join(
                                         customerFilter,
@@ -816,11 +835,32 @@ namespace IM_PJ.Controllers
                                             customer = c
                                         }
                                     )
+                                    .GroupJoin(
+                                        deliveryAddressFilter,
+                                        temp => temp.order.DeliveryAddressId,
+                                        da => da.id,
+                                        (temp, da) => new
+                                        {
+                                            order = temp.order,
+                                            customer = temp.customer,
+                                            deliveryAddress = da
+                                        }
+                                    )
+                                    .SelectMany(
+                                        x => x.deliveryAddress.DefaultIfEmpty(),
+                                        (parent, child) => new
+                                        {
+                                            order = parent.order,
+                                            customer = parent.customer,
+                                            deliveryAddress = child
+                                        }
+                                    )
                                     .Where(x =>
-                                        x.customer.CustomerPhone == search ||
-                                        x.customer.CustomerPhone2 == search ||
-                                        x.customer.Zalo == search ||
-                                        x.order.ShippingCode == search
+                                        x.customer.CustomerPhone == search
+                                        || x.customer.CustomerPhone2 == search
+                                        || x.customer.Zalo == search
+                                        || x.order.ShippingCode == search
+                                        || (x.deliveryAddress != null && x.deliveryAddress.phone == search)
                                     )
                                     .Select(x => x.order)
                                     .ToList();
