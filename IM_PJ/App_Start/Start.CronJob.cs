@@ -1,6 +1,7 @@
 ﻿using CronNET;
 using IM_PJ.Controllers;
 using IM_PJ.CronJob;
+using IM_PJ.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +11,14 @@ namespace IM_PJ
 {
     public partial class Startup
     {
+        private Settings _settings = new Settings();
+
         public void ConfigureCron()
         {
+            // Kiểm tra điều kiện để chạy cron job
+            if (_settings.ASPNETCORE_ENVIRONMENT != "Production")
+                return;
+
             CronManager.Start();
             var jobs = CronManager.GetJobs();
 
