@@ -1,5 +1,5 @@
 ﻿using IM_PJ.Controllers;
-using IM_PJ.Models.Pages.dang_ky_gui_di;
+using IM_PJ.Models.Pages.dang_ky_chuyen_hoan;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

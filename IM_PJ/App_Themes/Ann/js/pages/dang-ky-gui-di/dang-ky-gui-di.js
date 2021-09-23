@@ -505,7 +505,7 @@ function submitDeliveries() {
                 showCloseButton: true,
                 html: true,
             }, function () {
-                window.location.href = '/quan-ly-giao-hang';
+                window.location.href = '/quan-ly-don-giao-hang';
             });
         })
         .catch(function (err) {

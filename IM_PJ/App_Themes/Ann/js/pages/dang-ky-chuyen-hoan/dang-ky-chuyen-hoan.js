@@ -9,6 +9,7 @@ const DeliveryMethodEnum = {
 
 let loading = false;
 let stopOnBlurCode = false;
+let openedSwal = false;
 let stringFormat = new StringFormat();
 let controller = new DeliveryRefundController();
 
@@ -70,6 +71,11 @@ function _updateDeliveryMethod(callback) {
 
     controller.getDeliveryInfo()
         .then(function (response) {
+            if (openedSwal) {
+                openedSwal = false;
+                swal.close();
+            }
+
             if (loading) {
                 HoldOn.close();
                 loading = false;
@@ -96,6 +102,7 @@ function _updateDeliveryMethod(callback) {
                 type: 'error',
                 showCloseButton: true,
                 html: true,
+                allowOutsideClick: false
             }, function () {
                 if (stopOnBlurCode)
                     stopOnBlurCode = false;
@@ -148,10 +155,12 @@ function _checkDelivery(callback) {
                     html: true,
                 }, function (confirm) {
                     if (confirm) {
-                        swal.close();
+                        openedSwal = true;
                         _updateDeliveryMethod(callback);
                     }
                     else {
+                        swal.close();
+
                         if (loading) {
                             HoldOn.close();
                             loading = false;
@@ -333,7 +342,10 @@ function _createDeliveryHtml(index, data) {
     html += '    data-code="' + data.code + '"';
     html += '    data-delivery-method="' + String(data.deliveryMethod.key) + '"';
     html += '    data-shipping-code="' + data.shippingCode + '"';
-    html += '    data-sent-date="' + data.sentDate ? data.sentDate : '' + '"';
+    if (data.sentDate)
+        html += '    data-sent-date="' + data.sentDate + '"';
+    else
+        html += '    data-sent-date=""';
     html += '    data-refund-date="' + data.refundDate + '"';
     html += '    data-staff="' + data.staff + '"';
     html += '    data-is-new="' + String(data.isNew) + '"';
@@ -550,7 +562,7 @@ function submitDeliveries() {
                 showCloseButton: true,
                 html: true,
             }, function () {
-                window.location.href = '/quan-ly-giao-hang';
+                window.location.href = '/quan-ly-don-giao-hang';
             });
         })
         .catch(function (err) {
