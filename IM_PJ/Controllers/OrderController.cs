@@ -265,10 +265,12 @@ namespace IM_PJ.Controllers
         #region Xử lý ExcuteStatus
         public static tbl_Order UpdateExcuteStatus(int orderID, int status, string CreatedBy)
         {
+            tbl_Order order;
+
             using (var con = new inventorymanagementEntities())
             {
                 #region Cập nhật thông tin đơn hàng
-                var order = con.tbl_Order
+                order = con.tbl_Order
                     .Where(x => x.ID == orderID)
                     .SingleOrDefault();
 
@@ -281,13 +283,13 @@ namespace IM_PJ.Controllers
                 order.ModifiedBy = CreatedBy;
                 con.SaveChanges();
                 #endregion
-
-                #region Cập nhật thông tin danh sách đơn hàng
-                _updateViewOrderByOrder(order);
-                #endregion
-
-                return order;
             }
+
+            #region Cập nhật thông tin danh sách đơn hàng
+            _updateViewOrderByOrder(order);
+            #endregion
+
+            return order;
         }
 
         public static int UpdateExcuteStatus(int ID, string CreatedBy)
