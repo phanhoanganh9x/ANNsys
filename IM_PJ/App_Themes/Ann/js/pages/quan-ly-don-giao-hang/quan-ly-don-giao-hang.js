@@ -255,7 +255,7 @@ function _createReportTableHTML(data) {
                 // Mã vận đơn
                 html += "        <td data-title='Mã vận đơn'>";
                 if (item.orderType.key == OrderTypeEnum.ANN)
-                    html += "            " + item.shippingCode;
+                    html += "            " + (item.shippingCode || '');
                 else
                     html += "            ";
                 html += "        </td>";
