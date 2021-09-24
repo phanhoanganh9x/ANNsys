@@ -6,18 +6,15 @@
     _generateQueryParams(filter, pagination) {
         let queryParams = '';
 
+        // Tìm kiếm theo mã đơn hàng hoặc mã vận đơn (Chỉ áp dụng với đơn hàng shop ANN)
+        if (filter.search)
+            queryParams += '&search=' + filter.search;
         // Loại đơn hàng
         if (filter.orderType)
             queryParams += '&orderType=' + filter.orderType;
-        // Mã đơn hàng
-        if (filter.code)
-            queryParams += '&code=' + filter.code;
         // Kiểu giao hàng
         if (filter.deliveryMethod)
             queryParams += '&deliveryMethod=' + filter.deliveryMethod;
-        // Mã vận đơn
-        if (filter.shippingCode)
-            queryParams += '&shippingCode=' + filter.shippingCode;
         // Từ ngày
         if (filter.fromDate)
             queryParams += '&fromDate=' + filter.fromDate;

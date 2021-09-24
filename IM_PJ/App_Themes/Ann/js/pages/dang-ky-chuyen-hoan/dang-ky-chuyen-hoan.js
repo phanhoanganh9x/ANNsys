@@ -9,7 +9,6 @@ const DeliveryMethodEnum = {
 
 let loading = false;
 let stopOnBlurCode = false;
-let openedSwal = false;
 let stringFormat = new StringFormat();
 let controller = new DeliveryRefundController();
 
@@ -38,7 +37,7 @@ function _updateDelivery() {
     let orderTypeDOM = document.querySelector("[id$='_ddlOrderType']");
     let codeDOM = document.querySelector("[id$='_txtCode']");
     let deliveryMethodDOM = document.querySelector("[id$='_ddlDeliveryMethod']");
-    let shippingCodeDOM = document.querySelector("[id$='_txtShippingCode']");
+    let shippingCodeDOM = document.querySelector("[id$='_hdfShippingCode']");
     let sentDateDOM = document.querySelector("[id$='_hdfSentDate']");
     let refundDateDOM = document.querySelector("[id$='_rRefundDate']");
     let staffDOM = document.querySelector("[id$='_hdfStaff']");
@@ -71,19 +70,16 @@ function _updateDeliveryMethod(callback) {
 
     controller.getDeliveryInfo()
         .then(function (response) {
-            if (openedSwal) {
-                openedSwal = false;
-                swal.close();
-            }
-
             if (loading) {
                 HoldOn.close();
                 loading = false;
             }
 
+            let codeDOM = document.querySelector("[id$='_txtCode']");
             let deliveryMethodDOM = document.querySelector("[id$='_ddlDeliveryMethod']");
-            let shippingCodeDOM = document.querySelector("[id$='_txtShippingCode']");
+            let shippingCodeDOM = document.querySelector("[id$='_hdfShippingCode']");
 
+            codeDOM.value = response.orderId;
             deliveryMethodDOM.value = response.deliveryMethod.key;
             shippingCodeDOM.value = response.shippingCode;
 
@@ -122,11 +118,13 @@ function _checkDelivery(callback) {
                     loading = false;
                 }
 
+                let codeDOM = document.querySelector("[id$='_txtCode']");
                 let deliveryMethodDOM = document.querySelector("[id$='_ddlDeliveryMethod']");
-                let shippingCodeDOM = document.querySelector("[id$='_txtShippingCode']");
+                let shippingCodeDOM = document.querySelector("[id$='_hdfShippingCode']");
                 let sentDateDOM = document.querySelector("[id$='_hdfSentDate']");
                 let isNewDOM = document.querySelector("[id$='_hdfIsNew']");
 
+                codeDOM.value = response.code;
                 deliveryMethodDOM.value = response.deliveryMethod.key;
                 shippingCodeDOM.value = response.shippingCode;
                 sentDateDOM.value = response.sentDate;
@@ -136,40 +134,17 @@ function _checkDelivery(callback) {
                     callback();
             }
             else {
-                let orderTypeDOM = document.querySelector("[id$='_ddlOrderType']");
-                let codeDOM = document.querySelector("[id$='_txtCode']");
-                let orderType = orderTypeDOM.options[orderTypeDOM.selectedIndex].text;
-                let code = codeDOM.value.trim();
-                let message = '';
-
-                message += 'Đơn hàng ' + orderType + ' <strong>#' + code + '</strong><br>';
-                message += 'chưa đăng ký <strong>"Gửi đi"</strong>.';
-                swal({
-                    title: 'Lưu ý',
-                    text: message,
-                    type: 'warning',
-                    showCancelButton: true,
-                    closeOnConfirm: false,
-                    cancelButtonText: "Để em suy nghỉ lại!",
-                    confirmButtonText: "Tiếp tục",
-                    html: true,
-                }, function (confirm) {
-                    if (confirm) {
-                        openedSwal = true;
-                        _updateDeliveryMethod(callback);
+                if (controller.delivery.orderType.key == OrderTypeEnum.ANN)
+                    _updateDeliveryMethod(callback);
+                else {
+                    if (loading) {
+                        HoldOn.close();
+                        loading = false;
                     }
-                    else {
-                        swal.close();
 
-                        if (loading) {
-                            HoldOn.close();
-                            loading = false;
-                        }
-
-                        if (stopOnBlurCode)
-                            stopOnBlurCode = false;
-                    }
-                });
+                    if (typeof callback === 'function')
+                        callback();
+                }
             }
         })
         .catch(function (err) {
@@ -192,44 +167,18 @@ function _checkDelivery(callback) {
 }
 
 function _handleCode(callback) {
+    let orderTypeDOM = document.querySelector("[id$='_ddlOrderType']");
     let codeDOM = document.querySelector("[id$='_txtCode']");
-    let shippingCodeDOM = document.querySelector("[id$='_txtShippingCode']");
+    let shippingCodeDOM = document.querySelector("[id$='_hdfShippingCode']");
 
     shippingCodeDOM.value = '';
+    controller.delivery.orderType = {
+        key: parseInt(orderTypeDOM.value),
+        value: orderTypeDOM.options[orderTypeDOM.selectedIndex].text
+    };
+    controller.delivery.code = codeDOM.value;
+    _checkDelivery(callback);
 
-    if (codeDOM.value) {
-        codeDOM.value = codeDOM.value.trim();
-
-        // Lấy thông tin hình thức giao hàng và mã vận đơn đối với đơn hàng shop ANN
-        let orderTypeDOM = document.querySelector("[id$='_ddlOrderType']");
-
-        if (orderTypeDOM.value == OrderTypeEnum.ANN) {
-            let orderId = parseInt(codeDOM.value);
-
-            if (orderId) {
-                controller.delivery.orderType = {
-                    key: parseInt(orderTypeDOM.value),
-                    value: orderTypeDOM.options[orderTypeDOM.selectedIndex].text
-                };
-                controller.delivery.code = codeDOM.value;
-                _checkDelivery(callback);
-            }
-            else {
-                swal({
-                    title: 'Error',
-                    text: 'Mã đơn hàng shop ANN nhập không đúng.',
-                    type: 'error',
-                    showCloseButton: true,
-                    html: true,
-                }, function () {
-                    if (stopOnBlurCode)
-                        stopOnBlurCode = false;
-
-                    document.querySelector("[id$='_txtCode']").focus();
-                });
-            }
-        }
-    }
 }
 
 function _findRow(orderId, code) {
@@ -277,38 +226,6 @@ function _checkValidation(data) {
         return false;
     }
 
-    if (!data.shippingCode) {
-        let message = 'Bạn chưa nhập mã vận đơn'
-        let callback = function () {
-            if (stopOnBlurCode)
-                stopOnBlurCode = false;
-
-            let shippingCodeDOM = document.querySelector("[id$='_txtShippingCode']");
-
-            if (!shippingCodeDOM.disabled)
-                shippingCodeDOM.focus();
-        };
-
-        if (data.orderType.key == OrderTypeEnum.ANN) {
-            message = 'Vui lòng cập nhật thông tin mã vận đơn<br>';
-            message += 'Đơn hàng: <a href="/thong-tin-don-hang?id=' + data.code + '" target="_blank"><b>#' + data.code + '</b></a>';
-            callback = function () {
-                if (stopOnBlurCode)
-                    stopOnBlurCode = false;
-            };
-        }
-
-        swal({
-            title: 'Error',
-            text: message,
-            type: 'error',
-            showCloseButton: true,
-            html: true,
-        }, callback);
-
-        return false;
-    }
-
     let row = _findRow(data.orderType.key, data.code);
 
     if (row)
@@ -325,7 +242,7 @@ function _checkValidation(data) {
             if (stopOnBlurCode)
                 stopOnBlurCode = false;
 
-            document.querySelector("[id$='_txtShippingCode']").focus();
+            document.querySelector("[id$='_hdfShippingCode']").focus();
         });
 
         return false;
@@ -358,13 +275,13 @@ function _createDeliveryHtml(index, data) {
     if (data.sentDate)
         html += '    <td>' + stringFormat.datetimeToString(data.sentDate, 'dd/MM/yyyy') + '</td>';
     else
-        html += '    <td></td>';
+        html += '    <td><span class="bg-red">Chưa đăng ký</span></td>';
     html += '    <td>' + stringFormat.datetimeToString(data.refundDate, 'dd/MM/yyyy') + '</td>';
     html += '    <td>';
     html += '        <a href="javascript:;"';
     html += '           title="Xóa"';
     html += '           class="btn primary-btn btn-red h45-btn"';
-    html += '           onclick="onClickDeliveryRemoval(' + data.orderType.key + ',' + data.code + ')"';
+    html += '           onclick="onClickDeliveryRemoval(' + data.orderType.key + ',`' + data.code + '`)"';
     html += '        >';
     html += '            <i class="fa fa-times" aria-hidden="true"></i>';
     html += '        </a>';
@@ -384,7 +301,7 @@ function _addDelivery(data) {
 
 function _clearDelivery() {
     let codeDOM = document.querySelector("[id$='_txtCode']");
-    let shippingCodeDOM = document.querySelector("[id$='_txtShippingCode']");
+    let shippingCodeDOM = document.querySelector("[id$='_hdfShippingCode']");
     let sentDateDOM = document.querySelector("[id$='_hdfSentDate']");
     let isNewDOM = document.querySelector("[id$='_hdfIsNew']");
 
@@ -451,42 +368,37 @@ function onBlurCode() {
     if (stopOnBlurCode)
         return;
 
-    _handleCode();
+    let codeDOM = document.querySelector("[id$='_txtCode']");
+    codeDOM.value = codeDOM.value.trim();
+
+    if (codeDOM.value)
+        _handleCode();
 }
 
 function onKeyUpCode(event) {
     if (event.key == 'Enter') {
-        let callback = function () {
-            onClickDeliveryAddition();
+        let codeDOM = document.querySelector("[id$='_txtCode']");
+        codeDOM.value = codeDOM.value.trim();
 
-            if (stopOnBlurCode)
-                stopOnBlurCode = false;
-        };
+        if (codeDOM.value) {
+            let callback = function () {
+                onClickDeliveryAddition();
 
-        stopOnBlurCode = true;
-        _handleCode(callback);
+                if (stopOnBlurCode)
+                    stopOnBlurCode = false;
+            };
+
+            stopOnBlurCode = true;
+            _handleCode(callback);
+        }
     }
 }
 
 function onChangeDeliveryMethod(selectedValue) {
     let value = +selectedValue || 0;
-    let shippingCodeDOM = document.querySelector("[id$='_txtShippingCode']");
-
-    // Trường hợp không lấy được các phương thức vận chuyên
-    // Trường hơp lấy trực tiếp
-    if (value == 0 || value == DeliveryMethodEnum.Face)
-        shippingCodeDOM.disabled = true;
-    else
-        shippingCodeDOM.disabled = false;
+    let shippingCodeDOM = document.querySelector("[id$='_hdfShippingCode']");
 
     shippingCodeDOM.value = '';
-}
-
-function onBlurShippingCode() {
-    let shippingCodeDOM = document.querySelector("[id$='_txtShippingCode']");
-
-    if (shippingCodeDOM.value)
-        shippingCodeDOM.value = shippingCodeDOM.value.trim();
 }
 
 function onClickDeliveryAddition() {

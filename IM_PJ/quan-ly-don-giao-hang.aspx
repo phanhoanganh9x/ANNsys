@@ -5,7 +5,7 @@
     <script src="/Scripts/moment.min.js"></script>
     <script src="/Scripts/moment-with-locales.min.js"></script>
     <script src="/Scripts/bootstrap-datetimepicker.min.js"></script>
-    <link rel="stylesheet" href="App_Themes/Ann/css/pages/quan-ly-don-giao-hang/quan-ly-don-giao-hang.css?v=202109230021" />
+    <link rel="stylesheet" href="App_Themes/Ann/css/pages/quan-ly-don-giao-hang/quan-ly-don-giao-hang.css?v=202109250230" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
@@ -29,20 +29,13 @@
                         <div class="filter-control">
                             <div class="row">
                                 <div class="col-md-3 col-xs-6">
-                                    <div class="form-group">
-                                        <div class="input-group">
-                                            <asp:DropDownList ID="ddlOrderType" runat="server" CssClass="form-control dropdown-order-type" onChange="onChangeOrderType($(this).val())"></asp:DropDownList>
-                                            <asp:TextBox ID="txtCode" CssClass="form-control input-code" runat="server" placeholder="Mã đơn hàng" autocomplete="off" onBlur="onBlurCode()" onKeyUp="onKeyUpCode(event)"></asp:TextBox>
-                                        </div>
-                                    </div>
+                                    <asp:TextBox ID="txtSearch" CssClass="form-control input-code" runat="server" placeholder="Tìm đơn hàng" autocomplete="off" onKeyUp="onKeyUpSearch(event)"></asp:TextBox>
                                 </div>
-                                <div class="col-md-4 col-xs-6">
-                                    <div class="form-group">
-                                        <div class="input-group">
-                                            <asp:DropDownList ID="ddlDeliveryMethod" runat="server" CssClass="form-control dropdown-delivery-method" onChange="onChangeDeliveryMethod($(this).val())"></asp:DropDownList>
-                                            <asp:TextBox ID="txtShippingCode" CssClass="form-control input-shipping-code" runat="server" placeholder="Mã vận đơn" autocomplete="off" onBlur="onBlurShippingCode()"></asp:TextBox>
-                                        </div>
-                                    </div>
+                                <div class="col-md-2 col-xs-6">
+                                    <asp:DropDownList ID="ddlOrderType" runat="server" CssClass="form-control dropdown-order-type" onChange="onChangeOrderType($(this).val())"></asp:DropDownList>
+                                </div>
+                                <div class="col-md-2 col-xs-6">
+                                    <asp:DropDownList ID="ddlDeliveryMethod" runat="server" CssClass="form-control dropdown-delivery-method" onChange="onChangeDeliveryMethod($(this).val())"></asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
                                     <label>Từ ngày</label>
@@ -93,10 +86,10 @@
 
         <asp:HiddenField ID="hdfRole" runat="server" />
 
-        <script type="text/javascript" src="/App_Themes/Ann/js/utils/string-format.js?v=202106061418"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=202106061418"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/services/quan-ly-don-giao-hang/quan-ly-don-giao-hang-service.js?v=202109230021"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/controllers/quan-ly-don-giao-hang/quan-ly-don-giao-hang-controller.js?v=202109230021"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/pages/quan-ly-don-giao-hang/quan-ly-don-giao-hang.js?v=202109230021"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/utils/string-format.js?v=202109250230"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=202109250230"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/services/quan-ly-don-giao-hang/quan-ly-don-giao-hang-service.js?v=202109250230"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/controllers/quan-ly-don-giao-hang/quan-ly-don-giao-hang-controller.js?v=202109250230"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/pages/quan-ly-don-giao-hang/quan-ly-don-giao-hang.js?v=202109250230"></script>
     </main>
 </asp:Content>

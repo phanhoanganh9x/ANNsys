@@ -4,7 +4,7 @@
     }
 
     getDeliveryInfo(code) {
-        let url = this.api + '/order/' + code + '/delivery';
+        let url = this.api + '/order/delivery?code=' + code;
 
         return new Promise((reslove, reject) => {
             $.ajax({
@@ -22,7 +22,7 @@
     };
 
     getDelivery(orderType, code) {
-        let url = this.api + '/delivery/' + code + '?orderType=' + orderType;
+        let url = this.api + '/delivery?orderType=' + orderType + '&code=' + code;
 
         return new Promise((reslove, reject) => {
             $.ajax({

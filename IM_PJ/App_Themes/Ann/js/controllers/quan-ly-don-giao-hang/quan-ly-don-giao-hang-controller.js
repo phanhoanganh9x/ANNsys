@@ -2,10 +2,9 @@
     constructor() {
         this.role = null;
         this.filter = {
+            search: null,
             orderType: null,
-            code: null,
             deliveryMethod: null,
-            shippingCode: null,
             fromDate: null,
             toDate: null,
             status: null,
@@ -41,22 +40,18 @@
             let key = query[0];
             let value = query[1];
 
+            // Tìm kiếm theo mã đơn hàng hoặc mã vận đơn (Chỉ áp dụng với đơn hàng shop ANN)
+            if (key == "search")
+                if (value)
+                    this.filter.search = value;
             // Tìm kiếm theo loại đơn hàng
             if (key == "orderType")
                 if (value)
                     this.filter.orderType = +value || null;
-            // Tìm kiếm theo mã đơn hàng
-            if (key == "code")
-                if (value)
-                    this.filter.code = value;
             // Tìm kiếm theo kiểu giao hàng
             if (key == "deliveryMethod")
                 if (value)
                     this.filter.deliveryMethod = +value || null;
-            // Tìm kiếm theo mã vận đơn
-            if (key == "shippingCode")
-                if (value)
-                    this.filter.shippingCode = value;
             // Từ ngày
             if (key == "fromDate") {
                 value = unescape(value);
@@ -91,18 +86,15 @@
     generateQueryParams() {
         let queryParams = '';
 
+        // Tìm kiếm theo mã đơn hàng hoặc mã vận đơn (Chỉ áp dụng với đơn hàng shop ANN)
+        if (this.filter.search)
+            queryParams += '&search=' + this.filter.search;
         // Tìm kiếm theo loại đơn hàng
         if (this.filter.orderType)
             queryParams += '&orderType=' + String(this.filter.orderType);
-        // Tìm kiếm theo mã đơn hàng
-        if (this.filter.code)
-            queryParams += '&code=' + this.filter.code;
         // Tìm kiếm theo kiểu giao hàng
         if (this.filter.deliveryMethod)
             queryParams += '&deliveryMethod=' + String(this.filter.deliveryMethod);
-        // Tìm kiếm theo mã vận đơn
-        if (this.filter.shippingCode)
-            queryParams += '&shippingCode=' + this.filter.shippingCode;
         // Từ ngày
         if (this.filter.fromDate)
             queryParams += '&fromDate=' + this.filter.fromDate;

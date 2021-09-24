@@ -36,7 +36,7 @@
         return this._service.getDeliveryInfo(this.delivery.code);
     }
 
-    // Lấy thông tin giao hàng
+    // Lấy đơn giao hàng
     getDelivery() {
         return this._service.getDelivery(this.delivery.orderType.key, this.delivery.code);
     }

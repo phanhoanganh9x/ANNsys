@@ -13,17 +13,6 @@
     height: 46.2px;
 }
 
-.input-group .dropdown-delivery-method {
-    background-color: #e1e1e1;
-    width: 150px;
-    height: 46.2px;
-}
-
-.input-group .input-shipping-code {
-    width: calc(100% - 150px);
-    height: 46.2px;
-}
-
 .btn-add {
     padding-top: 15px;
     height: 46.2px;
