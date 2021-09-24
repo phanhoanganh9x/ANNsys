@@ -360,7 +360,7 @@ namespace IM_PJ
             {
                 PageCount = page.totalPages;
                 Int32 Page = page.currentPage;
-                
+
                 foreach(var item in acs)
                 {
                     html.AppendLine("<tr>");
@@ -513,7 +513,7 @@ namespace IM_PJ
                     html.AppendLine("</td>");
                     html.AppendLine("</tr>");
                 }
-                
+
             }
             else
             {
@@ -597,7 +597,7 @@ namespace IM_PJ
             {
                 startPageNumbersFrom = 1;
 
-                //As page numbers are starting at one, output an even number of pages.  
+                //As page numbers are starting at one, output an even number of pages.
                 stopPageNumbersAt = pagesToOutput;
             }
 
@@ -616,7 +616,7 @@ namespace IM_PJ
             }
             /******************End: Xác định startPageNumbersFrom & stopPageNumbersAt**********************/
 
-            //Các dấu ... chỉ những trang phía trước  
+            //Các dấu ... chỉ những trang phía trước
             if (startPageNumbersFrom > 1)
             {
                 output.AppendLine("<li><a href=\"" + string.Format(GetPageUrl(currentPage - 1, pageUrl), startPageNumbersFrom - 1) + "\">&hellip;</a></li>");
@@ -635,7 +635,7 @@ namespace IM_PJ
                 }
             }
 
-            //Các dấu ... chỉ những trang tiếp theo  
+            //Các dấu ... chỉ những trang tiếp theo
             if (stopPageNumbersAt < pageCount)
             {
                 output.AppendLine("<li><a href=\"" + string.Format(pageUrl, stopPageNumbersAt + 1) + "\">&hellip;</a></li>");
@@ -762,7 +762,7 @@ namespace IM_PJ
         }
 
         [WebMethod]
-        public static tbl_Order changeFinishStatusOrder(int orderID)
+        public static bool changeFinishStatusOrder(int orderID)
         {
             string username = HttpContext.Current.Request.Cookies["usernameLoginSystem_ANN123"].Value;
             var acc = AccountController.GetByUsername(username);
@@ -770,7 +770,9 @@ namespace IM_PJ
             if (acc == null)
                 throw new Exception("Vui lòng đăng nhập lại!");
 
-            return OrderController.UpdateExcuteStatus(orderID, (int)ExcuteStatus.Doing, acc.Username);
+            var order = OrderController.UpdateExcuteStatus(orderID, (int)ExcuteStatus.Doing, acc.Username);
+
+            return order != null;
         }
     }
 }
