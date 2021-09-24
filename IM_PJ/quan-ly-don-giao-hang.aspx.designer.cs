@@ -13,6 +13,15 @@ namespace IM_PJ {
     public partial class quan_ly_don_giao_hang {
 
         /// <summary>
+        /// txtSearch control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtSearch;
+
+        /// <summary>
         /// ddlOrderType control.
         /// </summary>
         /// <remarks>
@@ -22,15 +31,6 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.DropDownList ddlOrderType;
 
         /// <summary>
-        /// txtCode control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCode;
-
-        /// <summary>
         /// ddlDeliveryMethod control.
         /// </summary>
         /// <remarks>
@@ -38,15 +38,6 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlDeliveryMethod;
-
-        /// <summary>
-        /// txtShippingCode control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtShippingCode;
 
         /// <summary>
         /// dpFromDate control.

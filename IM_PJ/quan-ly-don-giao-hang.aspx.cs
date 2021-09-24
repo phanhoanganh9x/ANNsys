@@ -192,23 +192,23 @@ namespace IM_PJ
             }
         }
 
+        /// <summary>
+        /// Cài đặt ban đầu với text tìm kiếm đơn hàng
+        /// </summary>
+        private void _initSearch()
+        {
+            var code = Request.QueryString["search"];
+
+            if (!String.IsNullOrEmpty(code))
+                txtSearch.Text = HttpUtility.UrlDecode(code);
+        }
+
         private void _initOrderType()
         {
             var orderType = Request.QueryString["orderType"];
 
             if (!String.IsNullOrEmpty(orderType))
                 ddlOrderType.SelectedValue = orderType;
-        }
-
-        /// <summary>
-        /// Cài đặt ban đầu với text tìm kiếm đơn hàng
-        /// </summary>
-        private void _initSearch()
-        {
-            var code = Request.QueryString["code"];
-
-            if (!String.IsNullOrEmpty(code))
-                txtCode.Text = HttpUtility.UrlDecode(code);
         }
 
         private void _initDeliveryMethod()
@@ -219,24 +219,6 @@ namespace IM_PJ
                 ddlDeliveryMethod.SelectedValue = deliveryMethod;
         }
 
-        private void _initShippingCode()
-        {
-            if (ddlDeliveryMethod.SelectedValue != "0")
-            {
-                var shippingCode = Request.QueryString["shippingCode"];
-
-                if (!String.IsNullOrEmpty(shippingCode))
-                    txtShippingCode.Text = HttpUtility.UrlDecode(shippingCode);
-            }
-        }
-
-        private void _initStatus()
-        {
-            var status = Request.QueryString["status"];
-
-            if (!String.IsNullOrEmpty(status))
-                ddlStatus.SelectedValue = status;
-        }
 
         /// <summary>
         /// Cài đặt ban đầu với datetime picker về khoảng thời gian
@@ -293,6 +275,14 @@ namespace IM_PJ
                 Response.Redirect(url.AbsolutePath + query);
         }
 
+        private void _initStatus()
+        {
+            var status = Request.QueryString["status"];
+
+            if (!String.IsNullOrEmpty(status))
+                ddlStatus.SelectedValue = status;
+        }
+
         private void _initPage(tbl_Account acc)
         {
             _loadOrderType();
@@ -300,10 +290,9 @@ namespace IM_PJ
             _loadStatus();
             _loadCreatedBy(acc);
 
-            _initOrderType();
             _initSearch();
+            _initOrderType();
             _initDeliveryMethod();
-            _initShippingCode();
             _initDatetimePicker();
             _initStatus();
         }

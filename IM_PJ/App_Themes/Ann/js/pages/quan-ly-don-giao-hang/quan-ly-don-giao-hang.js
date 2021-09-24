@@ -62,6 +62,14 @@ function _initDeliveryTable() {
 }
 
 function _updateFilter() {
+    // Tìm kiếm theo mã đơn hàng hoặc mã vận đơn (Chỉ áp dụng với đơn hàng shop ANN)
+    let searchDOM = document.querySelector("[id$='_txtSearch']");
+
+    if (searchDOM.value)
+        controller.filter.search = searchDOM.value;
+    else
+        controller.filter.search = null;
+
     // Tìm kiếm theo đơn hàng
     let orderTypeDOM = document.querySelector("[id$='_ddlOrderType']");
 
@@ -70,14 +78,6 @@ function _updateFilter() {
     else
         controller.filter.orderType = null;
 
-    // Tìm kiếm theo mã đơn
-    let codeDOM = document.querySelector("[id$='_txtCode']");
-
-    if (codeDOM.value)
-        controller.filter.code = codeDOM.value;
-    else
-        controller.filter.code = null;
-
     // Tìm kiếm loại giao hàng
     let deliveryMethodDOM = document.querySelector("[id$='_ddlDeliveryMethod']");
 
@@ -85,14 +85,6 @@ function _updateFilter() {
         controller.filter.deliveryMethod = parseInt(deliveryMethodDOM.value);
     else
         controller.filter.deliveryMethod = null;
-
-    // Tìm theo mã vận đơn
-    let shippingCodeDOM = document.querySelector("[id$='_txtShippingCode']");
-
-    if (shippingCodeDOM.value)
-        controller.filter.code = shippingCodeDOM.value;
-    else
-        controller.filter.code = null;
 
     // Khoảng thời gian
     let fromDateDOM = document.querySelector("[id$='_dpFromDate_dateInput']");
@@ -262,7 +254,10 @@ function _createReportTableHTML(data) {
                 html += "        </td>";
                 // Mã vận đơn
                 html += "        <td data-title='Mã vận đơn'>";
-                html += "            " + item.shippingCode;
+                if (item.orderType.key == OrderTypeEnum.ANN)
+                    html += "            " + item.shippingCode;
+                else
+                    html += "            ";
                 html += "        </td>";
                 // Trạng thái giao hàng
                 html += "        <td data-title='Trạng thái giao hàng'>";
@@ -307,6 +302,15 @@ function _loadDeliveryTable() {
 //#endregion
 
 //#region Public
+function onKeyUpSearch(event) {
+    if (event.key == 'Enter') {
+        let codeDOM = document.querySelector("[id$='_txtSearch']");
+        codeDOM.value = codeDOM.value.trim();
+
+        onClickSearch()
+    }
+}
+
 function onClickSearch() {
     HoldOn.open();
     controller.pagination.page = 1;
