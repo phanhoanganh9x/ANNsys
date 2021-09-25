@@ -216,9 +216,9 @@ function _createReportTableHTML(data) {
 
     html += "<thead>";
     html += "    <tr>";
-    html += "        <th>Đơn hàng</th>";
+    html += "        <th>Loại đơn</th>";
     html += "        <th>Mã đơn</th>";
-    html += "        <th>Kiểu vận chuyển</th>";
+    html += "        <th>Vận chuyển</th>";
     html += "        <th>Mã vận đơn</th>";
     html += "        <th>Trạng thái</th>";
     html += "        <th>Ngày gửi</th>";
@@ -240,18 +240,18 @@ function _createReportTableHTML(data) {
             try {
                 html += "    <tr>";
                 // Loại đơn hàng
-                html += "        <td data-title='Loại đơn hàng'>" + item.orderType.value + "</td>";
+                html += "        <td data-title='Loại đơn'><span class='bg-order-type-" + item.orderType.key + "'>" + item.orderType.value + "</span></td>";
                 // Mã hóa đơn
-                html += "        <td data-title='Mã hóa đơn'>";
+                html += "        <td data-title='Mã đơn'>";
                 if (item.orderType.key == OrderTypeEnum.ANN)
                     html += "            <a target='_blank' href='/thong-tin-don-hang?id=" + item.code + "'>" + item.code + "</a>";
                 else
                     html += "            " + item.code;
                 html += "        </td>";
                 // Kiểu vận chuyển
-                html += "        <td data-title='Kiểu vận chuyển'>";
-                html += "            " + item.deliveryMethod.value;
-                html += "        </td>";
+                html += "        <td data-title='Vận chuyển'>";
+                html += "            <span class='bg-delivery-type-" + item.deliveryMethod.key + "'>" + item.deliveryMethod.value;
+                html += "        </span></td>";
                 // Mã vận đơn
                 html += "        <td data-title='Mã vận đơn'>";
                 if (item.orderType.key == OrderTypeEnum.ANN)
@@ -260,9 +260,9 @@ function _createReportTableHTML(data) {
                     html += "            ";
                 html += "        </td>";
                 // Trạng thái giao hàng
-                html += "        <td data-title='Trạng thái giao hàng'>";
-                html += "            " + item.status.value;
-                html += "        </td>";
+                html += "        <td data-title='Trạng thái'>";
+                html += "             <span class='bg-delivery-status-" + item.status.key + "'>" + item.status.value;
+                html += "        </span></td>";
                 // Ngày gửi
                 html += "        <td  data-title='Ngày gửi'>";
                 if (item.sentDate)
@@ -276,7 +276,7 @@ function _createReportTableHTML(data) {
                 // Nhân viên
                 if (controller.role == 0)
                 {
-                    html += "        <td data-title='Nhân viên tạo đơn'>";
+                    html += "        <td data-title='Nhân viên'>";
                     html += "            " + item.staff;
                     html += "        </td>";
                 }

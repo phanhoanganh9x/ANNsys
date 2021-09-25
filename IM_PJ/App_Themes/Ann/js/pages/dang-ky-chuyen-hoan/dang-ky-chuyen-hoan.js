@@ -268,9 +268,9 @@ function _createDeliveryHtml(index, data) {
     html += '    data-is-new="' + String(data.isNew) + '"';
     html += '>';
     html += '    <td>' + String(index) + '</td>';
-    html += '    <td>' + data.orderType.value + '</td>';
+    html += '    <td><span class="bg-order-type-' + data.orderType.key + '">"' + data.orderType.value + '</span></td>';
     html += '    <td>' + data.code + '</td>';
-    html += '    <td>' + data.deliveryMethod.value + '</td>';
+    html += '    <td><span class="bg-delivery-type-' + data.deliveryMethod.key + '">' + data.deliveryMethod.value + '</span></td>';
     html += '    <td>' + data.shippingCode + '</td>';
     if (data.sentDate)
         html += '    <td>' + stringFormat.datetimeToString(data.sentDate, 'dd/MM/yyyy') + '</td>';
@@ -469,7 +469,7 @@ function submitDeliveries() {
 
             swal({
                 title: 'Thông báo',
-                text: 'Đăng ký danh sách đơn chuyển hoàn.<br><strong>Thành công!</strong>',
+                text: 'Thêm đơn hàng chuyển hoàn thành công!',
                 type: 'success',
                 showCloseButton: true,
                 html: true,

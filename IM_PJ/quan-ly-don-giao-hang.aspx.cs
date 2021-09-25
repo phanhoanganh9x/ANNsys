@@ -14,7 +14,7 @@ namespace IM_PJ
 {
     public partial class quan_ly_don_giao_hang : System.Web.UI.Page
     {
-        private readonly IList<int> ALLOW_DELIVERY_METHODS = new List<int>() { 2, 6, 10, 11 };
+        private readonly IList<int> ALLOW_DELIVERY_METHODS = new List<int>() { 2, 6, 7, 10, 11, 12, 13, 14 };
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -53,7 +53,7 @@ namespace IM_PJ
                 var response = (HttpWebResponse)httpWebRequest.GetResponse();
 
                 ddlOrderType.Items.Clear();
-                ddlOrderType.Items.Add(new ListItem("Loại đơn hàng", "0"));
+                ddlOrderType.Items.Add(new ListItem("Loại đơn", "0"));
 
 
                 if (response.StatusCode == HttpStatusCode.OK)
@@ -95,7 +95,7 @@ namespace IM_PJ
                 var response = (HttpWebResponse)httpWebRequest.GetResponse();
 
                 ddlDeliveryMethod.Items.Clear();
-                ddlDeliveryMethod.Items.Add(new ListItem("Kiểu giao hàng", "0"));
+                ddlDeliveryMethod.Items.Add(new ListItem("Vận chuyển", "0"));
 
                 if (response.StatusCode == HttpStatusCode.OK)
                     using (var reader = new StreamReader(response.GetResponseStream()))
@@ -136,7 +136,7 @@ namespace IM_PJ
                 var response = (HttpWebResponse)httpWebRequest.GetResponse();
 
                 ddlStatus.Items.Clear();
-                ddlStatus.Items.Add(new ListItem("Trạng thái giao hàng", "0"));
+                ddlStatus.Items.Add(new ListItem("Trạng thái", "0"));
 
                 if (response.StatusCode == HttpStatusCode.OK)
                     using (var reader = new StreamReader(response.GetResponseStream()))
@@ -180,7 +180,7 @@ namespace IM_PJ
                 // Trường hợp là admin
                 var CreateBy = AccountController.GetAllNotSearch().Where(x => x.RoleID == 2).ToList();
                 ddlCreatedBy.Items.Clear();
-                ddlCreatedBy.Items.Insert(0, new ListItem("Nhân viên tạo đơn", ""));
+                ddlCreatedBy.Items.Insert(0, new ListItem("Nhân viên", ""));
 
                 foreach (var p in CreateBy)
                 {

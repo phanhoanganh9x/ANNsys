@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Đăng ký chuyển hoàn" Language="C#" MasterPageFile="~/MasterPage.Master"  AutoEventWireup="true" CodeBehind="dang-ky-chuyen-hoan.aspx.cs" Inherits="IM_PJ.dang_ky_chuyen_hoan" EnableSessionState="ReadOnly" EnableEventValidation="false" %>
+﻿<%@ Page Title="Thêm đơn hàng chuyển hoàn" Language="C#" MasterPageFile="~/MasterPage.Master"  AutoEventWireup="true" CodeBehind="dang-ky-chuyen-hoan.aspx.cs" Inherits="IM_PJ.dang_ky_chuyen_hoan" EnableSessionState="ReadOnly" EnableEventValidation="false" %>
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -11,7 +11,7 @@
                 <div class="col-md-12">
                     <div class="panel panelborderheading">
                         <div class="panel-heading clear">
-                            <h3 class="page-title left not-margin-bot">Thông tin đơn chuyển hoàn</h3>
+                            <h3 class="page-title left not-margin-bot">Thêm đơn hàng chuyển hoàn</h3>
                         </div>
                         <div class="panel-body">
                             <div class="row">
@@ -54,7 +54,7 @@
                                     <th class="col-index">#</th>
                                     <th class="col-order-type">Đơn hàng</th>
                                     <th class="col-code">Mã đơn</th>
-                                    <th class="col-delivery-method">Kiểu vận chuyển</th>
+                                    <th class="col-delivery-method">Vận chuyển</th>
                                     <th class="col-shipping-code">Mã vận đơn</th>
                                     <th class="col-sent-date">Ngày gửi</th>
                                     <th class="col-refund-date">Ngày chuyền hoàn</th>

@@ -116,7 +116,7 @@ function _checkDelivery(callback) {
                 let message = '';
 
                 message += 'Đơn hàng ' + response.orderType.value + ' <strong>#' + response.code + '</strong><br>';
-                message += 'đã được đăng ký trạng thái <strong>"' + response.status.value + '"</strong>';
+                message += 'đã cập nhật trạng thái <strong>"' + response.status.value + '"</strong>';
                 swal({
                     title: 'Error',
                     text: message,
@@ -258,9 +258,9 @@ function _createDeliveryHtml(index, data) {
     html += '    data-staff="' + data.staff + '"';
     html += '>';
     html += '    <td>' + String(index) + '</td>';
-    html += '    <td>' + data.orderType.value + '</td>';
+    html += '    <td><span class="bg-order-type-' + data.orderType.key + '">"' + data.orderType.value + '</span></td>';
     html += '    <td>' + data.code + '</td>';
-    html += '    <td>' + data.deliveryMethod.value + '</td>';
+    html += '    <td><span class="bg-delivery-type-' + data.deliveryMethod.key + '">' + data.deliveryMethod.value + '</span></td>';
     html += '    <td>' + data.shippingCode + '</td>';
     html += '    <td>' + stringFormat.datetimeToString(data.sentDate, 'dd/MM/yyyy') + '</td>';
     html += '    <td>';
@@ -449,7 +449,7 @@ function submitDeliveries() {
 
             swal({
                 title: 'Thông báo',
-                text: 'Đăng ký danh sách đơn gửi đi.<br><strong>Thành công!</strong>',
+                text: 'Thêm đơn hàng gửi đi thành công!',
                 type: 'success',
                 showCloseButton: true,
                 html: true,

@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Quản lý đơn giao hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="quan-ly-don-giao-hang.aspx.cs" Inherits="IM_PJ.quan_ly_don_giao_hang" EnableSessionState="ReadOnly" %>
+﻿<%@ Page Title="Quản lý vận đơn" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="quan-ly-don-giao-hang.aspx.cs" Inherits="IM_PJ.quan_ly_don_giao_hang" EnableSessionState="ReadOnly" %>
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -12,10 +12,10 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="page-title left">Danh sách giao hàng <span id="spanReport"></span></h3>
+                    <h3 class="page-title left">Quản lý vận đơn <span id="spanReport"></span></h3>
                     <div class="right above-list-btn">
                         <a href="/dang-ky-gui-di" class="h45-btn btn-green btn">
-                            <i class="fa fa-paper-plane" aria-hidden="true"></i> Gửi đi
+                            <i class="fa fa-paper-plane" aria-hidden="true"></i> Gửi hàng đi
                         </a>
                         <a href="/dang-ky-chuyen-hoan" class="h45-btn primary-btn btn">
                             <i class="fa fa-undo" aria-hidden="true"></i> Chuyển hoàn
@@ -56,12 +56,20 @@
                                     <a href="/quan-ly-don-giao-hang" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="filter-above-wrap clear">
+                        <div class="filter-control">
                             <div class="row">
+                                <div class="col-md-7 col-xs-6">
+                                </div>
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlStatus" runat="server" CssClass="form-control"></asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlCreatedBy" runat="server" CssClass="form-control"></asp:DropDownList>
+                                </div>
+                                <div class="col-md-1 col-xs-6">
                                 </div>
                             </div>
                         </div>
