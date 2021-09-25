@@ -14,7 +14,7 @@ namespace IM_PJ
 {
     public partial class dang_ky_chuyen_hoan : System.Web.UI.Page
     {
-        private readonly IList<int> ALLOW_DELIVERY_METHODS = new List<int>() { 2, 6, 10, 11 };
+        private readonly IList<int> ALLOW_DELIVERY_METHODS = new List<int>() { 2, 6, 7, 10, 11, 12, 13, 14 };
 
         protected void Page_Load(object sender, EventArgs e)
         {
