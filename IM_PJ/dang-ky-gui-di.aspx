@@ -19,7 +19,7 @@
                                     <div class="form-group">
                                         <div class="input-group">
                                             <asp:DropDownList ID="ddlOrderType" runat="server" CssClass="form-control dropdown-order-type" onChange="onChangeOrderType($(this).val())"></asp:DropDownList>
-                                            <asp:TextBox ID="txtCode" CssClass="form-control input-code" runat="server" placeholder="Mã đơn hàng" autocomplete="off" onBlur="onBlurCode()" onKeyUp="onKeyUpCode(event)"></asp:TextBox>
+                                            <asp:TextBox ID="txtCode" CssClass="form-control input-code" runat="server" placeholder="Mã đơn hàng hoặc mã vận đơn" autocomplete="off" onBlur="onBlurCode()" onKeyUp="onKeyUpCode(event)"></asp:TextBox>
                                         </div>
                                     </div>
                                 </div>
