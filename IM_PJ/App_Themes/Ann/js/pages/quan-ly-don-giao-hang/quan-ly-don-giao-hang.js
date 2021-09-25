@@ -240,7 +240,7 @@ function _createReportTableHTML(data) {
             try {
                 html += "    <tr>";
                 // Loại đơn hàng
-                html += "        <td data-title='Loại đơn'><span class='bg-order-type-" + item.orderType.key + "'>" + item.orderType.value + "</span></td>";
+                html += "        <td data-title='Loại đơn'><span class='bg-order-type bg-order-type-" + item.orderType.key + "'>" + item.orderType.value + "</span></td>";
                 // Mã hóa đơn
                 html += "        <td data-title='Mã đơn'>";
                 if (item.orderType.key == OrderTypeEnum.ANN)
@@ -261,7 +261,7 @@ function _createReportTableHTML(data) {
                 html += "        </td>";
                 // Trạng thái giao hàng
                 html += "        <td data-title='Trạng thái'>";
-                html += "             <span class='bg-delivery-status-" + item.status.key + "'>" + item.status.value;
+                html += "             <span class='bg-delivery-status bg-delivery-status-" + item.status.key + "'>" + item.status.value;
                 html += "        </span></td>";
                 // Ngày gửi
                 html += "        <td  data-title='Ngày gửi'>";

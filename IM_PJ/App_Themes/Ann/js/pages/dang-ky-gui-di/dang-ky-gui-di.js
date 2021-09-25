@@ -258,7 +258,7 @@ function _createDeliveryHtml(index, data) {
     html += '    data-staff="' + data.staff + '"';
     html += '>';
     html += '    <td>' + String(index) + '</td>';
-    html += '    <td><span class="bg-order-type-' + data.orderType.key + '">"' + data.orderType.value + '</span></td>';
+    html += '    <td><span class="bg-order-type bg-order-type-' + data.orderType.key + '">"' + data.orderType.value + '</span></td>';
     html += '    <td>' + data.code + '</td>';
     html += '    <td><span class="bg-delivery-type bg-delivery-type-' + data.deliveryMethod.key + '">' + data.deliveryMethod.value + '</span></td>';
     html += '    <td>' + data.shippingCode + '</td>';
