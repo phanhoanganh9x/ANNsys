@@ -1,4 +1,45 @@
-﻿.variablevalue-item .imgpreview {
+﻿.bg-delivery-type {
+    color: #fff;
+    display: block;
+    padding: 5px 6px;
+    white-space: nowrap;
+    font-size: 12px;
+    border-radius: 6px;
+}
+
+.bg-delivery-type-2 {
+    background: #fff;
+}
+
+.bg-delivery-type-6 {
+    background: #fff;
+}
+
+.bg-delivery-type-7 {
+    background: #fff;
+}
+
+.bg-delivery-type-10 {
+    background: #fff;
+}
+
+.bg-delivery-type-11 {
+    background: #fff;
+}
+
+.bg-delivery-type-12 {
+    background: #fff;
+}
+
+.bg-delivery-type-13 {
+    background: #fff;
+}
+
+.bg-delivery-type-14 {
+    background: #fff;
+}
+
+.variablevalue-item .imgpreview {
     width: 50%;
 }
 #header .hd-left {

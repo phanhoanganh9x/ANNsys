@@ -250,7 +250,7 @@ function _createReportTableHTML(data) {
                 html += "        </td>";
                 // Kiểu vận chuyển
                 html += "        <td data-title='Vận chuyển'>";
-                html += "            <span class='bg-delivery-type-" + item.deliveryMethod.key + "'>" + item.deliveryMethod.value;
+                html += "            <span class='bg-delivery-type bg-delivery-type-" + item.deliveryMethod.key + "'>" + item.deliveryMethod.value;
                 html += "        </span></td>";
                 // Mã vận đơn
                 html += "        <td data-title='Mã vận đơn'>";
