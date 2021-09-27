@@ -8,7 +8,8 @@
             sentDate: null,
             refundDate: null,
             staff: null,
-            isNew: 1
+            isNew: 1,
+            error: null
         };
 
         this._service = new DeliveryRefundService();

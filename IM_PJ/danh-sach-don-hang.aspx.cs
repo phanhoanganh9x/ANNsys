@@ -1,10 +1,14 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Models.Pages.danh_sach_don_hang;
 using MB.Extensions;
+using Newtonsoft.Json;
 using NHST.Bussiness;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -20,36 +24,122 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["usernameLoginSystem_ANN123"] != null)
-                {
-                    string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
-                    var acc = AccountController.GetByUsername(username);
-
-                    if (acc != null)
-                    {
-                        LoadShipper();
-                        LoadTransportCompany();
-                        if (acc.RoleID == 0)
-                        {
-                            LoadCreatedBy();
-                        }
-                        else if (acc.RoleID == 2)
-                        {
-                            LoadCreatedBy(acc);
-                        }
-                        else
-                        {
-                            Response.Redirect("/trang-chu");
-                        }
-                    }
-                }
-                else
+                if (Request.Cookies["usernameLoginSystem_ANN123"] == null)
                 {
                     Response.Redirect("/dang-nhap");
+                    return;
                 }
+
+                string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
+                var acc = AccountController.GetByUsername(username);
+
+                if (acc == null || (acc.RoleID != 0 && acc.RoleID != 2))
+                {
+                    Response.Redirect("/dang-nhap");
+                    return;
+                }
+
+                // Tình trạng đơn hàng
+                _loadStatus();
+                // Kiểu giao hàng
+                _loadDeliveryMethods();
+                // Nhân viên tạo đơn
+                if (acc.RoleID == 0)
+                    LoadCreatedBy();
+                else if (acc.RoleID == 2)
+                    LoadCreatedBy(acc);
+
+                // Danh sách nhân viên giao hàng
+                LoadShipper();
+                // Danh sách chành xe
+                LoadTransportCompany();
+                // Danh sách đơn hàng
                 LoadData();
             }
         }
+
+        #region Private
+        private void _loadStatus()
+        {
+            #region Khởi tạo API
+            var api = "http://ann-shop-dotnet-core.com/api/v1/order/statuses?page=danh-sach-don-hang";
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(api);
+
+            httpWebRequest.Method = "GET";
+            #endregion
+
+            try
+            {
+                // Thực thi API
+                var response = (HttpWebResponse)httpWebRequest.GetResponse();
+
+                ddlExcuteStatus.Items.Clear();
+                ddlExcuteStatus.Items.Add(new ListItem("Xử lý", ""));
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                    using (var reader = new StreamReader(response.GetResponseStream()))
+                    {
+                        var statuses = JsonConvert.DeserializeObject<IList<KeyValueModel>>(reader.ReadToEnd());
+                        var listItems = statuses
+                            .Select(x => new ListItem(x.value, x.key.ToString()))
+                            .ToArray();
+
+                        ddlExcuteStatus.Items.AddRange(listItems);
+                    }
+
+                ddlExcuteStatus.DataBind();
+            }
+            catch (WebException we)
+            {
+                throw we;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        private void _loadDeliveryMethods()
+        {
+            #region Khởi tạo API
+            var api = "http://ann-shop-dotnet-core.com/api/v1/delivery/methods?orderTypeId=1";
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(api);
+
+            httpWebRequest.Method = "GET";
+            #endregion
+
+            try
+            {
+                // Thực thi API
+                var response = (HttpWebResponse)httpWebRequest.GetResponse();
+
+                ddlShippingType.Items.Clear();
+                ddlShippingType.Items.Add(new ListItem("Kiểu giao hàng", ""));
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                    using (var reader = new StreamReader(response.GetResponseStream()))
+                    {
+                        var deliveryMethods = JsonConvert.DeserializeObject<IList<KeyValueModel>>(reader.ReadToEnd());
+                        var listItems = deliveryMethods
+                            .Select(x => new ListItem(x.value, x.key.ToString()))
+                            .ToArray();
+
+                        ddlShippingType.Items.AddRange(listItems);
+                    }
+
+                ddlShippingType.DataBind();
+            }
+            catch (WebException we)
+            {
+                throw we;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        #endregion
+
         public void LoadShipper()
         {
             var shipper = ShipperController.getDropDownList();
@@ -59,6 +149,7 @@ namespace IM_PJ
             ddlShipperFilter.DataBind();
 
         }
+
         public void LoadTransportCompany()
         {
             var TransportCompany = TransportCompanyController.GetTransportCompany();
@@ -378,7 +469,7 @@ namespace IM_PJ
 
                     html.AppendLine("   <td data-title='Đã mua'>" + item.Quantity + "</td>");
                     if (item.ExcuteStatus == 2)
-                        html.AppendLine("   <td data-title='Xử lý'><span class='bg-green' style='cursor: pointer' onclick='onClick_spFinishStatusOrder(this, " + item.ID + ")'>Đã hoàn tất</span></td>");
+                        html.AppendLine("   <td data-title='Xử lý'><span class='bg-order-status bg-order-status-" + item.ExcuteStatus + "' style='cursor: pointer' onclick='onClick_spFinishStatusOrder(this, " + item.ID + ")'>Đã hoàn tất</span></td>");
                     else
                         html.AppendLine("   <td data-title='Xử lý'>" + PJUtils.OrderExcuteStatus(Convert.ToInt32(item.ExcuteStatus)) + "</td>");
                     html.AppendLine("   <td data-title='Thanh toán'>" + PJUtils.OrderPaymentStatus(Convert.ToInt32(item.PaymentStatus)) + "</td>");

@@ -9,7 +9,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="robots" content="noindex, nofollow">
     <link rel="stylesheet" href="/App_Themes/Ann/css/style.css?v=04092021" media="all">
-    <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=04092021" media="all">
+    <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=202109271901" media="all">
     <link href="/App_Themes/Ann/css/HoldOn.css?v=04092021" rel="stylesheet" type="text/css" />
     <link href="/App_Themes/NewUI/js/select2/select2.css" rel="stylesheet" />
     <script type="text/javascript" src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
@@ -137,7 +137,7 @@
         .btn.btn-order {
             background-color: #000;
         }
-        
+
         .btn.download-btn {
             background-color: #000;
             color: #fff;
@@ -372,7 +372,7 @@
             <script src="/App_Themes/Ann/js/bootstrap-table/bootstrap-table.js"></script>
             <script src="/App_Themes/NewUI/js/select2/select2.min.js"></script>
             <script src="/App_Themes/Ann/js/master.js?v=04092021"></script>
-            
+
             <script src="/App_Themes/Ann/js/sync-product-small.js?v=04092021"></script>
             <script src="/App_Themes/Ann/js/download-product-image.js?v=04092021"></script>
             <script src="/App_Themes/Ann/js/HoldOn.js?v=04092021"></script>
@@ -441,7 +441,7 @@
                     $(".copy-product-info").remove();
                 }
 
-                function ajaxCopyInfo(id) 
+                function ajaxCopyInfo(id)
                 {
                     $.ajax({
                         type: "POST",
@@ -458,13 +458,13 @@
             </script>
 
             <script type="text/javascript">
-                function showContent() 
+                function showContent()
                 {
                     $("#ContentModal").modal({ show: 'true', backdrop: 'static', keyboard: 'false' });
                 }
                 function getAllCategoryImage(productPrice)
                 {
-                    if (productPrice == 0) 
+                    if (productPrice == 0)
                     {
                         $("#DownloadModal").modal({ show: 'true', backdrop: 'static', keyboard: 'false' });
                     }
@@ -498,7 +498,7 @@
                             }
                         });
                     }
-                    
+
                 }
 
                 $("#<%=txtSearchProduct.ClientID%>").keyup(function (e) {
@@ -523,60 +523,60 @@
                     let redirectTo = "http://" + newURL;
                     let strParameter = url.match(/\?&?.+$/g);
 
-                    if (strParameter) 
+                    if (strParameter)
                     {
                         strParameter = strParameter[0];
                     }
-                    else 
+                    else
                     {
                         strParameter = "?";
                     }
 
                     let searchOld = currentURL.searchParams.get("textsearch");
-                    if (strSearch) 
+                    if (strSearch)
                     {
-                        if (searchOld) 
+                        if (searchOld)
                         {
                             strParameter = strParameter.replace("textsearch=" + encodeURI(searchOld), "textsearch=" + strSearch);
                         }
-                        else 
+                        else
                         {
                             strParameter += "&textsearch=" + strSearch
                         }
                     }
-                    else 
+                    else
                     {
-                        if (searchOld) 
+                        if (searchOld)
                         {
                             strParameter = strParameter.replace("textsearch=" + searchOld, "");
                         }
                     }
 
                     let pageOld = currentURL.searchParams.get("Page");
-                    if (page) 
+                    if (page)
                     {
-                        if (pageOld) 
+                        if (pageOld)
                         {
                             strParameter = strParameter.replace("Page=" + pageOld, "Page=" + page);
                         }
-                        else 
+                        else
                         {
                             strParameter += "&Page=" + page
                         }
                     }
-                    else 
+                    else
                     {
-                        if (pageOld) 
+                        if (pageOld)
                         {
                             strParameter = strParameter.replace("Page=" + pageOld, "");
                         }
                     }
 
-                    // Loại bỏ trường hợp price=30000&&textsearch=nuochoa => price=30000&textsearch=nuochoa 
+                    // Loại bỏ trường hợp price=30000&&textsearch=nuochoa => price=30000&textsearch=nuochoa
                     strParameter = strParameter.replace(/\?&/g, "/?");
-                    // Loại bỏ trường hợp price=30000&&textsearch=nuochoa => price=30000&textsearch=nuochoa 
+                    // Loại bỏ trường hợp price=30000&&textsearch=nuochoa => price=30000&textsearch=nuochoa
                     strParameter = strParameter.replace(/&+/g, "&");
-                    // Loại bỏ trường hợp textsearch=nuochoa& => textsearch=nuochoa 
+                    // Loại bỏ trường hợp textsearch=nuochoa& => textsearch=nuochoa
                     strParameter = strParameter.replace(/&+$/g, "");
 
                     location.replace(redirectTo + strParameter);

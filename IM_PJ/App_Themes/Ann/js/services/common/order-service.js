@@ -32,16 +32,36 @@
     }
 
     generateOrderStatusHTML(status) {
-        if (status == 0)
-            return "<span class='bg-blue'>Chờ tiếp nhận</span>";
-        else if (status == 1)
-            return "<span class='bg-yellow'>Đang xử lý</span>";
-        else if (status == 2)
-            return "<span class='bg-green'>Đã hoàn tất</span>";
-        else if (status == 3)
-            return "<span class='bg-red'>Đã hủy</span>";
-        else
-            return "<span class='bg-brown'>Chuyển hoàn</span>";
+        let html = '';
+
+        html += '<span class="bg-order-status bg-order-status-' + status + '">'
+
+        switch (status) {
+            case 0:
+                html += 'Chờ tiếp nhận';
+                break;
+            case 1:
+                html += 'Đang xử lý';
+                break;
+            case 2:
+                html += 'Đã hoàn tất';
+                break;
+            case 3:
+                html += 'Đã hủy';
+                break;
+            case 4:
+                html += 'Chuyển hoàn';
+                break;
+            case 5:
+                html += 'Đã gửi hàng';
+                break;
+            default:
+                break;
+        }
+
+        html += '</span>'
+
+        return html;
     }
 
     generatePaymentStatusHTML(paymentStatus) {

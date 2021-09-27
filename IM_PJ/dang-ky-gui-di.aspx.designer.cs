@@ -31,15 +31,6 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.TextBox txtCode;
 
         /// <summary>
-        /// ddlDeliveryMethod control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlDeliveryMethod;
-
-        /// <summary>
         /// rSentDate control.
         /// </summary>
         /// <remarks>

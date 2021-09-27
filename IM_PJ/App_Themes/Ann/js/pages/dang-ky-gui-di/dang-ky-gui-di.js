@@ -8,35 +8,49 @@ const DeliveryMethodEnum = {
 }
 
 let loading = false;
-let stopOnBlurCode = false;
 let stringFormat = new StringFormat();
 let controller = new DeliveryRegisterController();
 
 document.addEventListener("DOMContentLoaded", function (event) {
-    _initDeliveryMethod();
     _initOrderType();
     _updateDelivery();
 });
 
 //#region Private
 function _initOrderType() {
-    let orderTypeDOM = document.querySelector("[id$='_ddlOrderType']");
-
-    orderTypeDOM.value = OrderTypeEnum.ANN;
-    onChangeOrderType(orderTypeDOM.value);
+    onChangeOrderType();
 }
 
 function _initDeliveryMethod() {
-    let deliveryMethodDOM = document.querySelector("[id$='_ddlDeliveryMethod']");
+    let $deliveryMethod = $("#ddlDeliveryMethod");
 
-    deliveryMethodDOM.value = 0;
-    onChangeDeliveryMethod(deliveryMethodDOM.value);
+    // Cài đặt giá trị ban đầu
+    $deliveryMethod.val(null).trigger('change');
+
+    // Cài đặt API
+    let url = '/api/v1/delivery/methods/select2';
+
+    if (controller.delivery.orderType.key)
+        url += '?orderTypeId=' + controller.delivery.orderType.key;
+
+    $deliveryMethod.select2({
+        placeholder: 'Kiểu giao hàng',
+        minimumResultsForSearch: Infinity,
+        ajax: {
+            method: 'GET',
+            url: url,
+        },
+        width: '100%'
+    });
+
+    // trigger onchange
+    onChangeDeliveryMethod();
 }
 
 function _updateDelivery() {
     let orderTypeDOM = document.querySelector("[id$='_ddlOrderType']");
     let codeDOM = document.querySelector("[id$='_txtCode']");
-    let deliveryMethodDOM = document.querySelector("[id$='_ddlDeliveryMethod']");
+    let $deliveryMethod = $("#ddlDeliveryMethod");
     let shippingCodeDOM = document.querySelector("[id$='_hdfShippingCode']");
     let sentDateDOM = document.querySelector("[id$='_rSentDate']");
     let staffDOM = document.querySelector("[id$='_hdfStaff']");
@@ -47,8 +61,8 @@ function _updateDelivery() {
         },
         code: codeDOM.value,
         deliveryMethod: {
-            key: parseInt(deliveryMethodDOM.value),
-            value: deliveryMethodDOM.options[deliveryMethodDOM.selectedIndex].text
+            key: parseInt($deliveryMethod.val()),
+            value: $deliveryMethod.find("option:selected").text()
         },
         shippingCode: shippingCodeDOM.value,
         sentDate: sentDateDOM.value,
@@ -59,105 +73,59 @@ function _updateDelivery() {
 }
 
 function _updateDeliveryMethod(callback) {
-    if (!loading) {
-        HoldOn.open();
-        loading = true;
-    }
-
     controller.getDeliveryInfo()
         .then(function (response) {
-            if (loading) {
-                HoldOn.close();
-                loading = false;
-            }
-
+            // Mã đơn hàng
             let codeDOM = document.querySelector("[id$='_txtCode']");
-            let deliveryMethodDOM = document.querySelector("[id$='_ddlDeliveryMethod']");
-            let shippingCodeDOM = document.querySelector("[id$='_hdfShippingCode']");
 
             codeDOM.value = response.orderId;
-            deliveryMethodDOM.value = response.deliveryMethod.key;
+
+            // Phương thức vận chuyển
+            let $deliveryMethod = $("#ddlDeliveryMethod");
+            let newOption = new Option(response.deliveryMethod.value, response.deliveryMethod.key, false, false);
+
+            $deliveryMethod.find("option").remove();
+            $deliveryMethod.append(newOption).trigger('change');
+
+            // Mã vận đơn
+            let shippingCodeDOM = document.querySelector("[id$='_hdfShippingCode']");
+
             shippingCodeDOM.value = response.shippingCode;
 
+            // Thực thi callback
             if (typeof callback === 'function')
                 callback();
         })
         .catch(function (err) {
-            if (loading) {
-                HoldOn.close();
-                loading = false;
-            }
+            controller.delivery.error = err.responseJSON.message;
 
-            swal({
-                title: 'Error',
-                text: err.responseJSON.message,
-                type: 'error',
-                showCloseButton: true,
-                html: true,
-            }, function() {
-                if (stopOnBlurCode)
-                    stopOnBlurCode = false;
-            });
+            if (typeof callback === 'function')
+                callback();
         });
 }
 
 function _checkDelivery(callback) {
-    HoldOn.open();
-    loading = true;
-
     controller.getDelivery()
         .then(function (response) {
             if (response) {
-                if (loading) {
-                    HoldOn.close();
-                    loading = false;
-                }
-
                 let message = '';
 
-                message += 'Đơn hàng ' + response.orderType.value + ' <strong>#' + response.code + '</strong><br>';
+                message += 'Đơn hàng ' + response.orderType.value + ' <strong>#' + response.code + '</strong> ';
                 message += 'đã cập nhật trạng thái <strong>"' + response.status.value + '"</strong>';
-                swal({
-                    title: 'Error',
-                    text: message,
-                    type: 'error',
-                    showCloseButton: true,
-                    html: true,
-                }, function () {
-                    if (stopOnBlurCode)
-                        stopOnBlurCode = false;
-                });
+
+                controller.delivery.error = message;
+
+                if (typeof callback === 'function')
+                    callback();
             }
             else {
                 if (controller.delivery.orderType.key == OrderTypeEnum.ANN)
                     _updateDeliveryMethod(callback);
                 else {
-                    if (loading) {
-                        HoldOn.close();
-                        loading = false;
-                    }
-
                     if (typeof callback === 'function')
                         callback();
                 }
             }
-        })
-        .catch(function (err) {
-            if (loading) {
-                HoldOn.close();
-                loading = false;
-            }
-
-            swal({
-                title: 'Error',
-                text: err.responseJSON.message,
-                type: 'error',
-                showCloseButton: true,
-                html: true,
-            }, function () {
-                if (stopOnBlurCode)
-                    stopOnBlurCode = false;
-            });
         });
 }
 
@@ -167,7 +135,6 @@ function _handleCode(callback) {
     let shippingCodeDOM = document.querySelector("[id$='_hdfShippingCode']");
 
     shippingCodeDOM.value = '';
-
     controller.delivery.orderType = {
         key: parseInt(orderTypeDOM.value),
         value: orderTypeDOM.options[orderTypeDOM.selectedIndex].text
@@ -178,70 +145,31 @@ function _handleCode(callback) {
 
 function _findRow(orderId, code) {
     let tbBodyDOM = document.getElementById("tbody-delivery");
-    let row = tbBodyDOM.querySelector("[data-order-type='" + orderId + "'][data-code='" + code + "']");
+    let rows = tbBodyDOM.querySelectorAll("[data-order-type='" + orderId + "'][data-code='" + code + "']");
 
-    return row;
+    return rows;
 }
 
 function _checkValidation(data) {
     if (!data.code) {
-        swal({
-            title: 'Error',
-            text: 'Bạn chưa nhập mã đơn hàng',
-            type: 'error',
-            showCloseButton: true,
-            html: true,
-        }, function () {
-            if (stopOnBlurCode)
-                stopOnBlurCode = false;
-
-            document.querySelector("[id$='_txtCode']").focus();
-        });
+        document.querySelector("[id$='_txtCode']").focus();
+        document.querySelector("[id$='_txtCode']").select();
 
         return false;
     }
 
-    if (!data.deliveryMethod.key) {
-        swal({
-            title: 'Error',
-            text: 'Bạn chưa chọn kiểu vận chuyển',
-            type: 'error',
-            showCloseButton: true,
-            html: true,
-        }, function () {
-            if (stopOnBlurCode)
-                stopOnBlurCode = false;
+    let rows = _findRow(data.orderType.key, data.code);
 
-            let deliveryMethodDOM = document.querySelector("[id$='_ddlDeliveryMethod']");
-
-            if (!deliveryMethodDOM.disabled)
-                deliveryMethodDOM.focus();
-        });
+    if (rows.length > 0) {
+        document.querySelector("[id$='_txtCode']").focus();
+        document.querySelector("[id$='_txtCode']").select();
 
         return false;
     }
 
-    let row = _findRow(data.orderType.key, data.code);
-
-    if (row)
-    {
-        let message = data.orderType.value + ' #' + data.code + ' đã được thêm vào rồi';
-
-        swal({
-            title: 'Error',
-            text: message,
-            type: 'error',
-            showCloseButton: true,
-            html: true,
-        }, function () {
-            if (stopOnBlurCode)
-                stopOnBlurCode = false;
-
-            document.querySelector("[id$='_txtCode']").focus();
-        });
-
-        return false;
-    }
+    if (!controller.delivery.error)
+        if (!data.deliveryMethod.key)
+            controller.delivery.error = 'Kiểu vận chuyển chưa được chọn';
 
     return true;
 }
@@ -249,16 +177,20 @@ function _checkValidation(data) {
 function _createDeliveryHtml(index, data) {
     let html = '';
 
-    html += '<tr';
+    html += '<tr class="data"';
     html += '    data-order-type="' + String(data.orderType.key) + '"';
     html += '    data-code="' + data.code + '"';
     html += '    data-delivery-method="' + String(data.deliveryMethod.key) + '"';
     html += '    data-shipping-code="' + data.shippingCode + '"';
     html += '    data-sent-date="' + data.sentDate + '"';
     html += '    data-staff="' + data.staff + '"';
+    if (data.error)
+        html += '    data-error="' + 1 + '"';
+    else
+        html += '    data-error="' + 0 + '"';
     html += '>';
     html += '    <td>' + String(index) + '</td>';
-    html += '    <td><span class="bg-order-type bg-order-type-' + data.orderType.key + '">"' + data.orderType.value + '</span></td>';
+    html += '    <td><span class="bg-order-type bg-order-type-' + data.orderType.key + '">' + data.orderType.value + '</span></td>';
     html += '    <td>' + data.code + '</td>';
     html += '    <td><span class="bg-delivery-type bg-delivery-type-' + data.deliveryMethod.key + '">' + data.deliveryMethod.value + '</span></td>';
     html += '    <td>' + data.shippingCode + '</td>';
@@ -274,12 +206,25 @@ function _createDeliveryHtml(index, data) {
     html += '    </td>';
     html += '</tr>';
 
+    if (data.error) {
+        html += '<tr class="error"';
+        html += '    data-order-type="' + String(data.orderType.key) + '"';
+        html += '    data-code="' + data.code + '"';
+        html += '>';
+        html += '    <td colspan="7">';
+        html += '        <span class="bg-red"><strong>Lỗi:</strong> '
+        html += '            ' + data.error
+        html += '        </span>'
+        html += '    </td>'
+        html += '</tr>';
+    }
+
     return html;
 }
 
 function _addDelivery(data) {
     let tbodyDeliveryDOM = document.getElementById("tbody-delivery");
-    let index = tbodyDeliveryDOM.querySelectorAll("tr").length + 1;
+    let index = tbodyDeliveryDOM.querySelectorAll("tr.data").length + 1;
     let newRowHtml = _createDeliveryHtml(index, data);
 
     tbodyDeliveryDOM.innerHTML = newRowHtml + tbodyDeliveryDOM.innerHTML;
@@ -291,17 +236,18 @@ function _clearDelivery() {
 
     codeDOM.value = '';
     shippingCodeDOM.value = '';
+    controller.delivery.error = null;
     _updateDelivery();
 }
 
 function _removeDelivery(orderId, code) {
-    let row = _findRow(orderId, code);
+    let rows = _findRow(orderId, code);
 
-    row.remove();
+    rows.forEach(function (item) { item.remove(); });
 }
 
 function _updateIndexColumn() {
-    let rows = document.getElementById("tbody-delivery").querySelectorAll("tr");
+    let rows = document.getElementById("tbody-delivery").querySelectorAll("tr.data");
 
     for (let i = 0; i < rows.length; i++) {
         let indexDOM = rows[i].querySelector("td");
@@ -312,7 +258,7 @@ function _updateIndexColumn() {
 
 function _updateDisplaySubmit() {
     let btnSubmitDOM = document.getElementById("btnSubmit");
-    let rowsDOM = document.getElementById("tbody-delivery").querySelectorAll("tr");
+    let rowsDOM = document.getElementById("tbody-delivery").querySelectorAll("tr.data");
 
     if (rowsDOM.length > 0)
         btnSubmitDOM.classList.remove('hidden');
@@ -322,39 +268,42 @@ function _updateDisplaySubmit() {
 //#endregion
 
 //#region Public
-function onChangeOrderType(selectedValue) {
-    let value = +selectedValue || 0;
+function onChangeOrderType() {
+    //#region Loại đơn hàng
+    let orderTypeDOM = document.querySelector("[id$='_ddlOrderType']");
+    let key = parseInt(orderTypeDOM.value);
+    let value = orderTypeDOM.options[orderTypeDOM.selectedIndex].text;
+
+    controller.delivery.orderType = {
+        key: parseInt(key),
+        value: value
+    };
+    //#endregion
+
+    //#region Mã đơn hàng
     let codeDOM = document.querySelector("[id$='_txtCode']");
-    let deliveryMethodDOM = document.querySelector("[id$='_ddlDeliveryMethod']");
-
-    // Trường hợp đơn hàng là ANN Shop
-    if (value == OrderTypeEnum.ANN) {
-        deliveryMethodDOM.value = 0
-        deliveryMethodDOM.disabled = true;
-        onChangeDeliveryMethod(deliveryMethodDOM.value);
-    }
-    else {
-        deliveryMethodDOM.disabled = false;
-
-        if (deliveryMethodDOM.value == 0)
-        {
-            deliveryMethodDOM.value = DeliveryMethodEnum.GHTK;
-            onChangeDeliveryMethod(deliveryMethodDOM.value);
-        }
-    }
 
     codeDOM.value = '';
-}
+    //#endregion
 
-function onBlurCode() {
-    if (stopOnBlurCode)
-        return;
+    //#region Phương thức vận chuyển
+    let $deliveryMethod = $("#ddlDeliveryMethod");
 
-    let codeDOM = document.querySelector("[id$='_txtCode']");
-    codeDOM.value = codeDOM.value.trim();
+    _initDeliveryMethod();
 
-    if (codeDOM.value)
-        _handleCode();
+    if (key == OrderTypeEnum.ANN) {
+        $deliveryMethod.attr('disabled', true);
+        $deliveryMethod.attr('readonly', 'readonly');
+
+        codeDOM.focus();
+    }
+    else {
+        $deliveryMethod.removeAttr('disabled');
+        $deliveryMethod.removeAttr('readonly');
+
+        $deliveryMethod.select2('open');
+    }
+    //#endregion
 }
 
 function onKeyUpCode(event) {
@@ -365,19 +314,14 @@ function onKeyUpCode(event) {
         if (codeDOM.value) {
             let callback = function () {
                 onClickDeliveryAddition();
-
-                if (stopOnBlurCode)
-                    stopOnBlurCode = false;
             };
 
-            stopOnBlurCode = true;
             _handleCode(callback);
         }
     }
 }
 
-function onChangeDeliveryMethod(selectedValue) {
-    let value = +selectedValue || 0;
+function onChangeDeliveryMethod() {
     let shippingCodeDOM = document.querySelector("[id$='_hdfShippingCode']");
 
     shippingCodeDOM.value = '';
@@ -412,7 +356,7 @@ function onClickDeliveryRemoval(orderId, code) {
 
 function submitDeliveries() {
     //#region Kiểm tra xem có đơn giao hàng nào đăng ký chưa
-    let rows = document.getElementById("tbody-delivery").querySelectorAll("tr");
+    let rows = document.getElementById("tbody-delivery").querySelectorAll("tr.data[data-error='0']");
 
     if (rows.length == 0)
         return;

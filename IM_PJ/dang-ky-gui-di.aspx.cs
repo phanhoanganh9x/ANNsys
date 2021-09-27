@@ -14,8 +14,6 @@ namespace IM_PJ
 {
     public partial class dang_ky_gui_di : System.Web.UI.Page
     {
-        private readonly IList<int> ALLOW_DELIVERY_METHODS = new List<int>() { 2, 6, 7, 10, 11, 12, 13, 14 };
-
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -85,53 +83,10 @@ namespace IM_PJ
             }
         }
 
-        private void _loadDeliveryMethod()
-        {
-            #region Khởi tạo API
-            var api = "http://ann-shop-dotnet-core.com/api/v1/delivery/methods";
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create(api);
-
-            httpWebRequest.Method = "GET";
-            #endregion
-
-            try
-            {
-                // Thực thi API
-                var response = (HttpWebResponse)httpWebRequest.GetResponse();
-
-                ddlDeliveryMethod.Items.Clear();
-                ddlDeliveryMethod.Items.Add(new ListItem("Vận chuyển", "0"));
-
-                if (response.StatusCode == HttpStatusCode.OK)
-                    using (var reader = new StreamReader(response.GetResponseStream()))
-                    {
-                        var deliveryMethods = JsonConvert.DeserializeObject<IList<KeyValueModel>>(reader.ReadToEnd());
-                        var listItems = deliveryMethods
-                            .Where(x => ALLOW_DELIVERY_METHODS.Contains(x.key))
-                            .Select(x => new ListItem(x.value, x.key.ToString()))
-                            .ToArray();
-
-                        ddlDeliveryMethod.Items.AddRange(listItems);
-                    }
-
-                ddlDeliveryMethod.DataBind();
-            }
-            catch (WebException we)
-            {
-                throw we;
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
-
         private void _loadData()
         {
             // Loại đơn hàng
             _loadOrderType();
-            // Kiểu vận chuyển
-            _loadDeliveryMethod();
             // Ngày gửi
             rSentDate.SelectedDate = DateTime.Now;
         }

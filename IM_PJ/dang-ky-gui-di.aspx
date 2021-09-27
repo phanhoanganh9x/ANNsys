@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <link rel="stylesheet" href="App_Themes/Ann/css/pages/dang-ky-gui-di/dang-ky-gui-di.css?v=202109250230" />
+    <link rel="stylesheet" href="App_Themes/Ann/css/pages/dang-ky-gui-di/dang-ky-gui-di.css?v=202109271901" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
@@ -18,14 +18,14 @@
                                 <div class="col-md-5">
                                     <div class="form-group">
                                         <div class="input-group">
-                                            <asp:DropDownList ID="ddlOrderType" runat="server" CssClass="form-control dropdown-order-type" onChange="onChangeOrderType($(this).val())"></asp:DropDownList>
-                                            <asp:TextBox ID="txtCode" CssClass="form-control input-code" runat="server" placeholder="Mã đơn hàng hoặc mã vận đơn" autocomplete="off" onBlur="onBlurCode()" onKeyUp="onKeyUpCode(event)"></asp:TextBox>
+                                            <asp:DropDownList ID="ddlOrderType" runat="server" CssClass="form-control dropdown-order-type" onChange="onChangeOrderType()"></asp:DropDownList>
+                                            <asp:TextBox ID="txtCode" CssClass="form-control input-code" runat="server" placeholder="Mã đơn hàng hoặc mã vận đơn" autocomplete="off" onKeyUp="onKeyUpCode(event)"></asp:TextBox>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group">
-                                        <asp:DropDownList ID="ddlDeliveryMethod" runat="server" CssClass="form-control dropdown-delivery-method" onChange="onChangeDeliveryMethod($(this).val())"></asp:DropDownList>
+                                        <select id="ddlDeliveryMethod" class="form-control" onChange="onChangeDeliveryMethod()" disabled></select>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
@@ -78,8 +78,8 @@
         <asp:HiddenField ID="hdfShippingCode" runat="server" />
         <asp:HiddenField ID="hdfStaff" runat="server" />
         <script type="text/javascript" src="App_Themes/Ann/js/utils/string-format.js?v=202109250230"></script>
-        <script type="text/javascript" src="App_Themes/Ann/js/services/dang-ky-gui-di/dang-ky-gui-di-service.js?v=202109250230"></script>
-        <script type="text/javascript" src="App_Themes/Ann/js/controllers/dang-ky-gui-di/dang-ky-gui-di-controller.js?v=202109250230"></script>
-        <script type="text/javascript" src="App_Themes/Ann/js/pages/dang-ky-gui-di/dang-ky-gui-di.js?v=202109250230"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/services/dang-ky-gui-di/dang-ky-gui-di-service.js?v=202109271901"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/controllers/dang-ky-gui-di/dang-ky-gui-di-controller.js?v=202109271901"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/pages/dang-ky-gui-di/dang-ky-gui-di.js?v=202109271901"></script>
     </main>
 </asp:Content>

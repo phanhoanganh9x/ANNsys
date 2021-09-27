@@ -117,6 +117,10 @@
         return queryParams
     }
 
+    getDeliveryMethod() {
+        return this._service.getDeliveryMethod(this.filter.deliveryMethod)
+    }
+
     getDeliveries() {
         return this._service.getDeliveries(this.filter, this.pagination);
     }
