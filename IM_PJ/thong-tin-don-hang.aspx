@@ -533,11 +533,7 @@
                                         Trạng thái xử lý
                                     </div>
                                     <div class="row-right">
-                                        <asp:DropDownList ID="ddlExcuteStatus" runat="server" CssClass="form-control" onchange="onChangeExcuteStatus()">
-                                            <asp:ListItem Value="1" Text="Đang xử lý"></asp:ListItem>
-                                            <asp:ListItem Value="2" Text="Đã hoàn tất"></asp:ListItem>
-                                            <asp:ListItem Value="3" Text="Đã hủy"></asp:ListItem>
-                                        </asp:DropDownList>
+                                        <asp:DropDownList ID="ddlExcuteStatus" runat="server" CssClass="form-control" onchange="onChangeExcuteStatus()"></asp:DropDownList>
                                     </div>
                                 </div>
                                 <div id="row-payment-status" class="form-row">
@@ -579,19 +575,7 @@
                                         Phương thức giao hàng
                                     </div>
                                     <div class="row-right">
-                                        <asp:DropDownList ID="ddlShippingType" runat="server" CssClass="form-control shipping-type">
-                                            <asp:ListItem Value="1" Text="Lấy trực tiếp"></asp:ListItem>
-                                            <asp:ListItem Value="2" Text="Bưu điện"></asp:ListItem>
-                                            <asp:ListItem Value="3" Text="Proship"></asp:ListItem>
-                                            <asp:ListItem Value="4" Text="Chuyển xe"></asp:ListItem>
-                                            <asp:ListItem Value="5" Text="Nhân viên giao"></asp:ListItem>
-                                            <asp:ListItem Value="6" Text="GHTK"></asp:ListItem>
-                                            <asp:ListItem Value="7" Text="Viettel"></asp:ListItem>
-                                            <asp:ListItem Value="8" Text="Grab"></asp:ListItem>
-                                            <asp:ListItem Value="9" Text="AhaMove"></asp:ListItem>
-                                            <asp:ListItem Value="10" Text="J&T"></asp:ListItem>
-                                            <asp:ListItem Value="11" Text="GHN"></asp:ListItem>
-                                        </asp:DropDownList>
+                                        <asp:DropDownList ID="ddlShippingType" runat="server" CssClass="form-control shipping-type"></asp:DropDownList>
                                     </div>
                                 </div>
                                 <div id="row-transport-company" class="form-row transport-company">
@@ -2691,6 +2675,7 @@
                 let excuteStatus = Number($("#<%=ddlExcuteStatus.ClientID%>").val());
 
                 switch (excuteStatus) {
+                    // Đã hoàn tất
                     case 2:
                         if ($("#<%=hdfExcuteStatus.ClientID%>").val() != 1)
                         {
@@ -2703,13 +2688,18 @@
                             $("#row-postal-delivery-type").addClass("disable");
                             $("#row-shipping").addClass("disable");
                             $("#row-bank").addClass("disable");
+
                             if ($("#<%=hdfExcuteStatus.ClientID%>").val() == 2)
                             {
                                 $("#row-payment-status").removeClass("disable");
                                 $("#row-order-note").removeClass("disable");
                             }
                         }
+
+                        $(".post-table-links").find("a").attr("disabled", false)
+
                         break;
+                    // Đã hủy
                     case 3:
                         $("#infor-order").addClass("disable");
                         $("#infor-customer").addClass("disable");
@@ -2725,7 +2715,10 @@
                         $("#row-order-note").addClass("disable");
                         $("#row-bank").addClass("disable");
                         removeCoupon();
+                        $(".post-table-links").find("a").attr("disabled", false)
+
                         break;
+                    // Đang xử lý
                     case 1:
                         if ($("#<%=hdfExcuteStatus.ClientID%>").val() == 1) {
                             $("#infor-order").removeClass("disable");
@@ -2774,6 +2767,31 @@
                                 $("#row-bank").addClass("disable");
                             }
                         }
+
+                        $(".post-table-links").find("a").attr("disabled", false)
+
+                        break;
+                    // Đã gửi hàng
+                    case 5:
+                    // Chuyển hoàn
+                    case 4:
+                        $("#infor-order").addClass("disable");
+                        $("#infor-customer").addClass("disable");
+                        $("#deliveryAddress").addClass("disable");
+                        $("#detail").addClass("disable");
+                        $("#status .panel-heading").addClass("disable");
+                        $("#row-payment-status").addClass("disable");
+                        $("#row-payment-type").addClass("disable");
+                        $("#row-shipping-type").addClass("disable");
+                        $("#row-transport-company").addClass("disable");
+                        $("#row-postal-delivery-type").addClass("disable");
+                        $("#row-shipping").addClass("disable");
+                        $("#row-order-note").addClass("disable");
+                        $("#row-bank").addClass("disable");
+                        $(".post-table-links").find("a").attr("disabled", true)
+
+                        break;
+                    default:
                         break;
                 };
 
@@ -2795,6 +2813,7 @@
                         }
                     }
                 }
+
                 // Trường hợp trạng thái trước là đang xử lý
                 if (preExcuteStatus == 1) {
                     // Chuyển qua trạng thái (hoàn tất đơn hàng || hủy)

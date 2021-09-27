@@ -1,7 +1,9 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Models.Pages.dang_ky_chuyen_hoan;
 using IM_PJ.Utils;
 using MB.Extensions;
+using Newtonsoft.Json;
 using NHST.Bussiness;
 using System;
 using System.Collections.Generic;
@@ -15,8 +17,6 @@ using System.Web.Script.Serialization;
 using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using static IM_PJ.Controllers.DiscountCustomerController;
-using static IM_PJ.pos;
 
 namespace IM_PJ
 {
@@ -28,47 +28,50 @@ namespace IM_PJ
 
             if (!IsPostBack)
             {
-                if (Request.Cookies["usernameLoginSystem_ANN123"] != null)
-                {
-                    string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
-                    var acc = AccountController.GetByUsername(username);
-                    if (acc != null)
-                    {
-
-                        hdSession.Value = "1";
-
-                        var agent = acc.AgentID;
-                        if (agent == 1)
-                        {
-                            hdfIsMain.Value = "1";
-                        }
-                        else
-                        {
-                            hdfIsMain.Value = "0";
-                        }
-
-                        if (acc.RoleID == 0)
-                        {
-                            hdfUsernameCurrent.Value = acc.Username;
-                            LoadCreatedBy();
-                        }
-                        else if (acc.RoleID == 2)
-                        {
-                            hdfUsername.Value = acc.Username;
-                            hdfUsernameCurrent.Value = acc.Username;
-                            LoadCreatedBy(acc);
-                        }
-                        else
-                        {
-                            Response.Redirect("/trang-chu");
-                        }
-                    }
-                }
-                else
+                #region Kiểm tra cookies
+                if (Request.Cookies["usernameLoginSystem_ANN123"] == null)
                 {
                     Response.Redirect("/dang-nhap");
+                    return;
                 }
+                #endregion
+
+                #region Kiểm tra user name
+                var username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
+                var acc = AccountController.GetByUsername(username);
+
+                if (acc == null || (acc.RoleID != 0 && acc.RoleID != 2))
+                {
+                    Response.Redirect("/dang-nhap");
+                    return;
+                }
+                #endregion
+
+                hdSession.Value = "1";
+                hdfIsMain.Value = acc.AgentID == 1 ? "1" : "0";
+
+                // Trạng thái đơn hàng
+                _loadStatus();
+                // Kiểu giao hàng
+                _loadDeliveryMethods();
+                // Danh sách chành xe
                 LoadTransportCompany();
+
+                // Nhân viên tạo đơn
+                if (acc.RoleID == 0)
+                {
+                    hdfUsernameCurrent.Value = acc.Username;
+                    LoadCreatedBy();
+                }
+                else if (acc.RoleID == 2)
+                {
+                    hdfUsername.Value = acc.Username;
+                    hdfUsernameCurrent.Value = acc.Username;
+                    LoadCreatedBy(acc);
+                }
+
+
+                // Thông tin đơn hàng
                 LoadData();
             }
         }
@@ -82,6 +85,85 @@ namespace IM_PJ
         {
             if (deliveryAddressId.HasValue)
                 hdfDeliveryAddressId.Value = deliveryAddressId.Value.ToString();
+        }
+
+        private void _loadStatus()
+        {
+            #region Khởi tạo API
+            var api = "http://ann-shop-dotnet-core.com/api/v1/order/statuses?page=thong-tin-don-hang";
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(api);
+
+            httpWebRequest.Method = "GET";
+            #endregion
+
+            try
+            {
+                // Thực thi API
+                var response = (HttpWebResponse)httpWebRequest.GetResponse();
+
+                ddlExcuteStatus.Items.Clear();
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                    using (var reader = new StreamReader(response.GetResponseStream()))
+                    {
+                        var statuses = JsonConvert.DeserializeObject<IList<KeyValueModel>>(reader.ReadToEnd());
+                        var listItems = statuses
+                            .Select(x => new ListItem(x.value, x.key.ToString()))
+                            .ToArray();
+
+                        ddlExcuteStatus.Items.AddRange(listItems);
+                    }
+
+                ddlExcuteStatus.DataBind();
+            }
+            catch (WebException we)
+            {
+                throw we;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        private void _loadDeliveryMethods()
+        {
+            #region Khởi tạo API
+            var api = "http://ann-shop-dotnet-core.com/api/v1/delivery/methods?orderTypeId=1";
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(api);
+
+            httpWebRequest.Method = "GET";
+            #endregion
+
+            try
+            {
+                // Thực thi API
+                var response = (HttpWebResponse)httpWebRequest.GetResponse();
+
+                ddlShippingType.Items.Clear();
+                ddlShippingType.Items.Add(new ListItem("Kiểu giao hàng", ""));
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                    using (var reader = new StreamReader(response.GetResponseStream()))
+                    {
+                        var deliveryMethods = JsonConvert.DeserializeObject<IList<KeyValueModel>>(reader.ReadToEnd());
+                        var listItems = deliveryMethods
+                            .Select(x => new ListItem(x.value, x.key.ToString()))
+                            .ToArray();
+
+                        ddlShippingType.Items.AddRange(listItems);
+                    }
+
+                ddlShippingType.DataBind();
+            }
+            catch (WebException we)
+            {
+                throw we;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
         #endregion
 
@@ -128,11 +210,6 @@ namespace IM_PJ
                 }
                 else
                 {
-                    // chuyển sang giao diện xem đơn chuyển hoàn nếu trạng thái xử lý đã chuyển hoàn
-                    if (order.ExcuteStatus == 4)
-                    {
-                        Response.Redirect("/thong-tin-don-hang-chuyen-hoan?id=" + ID);
-                    }
                     hdfUsername.Value = order.CreatedBy;
                     ddlCreatedBy.SelectedValue = order.CreatedBy.ToString();
 
@@ -632,18 +709,12 @@ namespace IM_PJ
 
                     ltrOrderTotalPrice.Text = string.Format("{0:N0}", Convert.ToDouble(order.TotalPrice));
 
-                    if(order.ExcuteStatus == 1)
-                    {
-                        ltrOrderStatus.Text = "Đang xử lý";
-                    }
-                    else if(order.ExcuteStatus == 2)
-                    {
-                        ltrOrderStatus.Text = "Đã hoàn tất";
-                    }
-                    else
-                    {
-                        ltrOrderStatus.Text = "Đã hủy";
-                    }
+                    if (order.ExcuteStatus.HasValue)
+                        ltrOrderStatus.Text = ddlExcuteStatus.Items
+                            .Cast<ListItem>()
+                            .Where(x => x.Value == order.ExcuteStatus.Value.ToString())
+                            .Select(x => x.Text)
+                            .SingleOrDefault();
 
                     ltrOrderType.Text = PJUtils.OrderType(Convert.ToInt32(order.OrderType));
                     ltrPrint.Text = "<a href='javascript:;' onclick='warningPrintInvoice(" + ID + ")' class='btn primary-btn fw-btn not-fullwidth'><i class='fa fa-print' aria-hidden='true'></i> Hóa đơn</a>";

@@ -1,7 +1,10 @@
 ﻿using IM_PJ.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
@@ -10,6 +13,7 @@ namespace IM_PJ.Controllers
 {
     public class DeliveryController
     {
+        #region Services
         public static bool Update(Delivery delivery)
         {
             using (var con = new inventorymanagementEntities())
@@ -34,7 +38,7 @@ namespace IM_PJ.Controllers
                 }
 
                 if (old != null)
-                { 
+                {
                     old.ShipperID = delivery.ShipperID;
                     old.Status = delivery.Status;
                     old.Image = delivery.Image;
@@ -166,7 +170,7 @@ namespace IM_PJ.Controllers
                             Collection = parent.tem3.order.PaymentType == (int)PaymentType.CashCollection ? 1 : 0,
                             Payment = parent.tem3.order.TotalPrice,
                             MoneyRefund = parent.tem3.moneyRefund,
-                            MoneyCollection = child != null ? child.COO : 0 
+                            MoneyCollection = child != null ? child.COO : 0
                         }
                     )
                     .ToList();
@@ -200,7 +204,7 @@ namespace IM_PJ.Controllers
                             new CollectionInfoComparer()
                         )
                         .ToList()
-                }; 
+                };
 
                 return report;
             }
@@ -356,7 +360,7 @@ namespace IM_PJ.Controllers
                                 }
                                 delivery.COO = COD;
                             }
-                            
+
                             delivery.COD = Convert.ToDecimal(order.FeeShipping);
                         }
                         con.Deliveries.Add(delivery);
@@ -413,7 +417,7 @@ namespace IM_PJ.Controllers
                 return serializer.Serialize(last);
             }
         }
-        
+
         public static void updateDelivery(tbl_Account acc, List<DeliverySession> session)
         {
             using (var con = new inventorymanagementEntities())
@@ -479,6 +483,55 @@ namespace IM_PJ.Controllers
             }
         }
 
+        public static void updateDeliveryManager(tbl_Account acc, List<DeliverySession> session)
+        {
+            try
+            {
+                var now = DateTime.Now;
+                var data = session
+                    .Select(x => new
+                    {
+                        orderType = 1, // Đơn hàng ANN
+                        code = x.OrderID.ToString(),
+                        deliveryMethod = x.ShippingType,
+                        staff = acc.Username,
+                        sentDate = now
+                    })
+                    .ToArray();
+
+                #region Thiết lập API ZaloShop
+                var url = "http://ann-shop-dotnet-core.com/api/v1/deliveries/register";
+                var request = (HttpWebRequest)WebRequest.Create(url);
+
+                request.ContentType = "application/json";
+                request.Method = "POST";
+
+                using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                {
+                    var json = JsonConvert.SerializeObject(data);
+                    streamWriter.Write(json);
+                }
+                #endregion
+
+                #region Excute API
+                var response = (HttpWebResponse)request.GetResponse();
+
+                if (response.StatusCode != HttpStatusCode.OK)
+                    throw new Exception("Đăng ký đơn hàng đã gửi. Thất bại!");
+                #endregion
+            }
+            catch (WebException wex)
+            {
+                throw wex;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        #endregion
+
+        #region Models
         public class TransportInfo
         {
             public int TransportID { get; set; }
@@ -528,5 +581,6 @@ namespace IM_PJ.Controllers
             public decimal MoneyCollection { get; set; }
             public decimal Price { get; set; }
         }
+        #endregion
     }
 }

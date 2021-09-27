@@ -20,7 +20,7 @@ CREATE TABLE [dbo].[DeliveryManager](
     [CreatedBy] [nvarchar](50) NOT NULL,
     [ModifiedDate] [datetime] NOT NULL,
     [ModifiedBy] [nvarchar](50) NOT NULL,
- CONSTRAINT [PK_DeliveryManager] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_DeliveryManager] PRIMARY KEY CLUSTERED
 (
     [OrderTypeId] ASC,
     [Code] ASC
@@ -48,7 +48,7 @@ GO
 ALTER TABLE [dbo].[DeliveryManager] CHECK CONSTRAINT [FK_DeliveryManager_DeliveryMethod]
 GO
 
-ALTER TABLE [dbo].[DeliveryManager] DROP CONSTRAINT [FK_DeliveryManager_DeliveryStatus]
+--ALTER TABLE [dbo].[DeliveryManager] DROP CONSTRAINT [FK_DeliveryManager_DeliveryStatus]
 
 ALTER TABLE [dbo].[DeliveryManager]  WITH CHECK ADD  CONSTRAINT [FK_DeliveryManager_OrderStatus] FOREIGN KEY([StatusId])
 REFERENCES [dbo].[OrderStatus] ([Id])

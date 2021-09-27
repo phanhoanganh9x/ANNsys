@@ -1087,6 +1087,7 @@
       <DependentUpon>danh-sach-don-dat-hang.aspx</DependentUpon>
     </Compile>
     <Compile Include="Models\Pages\danh-sach-don-hang\KeyValueModel.cs" />
+    <Compile Include="Models\Pages\thong-tin-don-hang\KeyValueModel.cs" />
     <Compile Include="quan-ly-don-giao-hang.aspx.cs">
       <DependentUpon>quan-ly-don-giao-hang.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
