@@ -34,6 +34,24 @@
         return queryParams.substring(1);
     }
 
+    getDeliveryMethod(deliveryMethod) {
+        let url = this.api + '/delivery/method/' + deliveryMethod;
+
+        return new Promise((reslove, reject) => {
+            $.ajax({
+                method: 'GET',
+                url: url,
+                contentType: 'application/json; charset=utf-8',
+                success: (response) => {
+                    reslove(response);
+                },
+                error: err => {
+                    reject(err);
+                }
+            });
+        });
+    }
+
     getDeliveries(filter, pagination) {
         let url = this.api + '/deliveries';
         let queryParams = this._generateQueryParams(filter, pagination);

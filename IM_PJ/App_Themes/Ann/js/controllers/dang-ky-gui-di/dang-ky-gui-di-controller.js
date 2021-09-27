@@ -6,7 +6,8 @@
             deliveryMethod: null,
             shippingCode: null,
             sentDate: null,
-            staff: null
+            staff: null,
+            error: null
         };
 
         this._service = new DeliveryRegisterService();

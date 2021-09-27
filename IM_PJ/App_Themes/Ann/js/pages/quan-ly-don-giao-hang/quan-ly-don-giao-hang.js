@@ -7,10 +7,60 @@ let controller = new DeliveryManagerController();
 
 document.addEventListener("DOMContentLoaded", function (event) {
     _initQueryParams();
+    _initDeliveryMethods();
     _initDeliveryTable();
 });
 
 //#region Private
+function _initQueryParams() {
+    let roleDOM = document.querySelector("[id$='_hdfRole']");
+    let search = window.location.search;
+
+    controller.role = parseInt(roleDOM.value);
+    controller.setFilterByQueryParameters(search);
+
+    if (controller.role != 0) {
+        let staffDOM = document.querySelector("[id$='_ddlCreatedBy']");
+
+        controller.filter.staff = staffDOM.value;
+    }
+}
+
+function _initDeliveryMethods() {
+    let $deliveryMethod = $("#ddlDeliveryMethod");
+
+    // Cài đặt giá trị ban đầu
+    $deliveryMethod .val(null).trigger('change');
+
+    if (controller.filter.deliveryMethod)
+        controller.getDeliveryMethod()
+            .then(function (response) {
+                let newOption = new Option(response.value, response.key, false, false);
+
+                $deliveryMethod.find("option").remove();
+                $deliveryMethod.append(newOption).trigger('change');
+            })
+            .catch(function (e) {
+                console.log(e);
+            });
+
+    // Cài đặt API
+    let url = '/api/v1/delivery/methods/select2?hasPlaceHolder=true';
+
+    if (controller.filter.orderType)
+        url += '&orderTypeId=' + controller.filter.orderType;
+
+    $deliveryMethod.select2({
+        placeholder: 'Kiểu giao hàng',
+        minimumResultsForSearch: Infinity,
+        ajax: {
+            method: 'GET',
+            url: url,
+        },
+        width: '100%'
+    });
+}
+
 function _loadSpanReport() {
     let spanReportDOM = document.querySelector("[id$='spanReport']");
     let spanReport = "";
@@ -24,20 +74,6 @@ function _loadSpanReport() {
     }
 
     spanReportDOM.innerHTML = spanReport;
-}
-
-function _initQueryParams() {
-    let roleDOM = document.querySelector("[id$='_hdfRole']");
-    let search = window.location.search;
-
-    controller.role = parseInt(roleDOM.value);
-    controller.setFilterByQueryParameters(search);
-
-    if (controller.role != 0) {
-        let staffDOM = document.querySelector("[id$='_ddlCreatedBy']");
-
-        controller.filter.staff = staffDOM.value;
-    }
 }
 
 function _initDeliveryTable() {
@@ -79,10 +115,10 @@ function _updateFilter() {
         controller.filter.orderType = null;
 
     // Tìm kiếm loại giao hàng
-    let deliveryMethodDOM = document.querySelector("[id$='_ddlDeliveryMethod']");
+    let $deliveryMethod = $("#ddlDeliveryMethod");
 
-    if (deliveryMethodDOM.value != "0")
-        controller.filter.deliveryMethod = parseInt(deliveryMethodDOM.value);
+    if ($deliveryMethod.val() != "0")
+        controller.filter.deliveryMethod = parseInt($deliveryMethod.val());
     else
         controller.filter.deliveryMethod = null;
 
@@ -261,8 +297,8 @@ function _createReportTableHTML(data) {
                 html += "        </td>";
                 // Trạng thái giao hàng
                 html += "        <td data-title='Trạng thái'>";
-                html += "             <span class='bg-delivery-status bg-delivery-status-" + item.status.key + "'>" + item.status.value;
-                html += "        </span></td>";
+                html += "             <span class='bg-order-status bg-order-status-" + item.status.key + "'>" + item.status.value + "</span>";
+                html += "        </td>";
                 // Ngày gửi
                 html += "        <td  data-title='Ngày gửi'>";
                 if (item.sentDate)
@@ -309,6 +345,13 @@ function onKeyUpSearch(event) {
 
         onClickSearch()
     }
+}
+
+function onChangeOrderType(value) {
+    controller.filter.orderType = parseInt(value);
+    controller.filter.deliveryMethod = null;
+    _replaceUrl();
+    _initDeliveryMethods();
 }
 
 function onClickSearch() {

@@ -35,7 +35,7 @@
                                     <asp:DropDownList ID="ddlOrderType" runat="server" CssClass="form-control dropdown-order-type" onChange="onChangeOrderType($(this).val())"></asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlDeliveryMethod" runat="server" CssClass="form-control dropdown-delivery-method" onChange="onChangeDeliveryMethod($(this).val())"></asp:DropDownList>
+                                    <select id="ddlDeliveryMethod" class="form-control"></select>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
                                     <label>Từ ngày</label>

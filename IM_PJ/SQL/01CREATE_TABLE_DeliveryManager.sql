@@ -48,9 +48,11 @@ GO
 ALTER TABLE [dbo].[DeliveryManager] CHECK CONSTRAINT [FK_DeliveryManager_DeliveryMethod]
 GO
 
-ALTER TABLE [dbo].[DeliveryManager]  WITH CHECK ADD  CONSTRAINT [FK_DeliveryManager_DeliveryStatus] FOREIGN KEY([StatusId])
-REFERENCES [dbo].[DeliveryStatus] ([Id])
+ALTER TABLE [dbo].[DeliveryManager] DROP CONSTRAINT [FK_DeliveryManager_DeliveryStatus]
+
+ALTER TABLE [dbo].[DeliveryManager]  WITH CHECK ADD  CONSTRAINT [FK_DeliveryManager_OrderStatus] FOREIGN KEY([StatusId])
+REFERENCES [dbo].[OrderStatus] ([Id])
 GO
 
-ALTER TABLE [dbo].[DeliveryManager] CHECK CONSTRAINT [FK_DeliveryManager_DeliveryStatus]
+ALTER TABLE [dbo].[DeliveryManager] CHECK CONSTRAINT [FK_DeliveryManager_OrderStatus]
 GO

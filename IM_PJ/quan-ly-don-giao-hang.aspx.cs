@@ -80,51 +80,10 @@ namespace IM_PJ
             }
         }
 
-        private void _loadDeliveryMethod()
-        {
-            #region Khởi tạo API
-            var api = "http://ann-shop-dotnet-core.com/api/v1/delivery/methods";
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create(api);
-
-            httpWebRequest.Method = "GET";
-            #endregion
-
-            try
-            {
-                // Thực thi API
-                var response = (HttpWebResponse)httpWebRequest.GetResponse();
-
-                ddlDeliveryMethod.Items.Clear();
-                ddlDeliveryMethod.Items.Add(new ListItem("Vận chuyển", "0"));
-
-                if (response.StatusCode == HttpStatusCode.OK)
-                    using (var reader = new StreamReader(response.GetResponseStream()))
-                    {
-                        var deliveryMethods = JsonConvert.DeserializeObject<IList<KeyValueModel>>(reader.ReadToEnd());
-                        var listItems = deliveryMethods
-                            .Where(x => ALLOW_DELIVERY_METHODS.Contains(x.key))
-                            .Select(x => new ListItem(x.value, x.key.ToString()))
-                            .ToArray();
-
-                        ddlDeliveryMethod.Items.AddRange(listItems);
-                    }
-
-                ddlDeliveryMethod.DataBind();
-            }
-            catch (WebException we)
-            {
-                throw we;
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
-
         private void _loadStatus()
         {
             #region Khởi tạo API
-            var api = "http://ann-shop-dotnet-core.com/api/v1/delivery/statuses";
+            var api = "http://ann-shop-dotnet-core.com/api/v1/order/statuses?page=quan-ly-don-giao-hang";
             var httpWebRequest = (HttpWebRequest)WebRequest.Create(api);
 
             httpWebRequest.Method = "GET";
@@ -211,15 +170,6 @@ namespace IM_PJ
                 ddlOrderType.SelectedValue = orderType;
         }
 
-        private void _initDeliveryMethod()
-        {
-            var deliveryMethod = Request.QueryString["deliveryMethod"];
-
-            if (!String.IsNullOrEmpty(deliveryMethod))
-                ddlDeliveryMethod.SelectedValue = deliveryMethod;
-        }
-
-
         /// <summary>
         /// Cài đặt ban đầu với datetime picker về khoảng thời gian
         /// </summary>
@@ -286,13 +236,11 @@ namespace IM_PJ
         private void _initPage(tbl_Account acc)
         {
             _loadOrderType();
-            _loadDeliveryMethod();
             _loadStatus();
             _loadCreatedBy(acc);
 
             _initSearch();
             _initOrderType();
-            _initDeliveryMethod();
             _initDatetimePicker();
             _initStatus();
         }

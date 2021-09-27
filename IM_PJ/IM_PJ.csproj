@@ -581,8 +581,8 @@
     <Content Include="SQL\01CREATE_TABLE_DeliverySaveReason.sql" />
     <Content Include="SQL\01CREATE_TABLE_DeliverySaveReport.sql" />
     <Content Include="SQL\01CREATE_TABLE_DeliverySaveStatus.sql" />
-    <Content Include="SQL\01CREATE_TABLE_DeliveryStatus.sql" />
     <Content Include="SQL\01CREATE_TABLE_ExchangeRate.sql" />
+    <Content Include="SQL\01CREATE_TABLE_OrderStatus.sql" />
     <Content Include="SQL\01CREATE_TABLE_OrderType.sql" />
     <Content Include="SQL\01CREATE_TABLE_PostVideo.sql" />
     <Content Include="SQL\01CREATE_TABLE_PreOrder.sql" />

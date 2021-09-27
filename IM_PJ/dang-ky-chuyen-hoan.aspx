@@ -18,14 +18,14 @@
                                 <div class="col-md-5">
                                     <div class="form-group">
                                         <div class="input-group">
-                                            <asp:DropDownList ID="ddlOrderType" runat="server" CssClass="form-control dropdown-order-type" onChange="onChangeOrderType($(this).val())"></asp:DropDownList>
-                                            <asp:TextBox ID="txtCode" CssClass="form-control input-code" runat="server" placeholder="Mã đơn hàng" autocomplete="off" onBlur="onBlurCode()" onKeyUp="onKeyUpCode(event)"></asp:TextBox>
+                                            <asp:DropDownList ID="ddlOrderType" runat="server" CssClass="form-control dropdown-order-type" onChange="onChangeOrderType()"></asp:DropDownList>
+                                            <asp:TextBox ID="txtCode" CssClass="form-control input-code" runat="server" placeholder="Mã đơn hàng" autocomplete="off" onKeyUp="onKeyUpCode(event)"></asp:TextBox>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group">
-                                        <asp:DropDownList ID="ddlDeliveryMethod" runat="server" CssClass="form-control dropdown-delivery-method" onChange="onChangeDeliveryMethod($(this).val())"></asp:DropDownList>
+                                        <select id="ddlDeliveryMethod" class="form-control" onChange="onChangeDeliveryMethod()" disabled></select>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
