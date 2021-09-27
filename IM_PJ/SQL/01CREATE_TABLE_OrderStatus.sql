@@ -27,13 +27,13 @@ GO
 ALTER TABLE [dbo].[OrderStatus] ADD  CONSTRAINT [DF_OrderStatus_ModifiedDate]  DEFAULT (getdate()) FOR [ModifiedDate]
 GO
 
-SET IDENTITY_INSERT [dbo].[DeliveryMethod] ON
+SET IDENTITY_INSERT [dbo].[OrderStatus] ON
 
-INSERT INTO [dbo].[OrderStatus] ([Name], [Index]) VALUES (0, N'Chờ tiếp nhận', 1)
-INSERT INTO [dbo].[OrderStatus] ([Name], [Index]) VALUES (1, N'Đang xử lý', 2)
-INSERT INTO [dbo].[OrderStatus] ([Name], [Index]) VALUES (2, N'Đã hoàn tất', 3)
-INSERT INTO [dbo].[OrderStatus] ([Name], [Index]) VALUES (3, N'Đã hủy', 5)
-INSERT INTO [dbo].[OrderStatus] ([Name], [Index]) VALUES (4, N'Chuyển hoàn', 6)
-INSERT INTO [dbo].[OrderStatus] ([Name], [Index]) VALUES (5, N'Đã gửi hàng', 4)
+INSERT INTO [dbo].[OrderStatus] ([Id], [Name], [Index]) VALUES (0, N'Chờ tiếp nhận', 1)
+INSERT INTO [dbo].[OrderStatus] ([Id], [Name], [Index]) VALUES (1, N'Đang xử lý', 2)
+INSERT INTO [dbo].[OrderStatus] ([Id], [Name], [Index]) VALUES (2, N'Đã hoàn tất', 3)
+INSERT INTO [dbo].[OrderStatus] ([Id], [Name], [Index]) VALUES (3, N'Đã hủy', 5)
+INSERT INTO [dbo].[OrderStatus] ([Id], [Name], [Index]) VALUES (4, N'Chuyển hoàn', 6)
+INSERT INTO [dbo].[OrderStatus] ([Id], [Name], [Index]) VALUES (5, N'Đã gửi hàng', 4)
 
-SET IDENTITY_INSERT [dbo].[DeliveryMethod] OFF
+SET IDENTITY_INSERT [dbo].[OrderStatus] OFF

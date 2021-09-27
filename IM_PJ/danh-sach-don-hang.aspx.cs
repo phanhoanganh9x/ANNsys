@@ -24,12 +24,15 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
+                #region Kiểm tra cookies
                 if (Request.Cookies["usernameLoginSystem_ANN123"] == null)
                 {
                     Response.Redirect("/dang-nhap");
                     return;
                 }
+                #endregion
 
+                #region Kiểm tra user name
                 string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
                 var acc = AccountController.GetByUsername(username);
 
@@ -38,6 +41,7 @@ namespace IM_PJ
                     Response.Redirect("/dang-nhap");
                     return;
                 }
+                #endregion
 
                 // Tình trạng đơn hàng
                 _loadStatus();
@@ -234,7 +238,7 @@ namespace IM_PJ
 
                 int OrderType = 0;
                 int PaymentStatus = 0;
-                var ExcuteStatus = new List<int>() {1, 2, 3};
+                var ExcuteStatus = new List<int>() {1, 2, 5, 4};
                 int PaymentType = 0;
                 var ShippingType = new List<int>();
                 string Discount = "";

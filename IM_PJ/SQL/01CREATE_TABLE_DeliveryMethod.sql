@@ -23,7 +23,7 @@ CREATE TABLE [dbo].[DeliveryMethod](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-ALTER TABLE [dbo].[DeliveryMethod] ADD  CONSTRAINT [DF_DeliveryMethod_Ann]  DEFAULT (0) FOR [ModifiedDate]
+ALTER TABLE [dbo].[DeliveryMethod] ADD  CONSTRAINT [DF_DeliveryMethod_Ann]  DEFAULT (0) FOR [Ann]
 GO
 
 ALTER TABLE [dbo].[DeliveryMethod] ADD  CONSTRAINT [DF_DeliveryMethod_Shopee]  DEFAULT (0) FOR [Shopee]

@@ -31,7 +31,7 @@ namespace IM_PJ
 
                     if (acc != null)
                     {
-                        
+
                         if (acc.RoleID == 0 || acc.Username == "nhom_zalo406" || acc.Username == "hotline" || acc.Username == "nhom_zalo502")
                         {
                             LoadShipper();
@@ -259,7 +259,7 @@ namespace IM_PJ
                 {
                     ltrBtnDoneDelivery.Text = "<a id='doneDelivery' href='javascript:;' class='btn primary-btn fw-btn width-100' onclick='changeDoneDelivery()'><i class='fa fa-check' aria-hidden='true'></i> Cập nhật đã giao</a>";
                 }
-                
+
             }
         }
 
@@ -385,7 +385,7 @@ namespace IM_PJ
                     {
                         html.Append("       <button type='button' class='btn primary-btn h45-btn' data-toggle='modal' data-target='#TransferBankModal' data-backdrop='static' data-keyboard='false' title='Cập nhật thông tin chuyển khoản'><span class='glyphicon glyphicon-edit'></span></button>");
                     }
-                    
+
                     if (item.DeliveryStatus == 1 && !string.IsNullOrEmpty(item.InvoiceImage))
                     {
                         html.Append("       <a id='downloadInvoiceImage' href='javascript:;' onclick='openImageInvoice($(this))' data-link='" + item.InvoiceImage + "' title='Biên nhận gửi hàng' class='btn primary-btn btn-blue h45-btn'><i class='fa fa-file-text-o' aria-hidden='true'></i></a>");
@@ -513,7 +513,7 @@ namespace IM_PJ
             {
                 startPageNumbersFrom = 1;
 
-                //As page numbers are starting at one, output an even number of pages.  
+                //As page numbers are starting at one, output an even number of pages.
                 stopPageNumbersAt = pagesToOutput;
             }
 
@@ -532,7 +532,7 @@ namespace IM_PJ
             }
             /******************End: Xác định startPageNumbersFrom & stopPageNumbersAt**********************/
 
-            //Các dấu ... chỉ những trang phía trước  
+            //Các dấu ... chỉ những trang phía trước
             if (startPageNumbersFrom > 1)
             {
                 output.Append("<li><a href=\"" + string.Format(GetPageUrl(currentPage - 1, pageUrl), startPageNumbersFrom - 1) + "\">&hellip;</a></li>");
@@ -551,7 +551,7 @@ namespace IM_PJ
                 }
             }
 
-            //Các dấu ... chỉ những trang tiếp theo  
+            //Các dấu ... chỉ những trang tiếp theo
             if (stopPageNumbersAt < pageCount)
             {
                 output.Append("<li><a href=\"" + string.Format(pageUrl, stopPageNumbersAt + 1) + "\">&hellip;</a></li>");
@@ -634,6 +634,7 @@ namespace IM_PJ
 
             SessionController.updateDeliverySession(acc, deliverySession);
             DeliveryController.updateDelivery(acc, deliverySession);
+            DeliveryController.updateDeliveryManager(acc, deliverySession);
         }
 
         [WebMethod]
