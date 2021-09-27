@@ -469,7 +469,7 @@ namespace IM_PJ
 
                     html.AppendLine("   <td data-title='Đã mua'>" + item.Quantity + "</td>");
                     if (item.ExcuteStatus == 2)
-                        html.AppendLine("   <td data-title='Xử lý'><span class='bg-order-status bg-order-status-" + item.ID + "' style='cursor: pointer' onclick='onClick_spFinishStatusOrder(this, " + item.ID + ")'>Đã hoàn tất</span></td>");
+                        html.AppendLine("   <td data-title='Xử lý'><span class='bg-order-status bg-order-status-" + item.ExcuteStatus + "' style='cursor: pointer' onclick='onClick_spFinishStatusOrder(this, " + item.ID + ")'>Đã hoàn tất</span></td>");
                     else
                         html.AppendLine("   <td data-title='Xử lý'>" + PJUtils.OrderExcuteStatus(Convert.ToInt32(item.ExcuteStatus)) + "</td>");
                     html.AppendLine("   <td data-title='Thanh toán'>" + PJUtils.OrderPaymentStatus(Convert.ToInt32(item.PaymentStatus)) + "</td>");

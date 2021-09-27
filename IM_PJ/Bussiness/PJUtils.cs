@@ -364,6 +364,9 @@ namespace NHST.Bussiness
 
             switch (ExcuteStatus)
             {
+                case 0:
+                    html += "Chờ tiếp nhận";
+                    break;
                 case 1:
                     html += "Đang xử lý";
                     break;

@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <link rel="stylesheet" href="App_Themes/Ann/css/pages/dang-ky-gui-di/dang-ky-gui-di.css?v=202109250230" />
+    <link rel="stylesheet" href="App_Themes/Ann/css/pages/dang-ky-gui-di/dang-ky-gui-di.css?v=202109271901" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
@@ -78,8 +78,8 @@
         <asp:HiddenField ID="hdfShippingCode" runat="server" />
         <asp:HiddenField ID="hdfStaff" runat="server" />
         <script type="text/javascript" src="App_Themes/Ann/js/utils/string-format.js?v=202109250230"></script>
-        <script type="text/javascript" src="App_Themes/Ann/js/services/dang-ky-gui-di/dang-ky-gui-di-service.js?v=202109250230"></script>
-        <script type="text/javascript" src="App_Themes/Ann/js/controllers/dang-ky-gui-di/dang-ky-gui-di-controller.js?v=202109250230"></script>
-        <script type="text/javascript" src="App_Themes/Ann/js/pages/dang-ky-gui-di/dang-ky-gui-di.js?v=202109250230"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/services/dang-ky-gui-di/dang-ky-gui-di-service.js?v=202109271901"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/controllers/dang-ky-gui-di/dang-ky-gui-di-controller.js?v=202109271901"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/pages/dang-ky-gui-di/dang-ky-gui-di.js?v=202109271901"></script>
     </main>
 </asp:Content>

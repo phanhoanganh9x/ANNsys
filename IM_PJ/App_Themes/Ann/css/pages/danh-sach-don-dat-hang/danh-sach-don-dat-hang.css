@@ -31,6 +31,14 @@
     height: 43px;
 }
 
+.table > tbody > tr:nth-of-type(n) td {
+    background-color: #fff;
+}
+
+table.shop_table_responsive > tbody > tr:nth-of-type(2n + 1) td {
+    border-top: none!important;
+}
+
 @media (max-width: 768px) {
     table.shop_table_responsive thead {
         display: none;

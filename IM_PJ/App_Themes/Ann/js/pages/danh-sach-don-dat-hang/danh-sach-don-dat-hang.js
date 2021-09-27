@@ -379,10 +379,12 @@ function _createPreOrderTableHTML(data) {
                     html += "            <br><span class='name-bottom-nick'>(" + strFormat.toTitleCase(item.customer.name) + ")</span>";
                     html += "        </td>";
                 }
-                else {
+                else if (item.customer.name) {
                     html += "        <td  class='customer-td' data-title='Khách hàng'>";
                     html += "            <a class='col-customer-name-link' target='_blank' href='" + orderService.generateOrderUrl(item.status.key, item.id) + "'>" + strFormat.toTitleCase(item.customer.name) + "</a>";
                     html += "        </td>";
+                } else {
+                    html += "        <td  class='customer-td' data-title='Khách hàng'><span class='bg-yellow'>Vùi lòng tạo thông tin khách hàng</span></td>";
                 }
 
                 html += "        <td data-title='Đã mua'>" + item.quantity + "</td>";
@@ -437,7 +439,7 @@ function _createPreOrderTableHTML(data) {
 
                 // thông tin thêm
                 html += "    <tr class='tr-more-info'>";
-                html += "        <td colspan='2'></td>";
+                html += "        <td colspan='2'><strong>Nguồn đặt hàng: " + item.source + "</strong></td>";
                 html += "        <td colspan='11'>";
 
                 if (item.discount > 0) {

@@ -1,21 +1,4 @@
-﻿.bg-order-status {
-    color: #fff;
-    display: block;
-    padding: 5px 6px;
-    white-space: nowrap;
-    font-size: 12px;
-    border-radius: 6px;
-}
-
-.bg-order-status-4 {
-    background: #795548;
-}
-
-.bg-order-status-5 {
-    background: #2ea2cc;
-}
-
-table.shop_table_responsive > tbody > tr:nth-of-type(2n+1) td {
+﻿table.shop_table_responsive > tbody > tr:nth-of-type(2n+1) td {
     border-bottom: solid 1px #e1e1e1!important;
     background-color: #f8f8f8;
 }

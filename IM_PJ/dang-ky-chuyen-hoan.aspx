@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <link rel="stylesheet" href="App_Themes/Ann/css/pages/dang-ky-chuyen-hoan/dang-ky-chuyen-hoan.css?v=202109250230" />
+    <link rel="stylesheet" href="App_Themes/Ann/css/pages/dang-ky-chuyen-hoan/dang-ky-chuyen-hoan.css?v=202109271901" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
@@ -81,8 +81,8 @@
         <asp:HiddenField ID="hdfStaff" runat="server" />
         <asp:HiddenField ID="hdfIsNew" runat="server" value="1"/>
         <script type="text/javascript" src="App_Themes/Ann/js/utils/string-format.js?v=202109250230"></script>
-        <script type="text/javascript" src="App_Themes/Ann/js/services/dang-ky-chuyen-hoan/dang-ky-chuyen-hoan-service.js?v=202109250230"></script>
-        <script type="text/javascript" src="App_Themes/Ann/js/controllers/dang-ky-chuyen-hoan/dang-ky-chuyen-hoan-controller.js?v=202109250230"></script>
-        <script type="text/javascript" src="App_Themes/Ann/js/pages/dang-ky-chuyen-hoan/dang-ky-chuyen-hoan.js?v=202109250230"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/services/dang-ky-chuyen-hoan/dang-ky-chuyen-hoan-service.js?v=202109271901"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/controllers/dang-ky-chuyen-hoan/dang-ky-chuyen-hoan-controller.js?v=202109271901"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/pages/dang-ky-chuyen-hoan/dang-ky-chuyen-hoan.js?v=202109271901"></script>
     </main>
 </asp:Content>

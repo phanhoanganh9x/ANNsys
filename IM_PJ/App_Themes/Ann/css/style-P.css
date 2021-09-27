@@ -70,6 +70,41 @@
     background: #231f20;
 }
 
+/* Start: Trạng thái đơn hàng */
+.bg-order-status {
+    color: #fff;
+    display: block;
+    padding: 5px 6px;
+    white-space: nowrap;
+    font-size: 12px;
+    border-radius: 6px;
+}
+
+.bg-order-status-0 {
+    background: #2ea2cc;
+}
+
+.bg-order-status-1 {
+    background: #ffba00;
+}
+
+.bg-order-status-2 {
+    background: #73a724;
+}
+
+.bg-order-status-3 {
+    background: #F44336;
+}
+
+.bg-order-status-4 {
+    background: #795548;
+}
+
+.bg-order-status-5 {
+    background: #fd7e14;
+}
+/* End: Trạng thái đơn hàng */
+
 .bg-violet {
     background: #8642a9;
     color: #fff;

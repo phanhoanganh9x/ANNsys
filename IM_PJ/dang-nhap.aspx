@@ -10,11 +10,11 @@
     <meta name="robots" content="noindex, nofollow" />
     <title>Đăng nhập hệ thống</title>
     <link rel="stylesheet" href="/App_Themes/Ann/css/style.css" media="all" />
-    <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css" media="all" />
+    <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=202109271901" media="all" />
     <link href="/App_Themes/NewUI/js/sweet/sweet-alert.css" rel="stylesheet" type="text/css" />
     <link href="/App_Themes/NewUI/js/select2/select2.css" rel="stylesheet" />
     <script type="text/javascript" src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
-    
+
     <script type="text/javascript" src="/App_Themes/Ann/js/popup.js"></script>
 
     <link href="/App_Themes/Ann/css/HoldOn.css" rel="stylesheet" type="text/css" />
@@ -71,7 +71,7 @@
                     else {
                         showSecurityCode();
                     }
-                    
+
                     event.preventDefault();
                     return false;
                 }

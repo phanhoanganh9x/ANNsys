@@ -9,7 +9,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="robots" content="noindex, nofollow">
     <link rel="stylesheet" href="/App_Themes/Ann/css/style.css?v=15052019" media="all">
-    <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=23082019" media="all">
+    <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=202109271901" media="all">
     <link href="/App_Themes/Ann/css/HoldOn.css?v=04092021" rel="stylesheet" type="text/css" />
     <link href="/App_Themes/NewUI/js/select2/select2.css" rel="stylesheet" />
     <script type="text/javascript" src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
@@ -151,13 +151,13 @@
 
             <a href="javascript:;" class="scroll-top-link" id="scroll-top"><i class="fa fa-angle-up"></i></a>
             <a href="javascript:;" class="scroll-bottom-link" id="scroll-bottom"><i class="fa fa-angle-down"></i></a>
-            
+
             <script src="/App_Themes/Ann/js/bootstrap.min.js"></script>
             <script src="/App_Themes/Ann/js/bootstrap-table/bootstrap-table.js"></script>
             <script src="/App_Themes/NewUI/js/select2/select2.min.js"></script>
             <script src="/App_Themes/Ann/js/master.js?v=2011"></script>
             <script src="/App_Themes/Ann/js/download-product-image.js?v=04092021"></script>
-            
+
             <script src="/App_Themes/Ann/js/HoldOn.js?v=2011"></script>
 
             <script type="text/javascript">
@@ -224,7 +224,7 @@
                     $(".copy-product-info").remove();
                 }
 
-                function ajaxCopyInfo(id) 
+                function ajaxCopyInfo(id)
                 {
                     $.ajax({
                         type: "POST",

@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <link rel="stylesheet" href="App_Themes/Ann/css/pages/danh-sach-don-dat-hang/danh-sach-don-dat-hang.css?v=202101051418" />
+    <link rel="stylesheet" href="App_Themes/Ann/css/pages/danh-sach-don-dat-hang/danh-sach-don-dat-hang.css?v=202109271901" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
@@ -123,7 +123,7 @@
                             </div>
                         </div>
                         <div class="responsive-table">
-                            <table id="tbPreOrder" class="table table-checkable table-product table-new-product shop_table_responsive"></table>
+                            <table id="tbPreOrder" class="table table-checkable table-product shop_table_responsive"></table>
                         </div>
                         <div class="panel-footer clear">
                             <div class="pagination">
@@ -138,9 +138,9 @@
 
         <script type="text/javascript" src="/App_Themes/Ann/js/utils/string-format.js?v=202101051418"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=04092021"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/services/common/order-service.js?v=202103192029"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/services/common/order-service.js?v=202109271901"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/services/danh-sach-don-dat-hang/danh-sach-don-dat-hang-service.js?v=202101051418"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/controllers/danh-sach-don-dat-hang/danh-sach-don-dat-hang-controller.js?v=202101051418"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-don-dat-hang/danh-sach-don-dat-hang.js?v=202103210052"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-don-dat-hang/danh-sach-don-dat-hang.js?v=202109271901"></script>
     </main>
 </asp:Content>
