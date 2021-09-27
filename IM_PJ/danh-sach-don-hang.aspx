@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <link rel="stylesheet" href="App_Themes/Ann/css/pages/danh-sach-don-hang/danh-sach-don-hang.css?v=04092021" />
+    <link rel="stylesheet" href="App_Themes/Ann/css/pages/danh-sach-don-hang/danh-sach-don-hang.css?v=202109271749" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
@@ -78,12 +78,7 @@
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlExcuteStatus" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Xử lý"></asp:ListItem>
-                                        <asp:ListItem Value="1" Text="Đang xử lý"></asp:ListItem>
-                                        <asp:ListItem Value="2" Text="Đã hoàn tất"></asp:ListItem>
-                                        <asp:ListItem Value="3" Text="Đã hủy"></asp:ListItem>
-                                    </asp:DropDownList>
+                                    <asp:DropDownList ID="ddlExcuteStatus" runat="server" CssClass="form-control"></asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlPaymentStatus" runat="server" CssClass="form-control">
@@ -104,20 +99,7 @@
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlShippingType" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Kiểu giao hàng"></asp:ListItem>
-                                        <asp:ListItem Value="1" Text="Lấy trực tiếp"></asp:ListItem>
-                                        <asp:ListItem Value="2" Text="Bưu điện"></asp:ListItem>
-                                        <asp:ListItem Value="3" Text="Proship"></asp:ListItem>
-                                        <asp:ListItem Value="4" Text="Chuyển xe"></asp:ListItem>
-                                        <asp:ListItem Value="5" Text="Nhân viên giao"></asp:ListItem>
-                                        <asp:ListItem Value="6" Text="GHTK"></asp:ListItem>
-                                        <asp:ListItem Value="7" Text="Viettel"></asp:ListItem>
-                                        <asp:ListItem Value="8" Text="Grab"></asp:ListItem>
-                                        <asp:ListItem Value="9" Text="AhaMove"></asp:ListItem>
-                                        <asp:ListItem Value="10" Text="J&T"></asp:ListItem>
-                                        <asp:ListItem Value="11" Text="GHN"></asp:ListItem>
-                                    </asp:DropDownList>
+                                    <asp:DropDownList ID="ddlShippingType" runat="server" CssClass="form-control"></asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlCreatedBy" runat="server" CssClass="form-control"></asp:DropDownList>
@@ -194,7 +176,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Modal phí khác -->
         <div class="modal fade" id="feeInfoModal" role="dialog">
             <div class="modal-dialog">

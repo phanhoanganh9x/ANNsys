@@ -50,7 +50,6 @@ namespace IM_PJ
                             ltrMenu.Text += "<li><a href='/danh-sach-chuyen-khoan'><span class='icon-menu icon-order'></span>Chuyển khoản</a></li>";
                         }
                         ltrMenu.Text += "<li><a href='/danh-sach-don-tra-hang'><span class='icon-menu icon-order'></span>Đổi trả hàng</a></li>";
-                        ltrMenu.Text += "<li><a href='/danh-sach-don-hang-chuyen-hoan'><span class='icon-menu icon-order'></span>Chuyển hoàn</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-van-chuyen'><span class='icon-menu icon-order'></span>NV Giao hàng</a></li>";
                         ltrMenu.Text += "<li><a href='/quan-ly-don-giao-hang'><span class='icon-menu icon-order'></span>QL vận đơn</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-don-ghtk'><span class='icon-menu icon-order'></span>GHTK</a></li>";
@@ -116,7 +115,6 @@ namespace IM_PJ
                         ltrMenu.Text += "<li><a href='/danh-sach-don-dat-hang'><span class='icon-menu icon-order'></span>Đơn online</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-don-ghtk'><span class='icon-menu icon-order'></span>GHTK</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-don-tra-hang'><span class='icon-menu icon-order'></span>Đổi trả hàng</a></li>";
-                        ltrMenu.Text += "<li><a href='/danh-sach-don-hang-chuyen-hoan'><span class='icon-menu icon-order'></span>Chuyển hoàn</a></li>";
                         ltrMenu.Text += "<li><a href='/tat-ca-san-pham'><span class='icon-menu icon-lib'></span>Sản phẩm</a></li>";
                         ltrMenu.Text += "<li><a href='/sp' target='_blank'><span class='icon-menu icon-lib'></span>Xem sản phẩm</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-khach-hang'><span class='icon-menu icon-product'></span>Khách hàng</a></li>";

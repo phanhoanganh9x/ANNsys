@@ -79,7 +79,7 @@ namespace NHST.Bussiness
             StreamReader read = new StreamReader(decStream);
             return (read.ReadToEnd());
         }
-        
+
         public static void ShowMsg(string txt, bool? isRefresh, System.Web.UI.Page page)
         {
             //isRefresh = isRefresh == null;
@@ -112,13 +112,13 @@ namespace NHST.Bussiness
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="txt"></param>
         /// <param name="type">e: Error,i: warning, default: succes</param>
         /// <param name="isRefresh"></param>
         /// <param name="page"></param>
-        /// 
+        ///
         public static void ShowMessageBoxSwAlert(string txt, string type, bool? isRefresh, System.Web.UI.Page page)
         {
             txt = new JavaScriptSerializer().Serialize(txt);
@@ -358,24 +358,34 @@ namespace NHST.Bussiness
         }
         public static string OrderExcuteStatus(int ExcuteStatus)
         {
-            string ret = "";
-            if (ExcuteStatus == 1)
+            var html = "";
+
+            html += "<span class='bg-order-status bg-order-status-" + ExcuteStatus + "'>";
+
+            switch (ExcuteStatus)
             {
-                ret = "<span class='bg-yellow'>Đang xử lý</span>";
+                case 1:
+                    html += "Đang xử lý";
+                    break;
+                case 2:
+                    html += "Đã hoàn tất";
+                    break;
+                case 3:
+                    html += "Đã hủy";
+                    break;
+                case 4:
+                    html += "Chuyển hoàn";
+                    break;
+                case 5:
+                    html += "Đã gửi hàng";
+                    break;
+                default:
+                    break;
             }
-            else if (ExcuteStatus == 2)
-            {
-                ret = "<span class='bg-green'>Đã hoàn tất</span>";
-            }
-            else if(ExcuteStatus == 3)
-            {
-                ret = "<span class='bg-red'>Đã hủy</span>";
-            }
-            else if(ExcuteStatus == 4)
-            {
-                ret = "<span class='bg-brown'>Chuyển hoàn</span>";
-            }
-            return ret;
+
+            html += "</span>";
+
+            return html;
         }
 
         public static string RefundStatus(int Status)
@@ -440,7 +450,7 @@ namespace NHST.Bussiness
             }
             return ret;
         }
-        
+
         public static string ReturnStatusMovePro(int status)
         {
             if (status == 1)
@@ -456,7 +466,7 @@ namespace NHST.Bussiness
                 return "<span class='bg-blue'>Đã hoàn tất</span>";
             }
         }
-        
+
         public static string RemoveHTMLTags(string content)
         {
             var cleaned = string.Empty;
@@ -713,7 +723,7 @@ namespace NHST.Bussiness
                                                      { 2, 3, 3, 1, 1, 1, 2, 0 } // 106
                                                    };
 
-      
+
         public static System.Drawing.Image MakeBarcodeImage(string inputData, int barWeight, bool addQuietZone)
         {
             // get the Code128 codes to represent the message
@@ -754,7 +764,7 @@ namespace NHST.Bussiness
                             gr.FillRectangle(Brushes.Black, cursor, 0, barWidth, height);
                         }
 
-                        // note that we never need to draw the space, since we 
+                        // note that we never need to draw the space, since we
                         // initialized the graphics to all white
 
                         // advance cursor beyond this pair
@@ -806,7 +816,7 @@ namespace NHST.Bussiness
                             gr.FillRectangle(Brushes.Black, cursor, 0, barWidth, height);
                         }
 
-                        // note that we never need to draw the space, since we 
+                        // note that we never need to draw the space, since we
                         // initialized the graphics to all white
 
                         // advance cursor beyond this pair
@@ -867,7 +877,7 @@ namespace NHST.Bussiness
             HttpContext.Current.Response.Clear();
 
         }
-        
+
         public static string GenBarCode(string Code, string physicalPath)
         {
             string filePath = string.Format("{0}{1}.jpg", physicalPath, Code);
@@ -1062,7 +1072,7 @@ namespace NHST.Bussiness
             {
                 return "<span class=\"bg-yellow\">Nhập hàng</span>";
             }
-            
+
         }
 
         public static double TotalProductQuantityInstockBySKU(string SKU)

@@ -100,8 +100,8 @@ namespace IM_PJ
                 if (response.StatusCode == HttpStatusCode.OK)
                     using (var reader = new StreamReader(response.GetResponseStream()))
                     {
-                        var deliveryMethods = JsonConvert.DeserializeObject<IList<KeyValueModel>>(reader.ReadToEnd());
-                        var listItems = deliveryMethods
+                        var statuses = JsonConvert.DeserializeObject<IList<KeyValueModel>>(reader.ReadToEnd());
+                        var listItems = statuses
                             .Select(x => new ListItem(x.value, x.key.ToString()))
                             .ToArray();
 
