@@ -547,8 +547,8 @@
                 if (excuteStatus == 2) {
                     let shippingType = $("#<%=ddlShippingType.ClientID%>").val();
 
-                    // 2: Bưu điện | 7: Viettel | 8: Grab | 9: AhaMove | 10: J&T | 11: GHN
-                    if (shippingType == 2 || shippingType == 7 || shippingType == 8 || shippingType == 9 || shippingType == 10 || shippingType == 11) {
+                    // 2: Bưu điện | 7: Viettel | 8: Grab | 9: AhaMove
+                    if (shippingType == 2 || shippingType == 7 || shippingType == 8 || shippingType == 9) {
                         let $feeShip = $("#<%=pFeeShip.ClientID%>");
                         let feeShip = parseFloat($feeShip.val().replace(/\,/g, ''));
 
@@ -570,8 +570,8 @@
                             return false;
                         }
                     }
-                    // 3: Proship | 6: GHTK
-                    else if (shippingType == 3 || shippingType == 6) {
+                    // 3: Proship | 6: GHTK | 10: J&T
+                    else if (shippingType == 3 || shippingType == 6 || shippingType == 10) {
                         swal({
                             title: "Có vấn đề:",
                             text: "Không <strong>Hoàn tất</strong> đơn ngay lúc này được! Hãy chọn trạng thái Đang xử lý đơn!",
@@ -1849,7 +1849,7 @@
                     $transportModal.removeAttr("hidden");
                     $transportSubModal.removeAttr("hidden");
                 }
-                else if (shipType.val() == 6) {
+                else if (shipType.val() == 6 || shipType.val() == 10) {
                     $shippingFeeModal.attr("hidden", true);
                     $("<%=txtShippingFeeModal.ClientID%>").val(0);
 

@@ -17,6 +17,8 @@ namespace IM_PJ.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public tbl_Order()
         {
+            this.DeliverySaveNotifications = new HashSet<DeliverySaveNotification>();
+            this.JtExpressOrders = new HashSet<JtExpressOrder>();
             this.ViewOrders = new HashSet<ViewOrder>();
         }
     
@@ -72,6 +74,10 @@ namespace IM_PJ.Models
         public byte[] Timestamp { get; set; }
     
         public virtual DeliveryAddress DeliveryAddress { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DeliverySaveNotification> DeliverySaveNotifications { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<JtExpressOrder> JtExpressOrders { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ViewOrder> ViewOrders { get; set; }
     }

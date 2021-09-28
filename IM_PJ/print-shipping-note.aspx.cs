@@ -76,6 +76,61 @@ namespace IM_PJ
 
             return result;
         }
+
+        #region J&T Express
+        private void loadJtExpress(int orderId)
+        {
+            #region Lấy data
+            var data = JtExpressOrderController.getOrder(orderId);
+
+            // Mã đơn đặt
+            var maShop = orderId;
+            // Mã vận đơn
+            var maVanDon = data.Cod;
+            // Tên người gửi
+            var tenNguoiGui = data.SenderName;
+            // Sđt người gửi
+            var sdtNguoiGui = data.SenderPhone;
+            // Địa chỉ chi tiết nơi gửi
+            var diaChiNguoiGui = String.Format(
+                "{0}, {1}, {2}, {3}",
+                data.SenderAddress,
+                Regex.Replace(data.SenderWard, @"-.+$", String.Empty),
+                data.SenderDistrict,
+                data.SenderProvince
+            );
+            // Tên người nhận
+            var tenNguoiNhan = data.ReceiverName;
+            // Sđt người nhận
+            var sdtNguoiNhan = data.ReceiverPhone;
+            // Địa chỉ chi tiết người nhận
+            var diaChiNguoiNhan = String.Format(
+                "{0}, {1}, {2}, {3}",
+                data.ReceiverAddress,
+                Regex.Replace(data.ReceiverWard, @"-.+$", String.Empty),
+                data.ReceiverDistrict,
+                data.ReceiverProvince
+            );
+            // Mã phân hàng (Mã bưu cục)
+            var maBuuCuc = data.PostalCode;
+            // Mã phân hàng (Mã phân hàng chi nhánh)
+            var maNhanhBuuCuc = data.PostalBranchCode;
+            // Phí vận chuyển
+            var fee = Math.Ceiling(data.Fee + data.CodFee);
+            // COD
+            var cod = data.Cod;
+            // Tên hàng hóa
+            var tenHangHoa = data.ItemName;
+            // Sô kiện hàng
+            var soLuongHangHoa = data.ItemNumber;
+            // Trọng lượng
+            var weight = data.Weight;
+            // Ghi chú
+            var note = data.Note;
+            #endregion
+        }
+        #endregion
+
         public void LoadData()
         {
             string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
@@ -192,7 +247,7 @@ namespace IM_PJ
                         addressTo += ", " + Province.Name;
                     }
                 }
-                 
+
                 string DeliveryInfo = "";
                 string ShippingFeeInfo = "";
                 string ShipperFeeInfo = "";
@@ -373,7 +428,7 @@ namespace IM_PJ
                     }
                 }
 
-                
+
 
                 // Lấy logo ANN
                 string LogoANN = "";

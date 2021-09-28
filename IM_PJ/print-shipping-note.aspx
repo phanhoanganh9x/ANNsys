@@ -21,13 +21,13 @@
     }
     .table {
         display: block;
-        width: 165mm;
+        width: 155mm;
         height: 72mm;
         position: relative;
         border-left: dashed 2px #000;
     }
     .table-ghtk {
-        width: 185mm;
+        width: 175mm;
     }
     .table-ghtk .top-right {
         right: 32mm;
@@ -72,20 +72,24 @@
         width: 90mm;
         text-align: right;
     }
+    .top-right img {
+        max-width: 88%;
+    }
     .bottom-left {
         position: absolute;
         bottom: 1mm;
         left: 2mm;
-        width: 65mm;
+        width: 55mm;
     }
     .bottom-left img {
-        width: 50mm;
+        width: 40mm;
+        height: 10mm;
     }
     .bottom-right {
         position: absolute;
         bottom: 1mm;
         right: 12mm;
-        width: 95mm;
+        width: 90mm;
     }
     .cod {
         font-size: 18px;
@@ -103,7 +107,7 @@
     .delivery {
         margin-top: 0;
         text-transform: uppercase;
-        font-size: 18px;
+        font-size: 15px;
     }
     .sender-name {
         font-size: 19px;
@@ -181,7 +185,7 @@
         position: absolute;
         text-align: center;
         top: 31mm;
-        left: 124mm;
+        left: 114mm;
         font-size: 30px;
         font-weight: bold;
         border-top: dashed 2px #000;
@@ -189,11 +193,11 @@
         letter-spacing: 6px;
     }
     .margin-left-ghtk {
-        left: 136mm;
+        left: 126mm;
     }
     .ghtk {
         top: 30.5mm;
-        left: 125mm;
+        left: 115mm;
         padding-top: 0;
         text-align: center;
         font-size: 33px;

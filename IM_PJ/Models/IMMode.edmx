@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="inventorymanagementModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="inventorymanagementModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Bank">
           <Key>
             <PropertyRef Name="ID" />
@@ -196,6 +196,39 @@
           <Property Name="ModifiedBy" Type="nvarchar" MaxLength="15" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="JtProvince" Type="nvarchar" MaxLength="100" />
+          <Property Name="JtDistrict" Type="nvarchar" MaxLength="100" />
+          <Property Name="JtWard" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="DeliveryManager">
+          <Key>
+            <PropertyRef Name="OrderTypeId" />
+            <PropertyRef Name="Code" />
+          </Key>
+          <Property Name="OrderTypeId" Type="int" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="DeliveryMethodId" Type="int" Nullable="false" />
+          <Property Name="ShippingCode" Type="nvarchar" MaxLength="100" />
+          <Property Name="StatusId" Type="int" Nullable="false" />
+          <Property Name="SentDate" Type="datetime" />
+          <Property Name="RefundDate" Type="datetime" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DeliveryMethod">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+          <Property Name="Ann" Type="bit" Nullable="false" />
+          <Property Name="Shopee" Type="bit" Nullable="false" />
+          <Property Name="Lazada" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="DeliveryPostOffice">
           <Key>
@@ -234,6 +267,93 @@
           <Property Name="IsPicked" Type="bit" Nullable="false" />
           <Property Name="IsDelivered" Type="bit" Nullable="false" />
           <Property Name="NameJT" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="DeliverySaveNotification">
+          <Key>
+            <PropertyRef Name="GhtkCode" />
+            <PropertyRef Name="OrderId" />
+          </Key>
+          <Property Name="GhtkCode" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="OrderId" Type="int" Nullable="false" />
+          <Property Name="StatusId" Type="int" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+          <Property Name="ReasonCode" Type="int" />
+          <Property Name="Reason" Type="nvarchar(max)" />
+          <Property Name="Weight" Type="float" Nullable="false" />
+          <Property Name="GhtkFee" Type="money" Nullable="false" />
+          <Property Name="GhtkCod" Type="money" />
+          <Property Name="ReturnPartPackage" Type="int" Nullable="false" />
+          <Property Name="CustomerName" Type="nvarchar" MaxLength="255" />
+          <Property Name="CustomerPhone" Type="nvarchar" MaxLength="20" />
+          <Property Name="CustomerAddress" Type="nvarchar(max)" />
+          <Property Name="OrderDate" Type="datetime" />
+          <Property Name="Cod" Type="money" />
+          <Property Name="Fee" Type="money" />
+          <Property Name="Staff" Type="nvarchar" MaxLength="15" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DeliverySaveReason">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DeliverySaveReport">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MaDonHang" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="MaDonHangShop" Type="int" />
+          <Property Name="TrangThaiDonHang" Type="int" Nullable="false" />
+          <Property Name="NgayTao" Type="datetime" Nullable="false" />
+          <Property Name="NgayHoanThanh" Type="datetime" Nullable="false" />
+          <Property Name="KhoiLuong" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="KhachHang" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="DiaChi" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="TienCod" Type="money" Nullable="false" />
+          <Property Name="PhiBaoHiem" Type="money" Nullable="false" />
+          <Property Name="PhiGiaoHang" Type="money" Nullable="false" />
+          <Property Name="PhiDichVuTraTruoc" Type="money" Nullable="false" />
+          <Property Name="PhiDichVuCanTru" Type="money" Nullable="false" />
+          <Property Name="PhiDichVuHoanLai" Type="money" Nullable="false" />
+          <Property Name="PhiChuyenHoan" Type="money" Nullable="false" />
+          <Property Name="PhiThayDoiDiaChiGiaoHang" Type="money" Nullable="false" />
+          <Property Name="PhiLuuKho" Type="money" Nullable="false" />
+          <Property Name="TienTip" Type="money" Nullable="false" />
+          <Property Name="PhiDonHoanDaThanhToan" Type="money" Nullable="false" />
+          <Property Name="ShopTraShipKhiTraHang" Type="money" Nullable="false" />
+          <Property Name="KhuyenMai" Type="money" Nullable="false" />
+          <Property Name="ThanhToan" Type="money" Nullable="false" />
+          <Property Name="GhiChu" Type="nvarchar(max)" />
+          <Property Name="FileName" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="OrderSearchStatus" Type="int" Nullable="false" />
+          <Property Name="ShopCod" Type="money" />
+          <Property Name="ShopFee" Type="money" />
+          <Property Name="Staff" Type="nvarchar" MaxLength="100" />
+          <Property Name="Review" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DeliverySaveStatus">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DeliveryStatus">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="ExchangeRate">
           <Key>
@@ -287,6 +407,58 @@
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="JtExpressAddress">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Province" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="District" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Area" Type="nvarchar" MaxLength="100" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="JtExpressOrder">
+          <Key>
+            <PropertyRef Name="OrderId" />
+            <PropertyRef Name="Code" />
+          </Key>
+          <Property Name="OrderId" Type="int" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="SenderName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="SenderPhone" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="SenderAddress" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="SenderProvince" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="SenderDistrict" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="SenderWard" Type="nvarchar" MaxLength="100" />
+          <Property Name="ReceiverName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="ReceiverPhone" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="ReceiverAddress" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="ReceiverProvince" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="ReceiverDistrict" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="ReceiverWard" Type="nvarchar" MaxLength="100" />
+          <Property Name="PostalCode" Type="nvarchar" MaxLength="100" />
+          <Property Name="PostalBranchCode" Type="nvarchar" MaxLength="100" />
+          <Property Name="Fee" Type="money" Nullable="false" />
+          <Property Name="InsuranceFee" Type="money" Nullable="false" />
+          <Property Name="Cod" Type="money" Nullable="false" />
+          <Property Name="CodFee" Type="money" Nullable="false" />
+          <Property Name="ItemName" Type="nvarchar" MaxLength="100" />
+          <Property Name="ItemNumber" Type="int" Nullable="false" />
+          <Property Name="Weight" Type="float" Nullable="false" />
+          <Property Name="Note" Type="nvarchar(max)" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="JtExpressReason">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="SpecificOccurrence" Type="nvarchar(max)" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="Notification">
           <Key>
@@ -375,6 +547,25 @@
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OrderStatus">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Index" Type="int" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OrderType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="PostCategory">
           <Key>
@@ -484,7 +675,7 @@
           <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Status" Type="int" Nullable="false" />
           <Property Name="Avatar" Type="nvarchar(max)" />
-          <Property Name="DeliveryAddressId" Type="bigint" Nullable="false" />
+          <Property Name="DeliveryAddressId" Type="bigint" />
           <Property Name="DeliveryMethod" Type="int" Nullable="false" />
           <Property Name="PaymentMethod" Type="int" Nullable="false" />
           <Property Name="CouponId" Type="int" />
@@ -501,6 +692,7 @@
           <Property Name="Timestamp" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
           <Property Name="ShippingFee" Type="money" Nullable="false" />
           <Property Name="Total" Type="money" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="Note" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="PreOrderDetail">
           <Key>
@@ -527,6 +719,8 @@
           <Property Name="ModifiedBy" Type="nvarchar" MaxLength="15" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
           <Property Name="Timestamp" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="Discount" Type="money" Nullable="false" />
+          <Property Name="Total" Type="money" StoreGeneratedPattern="Computed" Nullable="false" />
         </EntityType>
         <EntityType Name="ProductTag">
           <Key>
@@ -1528,6 +1722,90 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_DeliveryManager_DeliveryMethod">
+          <End Role="DeliveryMethod" Type="Self.DeliveryMethod" Multiplicity="1" />
+          <End Role="DeliveryManager" Type="Self.DeliveryManager" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DeliveryMethod">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DeliveryManager">
+              <PropertyRef Name="DeliveryMethodId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeliveryManager_OrderStatus">
+          <End Role="OrderStatus" Type="Self.OrderStatus" Multiplicity="1" />
+          <End Role="DeliveryManager" Type="Self.DeliveryManager" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OrderStatus">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DeliveryManager">
+              <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeliveryManager_OrderType">
+          <End Role="OrderType" Type="Self.OrderType" Multiplicity="1" />
+          <End Role="DeliveryManager" Type="Self.DeliveryManager" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OrderType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DeliveryManager">
+              <PropertyRef Name="OrderTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeliverySaveNotification_DeliverySaveReason">
+          <End Role="DeliverySaveReason" Type="Self.DeliverySaveReason" Multiplicity="0..1" />
+          <End Role="DeliverySaveNotification" Type="Self.DeliverySaveNotification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DeliverySaveReason">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DeliverySaveNotification">
+              <PropertyRef Name="ReasonCode" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeliverySaveNotification_DeliverySaveStatus">
+          <End Role="DeliverySaveStatus" Type="Self.DeliverySaveStatus" Multiplicity="1" />
+          <End Role="DeliverySaveNotification" Type="Self.DeliverySaveNotification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DeliverySaveStatus">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DeliverySaveNotification">
+              <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeliverySaveNotification_tbl_Order">
+          <End Role="tbl_Order" Type="Self.tbl_Order" Multiplicity="1" />
+          <End Role="DeliverySaveNotification" Type="Self.DeliverySaveNotification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Order">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DeliverySaveNotification">
+              <PropertyRef Name="OrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_JtExpressOrder_tbl_Order">
+          <End Role="tbl_Order" Type="Self.tbl_Order" Multiplicity="1" />
+          <End Role="JtExpressOrder" Type="Self.JtExpressOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Order">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="JtExpressOrder">
+              <PropertyRef Name="OrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_PostVideo_PostPublic">
           <End Role="PostPublic" Type="Self.PostPublic" Multiplicity="0..1" />
           <End Role="PostVideo" Type="Self.PostVideo" Multiplicity="*" />
@@ -1565,7 +1843,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PreOrder_DeliveryAddress">
-          <End Role="DeliveryAddress" Type="Self.DeliveryAddress" Multiplicity="1" />
+          <End Role="DeliveryAddress" Type="Self.DeliveryAddress" Multiplicity="0..1" />
           <End Role="PreOrder" Type="Self.PreOrder" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="DeliveryAddress">
@@ -1685,17 +1963,29 @@
           <EntitySet Name="CustomerEditOrder" EntityType="Self.CustomerEditOrder" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Delivery" EntityType="Self.Delivery" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DeliveryAddress" EntityType="Self.DeliveryAddress" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DeliveryManager" EntityType="Self.DeliveryManager" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DeliveryMethod" EntityType="Self.DeliveryMethod" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DeliveryPostOffice" EntityType="Self.DeliveryPostOffice" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DeliverySaveAddress" EntityType="Self.DeliverySaveAddress" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DeliverySaveNotification" EntityType="Self.DeliverySaveNotification" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DeliverySaveReason" EntityType="Self.DeliverySaveReason" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DeliverySaveReport" EntityType="Self.DeliverySaveReport" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DeliverySaveStatus" EntityType="Self.DeliverySaveStatus" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DeliveryStatus" EntityType="Self.DeliveryStatus" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ExchangeRate" EntityType="Self.ExchangeRate" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Fee" EntityType="Self.Fee" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FeeType" EntityType="Self.FeeType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GroupNotifyPromotion" EntityType="Self.GroupNotifyPromotion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="JtExpressAddress" EntityType="Self.JtExpressAddress" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="JtExpressOrder" EntityType="Self.JtExpressOrder" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="JtExpressReason" EntityType="Self.JtExpressReason" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Notification" EntityType="Self.Notification" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NotificationCategory" EntityType="Self.NotificationCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NotifyNews" EntityType="Self.NotifyNews" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NotifyPromotion" EntityType="Self.NotifyPromotion" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NotifyUser" EntityType="Self.NotifyUser" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OrderStatus" EntityType="Self.OrderStatus" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OrderType" EntityType="Self.OrderType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PostCategory" EntityType="Self.PostCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PostClone" EntityType="Self.PostClone" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PostPublic" EntityType="Self.PostPublic" Schema="dbo" store:Type="Tables" />
@@ -1769,6 +2059,34 @@
             <End Role="DeliverySaveAddress" EntitySet="DeliverySaveAddress" />
             <End Role="DeliveryAddress" EntitySet="DeliveryAddress" />
           </AssociationSet>
+          <AssociationSet Name="FK_DeliveryManager_DeliveryMethod" Association="Self.FK_DeliveryManager_DeliveryMethod">
+            <End Role="DeliveryMethod" EntitySet="DeliveryMethod" />
+            <End Role="DeliveryManager" EntitySet="DeliveryManager" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DeliveryManager_OrderStatus" Association="Self.FK_DeliveryManager_OrderStatus">
+            <End Role="OrderStatus" EntitySet="OrderStatus" />
+            <End Role="DeliveryManager" EntitySet="DeliveryManager" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DeliveryManager_OrderType" Association="Self.FK_DeliveryManager_OrderType">
+            <End Role="OrderType" EntitySet="OrderType" />
+            <End Role="DeliveryManager" EntitySet="DeliveryManager" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DeliverySaveNotification_DeliverySaveReason" Association="Self.FK_DeliverySaveNotification_DeliverySaveReason">
+            <End Role="DeliverySaveReason" EntitySet="DeliverySaveReason" />
+            <End Role="DeliverySaveNotification" EntitySet="DeliverySaveNotification" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DeliverySaveNotification_DeliverySaveStatus" Association="Self.FK_DeliverySaveNotification_DeliverySaveStatus">
+            <End Role="DeliverySaveStatus" EntitySet="DeliverySaveStatus" />
+            <End Role="DeliverySaveNotification" EntitySet="DeliverySaveNotification" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DeliverySaveNotification_tbl_Order" Association="Self.FK_DeliverySaveNotification_tbl_Order">
+            <End Role="tbl_Order" EntitySet="tbl_Order" />
+            <End Role="DeliverySaveNotification" EntitySet="DeliverySaveNotification" />
+          </AssociationSet>
+          <AssociationSet Name="FK_JtExpressOrder_tbl_Order" Association="Self.FK_JtExpressOrder_tbl_Order">
+            <End Role="tbl_Order" EntitySet="tbl_Order" />
+            <End Role="JtExpressOrder" EntitySet="JtExpressOrder" />
+          </AssociationSet>
           <AssociationSet Name="FK_PostVideo_PostPublic" Association="Self.FK_PostVideo_PostPublic">
             <End Role="PostPublic" EntitySet="PostPublic" />
             <End Role="PostVideo" EntitySet="PostVideo" />
@@ -1818,7 +2136,8 @@
             <End Role="ViewOrder" EntitySet="ViewOrder" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="inventorymanagementModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -1913,7 +2232,7 @@
           <Property Name="PriceMin" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
           <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Publish" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="PreOrders" Relationship="inventorymanagementModel.FK_PreOrder_Coupon" FromRole="Coupon" ToRole="PreOrder" />
+          <NavigationProperty Name="PreOrders" Relationship="Self.FK_PreOrder_Coupon" FromRole="Coupon" ToRole="PreOrder" />
         </EntityType>
         <EntityType Name="CronJob">
           <Key>
@@ -1997,6 +2316,66 @@
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Times" Type="Int32" />
         </EntityType>
+        <EntityType Name="DeliveryAddress">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FullName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Phone" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ProvinceId" Type="Int32" Nullable="false" />
+          <Property Name="DistrictId" Type="Int32" Nullable="false" />
+          <Property Name="WardId" Type="Int32" Nullable="false" />
+          <Property Name="IsDefault" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="JtProvince" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="JtDistrict" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="JtWard" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="DeliverySaveAddress" Relationship="Self.FK_DeliveryAddress_District" FromRole="DeliveryAddress" ToRole="DeliverySaveAddress" />
+          <NavigationProperty Name="DeliverySaveAddress1" Relationship="Self.FK_DeliveryAddress_Province" FromRole="DeliveryAddress" ToRole="DeliverySaveAddress" />
+          <NavigationProperty Name="DeliverySaveAddress2" Relationship="Self.FK_DeliveryAddress_Ward" FromRole="DeliveryAddress" ToRole="DeliverySaveAddress" />
+          <NavigationProperty Name="PreOrders" Relationship="Self.FK_PreOrder_DeliveryAddress" FromRole="DeliveryAddress" ToRole="PreOrder" />
+          <NavigationProperty Name="tbl_Order" Relationship="Self.FK_tbl_Order_DeliveryAddress" FromRole="DeliveryAddress" ToRole="tbl_Order" />
+        </EntityType>
+        <EntityType Name="DeliveryManager">
+          <Key>
+            <PropertyRef Name="OrderTypeId" />
+            <PropertyRef Name="Code" />
+          </Key>
+          <Property Name="OrderTypeId" Type="Int32" Nullable="false" />
+          <Property Name="Code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DeliveryMethodId" Type="Int32" Nullable="false" />
+          <Property Name="ShippingCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="StatusId" Type="Int32" Nullable="false" />
+          <Property Name="SentDate" Type="DateTime" Precision="3" />
+          <Property Name="RefundDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="DeliveryMethod" Relationship="Self.FK_DeliveryManager_DeliveryMethod" FromRole="DeliveryManager" ToRole="DeliveryMethod" />
+          <NavigationProperty Name="OrderStatu" Relationship="Self.FK_DeliveryManager_OrderStatus" FromRole="DeliveryManager" ToRole="OrderStatus" />
+          <NavigationProperty Name="OrderType" Relationship="Self.FK_DeliveryManager_OrderType" FromRole="DeliveryManager" ToRole="OrderType" />
+        </EntityType>
+        <EntityType Name="DeliveryMethod">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Ann" Type="Boolean" Nullable="false" />
+          <Property Name="Shopee" Type="Boolean" Nullable="false" />
+          <Property Name="Lazada" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="DeliveryManagers" Relationship="Self.FK_DeliveryManager_DeliveryMethod" FromRole="DeliveryMethod" ToRole="DeliveryManager" />
+        </EntityType>
         <EntityType Name="DeliveryPostOffice">
           <Key>
             <PropertyRef Name="ID" />
@@ -2033,10 +2412,115 @@
           <Property Name="Alias" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="IsPicked" Type="Boolean" Nullable="false" />
           <Property Name="IsDelivered" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="DeliveryAddresses" Relationship="inventorymanagementModel.FK_DeliveryAddress_District" FromRole="DeliverySaveAddress" ToRole="DeliveryAddress" />
-          <NavigationProperty Name="DeliveryAddresses1" Relationship="inventorymanagementModel.FK_DeliveryAddress_Province" FromRole="DeliverySaveAddress" ToRole="DeliveryAddress" />
-          <NavigationProperty Name="DeliveryAddresses2" Relationship="inventorymanagementModel.FK_DeliveryAddress_Ward" FromRole="DeliverySaveAddress" ToRole="DeliveryAddress" />
           <Property Name="NameJT" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="DeliveryAddresses" Relationship="Self.FK_DeliveryAddress_District" FromRole="DeliverySaveAddress" ToRole="DeliveryAddress" />
+          <NavigationProperty Name="DeliveryAddresses1" Relationship="Self.FK_DeliveryAddress_Province" FromRole="DeliverySaveAddress" ToRole="DeliveryAddress" />
+          <NavigationProperty Name="DeliveryAddresses2" Relationship="Self.FK_DeliveryAddress_Ward" FromRole="DeliverySaveAddress" ToRole="DeliveryAddress" />
+        </EntityType>
+        <EntityType Name="DeliverySaveNotification">
+          <Key>
+            <PropertyRef Name="GhtkCode" />
+            <PropertyRef Name="OrderId" />
+          </Key>
+          <Property Name="GhtkCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="OrderId" Type="Int32" Nullable="false" />
+          <Property Name="StatusId" Type="Int32" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ReasonCode" Type="Int32" />
+          <Property Name="Reason" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Weight" Type="Double" Nullable="false" />
+          <Property Name="GhtkFee" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="GhtkCod" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="ReturnPartPackage" Type="Int32" Nullable="false" />
+          <Property Name="CustomerName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerPhone" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerAddress" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="OrderDate" Type="DateTime" Precision="3" />
+          <Property Name="Cod" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Fee" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Staff" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="DeliverySaveReason" Relationship="Self.FK_DeliverySaveNotification_DeliverySaveReason" FromRole="DeliverySaveNotification" ToRole="DeliverySaveReason" />
+          <NavigationProperty Name="DeliverySaveStatu" Relationship="Self.FK_DeliverySaveNotification_DeliverySaveStatus" FromRole="DeliverySaveNotification" ToRole="DeliverySaveStatus" />
+          <NavigationProperty Name="tbl_Order" Relationship="Self.FK_DeliverySaveNotification_tbl_Order" FromRole="DeliverySaveNotification" ToRole="tbl_Order" />
+        </EntityType>
+        <EntityType Name="DeliverySaveReason">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="DeliverySaveNotifications" Relationship="Self.FK_DeliverySaveNotification_DeliverySaveReason" FromRole="DeliverySaveReason" ToRole="DeliverySaveNotification" />
+        </EntityType>
+        <EntityType Name="DeliverySaveReport">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MaDonHang" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MaDonHangShop" Type="Int32" />
+          <Property Name="TrangThaiDonHang" Type="Int32" Nullable="false" />
+          <Property Name="NgayTao" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="NgayHoanThanh" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="KhoiLuong" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="KhachHang" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Phone" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DiaChi" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="TienCod" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="PhiBaoHiem" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="PhiGiaoHang" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="PhiDichVuTraTruoc" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="PhiDichVuCanTru" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="PhiDichVuHoanLai" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="PhiChuyenHoan" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="PhiThayDoiDiaChiGiaoHang" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="PhiLuuKho" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="TienTip" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="PhiDonHoanDaThanhToan" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="ShopTraShipKhiTraHang" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="KhuyenMai" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="ThanhToan" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="GhiChu" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FileName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="OrderSearchStatus" Type="Int32" Nullable="false" />
+          <Property Name="ShopCod" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="ShopFee" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Staff" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Review" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DeliverySaveStatu">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="DeliverySaveNotifications" Relationship="Self.FK_DeliverySaveNotification_DeliverySaveStatus" FromRole="DeliverySaveStatus" ToRole="DeliverySaveNotification" />
+        </EntityType>
+        <EntityType Name="DeliveryStatu">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="ExchangeRate">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CurrencyName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CurrencyCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SellingRate" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
         </EntityType>
         <EntityType Name="Fee">
           <Key>
@@ -2077,6 +2561,59 @@
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="JtExpressAddress">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Province" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="District" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Area" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="JtExpressOrder">
+          <Key>
+            <PropertyRef Name="OrderId" />
+            <PropertyRef Name="Code" />
+          </Key>
+          <Property Name="OrderId" Type="Int32" Nullable="false" />
+          <Property Name="Code" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SenderName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SenderPhone" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SenderAddress" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SenderProvince" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SenderDistrict" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SenderWard" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ReceiverName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ReceiverPhone" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ReceiverAddress" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ReceiverProvince" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ReceiverDistrict" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ReceiverWard" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="PostalCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="PostalBranchCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Fee" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="InsuranceFee" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="Cod" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="CodFee" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="ItemName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ItemNumber" Type="Int32" Nullable="false" />
+          <Property Name="Weight" Type="Double" Nullable="false" />
+          <Property Name="Note" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="tbl_Order" Relationship="Self.FK_JtExpressOrder_tbl_Order" FromRole="JtExpressOrder" ToRole="tbl_Order" />
+        </EntityType>
+        <EntityType Name="JtExpressReason">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SpecificOccurrence" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
         <EntityType Name="Notification">
           <Key>
@@ -2166,6 +2703,27 @@
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
         </EntityType>
+        <EntityType Name="OrderStatu">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Index" Type="Int32" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="DeliveryManagers" Relationship="Self.FK_DeliveryManager_OrderStatus" FromRole="OrderStatus" ToRole="DeliveryManager" />
+        </EntityType>
+        <EntityType Name="OrderType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="DeliveryManagers" Relationship="Self.FK_DeliveryManager_OrderType" FromRole="OrderType" ToRole="DeliveryManager" />
+        </EntityType>
         <EntityType Name="PostCategory">
           <Key>
             <PropertyRef Name="ID" />
@@ -2223,7 +2781,7 @@
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="PostVideos" Relationship="inventorymanagementModel.FK_PostVideo_PostPublic" FromRole="PostPublic" ToRole="PostVideo" />
+          <NavigationProperty Name="PostVideos" Relationship="Self.FK_PostVideo_PostPublic" FromRole="PostPublic" ToRole="PostVideo" />
         </EntityType>
         <EntityType Name="PostPublicImage">
           <Key>
@@ -2236,6 +2794,21 @@
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="PostVideo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="VideoId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PostId" Type="Int32" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="PostPublic" Relationship="Self.FK_PostVideo_PostPublic" FromRole="PostVideo" ToRole="PostPublic" />
+          <NavigationProperty Name="Video" Relationship="Self.FK_PostVideo_Video" FromRole="PostVideo" ToRole="Video" />
         </EntityType>
         <EntityType Name="PostWordpress">
           <Key>
@@ -2255,6 +2828,67 @@
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="PreOrder">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+          <Property Name="Avatar" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DeliveryAddressId" Type="Int64" />
+          <Property Name="DeliveryMethod" Type="Int32" Nullable="false" />
+          <Property Name="PaymentMethod" Type="Int32" Nullable="false" />
+          <Property Name="CouponId" Type="Int32" />
+          <Property Name="TotalQuantity" Type="Int32" Nullable="false" />
+          <Property Name="TotalCostOfGoods" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="TotalPrice" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="TotalDiscount" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="CouponPrice" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="SourceOrdering" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Timestamp" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="ShippingFee" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="Total" Type="Decimal" Precision="19" Scale="4" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="Note" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Coupon" Relationship="Self.FK_PreOrder_Coupon" FromRole="PreOrder" ToRole="Coupon" />
+          <NavigationProperty Name="DeliveryAddress" Relationship="Self.FK_PreOrder_DeliveryAddress" FromRole="PreOrder" ToRole="DeliveryAddress" />
+          <NavigationProperty Name="PreOrderDetails" Relationship="Self.FK_PreOrderDetail_PreOrder" FromRole="PreOrder" ToRole="PreOrderDetail" />
+          <NavigationProperty Name="ViewOrders" Relationship="Self.FK_ViewOrder_PreOrder" FromRole="PreOrder" ToRole="ViewOrder" />
+        </EntityType>
+        <EntityType Name="PreOrderDetail">
+          <Key>
+            <PropertyRef Name="PreOrderId" />
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="PreOrderId" Type="Int64" Nullable="false" />
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="VariationId" Type="Int32" />
+          <Property Name="SKU" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Avatar" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Color" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Size" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CostOfGoods" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="Price" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="OldPrice" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <Property Name="TotalCostOfGoods" Type="Decimal" Precision="19" Scale="4" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="TotalPrice" Type="Decimal" Precision="19" Scale="4" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="CreatedBy" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Timestamp" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="Discount" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="Total" Type="Decimal" Precision="19" Scale="4" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <NavigationProperty Name="PreOrder" Relationship="Self.FK_PreOrderDetail_PreOrder" FromRole="PreOrderDetail" ToRole="PreOrder" />
+          <NavigationProperty Name="tbl_Product" Relationship="Self.FK_PreOrderDetail_Product" FromRole="PreOrderDetail" ToRole="tbl_Product" />
+          <NavigationProperty Name="tbl_ProductVariable" Relationship="Self.FK_PreOrderDetail_ProductVariation" FromRole="PreOrderDetail" ToRole="tbl_ProductVariable" />
+        </EntityType>
         <EntityType Name="ProductTag">
           <Key>
             <PropertyRef Name="ID" />
@@ -2266,6 +2900,21 @@
           <Property Name="SKU" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="CreatedBy" Type="Int32" Nullable="false" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="ProductVideo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="VideoId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ProductId" Type="Int32" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="tbl_Product" Relationship="Self.FK_ProductVideo_tbl_Product" FromRole="ProductVideo" ToRole="tbl_Product" />
+          <NavigationProperty Name="Video" Relationship="Self.FK_ProductVideo_Video" FromRole="ProductVideo" ToRole="Video" />
         </EntityType>
         <EntityType Name="ReceivedProductHistory">
           <Key>
@@ -2376,7 +3025,7 @@
           <Property Name="CreatedBy" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Timestamp" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" ConcurrencyMode="Fixed" />
+          <Property Name="Timestamp" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="Tag">
           <Key>
@@ -2663,6 +3312,65 @@
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="tbl_Order">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AgentID" Type="Int32" />
+          <Property Name="OrderType" Type="Int32" />
+          <Property Name="AdditionFee" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DisCount" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerID" Type="Int32" />
+          <Property Name="CustomerName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerPhone" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerAddress" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerEmail" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TotalPrice" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PaymentStatus" Type="Int32" />
+          <Property Name="ExcuteStatus" Type="Int32" />
+          <Property Name="IsHidden" Type="Boolean" />
+          <Property Name="WayIn" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DiscountPerProduct" Type="Double" />
+          <Property Name="TotalDiscount" Type="Double" />
+          <Property Name="FeeShipping" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TotalPriceNotDiscount" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="GuestPaid" Type="Double" />
+          <Property Name="GuestChange" Type="Double" />
+          <Property Name="FeeRefund" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PaymentType" Type="Int32" />
+          <Property Name="ShippingType" Type="Int32" />
+          <Property Name="OrderNote" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DateDone" Type="DateTime" Precision="3" />
+          <Property Name="RefundsGoodsID" Type="Int32" />
+          <Property Name="ShippingCode" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TransportCompanyID" Type="Int32" />
+          <Property Name="TransportCompanySubID" Type="Int32" />
+          <Property Name="OtherFeeName" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
+          <Property Name="OtherFeeValue" Type="Double" />
+          <Property Name="PostalDeliveryType" Type="Int32" />
+          <Property Name="CustomerNewPhone" Type="String" MaxLength="15" FixedLength="true" Unicode="true" />
+          <Property Name="UserHelp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="VerifiedCOD" Type="Boolean" Nullable="false" />
+          <Property Name="VerifiedBy" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CouponID" Type="Int32" />
+          <Property Name="CouponValue" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="GHTKFee" Type="Int32" />
+          <Property Name="Weight" Type="Double" />
+          <Property Name="TotalQuantity" Type="Int32" Nullable="false" />
+          <Property Name="TotalCostOfGood" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="Avatar" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DeliveryAddressId" Type="Int64" />
+          <Property Name="Timestamp" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <NavigationProperty Name="DeliveryAddress" Relationship="Self.FK_tbl_Order_DeliveryAddress" FromRole="tbl_Order" ToRole="DeliveryAddress" />
+          <NavigationProperty Name="DeliverySaveNotifications" Relationship="Self.FK_DeliverySaveNotification_tbl_Order" FromRole="tbl_Order" ToRole="DeliverySaveNotification" />
+          <NavigationProperty Name="JtExpressOrders" Relationship="Self.FK_JtExpressOrder_tbl_Order" FromRole="tbl_Order" ToRole="JtExpressOrder" />
+          <NavigationProperty Name="ViewOrders" Relationship="Self.FK_ViewOrder_tbl_Order" FromRole="tbl_Order" ToRole="ViewOrder" />
+        </EntityType>
         <EntityType Name="tbl_OrderDetail">
           <Key>
             <PropertyRef Name="ID" />
@@ -2686,7 +3394,7 @@
           <Property Name="IsCount" Type="Boolean" />
           <Property Name="CostOfGood" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
           <Property Name="TotalCostOfGood" Type="Double" annotation:StoreGeneratedPattern="Computed" />
-          <Property Name="Timestamp" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="Timestamp" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="tbl_OrderReturnGood">
           <Key>
@@ -2784,14 +3492,14 @@
           <Property Name="Old_Price" Type="Double" />
           <Property Name="SyncKiotViet" Type="Boolean" Nullable="false" />
           <Property Name="EnName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="PreOrderDetails" Relationship="inventorymanagementModel.FK_PreOrderDetail_Product" FromRole="tbl_Product" ToRole="PreOrderDetail" />
-          <NavigationProperty Name="ProductVideos" Relationship="inventorymanagementModel.FK_ProductVideo_tbl_Product" FromRole="tbl_Product" ToRole="ProductVideo" />
           <Property Name="ShortDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Price10" Type="Double" />
           <Property Name="BestPrice" Type="Double" />
           <Property Name="ShopeeDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CleanName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="FeaturedImage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="PreOrderDetails" Relationship="Self.FK_PreOrderDetail_Product" FromRole="tbl_Product" ToRole="PreOrderDetail" />
+          <NavigationProperty Name="ProductVideos" Relationship="Self.FK_ProductVideo_tbl_Product" FromRole="tbl_Product" ToRole="ProductVideo" />
         </EntityType>
         <EntityType Name="tbl_ProductImage">
           <Key>
@@ -2832,7 +3540,7 @@
           <Property Name="MaximumInventoryLevel" Type="Double" />
           <Property Name="SupplierID" Type="Int32" />
           <Property Name="SupplierName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="PreOrderDetails" Relationship="inventorymanagementModel.FK_PreOrderDetail_ProductVariation" FromRole="tbl_ProductVariable" ToRole="PreOrderDetail" />
+          <NavigationProperty Name="PreOrderDetails" Relationship="Self.FK_PreOrderDetail_ProductVariation" FromRole="tbl_ProductVariable" ToRole="PreOrderDetail" />
         </EntityType>
         <EntityType Name="tbl_ProductVariableImage">
           <Key>
@@ -2971,7 +3679,7 @@
           <Property Name="SKU" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="MoveProID" Type="Int32" />
           <Property Name="ParentID" Type="Int32" />
-          <Property Name="Timestamp" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" ConcurrencyMode="Fixed" />
+          <Property Name="Timestamp" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="tbl_Supplier">
           <Key>
@@ -3052,6 +3760,18 @@
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="Token">
+          <Key>
+            <PropertyRef Name="UUID" />
+          </Key>
+          <Property Name="UUID" Type="Guid" Nullable="false" />
+          <Property Name="SecretKey" Type="String" MaxLength="6" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="Browser" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Device" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="LastDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="ID" />
@@ -3080,6 +3800,42 @@
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Video">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Thumbnail" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Url" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Height" Type="Int32" Nullable="false" />
+          <Property Name="Width" Type="Int32" Nullable="false" />
+          <Property Name="Expiration" Type="Int64" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="SubUrl" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="PostVideos" Relationship="Self.FK_PostVideo_Video" FromRole="Video" ToRole="PostVideo" />
+          <NavigationProperty Name="ProductVideos" Relationship="Self.FK_ProductVideo_Video" FromRole="Video" ToRole="ProductVideo" />
+        </EntityType>
+        <EntityType Name="ViewOrder">
+          <Key>
+            <PropertyRef Name="Phone" />
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Phone" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+          <Property Name="PreOrderId" Type="Int64" />
+          <Property Name="OrderId" Type="Int32" />
+          <Property Name="CreatedBy" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Timestamp" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <NavigationProperty Name="PreOrder" Relationship="Self.FK_ViewOrder_PreOrder" FromRole="ViewOrder" ToRole="PreOrder" />
+          <NavigationProperty Name="tbl_Order" Relationship="Self.FK_ViewOrder_tbl_Order" FromRole="ViewOrder" ToRole="tbl_Order" />
         </EntityType>
         <EntityType Name="WebWordpress">
           <Key>
@@ -3110,7 +3866,271 @@
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
         </EntityType>
-        <EntityContainer Name="inventorymanagementEntities" annotation:LazyLoadingEnabled="true">
+        <Association Name="FK_PreOrder_Coupon">
+          <End Role="Coupon" Type="Self.Coupon" Multiplicity="0..1" />
+          <End Role="PreOrder" Type="Self.PreOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Coupon">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PreOrder">
+              <PropertyRef Name="CouponId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeliveryAddress_District">
+          <End Role="DeliverySaveAddress" Type="Self.DeliverySaveAddress" Multiplicity="1" />
+          <End Role="DeliveryAddress" Type="Self.DeliveryAddress" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DeliverySaveAddress">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DeliveryAddress">
+              <PropertyRef Name="DistrictId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeliveryAddress_Province">
+          <End Role="DeliverySaveAddress" Type="Self.DeliverySaveAddress" Multiplicity="1" />
+          <End Role="DeliveryAddress" Type="Self.DeliveryAddress" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DeliverySaveAddress">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DeliveryAddress">
+              <PropertyRef Name="ProvinceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeliveryAddress_Ward">
+          <End Role="DeliverySaveAddress" Type="Self.DeliverySaveAddress" Multiplicity="1" />
+          <End Role="DeliveryAddress" Type="Self.DeliveryAddress" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DeliverySaveAddress">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DeliveryAddress">
+              <PropertyRef Name="WardId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PreOrder_DeliveryAddress">
+          <End Role="DeliveryAddress" Type="Self.DeliveryAddress" Multiplicity="0..1" />
+          <End Role="PreOrder" Type="Self.PreOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DeliveryAddress">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PreOrder">
+              <PropertyRef Name="DeliveryAddressId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Order_DeliveryAddress">
+          <End Role="DeliveryAddress" Type="Self.DeliveryAddress" Multiplicity="0..1" />
+          <End Role="tbl_Order" Type="Self.tbl_Order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DeliveryAddress">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="tbl_Order">
+              <PropertyRef Name="DeliveryAddressId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeliveryManager_DeliveryMethod">
+          <End Role="DeliveryMethod" Type="Self.DeliveryMethod" Multiplicity="1" />
+          <End Role="DeliveryManager" Type="Self.DeliveryManager" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DeliveryMethod">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DeliveryManager">
+              <PropertyRef Name="DeliveryMethodId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeliveryManager_OrderStatus">
+          <End Role="OrderStatus" Type="Self.OrderStatu" Multiplicity="1" />
+          <End Role="DeliveryManager" Type="Self.DeliveryManager" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OrderStatus">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DeliveryManager">
+              <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeliveryManager_OrderType">
+          <End Role="OrderType" Type="Self.OrderType" Multiplicity="1" />
+          <End Role="DeliveryManager" Type="Self.DeliveryManager" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OrderType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DeliveryManager">
+              <PropertyRef Name="OrderTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeliverySaveNotification_DeliverySaveReason">
+          <End Role="DeliverySaveReason" Type="Self.DeliverySaveReason" Multiplicity="0..1" />
+          <End Role="DeliverySaveNotification" Type="Self.DeliverySaveNotification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DeliverySaveReason">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DeliverySaveNotification">
+              <PropertyRef Name="ReasonCode" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeliverySaveNotification_DeliverySaveStatus">
+          <End Role="DeliverySaveStatus" Type="Self.DeliverySaveStatu" Multiplicity="1" />
+          <End Role="DeliverySaveNotification" Type="Self.DeliverySaveNotification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DeliverySaveStatus">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DeliverySaveNotification">
+              <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeliverySaveNotification_tbl_Order">
+          <End Role="tbl_Order" Type="Self.tbl_Order" Multiplicity="1" />
+          <End Role="DeliverySaveNotification" Type="Self.DeliverySaveNotification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Order">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DeliverySaveNotification">
+              <PropertyRef Name="OrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_JtExpressOrder_tbl_Order">
+          <End Role="tbl_Order" Type="Self.tbl_Order" Multiplicity="1" />
+          <End Role="JtExpressOrder" Type="Self.JtExpressOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Order">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="JtExpressOrder">
+              <PropertyRef Name="OrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PostVideo_PostPublic">
+          <End Role="PostPublic" Type="Self.PostPublic" Multiplicity="0..1" />
+          <End Role="PostVideo" Type="Self.PostVideo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PostPublic">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PostVideo">
+              <PropertyRef Name="PostId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PostVideo_Video">
+          <End Role="Video" Type="Self.Video" Multiplicity="1" />
+          <End Role="PostVideo" Type="Self.PostVideo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Video">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PostVideo">
+              <PropertyRef Name="VideoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PreOrderDetail_PreOrder">
+          <End Role="PreOrder" Type="Self.PreOrder" Multiplicity="1" />
+          <End Role="PreOrderDetail" Type="Self.PreOrderDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PreOrder">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PreOrderDetail">
+              <PropertyRef Name="PreOrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ViewOrder_PreOrder">
+          <End Role="PreOrder" Type="Self.PreOrder" Multiplicity="0..1" />
+          <End Role="ViewOrder" Type="Self.ViewOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PreOrder">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ViewOrder">
+              <PropertyRef Name="PreOrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PreOrderDetail_Product">
+          <End Role="tbl_Product" Type="Self.tbl_Product" Multiplicity="1" />
+          <End Role="PreOrderDetail" Type="Self.PreOrderDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Product">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PreOrderDetail">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PreOrderDetail_ProductVariation">
+          <End Role="tbl_ProductVariable" Type="Self.tbl_ProductVariable" Multiplicity="0..1" />
+          <End Role="PreOrderDetail" Type="Self.PreOrderDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_ProductVariable">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PreOrderDetail">
+              <PropertyRef Name="VariationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductVideo_tbl_Product">
+          <End Role="tbl_Product" Type="Self.tbl_Product" Multiplicity="0..1" />
+          <End Role="ProductVideo" Type="Self.ProductVideo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Product">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ProductVideo">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductVideo_Video">
+          <End Role="Video" Type="Self.Video" Multiplicity="1" />
+          <End Role="ProductVideo" Type="Self.ProductVideo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Video">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductVideo">
+              <PropertyRef Name="VideoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ViewOrder_tbl_Order">
+          <End Role="tbl_Order" Type="Self.tbl_Order" Multiplicity="0..1" />
+          <End Role="ViewOrder" Type="Self.ViewOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Order">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ViewOrder">
+              <PropertyRef Name="OrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="inventorymanagementEntities1" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Banks" EntityType="Self.Bank" />
           <EntitySet Name="BankAccounts" EntityType="Self.BankAccount" />
           <EntitySet Name="BankTransfers" EntityType="Self.BankTransfer" />
@@ -3122,22 +4142,40 @@
           <EntitySet Name="CustomerCoupons" EntityType="Self.CustomerCoupon" />
           <EntitySet Name="CustomerEditOrders" EntityType="Self.CustomerEditOrder" />
           <EntitySet Name="Deliveries" EntityType="Self.Delivery" />
+          <EntitySet Name="DeliveryAddresses" EntityType="Self.DeliveryAddress" />
+          <EntitySet Name="DeliveryManagers" EntityType="Self.DeliveryManager" />
+          <EntitySet Name="DeliveryMethods" EntityType="Self.DeliveryMethod" />
           <EntitySet Name="DeliveryPostOffices" EntityType="Self.DeliveryPostOffice" />
           <EntitySet Name="DeliverySaveAddresses" EntityType="Self.DeliverySaveAddress" />
+          <EntitySet Name="DeliverySaveNotifications" EntityType="Self.DeliverySaveNotification" />
+          <EntitySet Name="DeliverySaveReasons" EntityType="Self.DeliverySaveReason" />
+          <EntitySet Name="DeliverySaveReports" EntityType="Self.DeliverySaveReport" />
+          <EntitySet Name="DeliverySaveStatus" EntityType="Self.DeliverySaveStatu" />
+          <EntitySet Name="DeliveryStatus" EntityType="Self.DeliveryStatu" />
+          <EntitySet Name="ExchangeRates" EntityType="Self.ExchangeRate" />
           <EntitySet Name="Fees" EntityType="Self.Fee" />
           <EntitySet Name="FeeTypes" EntityType="Self.FeeType" />
           <EntitySet Name="GroupNotifyPromotions" EntityType="Self.GroupNotifyPromotion" />
+          <EntitySet Name="JtExpressAddresses" EntityType="Self.JtExpressAddress" />
+          <EntitySet Name="JtExpressOrders" EntityType="Self.JtExpressOrder" />
+          <EntitySet Name="JtExpressReasons" EntityType="Self.JtExpressReason" />
           <EntitySet Name="Notifications" EntityType="Self.Notification" />
           <EntitySet Name="NotificationCategories" EntityType="Self.NotificationCategory" />
           <EntitySet Name="NotifyNews" EntityType="Self.NotifyNew" />
           <EntitySet Name="NotifyPromotions" EntityType="Self.NotifyPromotion" />
           <EntitySet Name="NotifyUsers" EntityType="Self.NotifyUser" />
+          <EntitySet Name="OrderStatus" EntityType="Self.OrderStatu" />
+          <EntitySet Name="OrderTypes" EntityType="Self.OrderType" />
           <EntitySet Name="PostCategories" EntityType="Self.PostCategory" />
           <EntitySet Name="PostClones" EntityType="Self.PostClone" />
           <EntitySet Name="PostPublics" EntityType="Self.PostPublic" />
           <EntitySet Name="PostPublicImages" EntityType="Self.PostPublicImage" />
+          <EntitySet Name="PostVideos" EntityType="Self.PostVideo" />
           <EntitySet Name="PostWordpresses" EntityType="Self.PostWordpress" />
+          <EntitySet Name="PreOrders" EntityType="Self.PreOrder" />
+          <EntitySet Name="PreOrderDetails" EntityType="Self.PreOrderDetail" />
           <EntitySet Name="ProductTags" EntityType="Self.ProductTag" />
+          <EntitySet Name="ProductVideos" EntityType="Self.ProductVideo" />
           <EntitySet Name="ReceivedProductHistories" EntityType="Self.ReceivedProductHistory" />
           <EntitySet Name="Registers" EntityType="Self.Register" />
           <EntitySet Name="RegisterProducts" EntityType="Self.RegisterProduct" />
@@ -3160,6 +4198,7 @@
           <EntitySet Name="tbl_LinkImnage" EntityType="Self.tbl_LinkImnage" />
           <EntitySet Name="tbl_MovePro" EntityType="Self.tbl_MovePro" />
           <EntitySet Name="tbl_MoveProdDetail" EntityType="Self.tbl_MoveProdDetail" />
+          <EntitySet Name="tbl_Order" EntityType="Self.tbl_Order" />
           <EntitySet Name="tbl_OrderDetail" EntityType="Self.tbl_OrderDetail" />
           <EntitySet Name="tbl_OrderReturnGood" EntityType="Self.tbl_OrderReturnGood" />
           <EntitySet Name="tbl_Post" EntityType="Self.tbl_Post" />
@@ -3181,496 +4220,108 @@
           <EntitySet Name="tbl_Variable" EntityType="Self.tbl_Variable" />
           <EntitySet Name="tbl_VariableValue" EntityType="Self.tbl_VariableValue" />
           <EntitySet Name="tbl_WhiteDomain" EntityType="Self.tbl_WhiteDomain" />
+          <EntitySet Name="Tokens" EntityType="Self.Token" />
           <EntitySet Name="Users" EntityType="Self.User" />
           <EntitySet Name="UserNotifyPromotions" EntityType="Self.UserNotifyPromotion" />
+          <EntitySet Name="Videos" EntityType="Self.Video" />
+          <EntitySet Name="ViewOrders" EntityType="Self.ViewOrder" />
           <EntitySet Name="WebWordpresses" EntityType="Self.WebWordpress" />
           <EntitySet Name="ZaloIndustries" EntityType="Self.ZaloIndustry" />
-          <EntitySet Name="ExchangeRates" EntityType="inventorymanagementModel.ExchangeRate" />
-          <EntitySet Name="DeliveryAddresses" EntityType="inventorymanagementModel.DeliveryAddress" />
-          <EntitySet Name="PreOrders" EntityType="inventorymanagementModel.PreOrder" />
-          <EntitySet Name="PreOrderDetails" EntityType="inventorymanagementModel.PreOrderDetail" />
-          <EntitySet Name="Tokens" EntityType="inventorymanagementModel.Token" />
-          <EntitySet Name="ViewOrders" EntityType="inventorymanagementModel.ViewOrder" />
-          <AssociationSet Name="FK_PreOrder_Coupon" Association="inventorymanagementModel.FK_PreOrder_Coupon">
+          <AssociationSet Name="FK_PreOrder_Coupon" Association="Self.FK_PreOrder_Coupon">
             <End Role="Coupon" EntitySet="Coupons" />
             <End Role="PreOrder" EntitySet="PreOrders" />
           </AssociationSet>
-          <AssociationSet Name="FK_DeliveryAddress_District" Association="inventorymanagementModel.FK_DeliveryAddress_District">
+          <AssociationSet Name="FK_DeliveryAddress_District" Association="Self.FK_DeliveryAddress_District">
             <End Role="DeliverySaveAddress" EntitySet="DeliverySaveAddresses" />
             <End Role="DeliveryAddress" EntitySet="DeliveryAddresses" />
           </AssociationSet>
-          <AssociationSet Name="FK_DeliveryAddress_Province" Association="inventorymanagementModel.FK_DeliveryAddress_Province">
+          <AssociationSet Name="FK_DeliveryAddress_Province" Association="Self.FK_DeliveryAddress_Province">
             <End Role="DeliverySaveAddress" EntitySet="DeliverySaveAddresses" />
             <End Role="DeliveryAddress" EntitySet="DeliveryAddresses" />
           </AssociationSet>
-          <AssociationSet Name="FK_DeliveryAddress_Ward" Association="inventorymanagementModel.FK_DeliveryAddress_Ward">
+          <AssociationSet Name="FK_DeliveryAddress_Ward" Association="Self.FK_DeliveryAddress_Ward">
             <End Role="DeliverySaveAddress" EntitySet="DeliverySaveAddresses" />
             <End Role="DeliveryAddress" EntitySet="DeliveryAddresses" />
           </AssociationSet>
-          <AssociationSet Name="FK_PreOrder_DeliveryAddress" Association="inventorymanagementModel.FK_PreOrder_DeliveryAddress">
+          <AssociationSet Name="FK_PreOrder_DeliveryAddress" Association="Self.FK_PreOrder_DeliveryAddress">
             <End Role="DeliveryAddress" EntitySet="DeliveryAddresses" />
             <End Role="PreOrder" EntitySet="PreOrders" />
           </AssociationSet>
-          <AssociationSet Name="FK_PreOrderDetail_PreOrder" Association="inventorymanagementModel.FK_PreOrderDetail_PreOrder">
-            <End Role="PreOrder" EntitySet="PreOrders" />
-            <End Role="PreOrderDetail" EntitySet="PreOrderDetails" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ViewOrder_PreOrder" Association="inventorymanagementModel.FK_ViewOrder_PreOrder">
-            <End Role="PreOrder" EntitySet="PreOrders" />
-            <End Role="ViewOrder" EntitySet="ViewOrders" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PreOrderDetail_Product" Association="inventorymanagementModel.FK_PreOrderDetail_Product">
-            <End Role="tbl_Product" EntitySet="tbl_Product" />
-            <End Role="PreOrderDetail" EntitySet="PreOrderDetails" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PreOrderDetail_ProductVariation" Association="inventorymanagementModel.FK_PreOrderDetail_ProductVariation">
-            <End Role="tbl_ProductVariable" EntitySet="tbl_ProductVariable" />
-            <End Role="PreOrderDetail" EntitySet="PreOrderDetails" />
-          </AssociationSet>
-          <EntitySet Name="PostVideos" EntityType="inventorymanagementModel.PostVideo" />
-          <EntitySet Name="ProductVideos" EntityType="inventorymanagementModel.ProductVideo" />
-          <AssociationSet Name="FK_PostVideo_PostPublic" Association="inventorymanagementModel.FK_PostVideo_PostPublic">
-            <End Role="PostPublic" EntitySet="PostPublics" />
-            <End Role="PostVideo" EntitySet="PostVideos" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ProductVideo_tbl_Product" Association="inventorymanagementModel.FK_ProductVideo_tbl_Product">
-            <End Role="tbl_Product" EntitySet="tbl_Product" />
-            <End Role="ProductVideo" EntitySet="ProductVideos" />
-          </AssociationSet>
-          <EntitySet Name="Videos" EntityType="inventorymanagementModel.Video" />
-          <AssociationSet Name="FK_PostVideo_Video" Association="inventorymanagementModel.FK_PostVideo_Video">
-            <End Role="Video" EntitySet="Videos" />
-            <End Role="PostVideo" EntitySet="PostVideos" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ProductVideo_Video" Association="inventorymanagementModel.FK_ProductVideo_Video">
-            <End Role="Video" EntitySet="Videos" />
-            <End Role="ProductVideo" EntitySet="ProductVideos" />
-          </AssociationSet>
-          <EntitySet Name="tbl_Order" EntityType="inventorymanagementModel.tbl_Order" />
-          <AssociationSet Name="FK_tbl_Order_DeliveryAddress" Association="inventorymanagementModel.FK_tbl_Order_DeliveryAddress">
+          <AssociationSet Name="FK_tbl_Order_DeliveryAddress" Association="Self.FK_tbl_Order_DeliveryAddress">
             <End Role="DeliveryAddress" EntitySet="DeliveryAddresses" />
             <End Role="tbl_Order" EntitySet="tbl_Order" />
           </AssociationSet>
-          <AssociationSet Name="FK_ViewOrder_tbl_Order" Association="inventorymanagementModel.FK_ViewOrder_tbl_Order">
+          <AssociationSet Name="FK_DeliveryManager_DeliveryMethod" Association="Self.FK_DeliveryManager_DeliveryMethod">
+            <End Role="DeliveryMethod" EntitySet="DeliveryMethods" />
+            <End Role="DeliveryManager" EntitySet="DeliveryManagers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DeliveryManager_OrderStatus" Association="Self.FK_DeliveryManager_OrderStatus">
+            <End Role="OrderStatus" EntitySet="OrderStatus" />
+            <End Role="DeliveryManager" EntitySet="DeliveryManagers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DeliveryManager_OrderType" Association="Self.FK_DeliveryManager_OrderType">
+            <End Role="OrderType" EntitySet="OrderTypes" />
+            <End Role="DeliveryManager" EntitySet="DeliveryManagers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DeliverySaveNotification_DeliverySaveReason" Association="Self.FK_DeliverySaveNotification_DeliverySaveReason">
+            <End Role="DeliverySaveReason" EntitySet="DeliverySaveReasons" />
+            <End Role="DeliverySaveNotification" EntitySet="DeliverySaveNotifications" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DeliverySaveNotification_DeliverySaveStatus" Association="Self.FK_DeliverySaveNotification_DeliverySaveStatus">
+            <End Role="DeliverySaveStatus" EntitySet="DeliverySaveStatus" />
+            <End Role="DeliverySaveNotification" EntitySet="DeliverySaveNotifications" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DeliverySaveNotification_tbl_Order" Association="Self.FK_DeliverySaveNotification_tbl_Order">
+            <End Role="tbl_Order" EntitySet="tbl_Order" />
+            <End Role="DeliverySaveNotification" EntitySet="DeliverySaveNotifications" />
+          </AssociationSet>
+          <AssociationSet Name="FK_JtExpressOrder_tbl_Order" Association="Self.FK_JtExpressOrder_tbl_Order">
+            <End Role="tbl_Order" EntitySet="tbl_Order" />
+            <End Role="JtExpressOrder" EntitySet="JtExpressOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PostVideo_PostPublic" Association="Self.FK_PostVideo_PostPublic">
+            <End Role="PostPublic" EntitySet="PostPublics" />
+            <End Role="PostVideo" EntitySet="PostVideos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PostVideo_Video" Association="Self.FK_PostVideo_Video">
+            <End Role="Video" EntitySet="Videos" />
+            <End Role="PostVideo" EntitySet="PostVideos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PreOrderDetail_PreOrder" Association="Self.FK_PreOrderDetail_PreOrder">
+            <End Role="PreOrder" EntitySet="PreOrders" />
+            <End Role="PreOrderDetail" EntitySet="PreOrderDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ViewOrder_PreOrder" Association="Self.FK_ViewOrder_PreOrder">
+            <End Role="PreOrder" EntitySet="PreOrders" />
+            <End Role="ViewOrder" EntitySet="ViewOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PreOrderDetail_Product" Association="Self.FK_PreOrderDetail_Product">
+            <End Role="tbl_Product" EntitySet="tbl_Product" />
+            <End Role="PreOrderDetail" EntitySet="PreOrderDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PreOrderDetail_ProductVariation" Association="Self.FK_PreOrderDetail_ProductVariation">
+            <End Role="tbl_ProductVariable" EntitySet="tbl_ProductVariable" />
+            <End Role="PreOrderDetail" EntitySet="PreOrderDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductVideo_tbl_Product" Association="Self.FK_ProductVideo_tbl_Product">
+            <End Role="tbl_Product" EntitySet="tbl_Product" />
+            <End Role="ProductVideo" EntitySet="ProductVideos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductVideo_Video" Association="Self.FK_ProductVideo_Video">
+            <End Role="Video" EntitySet="Videos" />
+            <End Role="ProductVideo" EntitySet="ProductVideos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ViewOrder_tbl_Order" Association="Self.FK_ViewOrder_tbl_Order">
             <End Role="tbl_Order" EntitySet="tbl_Order" />
             <End Role="ViewOrder" EntitySet="ViewOrders" />
           </AssociationSet>
         </EntityContainer>
-        <EntityType Name="ExchangeRate">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CurrencyName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="CurrencyCode" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="SellingRate" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="DeliveryAddress">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FullName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Phone" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ProvinceId" Type="Int32" Nullable="false" />
-          <Property Name="DistrictId" Type="Int32" Nullable="false" />
-          <Property Name="WardId" Type="Int32" Nullable="false" />
-          <Property Name="IsDefault" Type="Boolean" Nullable="false" />
-          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="DeliverySaveAddress" Relationship="inventorymanagementModel.FK_DeliveryAddress_District" FromRole="DeliveryAddress" ToRole="DeliverySaveAddress" />
-          <NavigationProperty Name="DeliverySaveAddress1" Relationship="inventorymanagementModel.FK_DeliveryAddress_Province" FromRole="DeliveryAddress" ToRole="DeliverySaveAddress" />
-          <NavigationProperty Name="DeliverySaveAddress2" Relationship="inventorymanagementModel.FK_DeliveryAddress_Ward" FromRole="DeliveryAddress" ToRole="DeliverySaveAddress" />
-          <NavigationProperty Name="PreOrders" Relationship="inventorymanagementModel.FK_PreOrder_DeliveryAddress" FromRole="DeliveryAddress" ToRole="PreOrder" />
-          <NavigationProperty Name="tbl_Order" Relationship="inventorymanagementModel.FK_tbl_Order_DeliveryAddress" FromRole="DeliveryAddress" ToRole="tbl_Order" />
-        </EntityType>
-        <EntityType Name="PreOrder">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Status" Type="Int32" Nullable="false" />
-          <Property Name="Avatar" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DeliveryAddressId" Type="Int64" Nullable="false" />
-          <Property Name="DeliveryMethod" Type="Int32" Nullable="false" />
-          <Property Name="PaymentMethod" Type="Int32" Nullable="false" />
-          <Property Name="CouponId" Type="Int32" />
-          <Property Name="TotalQuantity" Type="Int32" Nullable="false" />
-          <Property Name="TotalCostOfGoods" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
-          <Property Name="TotalPrice" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
-          <Property Name="TotalDiscount" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
-          <Property Name="CouponPrice" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
-          <Property Name="Total" Type="Decimal" Precision="19" Scale="4" annotation:StoreGeneratedPattern="Computed" Nullable="false" />
-          <Property Name="SourceOrdering" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Timestamp" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
-          <NavigationProperty Name="Coupon" Relationship="inventorymanagementModel.FK_PreOrder_Coupon" FromRole="PreOrder" ToRole="Coupon" />
-          <NavigationProperty Name="DeliveryAddress" Relationship="inventorymanagementModel.FK_PreOrder_DeliveryAddress" FromRole="PreOrder" ToRole="DeliveryAddress" />
-          <NavigationProperty Name="PreOrderDetails" Relationship="inventorymanagementModel.FK_PreOrderDetail_PreOrder" FromRole="PreOrder" ToRole="PreOrderDetail" />
-          <NavigationProperty Name="ViewOrders" Relationship="inventorymanagementModel.FK_ViewOrder_PreOrder" FromRole="PreOrder" ToRole="ViewOrder" />
-          <Property Name="ShippingFee" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
-        </EntityType>
-        <EntityType Name="PreOrderDetail">
-          <Key>
-            <PropertyRef Name="PreOrderId" />
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="PreOrderId" Type="Int64" Nullable="false" />
-          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ProductId" Type="Int32" Nullable="false" />
-          <Property Name="VariationId" Type="Int32" />
-          <Property Name="SKU" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Avatar" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Color" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Size" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CostOfGoods" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
-          <Property Name="Price" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
-          <Property Name="OldPrice" Type="Decimal" Precision="19" Scale="4" />
-          <Property Name="Quantity" Type="Int32" Nullable="false" />
-          <Property Name="TotalCostOfGoods" Type="Decimal" Precision="19" Scale="4" annotation:StoreGeneratedPattern="Computed" />
-          <Property Name="TotalPrice" Type="Decimal" Precision="19" Scale="4" annotation:StoreGeneratedPattern="Computed" />
-          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Timestamp" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
-          <NavigationProperty Name="PreOrder" Relationship="inventorymanagementModel.FK_PreOrderDetail_PreOrder" FromRole="PreOrderDetail" ToRole="PreOrder" />
-          <NavigationProperty Name="tbl_Product" Relationship="inventorymanagementModel.FK_PreOrderDetail_Product" FromRole="PreOrderDetail" ToRole="tbl_Product" />
-          <NavigationProperty Name="tbl_ProductVariable" Relationship="inventorymanagementModel.FK_PreOrderDetail_ProductVariation" FromRole="PreOrderDetail" ToRole="tbl_ProductVariable" />
-        </EntityType>
-        <EntityType Name="Token">
-          <Key>
-            <PropertyRef Name="UUID" />
-          </Key>
-          <Property Name="UUID" Type="Guid" Nullable="false" />
-          <Property Name="SecretKey" Type="String" MaxLength="6" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
-          <Property Name="UserID" Type="Int32" Nullable="false" />
-          <Property Name="Browser" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Device" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="LastDate" Type="DateTime" Nullable="false" Precision="3" />
-        </EntityType>
-        <EntityType Name="ViewOrder">
-          <Key>
-            <PropertyRef Name="Phone" />
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Phone" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Status" Type="Int32" Nullable="false" />
-          <Property Name="PreOrderId" Type="Int64" />
-          <Property Name="OrderId" Type="Int32" />
-          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Timestamp" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
-          <NavigationProperty Name="PreOrder" Relationship="inventorymanagementModel.FK_ViewOrder_PreOrder" FromRole="ViewOrder" ToRole="PreOrder" />
-          <NavigationProperty Name="tbl_Order" Relationship="inventorymanagementModel.FK_ViewOrder_tbl_Order" FromRole="ViewOrder" ToRole="tbl_Order" />
-        </EntityType>
-        <Association Name="FK_PreOrder_Coupon">
-          <End Type="inventorymanagementModel.Coupon" Role="Coupon" Multiplicity="0..1" />
-          <End Type="inventorymanagementModel.PreOrder" Role="PreOrder" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Coupon">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="PreOrder">
-              <PropertyRef Name="CouponId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DeliveryAddress_District">
-          <End Type="inventorymanagementModel.DeliverySaveAddress" Role="DeliverySaveAddress" Multiplicity="1" />
-          <End Type="inventorymanagementModel.DeliveryAddress" Role="DeliveryAddress" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="DeliverySaveAddress">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="DeliveryAddress">
-              <PropertyRef Name="DistrictId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DeliveryAddress_Province">
-          <End Type="inventorymanagementModel.DeliverySaveAddress" Role="DeliverySaveAddress" Multiplicity="1" />
-          <End Type="inventorymanagementModel.DeliveryAddress" Role="DeliveryAddress" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="DeliverySaveAddress">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="DeliveryAddress">
-              <PropertyRef Name="ProvinceId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DeliveryAddress_Ward">
-          <End Type="inventorymanagementModel.DeliverySaveAddress" Role="DeliverySaveAddress" Multiplicity="1" />
-          <End Type="inventorymanagementModel.DeliveryAddress" Role="DeliveryAddress" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="DeliverySaveAddress">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="DeliveryAddress">
-              <PropertyRef Name="WardId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PreOrder_DeliveryAddress">
-          <End Type="inventorymanagementModel.DeliveryAddress" Role="DeliveryAddress" Multiplicity="1" />
-          <End Type="inventorymanagementModel.PreOrder" Role="PreOrder" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="DeliveryAddress">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="PreOrder">
-              <PropertyRef Name="DeliveryAddressId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PreOrderDetail_PreOrder">
-          <End Type="inventorymanagementModel.PreOrder" Role="PreOrder" Multiplicity="1" />
-          <End Type="inventorymanagementModel.PreOrderDetail" Role="PreOrderDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PreOrder">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="PreOrderDetail">
-              <PropertyRef Name="PreOrderId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ViewOrder_PreOrder">
-          <End Type="inventorymanagementModel.PreOrder" Role="PreOrder" Multiplicity="0..1" />
-          <End Type="inventorymanagementModel.ViewOrder" Role="ViewOrder" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PreOrder">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="ViewOrder">
-              <PropertyRef Name="PreOrderId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PreOrderDetail_Product">
-          <End Type="inventorymanagementModel.tbl_Product" Role="tbl_Product" Multiplicity="1" />
-          <End Type="inventorymanagementModel.PreOrderDetail" Role="PreOrderDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tbl_Product">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="PreOrderDetail">
-              <PropertyRef Name="ProductId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PreOrderDetail_ProductVariation">
-          <End Type="inventorymanagementModel.tbl_ProductVariable" Role="tbl_ProductVariable" Multiplicity="0..1" />
-          <End Type="inventorymanagementModel.PreOrderDetail" Role="PreOrderDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tbl_ProductVariable">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="PreOrderDetail">
-              <PropertyRef Name="VariationId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="PostVideo">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="VideoId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PostId" Type="Int32" />
-          <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="PostPublic" Relationship="inventorymanagementModel.FK_PostVideo_PostPublic" FromRole="PostVideo" ToRole="PostPublic" />
-          <NavigationProperty Name="Video" Relationship="inventorymanagementModel.FK_PostVideo_Video" FromRole="PostVideo" ToRole="Video" />
-        </EntityType>
-        <EntityType Name="ProductVideo">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="VideoId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ProductId" Type="Int32" />
-          <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="tbl_Product" Relationship="inventorymanagementModel.FK_ProductVideo_tbl_Product" FromRole="ProductVideo" ToRole="tbl_Product" />
-          <NavigationProperty Name="Video" Relationship="inventorymanagementModel.FK_ProductVideo_Video" FromRole="ProductVideo" ToRole="Video" />
-        </EntityType>
-        <Association Name="FK_PostVideo_PostPublic">
-          <End Type="inventorymanagementModel.PostPublic" Role="PostPublic" Multiplicity="0..1" />
-          <End Type="inventorymanagementModel.PostVideo" Role="PostVideo" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PostPublic">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="PostVideo">
-              <PropertyRef Name="PostId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ProductVideo_tbl_Product">
-          <End Type="inventorymanagementModel.tbl_Product" Role="tbl_Product" Multiplicity="0..1" />
-          <End Type="inventorymanagementModel.ProductVideo" Role="ProductVideo" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tbl_Product">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="ProductVideo">
-              <PropertyRef Name="ProductId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="Video">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Thumbnail" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Url" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Height" Type="Int32" Nullable="false" />
-          <Property Name="Width" Type="Int32" Nullable="false" />
-          <Property Name="Expiration" Type="Int64" Nullable="false" />
-          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="PostVideos" Relationship="inventorymanagementModel.FK_PostVideo_Video" FromRole="Video" ToRole="PostVideo" />
-          <NavigationProperty Name="ProductVideos" Relationship="inventorymanagementModel.FK_ProductVideo_Video" FromRole="Video" ToRole="ProductVideo" />
-          <Property Name="SubUrl" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <Association Name="FK_PostVideo_Video">
-          <End Type="inventorymanagementModel.Video" Role="Video" Multiplicity="1" />
-          <End Type="inventorymanagementModel.PostVideo" Role="PostVideo" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Video">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="PostVideo">
-              <PropertyRef Name="VideoId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ProductVideo_Video">
-          <End Type="inventorymanagementModel.Video" Role="Video" Multiplicity="1" />
-          <End Type="inventorymanagementModel.ProductVideo" Role="ProductVideo" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Video">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="ProductVideo">
-              <PropertyRef Name="VideoId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="tbl_Order">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="AgentID" Type="Int32" />
-          <Property Name="OrderType" Type="Int32" />
-          <Property Name="AdditionFee" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DisCount" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CustomerID" Type="Int32" />
-          <Property Name="CustomerName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CustomerPhone" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CustomerAddress" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CustomerEmail" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="TotalPrice" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="PaymentStatus" Type="Int32" />
-          <Property Name="ExcuteStatus" Type="Int32" />
-          <Property Name="IsHidden" Type="Boolean" />
-          <Property Name="WayIn" Type="Int32" />
-          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
-          <Property Name="CreatedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DiscountPerProduct" Type="Double" />
-          <Property Name="TotalDiscount" Type="Double" />
-          <Property Name="FeeShipping" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="TotalPriceNotDiscount" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="GuestPaid" Type="Double" />
-          <Property Name="GuestChange" Type="Double" />
-          <Property Name="FeeRefund" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="PaymentType" Type="Int32" />
-          <Property Name="ShippingType" Type="Int32" />
-          <Property Name="OrderNote" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DateDone" Type="DateTime" Precision="3" />
-          <Property Name="RefundsGoodsID" Type="Int32" />
-          <Property Name="ShippingCode" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="TransportCompanyID" Type="Int32" />
-          <Property Name="TransportCompanySubID" Type="Int32" />
-          <Property Name="OtherFeeName" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
-          <Property Name="OtherFeeValue" Type="Double" />
-          <Property Name="PostalDeliveryType" Type="Int32" />
-          <Property Name="CustomerNewPhone" Type="String" MaxLength="15" FixedLength="true" Unicode="true" />
-          <Property Name="UserHelp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="VerifiedCOD" Type="Boolean" Nullable="false" />
-          <Property Name="VerifiedBy" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="CouponID" Type="Int32" />
-          <Property Name="CouponValue" Type="Decimal" Precision="19" Scale="4" />
-          <Property Name="GHTKFee" Type="Int32" />
-          <Property Name="Weight" Type="Double" />
-          <Property Name="TotalQuantity" Type="Int32" Nullable="false" />
-          <Property Name="TotalCostOfGood" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
-          <Property Name="Avatar" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DeliveryAddressId" Type="Int64" />
-          <Property Name="Timestamp" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
-          <NavigationProperty Name="DeliveryAddress" Relationship="inventorymanagementModel.FK_tbl_Order_DeliveryAddress" FromRole="tbl_Order" ToRole="DeliveryAddress" />
-          <NavigationProperty Name="ViewOrders" Relationship="inventorymanagementModel.FK_ViewOrder_tbl_Order" FromRole="tbl_Order" ToRole="ViewOrder" />
-        </EntityType>
-        <Association Name="FK_tbl_Order_DeliveryAddress">
-          <End Type="inventorymanagementModel.DeliveryAddress" Role="DeliveryAddress" Multiplicity="0..1" />
-          <End Type="inventorymanagementModel.tbl_Order" Role="tbl_Order" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="DeliveryAddress">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="tbl_Order">
-              <PropertyRef Name="DeliveryAddressId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ViewOrder_tbl_Order">
-          <End Type="inventorymanagementModel.tbl_Order" Role="tbl_Order" Multiplicity="0..1" />
-          <End Type="inventorymanagementModel.ViewOrder" Role="ViewOrder" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tbl_Order">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="ViewOrder">
-              <PropertyRef Name="OrderId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="inventorymanagementModelStoreContainer" CdmEntityContainer="inventorymanagementEntities">
+        <EntityContainerMapping StorageEntityContainer="inventorymanagementModelStoreContainer" CdmEntityContainer="inventorymanagementEntities1">
           <EntitySetMapping Name="Banks">
             <EntityTypeMapping TypeName="inventorymanagementModel.Bank">
               <MappingFragment StoreEntitySet="Bank">
@@ -3856,6 +4507,59 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="DeliveryAddresses">
+            <EntityTypeMapping TypeName="inventorymanagementModel.DeliveryAddress">
+              <MappingFragment StoreEntitySet="DeliveryAddress">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="ProvinceId" ColumnName="ProvinceId" />
+                <ScalarProperty Name="DistrictId" ColumnName="DistrictId" />
+                <ScalarProperty Name="WardId" ColumnName="WardId" />
+                <ScalarProperty Name="IsDefault" ColumnName="IsDefault" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="JtProvince" ColumnName="JtProvince" />
+                <ScalarProperty Name="JtDistrict" ColumnName="JtDistrict" />
+                <ScalarProperty Name="JtWard" ColumnName="JtWard" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DeliveryManagers">
+            <EntityTypeMapping TypeName="inventorymanagementModel.DeliveryManager">
+              <MappingFragment StoreEntitySet="DeliveryManager">
+                <ScalarProperty Name="OrderTypeId" ColumnName="OrderTypeId" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="DeliveryMethodId" ColumnName="DeliveryMethodId" />
+                <ScalarProperty Name="ShippingCode" ColumnName="ShippingCode" />
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="SentDate" ColumnName="SentDate" />
+                <ScalarProperty Name="RefundDate" ColumnName="RefundDate" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DeliveryMethods">
+            <EntityTypeMapping TypeName="inventorymanagementModel.DeliveryMethod">
+              <MappingFragment StoreEntitySet="DeliveryMethod">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="Ann" ColumnName="Ann" />
+                <ScalarProperty Name="Shopee" ColumnName="Shopee" />
+                <ScalarProperty Name="Lazada" ColumnName="Lazada" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="DeliveryPostOffices">
             <EntityTypeMapping TypeName="inventorymanagementModel.DeliveryPostOffice">
               <MappingFragment StoreEntitySet="DeliveryPostOffice">
@@ -3884,7 +4588,6 @@
           <EntitySetMapping Name="DeliverySaveAddresses">
             <EntityTypeMapping TypeName="inventorymanagementModel.DeliverySaveAddress">
               <MappingFragment StoreEntitySet="DeliverySaveAddress">
-                <ScalarProperty Name="NameJT" ColumnName="NameJT" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="PID" ColumnName="PID" />
@@ -3893,6 +4596,112 @@
                 <ScalarProperty Name="Alias" ColumnName="Alias" />
                 <ScalarProperty Name="IsPicked" ColumnName="IsPicked" />
                 <ScalarProperty Name="IsDelivered" ColumnName="IsDelivered" />
+                <ScalarProperty Name="NameJT" ColumnName="NameJT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DeliverySaveNotifications">
+            <EntityTypeMapping TypeName="inventorymanagementModel.DeliverySaveNotification">
+              <MappingFragment StoreEntitySet="DeliverySaveNotification">
+                <ScalarProperty Name="GhtkCode" ColumnName="GhtkCode" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ReasonCode" ColumnName="ReasonCode" />
+                <ScalarProperty Name="Reason" ColumnName="Reason" />
+                <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="GhtkFee" ColumnName="GhtkFee" />
+                <ScalarProperty Name="GhtkCod" ColumnName="GhtkCod" />
+                <ScalarProperty Name="ReturnPartPackage" ColumnName="ReturnPartPackage" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+                <ScalarProperty Name="CustomerPhone" ColumnName="CustomerPhone" />
+                <ScalarProperty Name="CustomerAddress" ColumnName="CustomerAddress" />
+                <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
+                <ScalarProperty Name="Cod" ColumnName="Cod" />
+                <ScalarProperty Name="Fee" ColumnName="Fee" />
+                <ScalarProperty Name="Staff" ColumnName="Staff" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DeliverySaveReasons">
+            <EntityTypeMapping TypeName="inventorymanagementModel.DeliverySaveReason">
+              <MappingFragment StoreEntitySet="DeliverySaveReason">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DeliverySaveReports">
+            <EntityTypeMapping TypeName="inventorymanagementModel.DeliverySaveReport">
+              <MappingFragment StoreEntitySet="DeliverySaveReport">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="MaDonHang" ColumnName="MaDonHang" />
+                <ScalarProperty Name="MaDonHangShop" ColumnName="MaDonHangShop" />
+                <ScalarProperty Name="TrangThaiDonHang" ColumnName="TrangThaiDonHang" />
+                <ScalarProperty Name="NgayTao" ColumnName="NgayTao" />
+                <ScalarProperty Name="NgayHoanThanh" ColumnName="NgayHoanThanh" />
+                <ScalarProperty Name="KhoiLuong" ColumnName="KhoiLuong" />
+                <ScalarProperty Name="KhachHang" ColumnName="KhachHang" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="DiaChi" ColumnName="DiaChi" />
+                <ScalarProperty Name="TienCod" ColumnName="TienCod" />
+                <ScalarProperty Name="PhiBaoHiem" ColumnName="PhiBaoHiem" />
+                <ScalarProperty Name="PhiGiaoHang" ColumnName="PhiGiaoHang" />
+                <ScalarProperty Name="PhiDichVuTraTruoc" ColumnName="PhiDichVuTraTruoc" />
+                <ScalarProperty Name="PhiDichVuCanTru" ColumnName="PhiDichVuCanTru" />
+                <ScalarProperty Name="PhiDichVuHoanLai" ColumnName="PhiDichVuHoanLai" />
+                <ScalarProperty Name="PhiChuyenHoan" ColumnName="PhiChuyenHoan" />
+                <ScalarProperty Name="PhiThayDoiDiaChiGiaoHang" ColumnName="PhiThayDoiDiaChiGiaoHang" />
+                <ScalarProperty Name="PhiLuuKho" ColumnName="PhiLuuKho" />
+                <ScalarProperty Name="TienTip" ColumnName="TienTip" />
+                <ScalarProperty Name="PhiDonHoanDaThanhToan" ColumnName="PhiDonHoanDaThanhToan" />
+                <ScalarProperty Name="ShopTraShipKhiTraHang" ColumnName="ShopTraShipKhiTraHang" />
+                <ScalarProperty Name="KhuyenMai" ColumnName="KhuyenMai" />
+                <ScalarProperty Name="ThanhToan" ColumnName="ThanhToan" />
+                <ScalarProperty Name="GhiChu" ColumnName="GhiChu" />
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
+                <ScalarProperty Name="OrderSearchStatus" ColumnName="OrderSearchStatus" />
+                <ScalarProperty Name="ShopCod" ColumnName="ShopCod" />
+                <ScalarProperty Name="ShopFee" ColumnName="ShopFee" />
+                <ScalarProperty Name="Staff" ColumnName="Staff" />
+                <ScalarProperty Name="Review" ColumnName="Review" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DeliverySaveStatus">
+            <EntityTypeMapping TypeName="inventorymanagementModel.DeliverySaveStatu">
+              <MappingFragment StoreEntitySet="DeliverySaveStatus">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DeliveryStatus">
+            <EntityTypeMapping TypeName="inventorymanagementModel.DeliveryStatu">
+              <MappingFragment StoreEntitySet="DeliveryStatus">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ExchangeRates">
+            <EntityTypeMapping TypeName="inventorymanagementModel.ExchangeRate">
+              <MappingFragment StoreEntitySet="ExchangeRate">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="CurrencyName" ColumnName="CurrencyName" />
+                <ScalarProperty Name="CurrencyCode" ColumnName="CurrencyCode" />
+                <ScalarProperty Name="SellingRate" ColumnName="SellingRate" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -3936,6 +4745,60 @@
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="JtExpressAddresses">
+            <EntityTypeMapping TypeName="inventorymanagementModel.JtExpressAddress">
+              <MappingFragment StoreEntitySet="JtExpressAddress">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Province" ColumnName="Province" />
+                <ScalarProperty Name="District" ColumnName="District" />
+                <ScalarProperty Name="Area" ColumnName="Area" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="JtExpressOrders">
+            <EntityTypeMapping TypeName="inventorymanagementModel.JtExpressOrder">
+              <MappingFragment StoreEntitySet="JtExpressOrder">
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="SenderName" ColumnName="SenderName" />
+                <ScalarProperty Name="SenderPhone" ColumnName="SenderPhone" />
+                <ScalarProperty Name="SenderAddress" ColumnName="SenderAddress" />
+                <ScalarProperty Name="SenderProvince" ColumnName="SenderProvince" />
+                <ScalarProperty Name="SenderDistrict" ColumnName="SenderDistrict" />
+                <ScalarProperty Name="SenderWard" ColumnName="SenderWard" />
+                <ScalarProperty Name="ReceiverName" ColumnName="ReceiverName" />
+                <ScalarProperty Name="ReceiverPhone" ColumnName="ReceiverPhone" />
+                <ScalarProperty Name="ReceiverAddress" ColumnName="ReceiverAddress" />
+                <ScalarProperty Name="ReceiverProvince" ColumnName="ReceiverProvince" />
+                <ScalarProperty Name="ReceiverDistrict" ColumnName="ReceiverDistrict" />
+                <ScalarProperty Name="ReceiverWard" ColumnName="ReceiverWard" />
+                <ScalarProperty Name="PostalCode" ColumnName="PostalCode" />
+                <ScalarProperty Name="PostalBranchCode" ColumnName="PostalBranchCode" />
+                <ScalarProperty Name="Fee" ColumnName="Fee" />
+                <ScalarProperty Name="InsuranceFee" ColumnName="InsuranceFee" />
+                <ScalarProperty Name="Cod" ColumnName="Cod" />
+                <ScalarProperty Name="CodFee" ColumnName="CodFee" />
+                <ScalarProperty Name="ItemName" ColumnName="ItemName" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="JtExpressReasons">
+            <EntityTypeMapping TypeName="inventorymanagementModel.JtExpressReason">
+              <MappingFragment StoreEntitySet="JtExpressReason">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="SpecificOccurrence" ColumnName="SpecificOccurrence" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4032,6 +4895,27 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="OrderStatus">
+            <EntityTypeMapping TypeName="inventorymanagementModel.OrderStatu">
+              <MappingFragment StoreEntitySet="OrderStatus">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Index" ColumnName="Index" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OrderTypes">
+            <EntityTypeMapping TypeName="inventorymanagementModel.OrderType">
+              <MappingFragment StoreEntitySet="OrderType">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="PostCategories">
             <EntityTypeMapping TypeName="inventorymanagementModel.PostCategory">
               <MappingFragment StoreEntitySet="PostCategory">
@@ -4106,6 +4990,20 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="PostVideos">
+            <EntityTypeMapping TypeName="inventorymanagementModel.PostVideo">
+              <MappingFragment StoreEntitySet="PostVideo">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="VideoId" ColumnName="VideoId" />
+                <ScalarProperty Name="PostId" ColumnName="PostId" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="PostWordpresses">
             <EntityTypeMapping TypeName="inventorymanagementModel.PostWordpress">
               <MappingFragment StoreEntitySet="PostWordpress">
@@ -4125,6 +5023,61 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="PreOrders">
+            <EntityTypeMapping TypeName="inventorymanagementModel.PreOrder">
+              <MappingFragment StoreEntitySet="PreOrder">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Avatar" ColumnName="Avatar" />
+                <ScalarProperty Name="DeliveryAddressId" ColumnName="DeliveryAddressId" />
+                <ScalarProperty Name="DeliveryMethod" ColumnName="DeliveryMethod" />
+                <ScalarProperty Name="PaymentMethod" ColumnName="PaymentMethod" />
+                <ScalarProperty Name="CouponId" ColumnName="CouponId" />
+                <ScalarProperty Name="TotalQuantity" ColumnName="TotalQuantity" />
+                <ScalarProperty Name="TotalCostOfGoods" ColumnName="TotalCostOfGoods" />
+                <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
+                <ScalarProperty Name="TotalDiscount" ColumnName="TotalDiscount" />
+                <ScalarProperty Name="CouponPrice" ColumnName="CouponPrice" />
+                <ScalarProperty Name="SourceOrdering" ColumnName="SourceOrdering" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+                <ScalarProperty Name="ShippingFee" ColumnName="ShippingFee" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PreOrderDetails">
+            <EntityTypeMapping TypeName="inventorymanagementModel.PreOrderDetail">
+              <MappingFragment StoreEntitySet="PreOrderDetail">
+                <ScalarProperty Name="PreOrderId" ColumnName="PreOrderId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="VariationId" ColumnName="VariationId" />
+                <ScalarProperty Name="SKU" ColumnName="SKU" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Avatar" ColumnName="Avatar" />
+                <ScalarProperty Name="Color" ColumnName="Color" />
+                <ScalarProperty Name="Size" ColumnName="Size" />
+                <ScalarProperty Name="CostOfGoods" ColumnName="CostOfGoods" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="OldPrice" ColumnName="OldPrice" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="TotalCostOfGoods" ColumnName="TotalCostOfGoods" />
+                <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+                <ScalarProperty Name="Discount" ColumnName="Discount" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="ProductTags">
             <EntityTypeMapping TypeName="inventorymanagementModel.ProductTag">
               <MappingFragment StoreEntitySet="ProductTag">
@@ -4135,6 +5088,20 @@
                 <ScalarProperty Name="SKU" ColumnName="SKU" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductVideos">
+            <EntityTypeMapping TypeName="inventorymanagementModel.ProductVideo">
+              <MappingFragment StoreEntitySet="ProductVideo">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="VideoId" ColumnName="VideoId" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4236,7 +5203,6 @@
           <EntitySetMapping Name="StockManager2">
             <EntityTypeMapping TypeName="inventorymanagementModel.StockManager2">
               <MappingFragment StoreEntitySet="StockManager2">
-                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="AgentID" ColumnName="AgentID" />
                 <ScalarProperty Name="ProductID" ColumnName="ProductID" />
@@ -4252,6 +5218,7 @@
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4358,9 +5325,6 @@
           <EntitySetMapping Name="tbl_Category">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Category">
               <MappingFragment StoreEntitySet="tbl_Category">
-                <ScalarProperty Name="ShopeeId" ColumnName="ShopeeId" />
-                <ScalarProperty Name="EnDescription" ColumnName="EnDescription" />
-                <ScalarProperty Name="EnName" ColumnName="EnName" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
                 <ScalarProperty Name="CategoryDescription" ColumnName="CategoryDescription" />
@@ -4374,14 +5338,15 @@
                 <ScalarProperty Name="Slug" ColumnName="Slug" />
                 <ScalarProperty Name="Icon" ColumnName="Icon" />
                 <ScalarProperty Name="ZaloShop" ColumnName="ZaloShop" />
+                <ScalarProperty Name="EnName" ColumnName="EnName" />
+                <ScalarProperty Name="EnDescription" ColumnName="EnDescription" />
+                <ScalarProperty Name="ShopeeId" ColumnName="ShopeeId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_Config">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Config">
               <MappingFragment StoreEntitySet="tbl_Config">
-                <ScalarProperty Name="StaffIndex" ColumnName="StaffIndex" />
-                <ScalarProperty Name="MinQuantityOfOrder" ColumnName="MinQuantityOfOrder" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="NumOfDateToChangeProduct" ColumnName="NumOfDateToChangeProduct" />
                 <ScalarProperty Name="NumOfProductCanChange" ColumnName="NumOfProductCanChange" />
@@ -4398,6 +5363,8 @@
                 <ScalarProperty Name="HideProduct" ColumnName="HideProduct" />
                 <ScalarProperty Name="ViewAllOrders" ColumnName="ViewAllOrders" />
                 <ScalarProperty Name="ViewAllReports" ColumnName="ViewAllReports" />
+                <ScalarProperty Name="MinQuantityOfOrder" ColumnName="MinQuantityOfOrder" />
+                <ScalarProperty Name="StaffIndex" ColumnName="StaffIndex" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4556,10 +5523,65 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Order">
+            <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Order">
+              <MappingFragment StoreEntitySet="tbl_Order">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="AgentID" ColumnName="AgentID" />
+                <ScalarProperty Name="OrderType" ColumnName="OrderType" />
+                <ScalarProperty Name="AdditionFee" ColumnName="AdditionFee" />
+                <ScalarProperty Name="DisCount" ColumnName="DisCount" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+                <ScalarProperty Name="CustomerPhone" ColumnName="CustomerPhone" />
+                <ScalarProperty Name="CustomerAddress" ColumnName="CustomerAddress" />
+                <ScalarProperty Name="CustomerEmail" ColumnName="CustomerEmail" />
+                <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
+                <ScalarProperty Name="PaymentStatus" ColumnName="PaymentStatus" />
+                <ScalarProperty Name="ExcuteStatus" ColumnName="ExcuteStatus" />
+                <ScalarProperty Name="IsHidden" ColumnName="IsHidden" />
+                <ScalarProperty Name="WayIn" ColumnName="WayIn" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="DiscountPerProduct" ColumnName="DiscountPerProduct" />
+                <ScalarProperty Name="TotalDiscount" ColumnName="TotalDiscount" />
+                <ScalarProperty Name="FeeShipping" ColumnName="FeeShipping" />
+                <ScalarProperty Name="TotalPriceNotDiscount" ColumnName="TotalPriceNotDiscount" />
+                <ScalarProperty Name="GuestPaid" ColumnName="GuestPaid" />
+                <ScalarProperty Name="GuestChange" ColumnName="GuestChange" />
+                <ScalarProperty Name="FeeRefund" ColumnName="FeeRefund" />
+                <ScalarProperty Name="PaymentType" ColumnName="PaymentType" />
+                <ScalarProperty Name="ShippingType" ColumnName="ShippingType" />
+                <ScalarProperty Name="OrderNote" ColumnName="OrderNote" />
+                <ScalarProperty Name="DateDone" ColumnName="DateDone" />
+                <ScalarProperty Name="RefundsGoodsID" ColumnName="RefundsGoodsID" />
+                <ScalarProperty Name="ShippingCode" ColumnName="ShippingCode" />
+                <ScalarProperty Name="TransportCompanyID" ColumnName="TransportCompanyID" />
+                <ScalarProperty Name="TransportCompanySubID" ColumnName="TransportCompanySubID" />
+                <ScalarProperty Name="OtherFeeName" ColumnName="OtherFeeName" />
+                <ScalarProperty Name="OtherFeeValue" ColumnName="OtherFeeValue" />
+                <ScalarProperty Name="PostalDeliveryType" ColumnName="PostalDeliveryType" />
+                <ScalarProperty Name="CustomerNewPhone" ColumnName="CustomerNewPhone" />
+                <ScalarProperty Name="UserHelp" ColumnName="UserHelp" />
+                <ScalarProperty Name="VerifiedCOD" ColumnName="VerifiedCOD" />
+                <ScalarProperty Name="VerifiedBy" ColumnName="VerifiedBy" />
+                <ScalarProperty Name="CouponID" ColumnName="CouponID" />
+                <ScalarProperty Name="CouponValue" ColumnName="CouponValue" />
+                <ScalarProperty Name="GHTKFee" ColumnName="GHTKFee" />
+                <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="TotalQuantity" ColumnName="TotalQuantity" />
+                <ScalarProperty Name="TotalCostOfGood" ColumnName="TotalCostOfGood" />
+                <ScalarProperty Name="Avatar" ColumnName="Avatar" />
+                <ScalarProperty Name="DeliveryAddressId" ColumnName="DeliveryAddressId" />
+                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="tbl_OrderDetail">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_OrderDetail">
               <MappingFragment StoreEntitySet="tbl_OrderDetail">
-                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="AgentID" ColumnName="AgentID" />
                 <ScalarProperty Name="OrderID" ColumnName="OrderID" />
@@ -4579,6 +5601,7 @@
                 <ScalarProperty Name="IsCount" ColumnName="IsCount" />
                 <ScalarProperty Name="CostOfGood" ColumnName="CostOfGood" />
                 <ScalarProperty Name="TotalCostOfGood" ColumnName="TotalCostOfGood" />
+                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4645,14 +5668,6 @@
           <EntitySetMapping Name="tbl_Product">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Product">
               <MappingFragment StoreEntitySet="tbl_Product">
-                <ScalarProperty Name="FeaturedImage" ColumnName="FeaturedImage" />
-                <ScalarProperty Name="CleanName" ColumnName="CleanName" />
-                <ScalarProperty Name="ShopeeDescription" ColumnName="ShopeeDescription" />
-                <ScalarProperty Name="BestPrice" ColumnName="BestPrice" />
-                <ScalarProperty Name="Price10" ColumnName="Price10" />
-                <ScalarProperty Name="ShortDescription" ColumnName="ShortDescription" />
-                <ScalarProperty Name="EnName" ColumnName="EnName" />
-                <ScalarProperty Name="SyncKiotViet" ColumnName="SyncKiotViet" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
                 <ScalarProperty Name="ProductOldID" ColumnName="ProductOldID" />
@@ -4687,6 +5702,14 @@
                 <ScalarProperty Name="Color" ColumnName="Color" />
                 <ScalarProperty Name="PreOrder" ColumnName="PreOrder" />
                 <ScalarProperty Name="Old_Price" ColumnName="Old_Price" />
+                <ScalarProperty Name="SyncKiotViet" ColumnName="SyncKiotViet" />
+                <ScalarProperty Name="EnName" ColumnName="EnName" />
+                <ScalarProperty Name="ShortDescription" ColumnName="ShortDescription" />
+                <ScalarProperty Name="Price10" ColumnName="Price10" />
+                <ScalarProperty Name="BestPrice" ColumnName="BestPrice" />
+                <ScalarProperty Name="ShopeeDescription" ColumnName="ShopeeDescription" />
+                <ScalarProperty Name="CleanName" ColumnName="CleanName" />
+                <ScalarProperty Name="FeaturedImage" ColumnName="FeaturedImage" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4858,7 +5881,6 @@
           <EntitySetMapping Name="tbl_StockManager">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_StockManager">
               <MappingFragment StoreEntitySet="tbl_StockManager">
-                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="AgentID" ColumnName="AgentID" />
                 <ScalarProperty Name="ProductID" ColumnName="ProductID" />
@@ -4876,6 +5898,7 @@
                 <ScalarProperty Name="SKU" ColumnName="SKU" />
                 <ScalarProperty Name="MoveProID" ColumnName="MoveProID" />
                 <ScalarProperty Name="ParentID" ColumnName="ParentID" />
+                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4934,7 +5957,6 @@
           <EntitySetMapping Name="tbl_VariableValue">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_VariableValue">
               <MappingFragment StoreEntitySet="tbl_VariableValue">
-                <ScalarProperty Name="EnVariableValue" ColumnName="EnVariableValue" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="VariableID" ColumnName="VariableID" />
                 <ScalarProperty Name="VariableName" ColumnName="VariableName" />
@@ -4946,6 +5968,7 @@
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="VariableValueText" ColumnName="VariableValueText" />
                 <ScalarProperty Name="SKUText" ColumnName="SKUText" />
+                <ScalarProperty Name="EnVariableValue" ColumnName="EnVariableValue" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4959,6 +5982,19 @@
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tokens">
+            <EntityTypeMapping TypeName="inventorymanagementModel.Token">
+              <MappingFragment StoreEntitySet="Token">
+                <ScalarProperty Name="UUID" ColumnName="UUID" />
+                <ScalarProperty Name="SecretKey" ColumnName="SecretKey" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="Browser" ColumnName="Browser" />
+                <ScalarProperty Name="Device" ColumnName="Device" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="LastDate" ColumnName="LastDate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4993,6 +6029,39 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Videos">
+            <EntityTypeMapping TypeName="inventorymanagementModel.Video">
+              <MappingFragment StoreEntitySet="Video">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Thumbnail" ColumnName="Thumbnail" />
+                <ScalarProperty Name="Url" ColumnName="Url" />
+                <ScalarProperty Name="Height" ColumnName="Height" />
+                <ScalarProperty Name="Width" ColumnName="Width" />
+                <ScalarProperty Name="Expiration" ColumnName="Expiration" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="SubUrl" ColumnName="SubUrl" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ViewOrders">
+            <EntityTypeMapping TypeName="inventorymanagementModel.ViewOrder">
+              <MappingFragment StoreEntitySet="ViewOrder">
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="PreOrderId" ColumnName="PreOrderId" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="WebWordpresses">
             <EntityTypeMapping TypeName="inventorymanagementModel.WebWordpress">
               <MappingFragment StoreEntitySet="WebWordpress">
@@ -5021,221 +6090,6 @@
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ExchangeRates">
-            <EntityTypeMapping TypeName="inventorymanagementModel.ExchangeRate">
-              <MappingFragment StoreEntitySet="ExchangeRate">
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="SellingRate" ColumnName="SellingRate" />
-                <ScalarProperty Name="CurrencyCode" ColumnName="CurrencyCode" />
-                <ScalarProperty Name="CurrencyName" ColumnName="CurrencyName" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="DeliveryAddresses">
-            <EntityTypeMapping TypeName="inventorymanagementModel.DeliveryAddress">
-              <MappingFragment StoreEntitySet="DeliveryAddress">
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="IsDefault" ColumnName="IsDefault" />
-                <ScalarProperty Name="WardId" ColumnName="WardId" />
-                <ScalarProperty Name="DistrictId" ColumnName="DistrictId" />
-                <ScalarProperty Name="ProvinceId" ColumnName="ProvinceId" />
-                <ScalarProperty Name="Address" ColumnName="Address" />
-                <ScalarProperty Name="Phone" ColumnName="Phone" />
-                <ScalarProperty Name="FullName" ColumnName="FullName" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="PreOrders">
-            <EntityTypeMapping TypeName="inventorymanagementModel.PreOrder">
-              <MappingFragment StoreEntitySet="PreOrder">
-                <ScalarProperty Name="ShippingFee" ColumnName="ShippingFee" />
-                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="SourceOrdering" ColumnName="SourceOrdering" />
-                <ScalarProperty Name="Total" ColumnName="Total" />
-                <ScalarProperty Name="CouponPrice" ColumnName="CouponPrice" />
-                <ScalarProperty Name="TotalDiscount" ColumnName="TotalDiscount" />
-                <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
-                <ScalarProperty Name="TotalCostOfGoods" ColumnName="TotalCostOfGoods" />
-                <ScalarProperty Name="TotalQuantity" ColumnName="TotalQuantity" />
-                <ScalarProperty Name="CouponId" ColumnName="CouponId" />
-                <ScalarProperty Name="PaymentMethod" ColumnName="PaymentMethod" />
-                <ScalarProperty Name="DeliveryMethod" ColumnName="DeliveryMethod" />
-                <ScalarProperty Name="DeliveryAddressId" ColumnName="DeliveryAddressId" />
-                <ScalarProperty Name="Avatar" ColumnName="Avatar" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="PreOrderDetails">
-            <EntityTypeMapping TypeName="inventorymanagementModel.PreOrderDetail">
-              <MappingFragment StoreEntitySet="PreOrderDetail">
-                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
-                <ScalarProperty Name="TotalCostOfGoods" ColumnName="TotalCostOfGoods" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="OldPrice" ColumnName="OldPrice" />
-                <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="CostOfGoods" ColumnName="CostOfGoods" />
-                <ScalarProperty Name="Size" ColumnName="Size" />
-                <ScalarProperty Name="Color" ColumnName="Color" />
-                <ScalarProperty Name="Avatar" ColumnName="Avatar" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="SKU" ColumnName="SKU" />
-                <ScalarProperty Name="VariationId" ColumnName="VariationId" />
-                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="PreOrderId" ColumnName="PreOrderId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Tokens">
-            <EntityTypeMapping TypeName="inventorymanagementModel.Token">
-              <MappingFragment StoreEntitySet="Token">
-                <ScalarProperty Name="LastDate" ColumnName="LastDate" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="Device" ColumnName="Device" />
-                <ScalarProperty Name="Browser" ColumnName="Browser" />
-                <ScalarProperty Name="UserID" ColumnName="UserID" />
-                <ScalarProperty Name="SecretKey" ColumnName="SecretKey" />
-                <ScalarProperty Name="UUID" ColumnName="UUID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ViewOrders">
-            <EntityTypeMapping TypeName="inventorymanagementModel.ViewOrder">
-              <MappingFragment StoreEntitySet="ViewOrder">
-                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
-                <ScalarProperty Name="PreOrderId" ColumnName="PreOrderId" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Phone" ColumnName="Phone" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="PostVideos">
-            <EntityTypeMapping TypeName="inventorymanagementModel.PostVideo">
-              <MappingFragment StoreEntitySet="PostVideo">
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="PostId" ColumnName="PostId" />
-                <ScalarProperty Name="VideoId" ColumnName="VideoId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ProductVideos">
-            <EntityTypeMapping TypeName="inventorymanagementModel.ProductVideo">
-              <MappingFragment StoreEntitySet="ProductVideo">
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
-                <ScalarProperty Name="VideoId" ColumnName="VideoId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Videos">
-            <EntityTypeMapping TypeName="inventorymanagementModel.Video">
-              <MappingFragment StoreEntitySet="Video">
-                <ScalarProperty Name="SubUrl" ColumnName="SubUrl" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="Expiration" ColumnName="Expiration" />
-                <ScalarProperty Name="Width" ColumnName="Width" />
-                <ScalarProperty Name="Height" ColumnName="Height" />
-                <ScalarProperty Name="Url" ColumnName="Url" />
-                <ScalarProperty Name="Thumbnail" ColumnName="Thumbnail" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="tbl_Order">
-            <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Order">
-              <MappingFragment StoreEntitySet="tbl_Order">
-                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
-                <ScalarProperty Name="DeliveryAddressId" ColumnName="DeliveryAddressId" />
-                <ScalarProperty Name="Avatar" ColumnName="Avatar" />
-                <ScalarProperty Name="TotalCostOfGood" ColumnName="TotalCostOfGood" />
-                <ScalarProperty Name="TotalQuantity" ColumnName="TotalQuantity" />
-                <ScalarProperty Name="Weight" ColumnName="Weight" />
-                <ScalarProperty Name="GHTKFee" ColumnName="GHTKFee" />
-                <ScalarProperty Name="CouponValue" ColumnName="CouponValue" />
-                <ScalarProperty Name="CouponID" ColumnName="CouponID" />
-                <ScalarProperty Name="VerifiedBy" ColumnName="VerifiedBy" />
-                <ScalarProperty Name="VerifiedCOD" ColumnName="VerifiedCOD" />
-                <ScalarProperty Name="UserHelp" ColumnName="UserHelp" />
-                <ScalarProperty Name="CustomerNewPhone" ColumnName="CustomerNewPhone" />
-                <ScalarProperty Name="PostalDeliveryType" ColumnName="PostalDeliveryType" />
-                <ScalarProperty Name="OtherFeeValue" ColumnName="OtherFeeValue" />
-                <ScalarProperty Name="OtherFeeName" ColumnName="OtherFeeName" />
-                <ScalarProperty Name="TransportCompanySubID" ColumnName="TransportCompanySubID" />
-                <ScalarProperty Name="TransportCompanyID" ColumnName="TransportCompanyID" />
-                <ScalarProperty Name="ShippingCode" ColumnName="ShippingCode" />
-                <ScalarProperty Name="RefundsGoodsID" ColumnName="RefundsGoodsID" />
-                <ScalarProperty Name="DateDone" ColumnName="DateDone" />
-                <ScalarProperty Name="OrderNote" ColumnName="OrderNote" />
-                <ScalarProperty Name="ShippingType" ColumnName="ShippingType" />
-                <ScalarProperty Name="PaymentType" ColumnName="PaymentType" />
-                <ScalarProperty Name="FeeRefund" ColumnName="FeeRefund" />
-                <ScalarProperty Name="GuestChange" ColumnName="GuestChange" />
-                <ScalarProperty Name="GuestPaid" ColumnName="GuestPaid" />
-                <ScalarProperty Name="TotalPriceNotDiscount" ColumnName="TotalPriceNotDiscount" />
-                <ScalarProperty Name="FeeShipping" ColumnName="FeeShipping" />
-                <ScalarProperty Name="TotalDiscount" ColumnName="TotalDiscount" />
-                <ScalarProperty Name="DiscountPerProduct" ColumnName="DiscountPerProduct" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="WayIn" ColumnName="WayIn" />
-                <ScalarProperty Name="IsHidden" ColumnName="IsHidden" />
-                <ScalarProperty Name="ExcuteStatus" ColumnName="ExcuteStatus" />
-                <ScalarProperty Name="PaymentStatus" ColumnName="PaymentStatus" />
-                <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
-                <ScalarProperty Name="CustomerEmail" ColumnName="CustomerEmail" />
-                <ScalarProperty Name="CustomerAddress" ColumnName="CustomerAddress" />
-                <ScalarProperty Name="CustomerPhone" ColumnName="CustomerPhone" />
-                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
-                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
-                <ScalarProperty Name="DisCount" ColumnName="DisCount" />
-                <ScalarProperty Name="AdditionFee" ColumnName="AdditionFee" />
-                <ScalarProperty Name="OrderType" ColumnName="OrderType" />
-                <ScalarProperty Name="AgentID" ColumnName="AgentID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

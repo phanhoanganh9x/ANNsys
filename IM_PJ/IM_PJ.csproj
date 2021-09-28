@@ -349,6 +349,7 @@
     <Content Include="App_Themes\Ann\css\pages\dang-ky-ghtk\dang-ky-ghtk.css" />
     <Content Include="App_Themes\Ann\css\pages\dang-ky-chuyen-hoan\dang-ky-chuyen-hoan.css" />
     <Content Include="App_Themes\Ann\css\pages\dang-ky-gui-di\dang-ky-gui-di.css" />
+    <Content Include="App_Themes\Ann\css\pages\dang-ky-jt\dang-ky-jt.css" />
     <Content Include="App_Themes\Ann\css\pages\danh-sach-don-dat-hang\danh-sach-don-dat-hang.css" />
     <Content Include="App_Themes\Ann\css\pages\quan-ly-don-giao-hang\quan-ly-don-giao-hang.css" />
     <Content Include="App_Themes\Ann\css\pages\danh-sach-don-hang\danh-sach-don-hang.css" />
@@ -437,6 +438,7 @@
     <Content Include="App_Themes\Ann\js\pages\dang-ky-chuyen-hoan\dang-ky-chuyen-hoan.js" />
     <Content Include="App_Themes\Ann\js\pages\dang-ky-gui-di\dang-ky-gui-di.js" />
     <Content Include="App_Themes\Ann\js\pages\quan-ly-don-giao-hang\quan-ly-don-giao-hang.js" />
+    <Content Include="App_Themes\Ann\js\pages\dang-ky-jt\dang-ky-jt.js" />
     <Content Include="App_Themes\Ann\js\pages\danh-sach-don-ghtk\danh-sach-don-ghtk.js" />
     <Content Include="App_Themes\Ann\js\pages\thong-ke-ghtk\thong-ke-ghtk.js" />
     <Content Include="App_Themes\Ann\js\pages\thong-tin-don-dat-hang\thong-tin-don-dat-hang.js" />
@@ -560,8 +562,8 @@
     <Content Include="chuyen-kho.aspx" />
     <Content Include="dang-ky-chuyen-hoan.aspx" />
     <Content Include="dang-ky-gui-di.aspx" />
+    <Content Include="dang-ky-jt.aspx" />
     <Content Include="danh-sach-don-dat-hang.aspx" />
-    <Content Include="quan-ly-don-giao-hang.aspx" />
     <Content Include="Models\IMMode.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>IMMode.edmx</DependentUpon>
@@ -572,6 +574,7 @@
       <DependentUpon>IMMode.edmx</DependentUpon>
       <LastGenOutput>IMMode.cs</LastGenOutput>
     </Content>
+    <Content Include="quan-ly-don-giao-hang.aspx" />
     <Content Include="print-order-image-english.aspx" />
     <Content Include="SQL\01CREATE_TABLE_DeliveryAddress.sql" />
     <Content Include="SQL\01CREATE_TABLE_DeliveryManager.sql" />
@@ -584,6 +587,9 @@
     <Content Include="SQL\01CREATE_TABLE_ExchangeRate.sql" />
     <Content Include="SQL\01CREATE_TABLE_OrderStatus.sql" />
     <Content Include="SQL\01CREATE_TABLE_OrderType.sql" />
+    <Content Include="SQL\01CREATE_TABLE_JtExpressAddress.sql" />
+    <Content Include="SQL\01CREATE_TABLE_JtExpressOrder.sql" />
+    <Content Include="SQL\01CREATE_TABLE_JtExpressReason.sql" />
     <Content Include="SQL\01CREATE_TABLE_PostVideo.sql" />
     <Content Include="SQL\01CREATE_TABLE_PreOrder.sql" />
     <Content Include="SQL\01CREATE_TABLE_PreOrderDetail.sql" />
@@ -1078,6 +1084,15 @@
     </Compile>
     <Compile Include="dang-ky-gui-di.aspx.designer.cs">
       <DependentUpon>dang-ky-gui-di.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controllers\JtExpressOrderController.cs" />
+    <Compile Include="dang-ky-jt.aspx.cs">
+      <DependentUpon>dang-ky-jt.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="dang-ky-jt.aspx.designer.cs">
+      <DependentUpon>dang-ky-jt.aspx</DependentUpon>
     </Compile>
     <Compile Include="danh-sach-don-dat-hang.aspx.cs">
       <DependentUpon>danh-sach-don-dat-hang.aspx</DependentUpon>
@@ -1086,16 +1101,6 @@
     <Compile Include="danh-sach-don-dat-hang.aspx.designer.cs">
       <DependentUpon>danh-sach-don-dat-hang.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Models\Pages\danh-sach-don-hang\KeyValueModel.cs" />
-    <Compile Include="Models\Pages\thong-tin-don-hang\KeyValueModel.cs" />
-    <Compile Include="quan-ly-don-giao-hang.aspx.cs">
-      <DependentUpon>quan-ly-don-giao-hang.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="quan-ly-don-giao-hang.aspx.designer.cs">
-      <DependentUpon>quan-ly-don-giao-hang.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Models\Bank.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
@@ -1111,10 +1116,6 @@
     <Compile Include="Models\CheckWarehouseDetail.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Common\Currency.cs" />
-    <Compile Include="Models\Common\Product\ProductCOGSModel.cs" />
-    <Compile Include="Models\Common\Product\ProductVariationCOGSModel.cs" />
-    <Compile Include="Models\Common\Refund\RefundFilterModel.cs" />
     <Compile Include="Models\Coupon.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
@@ -1136,10 +1137,31 @@
     <Compile Include="Models\DeliveryAddress.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DeliveryManager.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DeliveryMethod.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\DeliveryPostOffice.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DeliverySaveAddress.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DeliverySaveNotification.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DeliverySaveReason.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DeliverySaveReport.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DeliverySaveStatu.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DeliveryStatu.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ExchangeRate.cs">
@@ -1169,6 +1191,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>IMMode.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\JtExpressAddress.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\JtExpressOrder.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\JtExpressReason.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Notification.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
@@ -1184,30 +1215,14 @@
     <Compile Include="Models\NotifyUser.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Pages\dang-ky-chuyen-hoan\KeyValueModel.cs" />
-    <Compile Include="Models\Pages\quan-ly-don-giao-hang\KeyValueModel.cs" />
-    <Compile Include="Models\Pages\dang-ky-gui-di\KeyValueModel.cs" />
-    <Compile Include="Models\Pages\print-order-image-english\CouponModel.cs" />
-    <Compile Include="Models\Pages\print-order-image-english\CustomerModel.cs" />
-    <Compile Include="Models\Pages\print-order-image-english\OrderDetailModel.cs" />
-    <Compile Include="Models\Pages\print-order-image-english\OrderMergerDetailModel.cs" />
-    <Compile Include="Models\Pages\print-order-image-english\OrderModel.cs" />
-    <Compile Include="Models\Pages\print-order-image-english\OtherFeeModel.cs" />
-    <Compile Include="Models\Pages\print-order-image-english\PaginationModel.cs" />
-    <Compile Include="Models\Pages\print-order-image-english\RefundOrderModel.cs" />
-    <Compile Include="Models\Pages\print-order-image-english\StaffModel.cs" />
-    <Compile Include="Models\Pages\print-order-image\CouponModel.cs" />
-    <Compile Include="Models\Pages\print-order-image\ShopModel.cs" />
-    <Compile Include="Models\Pages\print-order-image\CustomerModel.cs" />
-    <Compile Include="Models\Pages\print-order-image\OrderDetailModel.cs" />
-    <Compile Include="Models\Pages\print-order-image\OrderMergerDetailModel.cs" />
-    <Compile Include="Models\Pages\print-order-image\OrderModel.cs" />
-    <Compile Include="Models\Pages\print-order-image\OtherFeeModel.cs" />
-    <Compile Include="Models\Pages\print-order-image\PaginationModel.cs" />
-    <Compile Include="Models\Pages\print-order-image\RefundOrderModel.cs" />
-    <Compile Include="Models\Pages\print-order-image\StaffModel.cs" />
-    <Compile Include="Models\Pages\thong-ke-chuyen-kho\SubStockTransferReport.cs" />
-    <Compile Include="Models\Pages\thong-ke-chuyen-kho\StockTransferReport.cs" />
+    <Compile Include="Models\OrderStatu.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\OrderType.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Pages\danh-sach-don-hang\KeyValueModel.cs" />
+    <Compile Include="Models\Pages\thong-tin-don-hang\KeyValueModel.cs" />
     <Compile Include="Models\PostCategory.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
@@ -1391,6 +1406,42 @@
     <Compile Include="Models\ZaloIndustry.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
+    <Compile Include="quan-ly-don-giao-hang.aspx.cs">
+      <DependentUpon>quan-ly-don-giao-hang.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="quan-ly-don-giao-hang.aspx.designer.cs">
+      <DependentUpon>quan-ly-don-giao-hang.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Models\Common\Currency.cs" />
+    <Compile Include="Models\Common\Product\ProductCOGSModel.cs" />
+    <Compile Include="Models\Common\Product\ProductVariationCOGSModel.cs" />
+    <Compile Include="Models\Common\Refund\RefundFilterModel.cs" />
+    <Compile Include="Models\Pages\dang-ky-chuyen-hoan\KeyValueModel.cs" />
+    <Compile Include="Models\Pages\quan-ly-don-giao-hang\KeyValueModel.cs" />
+    <Compile Include="Models\Pages\dang-ky-gui-di\KeyValueModel.cs" />
+    <Compile Include="Models\Pages\print-order-image-english\CouponModel.cs" />
+    <Compile Include="Models\Pages\print-order-image-english\CustomerModel.cs" />
+    <Compile Include="Models\Pages\print-order-image-english\OrderDetailModel.cs" />
+    <Compile Include="Models\Pages\print-order-image-english\OrderMergerDetailModel.cs" />
+    <Compile Include="Models\Pages\print-order-image-english\OrderModel.cs" />
+    <Compile Include="Models\Pages\print-order-image-english\OtherFeeModel.cs" />
+    <Compile Include="Models\Pages\print-order-image-english\PaginationModel.cs" />
+    <Compile Include="Models\Pages\print-order-image-english\RefundOrderModel.cs" />
+    <Compile Include="Models\Pages\print-order-image-english\StaffModel.cs" />
+    <Compile Include="Models\Pages\print-order-image\CouponModel.cs" />
+    <Compile Include="Models\Pages\print-order-image\ShopModel.cs" />
+    <Compile Include="Models\Pages\print-order-image\CustomerModel.cs" />
+    <Compile Include="Models\Pages\print-order-image\OrderDetailModel.cs" />
+    <Compile Include="Models\Pages\print-order-image\OrderMergerDetailModel.cs" />
+    <Compile Include="Models\Pages\print-order-image\OrderModel.cs" />
+    <Compile Include="Models\Pages\print-order-image\OtherFeeModel.cs" />
+    <Compile Include="Models\Pages\print-order-image\PaginationModel.cs" />
+    <Compile Include="Models\Pages\print-order-image\RefundOrderModel.cs" />
+    <Compile Include="Models\Pages\print-order-image\StaffModel.cs" />
+    <Compile Include="Models\Pages\thong-ke-chuyen-kho\SubStockTransferReport.cs" />
+    <Compile Include="Models\Pages\thong-ke-chuyen-kho\StockTransferReport.cs" />
     <Compile Include="print-order-image-english.aspx.cs">
       <DependentUpon>print-order-image-english.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2556,7 +2607,7 @@
   <Import Project="..\packages\Microsoft.ApplicationInsights.WindowsServer.2.9.0\build\Microsoft.ApplicationInsights.WindowsServer.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.WindowsServer.2.9.0\build\Microsoft.ApplicationInsights.WindowsServer.targets')" />
   <Import Project="..\packages\Microsoft.ApplicationInsights.Web.2.9.0\build\Microsoft.ApplicationInsights.Web.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.Web.2.9.0\build\Microsoft.ApplicationInsights.Web.targets')" />
   <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

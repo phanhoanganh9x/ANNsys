@@ -34,6 +34,8 @@ namespace IM_PJ.Models
         public string ModifiedBy { get; set; }
         public System.DateTime ModifiedDate { get; set; }
         public byte[] Timestamp { get; set; }
+        public decimal Discount { get; set; }
+        public decimal Total { get; set; }
     
         public virtual PreOrder PreOrder { get; set; }
         public virtual tbl_Product tbl_Product { get; set; }

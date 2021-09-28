@@ -12,19 +12,19 @@ namespace IM_PJ.Models
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
-    
+
     public partial class inventorymanagementEntities : DbContext
     {
         public inventorymanagementEntities()
             : base("name=inventorymanagementEntities")
         {
         }
-    
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             throw new UnintentionalCodeFirstException();
         }
-    
+
         public virtual DbSet<Bank> Banks { get; set; }
         public virtual DbSet<BankAccount> BankAccounts { get; set; }
         public virtual DbSet<BankTransfer> BankTransfers { get; set; }
@@ -36,22 +36,40 @@ namespace IM_PJ.Models
         public virtual DbSet<CustomerCoupon> CustomerCoupons { get; set; }
         public virtual DbSet<CustomerEditOrder> CustomerEditOrders { get; set; }
         public virtual DbSet<Delivery> Deliveries { get; set; }
+        public virtual DbSet<DeliveryAddress> DeliveryAddresses { get; set; }
+        public virtual DbSet<DeliveryManager> DeliveryManagers { get; set; }
+        public virtual DbSet<DeliveryMethod> DeliveryMethods { get; set; }
         public virtual DbSet<DeliveryPostOffice> DeliveryPostOffices { get; set; }
         public virtual DbSet<DeliverySaveAddress> DeliverySaveAddresses { get; set; }
+        public virtual DbSet<DeliverySaveNotification> DeliverySaveNotifications { get; set; }
+        public virtual DbSet<DeliverySaveReason> DeliverySaveReasons { get; set; }
+        public virtual DbSet<DeliverySaveReport> DeliverySaveReports { get; set; }
+        public virtual DbSet<DeliverySaveStatu> DeliverySaveStatus { get; set; }
+        public virtual DbSet<DeliveryStatu> DeliveryStatus { get; set; }
+        public virtual DbSet<ExchangeRate> ExchangeRates { get; set; }
         public virtual DbSet<Fee> Fees { get; set; }
         public virtual DbSet<FeeType> FeeTypes { get; set; }
         public virtual DbSet<GroupNotifyPromotion> GroupNotifyPromotions { get; set; }
+        public virtual DbSet<JtExpressAddress> JtExpressAddresses { get; set; }
+        public virtual DbSet<JtExpressOrder> JtExpressOrders { get; set; }
+        public virtual DbSet<JtExpressReason> JtExpressReasons { get; set; }
         public virtual DbSet<Notification> Notifications { get; set; }
         public virtual DbSet<NotificationCategory> NotificationCategories { get; set; }
         public virtual DbSet<NotifyNew> NotifyNews { get; set; }
         public virtual DbSet<NotifyPromotion> NotifyPromotions { get; set; }
         public virtual DbSet<NotifyUser> NotifyUsers { get; set; }
+        public virtual DbSet<OrderStatu> OrderStatus { get; set; }
+        public virtual DbSet<OrderType> OrderTypes { get; set; }
         public virtual DbSet<PostCategory> PostCategories { get; set; }
         public virtual DbSet<PostClone> PostClones { get; set; }
         public virtual DbSet<PostPublic> PostPublics { get; set; }
         public virtual DbSet<PostPublicImage> PostPublicImages { get; set; }
+        public virtual DbSet<PostVideo> PostVideos { get; set; }
         public virtual DbSet<PostWordpress> PostWordpresses { get; set; }
+        public virtual DbSet<PreOrder> PreOrders { get; set; }
+        public virtual DbSet<PreOrderDetail> PreOrderDetails { get; set; }
         public virtual DbSet<ProductTag> ProductTags { get; set; }
+        public virtual DbSet<ProductVideo> ProductVideos { get; set; }
         public virtual DbSet<ReceivedProductHistory> ReceivedProductHistories { get; set; }
         public virtual DbSet<Register> Registers { get; set; }
         public virtual DbSet<RegisterProduct> RegisterProducts { get; set; }
@@ -74,6 +92,7 @@ namespace IM_PJ.Models
         public virtual DbSet<tbl_LinkImnage> tbl_LinkImnage { get; set; }
         public virtual DbSet<tbl_MovePro> tbl_MovePro { get; set; }
         public virtual DbSet<tbl_MoveProdDetail> tbl_MoveProdDetail { get; set; }
+        public virtual DbSet<tbl_Order> tbl_Order { get; set; }
         public virtual DbSet<tbl_OrderDetail> tbl_OrderDetail { get; set; }
         public virtual DbSet<tbl_OrderReturnGood> tbl_OrderReturnGood { get; set; }
         public virtual DbSet<tbl_Post> tbl_Post { get; set; }
@@ -95,19 +114,12 @@ namespace IM_PJ.Models
         public virtual DbSet<tbl_Variable> tbl_Variable { get; set; }
         public virtual DbSet<tbl_VariableValue> tbl_VariableValue { get; set; }
         public virtual DbSet<tbl_WhiteDomain> tbl_WhiteDomain { get; set; }
+        public virtual DbSet<Token> Tokens { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserNotifyPromotion> UserNotifyPromotions { get; set; }
+        public virtual DbSet<Video> Videos { get; set; }
+        public virtual DbSet<ViewOrder> ViewOrders { get; set; }
         public virtual DbSet<WebWordpress> WebWordpresses { get; set; }
         public virtual DbSet<ZaloIndustry> ZaloIndustries { get; set; }
-        public virtual DbSet<ExchangeRate> ExchangeRates { get; set; }
-        public virtual DbSet<DeliveryAddress> DeliveryAddresses { get; set; }
-        public virtual DbSet<PreOrder> PreOrders { get; set; }
-        public virtual DbSet<PreOrderDetail> PreOrderDetails { get; set; }
-        public virtual DbSet<Token> Tokens { get; set; }
-        public virtual DbSet<ViewOrder> ViewOrders { get; set; }
-        public virtual DbSet<PostVideo> PostVideos { get; set; }
-        public virtual DbSet<ProductVideo> ProductVideos { get; set; }
-        public virtual DbSet<Video> Videos { get; set; }
-        public virtual DbSet<tbl_Order> tbl_Order { get; set; }
     }
 }

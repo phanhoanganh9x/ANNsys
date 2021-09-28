@@ -7,9 +7,9 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-IF (EXISTS (SELECT NULL AS DUMMY 
-            FROM INFORMATION_SCHEMA.TABLES 
-            WHERE TABLE_SCHEMA = 'dbo' 
+IF (EXISTS (SELECT NULL AS DUMMY
+            FROM INFORMATION_SCHEMA.TABLES
+            WHERE TABLE_SCHEMA = 'dbo'
             AND  TABLE_NAME = 'DeliveryAddress'))
 BEGIN
     DROP TABLE [dbo].[DeliveryAddress]
@@ -30,7 +30,7 @@ CREATE TABLE [dbo].[DeliveryAddress](
     [CreatedDate] [datetime] NOT NULL,
     [ModifiedBy] [nvarchar](15) NOT NULL,
     [ModifiedDate] [datetime] NOT NULL
- CONSTRAINT [PK_DeliveryAddress] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_DeliveryAddress] PRIMARY KEY CLUSTERED
 (
     [Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
@@ -70,3 +70,6 @@ GO
 ALTER TABLE [dbo].[DeliveryAddress] CHECK CONSTRAINT [FK_DeliveryAddress_Ward]
 GO
 
+ALTER TABLE [dbo].[DeliveryAddress] ADD [JtProvince] [NVARCHAR](100) NULL;
+ALTER TABLE [dbo].[DeliveryAddress] ADD [JtDistrict] [NVARCHAR](100) NULL;
+ALTER TABLE [dbo].[DeliveryAddress] ADD [JtWard] [NVARCHAR](100) NULL;
