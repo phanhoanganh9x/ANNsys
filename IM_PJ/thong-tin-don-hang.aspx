@@ -471,7 +471,7 @@
                                 </div>
                                 <div class="post-row clear">
                                     <div class="left">Phí vận chuyển</div>
-                                    <div class="right totalDiscount">
+                                    <div class="right shipping-fee">
                                         <a class="btn btn-feeship link-btn btn-green hide" href="javascript:;" id="btnJtExpresFee" onclick="getJtExpresFee()">
                                             <i class="fa fa-check-square-o" aria-hidden="true"></i> Lấy phí J&T
                                         </a>

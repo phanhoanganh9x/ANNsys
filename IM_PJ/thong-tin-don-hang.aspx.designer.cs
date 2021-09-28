@@ -481,15 +481,6 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.HiddenField notAcceptChangeUser;
 
         /// <summary>
-        /// hdfDiscountInOrder control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdfDiscountInOrder;
-
-        /// <summary>
         /// hdfUsername control.
         /// </summary>
         /// <remarks>
@@ -607,15 +598,6 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.HiddenField hdfIsMain;
 
         /// <summary>
-        /// hdfTotalPriceNotDiscountNotFee control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdfTotalPriceNotDiscountNotFee;
-
-        /// <summary>
         /// hdfListSearch control.
         /// </summary>
         /// <remarks>
@@ -632,15 +614,6 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdfTotalQuantity;
-
-        /// <summary>
-        /// hdfcheck control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdfcheck;
 
         /// <summary>
         /// hdftotal control.
