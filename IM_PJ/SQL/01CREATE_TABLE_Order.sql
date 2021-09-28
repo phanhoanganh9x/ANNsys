@@ -29,5 +29,3 @@ GO
 
 ALTER TABLE [dbo].[tbl_Order] DROP COLUMN [GhtkInsuranceFee]
 GO
-
-ALTER TABLE tbl_Order ADD [JtFee] MONEY NULL;

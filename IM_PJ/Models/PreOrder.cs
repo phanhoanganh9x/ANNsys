@@ -24,7 +24,7 @@ namespace IM_PJ.Models
         public long Id { get; set; }
         public int Status { get; set; }
         public string Avatar { get; set; }
-        public long DeliveryAddressId { get; set; }
+        public Nullable<long> DeliveryAddressId { get; set; }
         public int DeliveryMethod { get; set; }
         public int PaymentMethod { get; set; }
         public Nullable<int> CouponId { get; set; }
@@ -33,7 +33,6 @@ namespace IM_PJ.Models
         public decimal TotalPrice { get; set; }
         public decimal TotalDiscount { get; set; }
         public decimal CouponPrice { get; set; }
-        public decimal Total { get; set; }
         public string SourceOrdering { get; set; }
         public string CreatedBy { get; set; }
         public System.DateTime CreatedDate { get; set; }
@@ -41,6 +40,8 @@ namespace IM_PJ.Models
         public System.DateTime ModifiedDate { get; set; }
         public byte[] Timestamp { get; set; }
         public decimal ShippingFee { get; set; }
+        public decimal Total { get; set; }
+        public string Note { get; set; }
     
         public virtual Coupon Coupon { get; set; }
         public virtual DeliveryAddress DeliveryAddress { get; set; }

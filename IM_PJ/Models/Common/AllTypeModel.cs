@@ -9,9 +9,9 @@ namespace IM_PJ.Models
     {
         Order = 1,        // Liên quan đến đơn hàng
         Product = 2       // Liên quan đến sản phẩm
-        
+
     }
-    public enum OrderType
+    public enum SaleType
     {
         Retail = 1,         // Lẻ
         Wholesale = 2       // Sỉ
