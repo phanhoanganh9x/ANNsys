@@ -1084,6 +1084,8 @@
     </Compile>
     <Compile Include="dang-ky-gui-di.aspx.designer.cs">
       <DependentUpon>dang-ky-gui-di.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Controllers\JtExpressOrderController.cs" />
     <Compile Include="dang-ky-jt.aspx.cs">
       <DependentUpon>dang-ky-jt.aspx</DependentUpon>
