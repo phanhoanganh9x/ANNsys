@@ -68,7 +68,7 @@
 
         <asp:HiddenField ID="hdfStaff" runat="server" />
 
-        <script type="text/javascript" src="/App_Themes/Ann/js/utils/string-format.js?v=202106061418"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/utils/string-format.js?v=202109300102"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=202106061418"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/services/danh-sach-don-ghtk/danh-sach-don-ghtk-service.js?v=202106151531"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/controllers/danh-sach-don-ghtk/danh-sach-don-ghtk-controller.js?v=202106151531"></script>

@@ -570,35 +570,33 @@ function _submit() {
                         window.location.href = "https://vip.jtexpress.vn/#/service/expressTrack?id=" + code;
                     });
                 else
-                    return _alterError(titleAlert, { message: response.message });
+                    return _alterError(titleAlert, response);
             } else {
-                return _alterError(titleAlert);
+                return _alterError(titleAlert, response);
             }
         },
         error: (xhr, textStatus, error) => {
             HoldOn.close();
 
-            return _alterError(titleAlert);
+            return _alterError(titleAlert, xhr.responseJSON);
         }
     });
 }
 
 function _alterError(title, responseJSON) {
-    let message = '';
-    title = (typeof title !== 'undefined') ? title : 'Thông báo lỗi';
+    let message = 'Đẫ có lỗi xãy ra.';
 
-    if (responseJSON === undefined || responseJSON === null) {
-        message = 'Đẫ có lỗi xãy ra.';
-    }
-    else {
-        if (responseJSON.message)
-            message += responseJSON.message;
-    }
+    if (!title)
+        title = 'Thông báo lỗi'
+
+    if (responseJSON.message)
+        message = responseJSON.message;
 
     return swal({
         title: title,
         text: message,
         icon: "error",
+        html: true
     });
 }
 

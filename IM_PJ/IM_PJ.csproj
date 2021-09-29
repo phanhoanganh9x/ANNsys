@@ -359,6 +359,7 @@
     <Content Include="App_Themes\Ann\css\pages\thong-ke-ghtk\thong-ke-ghtk.css" />
     <Content Include="App_Themes\Ann\css\pages\thong-tin-don-dat-hang\thong-tin-don-dat-hang.css" />
     <Content Include="App_Themes\Ann\css\print-delivery.css" />
+    <Content Include="App_Themes\Ann\css\pages\print-jt-express\print-jt-express.css" />
     <Content Include="App_Themes\Ann\css\print-order-image-english.css" />
     <Content Include="App_Themes\Ann\css\print-return-order-image.css" />
     <Content Include="App_Themes\Ann\css\print-order-image.css" />
@@ -574,6 +575,7 @@
       <DependentUpon>IMMode.edmx</DependentUpon>
       <LastGenOutput>IMMode.cs</LastGenOutput>
     </Content>
+    <Content Include="print-jt-express.aspx" />
     <Content Include="quan-ly-don-giao-hang.aspx" />
     <Content Include="print-order-image-english.aspx" />
     <Content Include="SQL\01CREATE_TABLE_DeliveryAddress.sql" />
@@ -1161,9 +1163,6 @@
     <Compile Include="Models\DeliverySaveStatu.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\DeliveryStatu.cs">
-      <DependentUpon>IMMode.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\ExchangeRate.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
@@ -1222,6 +1221,9 @@
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Pages\danh-sach-don-hang\KeyValueModel.cs" />
+    <Compile Include="Models\Pages\print-jt-express\OrderAddressResponseModel.cs" />
+    <Compile Include="Models\Pages\print-jt-express\OrderItemResponseModel.cs" />
+    <Compile Include="Models\Pages\print-jt-express\OrderResponseModel.cs" />
     <Compile Include="Models\Pages\thong-tin-don-hang\KeyValueModel.cs" />
     <Compile Include="Models\PostCategory.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
@@ -1405,6 +1407,13 @@
     </Compile>
     <Compile Include="Models\ZaloIndustry.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="print-jt-express.aspx.cs">
+      <DependentUpon>print-jt-express.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="print-jt-express.aspx.designer.cs">
+      <DependentUpon>print-jt-express.aspx</DependentUpon>
     </Compile>
     <Compile Include="quan-ly-don-giao-hang.aspx.cs">
       <DependentUpon>quan-ly-don-giao-hang.aspx</DependentUpon>

@@ -92,13 +92,47 @@
 
             return strHour + ':' + strMinute
         }
-        else if (format == 'dd/MM/yyyy hh:mm:ss tt') {
+        else if (format == 'dd/MM/yyyy hh:mm:ss') {
             let strDate = ''
             let strMonth = ''
             let strYear = year.toString();
             let strHour = ''
             let strMinute = ''
-            let strSeconds = seconds.toString();
+            let strSeconds = '';
+
+            if (date < 10)
+                strDate = '0' + date.toString();
+            else
+                strDate = date.toString();
+
+            if (month < 10)
+                strMonth = '0' + month.toString();
+            else
+                strMonth = month.toString();
+
+            if (hour < 10)
+                strHour = '0' + hour.toString();
+            else
+                strHour = hour.toString();
+
+            if (minute < 10)
+                strMinute = '0' + minute.toString();
+            else
+                strMinute = minute.toString();
+
+            if (seconds < 10)
+                strSeconds = '0' + seconds.toString();
+            else
+                strSeconds = seconds.toString();
+
+            return strDate + '/' + strMonth + '/' + strYear + ' ' + strHour + ':' + strMinute + ':' + strSeconds;
+        } else if (format == 'dd/MM/yyyy hh:mm:ss tt') {
+            let strDate = ''
+            let strMonth = ''
+            let strYear = year.toString();
+            let strHour = ''
+            let strMinute = ''
+            let strSeconds = '';
             let strTT = 'AM';
 
             if (date < 10)
@@ -128,6 +162,11 @@
                 strMinute = '0' + minute.toString();
             else
                 strMinute = minute.toString();
+
+            if (seconds < 10)
+                strSeconds = '0' + seconds.toString();
+            else
+                strSeconds = seconds.toString();
 
             return strDate + '/' + strMonth + '/' + strYear + ' ' + strHour + ':' + strMinute + ':' + strSeconds + ' ' + strTT;
         }

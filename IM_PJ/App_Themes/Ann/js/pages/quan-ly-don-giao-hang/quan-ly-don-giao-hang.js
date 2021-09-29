@@ -302,12 +302,12 @@ function _createReportTableHTML(data) {
                 // Ngày gửi
                 html += "        <td  data-title='Ngày gửi'>";
                 if (item.sentDate)
-                    html += "            " + strFormat.datetimeToString(item.sentDate, 'dd/MM/yyyy');
+                    html += "            " + strFormat.datetimeToString(item.sentDate, 'dd/MM/yyyy hh:mm:ss');
                 html += "        </td>";
                 // Ngày phát
                 html += "        <td  data-title='Ngày chuyển hoàn'>";
                 if (item.refundDate)
-                    html += "            " + strFormat.datetimeToString(item.refundDate, 'dd/MM/yyyy');
+                    html += "            " + strFormat.datetimeToString(item.refundDate, 'dd/MM/yyyy hh:mm:ss');
                 html += "        </td>";
                 // Nhân viên
                 if (controller.role == 0)

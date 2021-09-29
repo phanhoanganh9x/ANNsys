@@ -1493,21 +1493,33 @@
                         window.open("/print-shipping-note?id=" + ID, "_blank");
                     });
                 }
-                else if (deliveryMethod == 10 && paymentType != 3) {
-                    swal({
-                        title: "Ê nhỏ:",
-                        text: "Đơn hàng này gửi J&T nhưng <strong>Không Thu Hộ</strong> hở?",
-                        type: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#DD6B55",
-                        confirmButtonText: "Đúng rồi sếp!!",
-                        closeOnConfirm: false,
-                        cancelButtonText: "Để em xem lại..",
-                        html: true
-                    }, function (isConfirm) {
-                        sweetAlert.close();
-                        window.open("/print-shipping-note?id=" + ID, "_blank");
-                    });
+                else if (deliveryMethod == 10) {
+                    let jtCode = $('[id$="_txtShippingCode"]').val();
+                    if (!jtCode)
+                        swal({
+                            title: "Error",
+                            text: "Không tìm thấy mã vận đơn",
+                            type: "error"
+                        });
+                    else {
+                        if (paymentType != 3)
+                            swal({
+                                title: "Ê nhỏ:",
+                                text: "Đơn hàng này gửi J&T nhưng <strong>Không Thu Hộ</strong> hở?",
+                                type: "warning",
+                                showCancelButton: true,
+                                confirmButtonColor: "#DD6B55",
+                                confirmButtonText: "Đúng rồi sếp!!",
+                                closeOnConfirm: false,
+                                cancelButtonText: "Để em xem lại..",
+                                html: true
+                            }, function (isConfirm) {
+                                sweetAlert.close();
+                                window.open("/print-jt-express?id=" + ID + "&code=" + jtCode, "_blank");
+                            });
+                        else
+                            window.open("/print-jt-express?id=" + ID + "&code=" + jtCode, "_blank");
+                    }
                 }
                 else {
                     window.open("/print-shipping-note?id=" + ID, "_blank");
@@ -3208,21 +3220,19 @@
             }
 
             function _alterError(title, responseJSON) {
-                let message = '';
-                title = (typeof title !== 'undefined') ? title : 'Thông báo lỗi';
+                let message = 'Đẫ có lỗi xãy ra.';
 
-                if (responseJSON === undefined || responseJSON === null) {
-                    message = 'Đẫ có lỗi xãy ra.';
-                }
-                else {
-                    if (responseJSON.message)
-                        message += responseJSON.message;
-                }
+                if (!title)
+                    title = 'Thông báo lỗi'
+
+                if (responseJSON.message)
+                    message = responseJSON.message;
 
                 return swal({
                     title: title,
                     text: message,
                     icon: "error",
+                    html: true
                 });
             }
 
@@ -3461,6 +3471,7 @@
              */
             //#region J&T Express
             function _disabledJtRecipientDistrict(disabled) {
+                let placeHolder = '(Bấm để chọn: ' + $('[id$="_ddlRecipientDistrict"] option:selected').text() + ')';
                 let province = $("#<%=hdfJtRecipientProvince.ClientID%>").val() || '';
                 let $ddlJtRecipientDistrict = $("#<%=ddlJtRecipientDistrict.ClientID%>");
 
@@ -3470,7 +3481,7 @@
                     $ddlJtRecipientDistrict.val(null).trigger('change');
                     $ddlJtRecipientDistrict.select2({
                         width: "100%",
-                        placeholder: '(Bấm để chọn quận/huyện)'
+                        placeholder: placeHolder
                     });
                 }
                 else {
@@ -3479,7 +3490,7 @@
                     $ddlJtRecipientDistrict.val(null).trigger('change');
                     $ddlJtRecipientDistrict.select2({
                         width: "100%",
-                        placeholder: '(Bấm để chọn tỉnh/thành phố)',
+                        placeholder: placeHolder,
                         ajax: {
                             delay: 500,
                             method: 'GET',
@@ -3501,6 +3512,7 @@
             }
 
             function _disabledJtRecipientWard(disabled) {
+                let placeHolder = '(Bấm để chọn: ' + $('[id$="_ddlRecipientWard"] option:selected').text() + ')';
                 let province = $("#<%=hdfJtRecipientProvince.ClientID%>").val() || '';
                 let district = $("#<%=hdfJtRecipientDistrict.ClientID%>").val() || '';
                 let $ddlJtRecipientWard = $("#<%=ddlJtRecipientWard.ClientID%>");
@@ -3511,7 +3523,7 @@
                     $ddlJtRecipientWard.val(null).trigger('change');
                     $ddlJtRecipientWard.select2({
                         width: "100%",
-                        placeholder: '(Bấm để chọn phường/xã)'
+                        placeholder: placeHolder
                     });
                 }
                 else {
@@ -3520,7 +3532,7 @@
                     $ddlJtRecipientWard.val(null).trigger('change');
                     $ddlJtRecipientWard.select2({
                         width: "100%",
-                        placeholder: '(Bấm để chọn phường/xã)',
+                        placeholder: placeHolder,
                         ajax: {
                             delay: 500,
                             method: 'GET',
@@ -3543,6 +3555,7 @@
             }
 
             function _initJtRecipientAddress() {
+                let placeHolder = '(Bấm để chọn: ' + $('[id$="_ddlRecipientProvince"] option:selected').text() + ')';
                 let $ddlJtRecipientProvince = $("#<%=ddlJtRecipientProvince.ClientID%>");
 
                 $ddlJtRecipientProvince.val(null).trigger('change');
@@ -3550,7 +3563,7 @@
                 // Danh sách tỉnh / thành phố
                 $ddlJtRecipientProvince.select2({
                     width: "100%",
-                    placeholder: 'Chọn tỉnh thành',
+                    placeholder: placeHolder,
                     ajax: {
                         delay: 500,
                         method: 'GET',
@@ -3714,37 +3727,40 @@
                         HoldOn.close();
 
                         if (xhr.status == 200 && data) {
-                            return swal({
-                                title: titleAlert,
-                                text: "Hủy thành công!<br>Đơn J&T Express '<strong>" + code + "</strong>'",
-                                icon: "success",
-                            }, function (isConfirm) {
-                                let $btnShowJt = $("#btnShowJtExpress");
-                                let $btnCancelJt = $("#btnCancelJtExpress");
-                                let $divParent = $btnShowJt.parent();
-                                let $txtShippingCode = $("input[id$='_txtShippingCode']");
-                                let btnRegisterJtHtml = "";
+                            if (data.success)
+                                return swal({
+                                    title: titleAlert,
+                                    text: "Hủy thành công!<br>Đơn J&T Express '<strong>" + code + "</strong>'",
+                                    icon: "success",
+                                }, function (isConfirm) {
+                                    let $btnShowJt = $("#btnShowJtExpress");
+                                    let $btnCancelJt = $("#btnCancelJtExpress");
+                                    let $divParent = $btnShowJt.parent();
+                                    let $txtShippingCode = $("input[id$='_txtShippingCode']");
+                                    let btnRegisterJtHtml = "";
 
-                                btnRegisterJtHtml += "<a target='_blank'";
-                                btnRegisterJtHtml += "   href='/dang-ky-jt?orderID=" + orderId + "'";
-                                btnRegisterJtHtml += "   class='btn primary-btn btn-ghtk fw-btn not-fullwidth print-invoice-merged'";
-                                btnRegisterJtHtml += ">";
-                                btnRegisterJtHtml += "    <i class='fa fa-upload' aria-hidden='true'></i> Đẩy đơn J&T";
-                                btnRegisterJtHtml += "</a>";
+                                    btnRegisterJtHtml += "<a target='_blank'";
+                                    btnRegisterJtHtml += "   href='/dang-ky-jt?orderID=" + orderId + "'";
+                                    btnRegisterJtHtml += "   class='btn primary-btn btn-ghtk fw-btn not-fullwidth print-invoice-merged'";
+                                    btnRegisterJtHtml += ">";
+                                    btnRegisterJtHtml += "    <i class='fa fa-upload' aria-hidden='true'></i> Đẩy đơn J&T";
+                                    btnRegisterJtHtml += "</a>";
 
-                                $btnShowJt.remove();
-                                $btnCancelJt.remove();
-                                $divParent.append(btnRegisterJtHtml);
-                                $txtShippingCode.val('');
-                            });
-                        } else {
-                            return _alterError(titleAlert);
-                        }
+                                    $btnShowJt.remove();
+                                    $btnCancelJt.remove();
+                                    $divParent.append(btnRegisterJtHtml);
+                                    $txtShippingCode.val('');
+                                });
+                            else
+                                return _alterError(titleAlert, data);
+
+                        } else
+                            return _alterError(titleAlert, data);
                     },
                     error: (xhr, textStatus, error) => {
                         HoldOn.close();
 
-                        return _alterError(titleAlert);
+                        return _alterError(titleAlert, xhr.responseJSON);
                     }
                 });
             }

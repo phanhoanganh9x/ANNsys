@@ -56,7 +56,3 @@ GO
 
 ALTER TABLE [dbo].[JtExpressOrder] CHECK CONSTRAINT [FK_JtExpressOrder_tbl_Order]
 GO
-
-CREATE UNIQUE INDEX [UC_JtExpressOrder_Order]
-ON [dbo].[JtExpressOrder]([OrderId]);
-GO

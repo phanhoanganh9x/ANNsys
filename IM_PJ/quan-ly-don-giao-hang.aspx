@@ -94,10 +94,10 @@
 
         <asp:HiddenField ID="hdfRole" runat="server" />
 
-        <script type="text/javascript" src="/App_Themes/Ann/js/utils/string-format.js?v=202109250230"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/utils/string-format.js?v=202109300102"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=202109250230"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/services/quan-ly-don-giao-hang/quan-ly-don-giao-hang-service.js?v=202109271901"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/controllers/quan-ly-don-giao-hang/quan-ly-don-giao-hang-controller.js?v=202109271901"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/pages/quan-ly-don-giao-hang/quan-ly-don-giao-hang.js?v=202109271901"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/pages/quan-ly-don-giao-hang/quan-ly-don-giao-hang.js?v=202109300102"></script>
     </main>
 </asp:Content>
