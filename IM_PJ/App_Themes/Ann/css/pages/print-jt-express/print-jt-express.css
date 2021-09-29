@@ -1,0 +1,562 @@
+﻿body {
+    margin-top: 0px;
+    margin-left: 0px;
+}
+
+#page_1 {
+    position: relative;
+    overflow: hidden;
+    margin: 21px 0px 24px 24px;
+    padding: 0px;
+    border: none;
+    width: 535px;
+    height: 748px;
+}
+
+    #page_1 #id1_1 {
+        border: none;
+        margin: 0px 0px 0px 0px;
+        padding: 0px;
+        border: none;
+        width: 535px;
+        overflow: hidden;
+    }
+
+    #page_1 #id1_2 {
+        border: none;
+        margin: 89px 0px 0px 73px;
+        padding: 0px;
+        border: none;
+        width: 462px;
+        overflow: hidden;
+    }
+
+    #page_1 #p1dimg1 {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        z-index: -1;
+        width: 512px;
+        height: 748px;
+    }
+
+        #page_1 #p1dimg1 #p1img1 {
+            width: 512px;
+            height: 748px;
+        }
+
+.dclr {
+    clear: both;
+    float: none;
+    height: 1px;
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+}
+
+.ft0 {
+    font: 13px 'Arial';
+    line-height: 16px;
+}
+
+.ft1 {
+    font: 1px 'Arial';
+    line-height: 1px;
+}
+
+.ft2 {
+    font: 12px 'Arial';
+    line-height: 15px;
+}
+
+.ft3 {
+    font: 1px 'Arial';
+    line-height: 8px;
+}
+
+.ft4 {
+    font: 11px 'Arial';
+    line-height: 14px;
+}
+
+.ft5 {
+    font: bold 26px 'Arial';
+    line-height: 30px;
+}
+
+.ft6 {
+    font: bold 10px 'Arial';
+    line-height: 12px;
+}
+
+.ft7 {
+    font: bold 12px 'Arial';
+    line-height: 12px;
+}
+
+.ft8 {
+    font: bold 11px 'Arial';
+    line-height: 14px;
+}
+
+.ft9 {
+    font: 1px 'Arial';
+    line-height: 5px;
+}
+
+.ft10 {
+    font: bold 19px 'Arial';
+    line-height: 22px;
+}
+
+.ft11 {
+    font: bold 12px 'Arial';
+    line-height: 15px;
+}
+
+.ft12 {
+    font: bold 18px 'Arial';
+    line-height: 21px;
+}
+
+.ft13 {
+    font: 1px 'Arial';
+    line-height: 6px;
+}
+
+.ft14 {
+    font: 1px 'Arial';
+    line-height: 4px;
+}
+
+.ft15 {
+    font: bold 12px 'Arial';
+    margin-left: 32px;
+    line-height: 15px;
+}
+
+.ft16 {
+    font: bold 8px 'Arial';
+    line-height: 10px;
+}
+
+.ft17 {
+    font: bold 11px 'Arial';
+    color: #ff0000;
+    line-height: 14px;
+}
+
+.p0 {
+    text-align: right;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    white-space: nowrap;
+}
+
+.p1 {
+    text-align: left;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    white-space: nowrap;
+}
+
+.p2 {
+    text-align: left;
+    padding-left: 20px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    white-space: nowrap;
+}
+
+.p3 {
+    text-align: right;
+    padding-right: 41px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    white-space: nowrap;
+}
+
+.p4 {
+    text-align: left;
+    padding-left: 36px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    white-space: nowrap;
+}
+
+.p5 {
+    text-align: left;
+    padding-left: 14px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    white-space: nowrap;
+}
+
+.p6 {
+    text-align: left;
+    padding-left: 11px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    white-space: nowrap;
+}
+
+.p7 {
+    text-align: left;
+    padding-left: 13px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    white-space: nowrap;
+}
+
+.p8 {
+    text-align: left;
+    padding-left: 12px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    white-space: nowrap;
+}
+
+.p9 {
+    text-align: left;
+    padding-left: 60px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    white-space: nowrap;
+}
+
+.p10 {
+    text-align: left;
+    padding-left: 58px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    white-space: nowrap;
+}
+
+.p11 {
+    text-align: center;
+    padding-right: 2px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    white-space: nowrap;
+}
+
+.p12 {
+    text-align: center;
+    padding-left: 334px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    white-space: nowrap;
+}
+
+.p13 {
+    text-align: left;
+    padding-left: 43px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    white-space: nowrap;
+}
+
+.p14 {
+    text-align: right;
+    padding-right: 34px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    white-space: nowrap;
+}
+
+.p15 {
+    text-align: right;
+    padding-right: 36px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    white-space: nowrap;
+}
+
+.p16 {
+    text-align: left;
+    padding-left: 153px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    white-space: nowrap;
+}
+
+.p17 {
+    text-align: center;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    white-space: nowrap;
+}
+
+.p18 {
+    text-align: left;
+    padding-left: 7px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    white-space: nowrap;
+}
+
+.p19 {
+    text-align: center;
+    padding-right: 1px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    white-space: nowrap;
+}
+
+.p20 {
+    text-align: center;
+    padding-left: 1px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    white-space: nowrap;
+}
+
+.p21 {
+    text-align: left;
+    padding-left: 17px;
+    margin-top: 32px;
+    margin-bottom: 0px;
+}
+
+.p22 {
+    text-align: left;
+    padding-left: 23px;
+    margin-top: 9px;
+    margin-bottom: 0px;
+}
+
+.p23 {
+    text-align: left;
+    padding-left: 284px;
+    margin-top: 31px;
+    margin-bottom: 0px;
+}
+
+.p24 {
+    text-align: left;
+    padding-left: 230px;
+    margin-top: 12px;
+    margin-bottom: 0px;
+}
+
+.p25 {
+    text-align: left;
+    padding-left: 5px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.p26 {
+    text-align: left;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.td0 {
+    border-top: #cccccc 1px solid;
+    padding: 0px;
+    margin: 0px;
+    width: 173px;
+    vertical-align: bottom;
+}
+
+.td1 {
+    border-right: #cccccc 1px solid;
+    border-top: #cccccc 1px solid;
+    padding: 0px;
+    margin: 0px;
+    width: 83px;
+    vertical-align: bottom;
+}
+
+.td2 {
+    border-top: #cccccc 1px solid;
+    padding: 0px;
+    margin: 0px;
+    width: 254px;
+    vertical-align: bottom;
+}
+
+.td3 {
+    padding: 0px;
+    margin: 0px;
+    width: 173px;
+    vertical-align: bottom;
+}
+
+.td4 {
+    border-right: #cccccc 1px solid;
+    padding: 0px;
+    margin: 0px;
+    width: 83px;
+    vertical-align: bottom;
+}
+
+.td5 {
+    padding: 0px;
+    margin: 0px;
+    width: 254px;
+    vertical-align: bottom;
+}
+
+.td6 {
+    border-bottom: #cccccc 1px solid;
+    padding: 0px;
+    margin: 0px;
+    width: 173px;
+    vertical-align: bottom;
+}
+
+.td7 {
+    border-right: #cccccc 1px solid;
+    border-bottom: #cccccc 1px solid;
+    padding: 0px;
+    margin: 0px;
+    width: 83px;
+    vertical-align: bottom;
+}
+
+.td8 {
+    border-bottom: #cccccc 1px solid;
+    padding: 0px;
+    margin: 0px;
+    width: 254px;
+    vertical-align: bottom;
+}
+
+.td9 {
+    border-right: #cccccc 1px solid;
+    padding: 0px;
+    margin: 0px;
+    width: 256px;
+    vertical-align: bottom;
+}
+
+.td10 {
+    padding: 0px;
+    margin: 0px;
+    width: 104px;
+    vertical-align: bottom;
+}
+
+.td11 {
+    padding: 0px;
+    margin: 0px;
+    width: 408px;
+    vertical-align: bottom;
+}
+
+.td12 {
+    border-bottom: #cccccc 1px solid;
+    padding: 0px;
+    margin: 0px;
+    width: 104px;
+    vertical-align: bottom;
+}
+
+.td13 {
+    border-bottom: #cccccc 1px solid;
+    padding: 0px;
+    margin: 0px;
+    width: 408px;
+    vertical-align: bottom;
+}
+
+.td14 {
+    padding: 0px;
+    margin: 0px;
+    width: 258px;
+    vertical-align: bottom;
+}
+
+.td15 {
+    padding: 0px;
+    margin: 0px;
+    width: 99px;
+    vertical-align: bottom;
+}
+
+.tr0 {
+    height: 71px;
+}
+
+.tr1 {
+    height: 23px;
+}
+
+.tr2 {
+    height: 8px;
+}
+
+.tr3 {
+    height: 19px;
+}
+
+.tr4 {
+    height: 18px;
+}
+
+.tr5 {
+    height: 14px;
+}
+
+.tr6 {
+    height: 24px;
+}
+
+.tr7 {
+    height: 43px;
+}
+
+.tr8 {
+    height: 17px;
+}
+
+.tr9 {
+    height: 12px;
+}
+
+.tr10 {
+    height: 5px;
+}
+
+.tr11 {
+    height: 25px;
+}
+
+.tr12 {
+    height: 6px;
+}
+
+.tr13 {
+    height: 20px;
+}
+
+.tr14 {
+    height: 4px;
+}
+
+.tr15 {
+    height: 28px;
+}
+
+.tr16 {
+    height: 29px;
+}
+
+.t0 {
+    width: 511px;
+    font: 11px 'Arial';
+}
+
+.t1 {
+    width: 512px;
+    font: bold 12px 'Arial';
+}
+
+.t2 {
+    width: 357px;
+    margin-left: 70px;
+    margin-top: 11px;
+    font: bold 10px 'Arial';
+}
