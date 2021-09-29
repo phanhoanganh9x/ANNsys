@@ -45,7 +45,6 @@ namespace IM_PJ.Models
         public virtual DbSet<DeliverySaveReason> DeliverySaveReasons { get; set; }
         public virtual DbSet<DeliverySaveReport> DeliverySaveReports { get; set; }
         public virtual DbSet<DeliverySaveStatu> DeliverySaveStatus { get; set; }
-        public virtual DbSet<DeliveryStatu> DeliveryStatus { get; set; }
         public virtual DbSet<ExchangeRate> ExchangeRates { get; set; }
         public virtual DbSet<Fee> Fees { get; set; }
         public virtual DbSet<FeeType> FeeTypes { get; set; }

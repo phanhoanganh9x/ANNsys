@@ -346,15 +346,6 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
         </EntityType>
-        <EntityType Name="DeliveryStatus">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
-          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
-        </EntityType>
         <EntityType Name="ExchangeRate">
           <Key>
             <PropertyRef Name="ID" />
@@ -1971,7 +1962,6 @@
           <EntitySet Name="DeliverySaveReason" EntityType="Self.DeliverySaveReason" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DeliverySaveReport" EntityType="Self.DeliverySaveReport" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DeliverySaveStatus" EntityType="Self.DeliverySaveStatus" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="DeliveryStatus" EntityType="Self.DeliveryStatus" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ExchangeRate" EntityType="Self.ExchangeRate" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Fee" EntityType="Self.Fee" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FeeType" EntityType="Self.FeeType" Schema="dbo" store:Type="Tables" />
@@ -2499,15 +2489,6 @@
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="DeliverySaveNotifications" Relationship="Self.FK_DeliverySaveNotification_DeliverySaveStatus" FromRole="DeliverySaveStatus" ToRole="DeliverySaveNotification" />
-        </EntityType>
-        <EntityType Name="DeliveryStatu">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
         <EntityType Name="ExchangeRate">
           <Key>
@@ -4151,7 +4132,6 @@
           <EntitySet Name="DeliverySaveReasons" EntityType="Self.DeliverySaveReason" />
           <EntitySet Name="DeliverySaveReports" EntityType="Self.DeliverySaveReport" />
           <EntitySet Name="DeliverySaveStatus" EntityType="Self.DeliverySaveStatu" />
-          <EntitySet Name="DeliveryStatus" EntityType="Self.DeliveryStatu" />
           <EntitySet Name="ExchangeRates" EntityType="Self.ExchangeRate" />
           <EntitySet Name="Fees" EntityType="Self.Fee" />
           <EntitySet Name="FeeTypes" EntityType="Self.FeeType" />
@@ -4674,16 +4654,6 @@
           <EntitySetMapping Name="DeliverySaveStatus">
             <EntityTypeMapping TypeName="inventorymanagementModel.DeliverySaveStatu">
               <MappingFragment StoreEntitySet="DeliverySaveStatus">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="DeliveryStatus">
-            <EntityTypeMapping TypeName="inventorymanagementModel.DeliveryStatu">
-              <MappingFragment StoreEntitySet="DeliveryStatus">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />

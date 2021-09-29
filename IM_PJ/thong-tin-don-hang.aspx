@@ -1493,21 +1493,33 @@
                         window.open("/print-shipping-note?id=" + ID, "_blank");
                     });
                 }
-                else if (deliveryMethod == 10 && paymentType != 3) {
-                    swal({
-                        title: "Ê nhỏ:",
-                        text: "Đơn hàng này gửi J&T nhưng <strong>Không Thu Hộ</strong> hở?",
-                        type: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#DD6B55",
-                        confirmButtonText: "Đúng rồi sếp!!",
-                        closeOnConfirm: false,
-                        cancelButtonText: "Để em xem lại..",
-                        html: true
-                    }, function (isConfirm) {
-                        sweetAlert.close();
-                        window.open("/print-shipping-note?id=" + ID, "_blank");
-                    });
+                else if (deliveryMethod == 10) {
+                    let jtCode = $('[id$="_txtShippingCode"]').val();
+                    if (!jtCode)
+                        swal({
+                            title: "Error",
+                            text: "Không tìm thấy mã vận đơn",
+                            type: "error"
+                        });
+                    else {
+                        if (paymentType != 3)
+                            swal({
+                                title: "Ê nhỏ:",
+                                text: "Đơn hàng này gửi J&T nhưng <strong>Không Thu Hộ</strong> hở?",
+                                type: "warning",
+                                showCancelButton: true,
+                                confirmButtonColor: "#DD6B55",
+                                confirmButtonText: "Đúng rồi sếp!!",
+                                closeOnConfirm: false,
+                                cancelButtonText: "Để em xem lại..",
+                                html: true
+                            }, function (isConfirm) {
+                                sweetAlert.close();
+                                window.open("/print-jt-express?id=" + ID + "&code=" + jtCode, "_blank");
+                            });
+                        else
+                            window.open("/print-jt-express?id=" + ID + "&code=" + jtCode, "_blank");
+                    }
                 }
                 else {
                     window.open("/print-shipping-note?id=" + ID, "_blank");

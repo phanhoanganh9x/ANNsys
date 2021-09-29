@@ -1163,9 +1163,6 @@
     <Compile Include="Models\DeliverySaveStatu.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\DeliveryStatu.cs">
-      <DependentUpon>IMMode.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\ExchangeRate.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
@@ -1224,6 +1221,9 @@
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Pages\danh-sach-don-hang\KeyValueModel.cs" />
+    <Compile Include="Models\Pages\print-jt-express\OrderAddressResponseModel.cs" />
+    <Compile Include="Models\Pages\print-jt-express\OrderItemResponseModel.cs" />
+    <Compile Include="Models\Pages\print-jt-express\OrderResponseModel.cs" />
     <Compile Include="Models\Pages\thong-tin-don-hang\KeyValueModel.cs" />
     <Compile Include="Models\PostCategory.cs">
       <DependentUpon>IMMode.tt</DependentUpon>

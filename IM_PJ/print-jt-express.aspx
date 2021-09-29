@@ -20,7 +20,9 @@
             <table cellpadding="0" cellspacing="0" class="t0">
                 <tr>
                     <td class="tr0 td0">
-                        <p class="p0 ft0">801000967840</p>
+                        <p class="p0 ft0">
+                            <asp:Literal ID="ltJtCode" runat="server"></asp:Literal>
+                        </p>
                     </td>
                     <td class="tr0 td1">
                         <p class="p1 ft1">&nbsp;</p>
@@ -34,10 +36,15 @@
                         <p class="p2 ft0">Mã đơn đặt</p>
                     </td>
                     <td class="tr1 td4">
-                        <p class="p3 ft2">152401</p>
+                        <p class="p3 ft2">
+                            <asp:Literal ID="ltOrderIdHeader" runat="server"></asp:Literal>
+                        </p>
                     </td>
                     <td class="tr1 td5">
-                        <p class="p4 ft2"><span class="ft0">Ngày gửi: </span>2021-09-29&nbsp;12:11:03</p>
+                        <p class="p4 ft2">
+                            <span class="ft0">Ngày gửi: </span>
+                            <asp:Literal ID="ltSentDate" runat="server"></asp:Literal>
+                        </p>
                     </td>
                 </tr>
                 <tr>
@@ -53,54 +60,78 @@
                 </tr>
                 <tr>
                     <td class="tr3 td3">
-                        <p class="p5 ft4">Người gởi : Hoàng Anh</p>
+                        <p class="p5 ft4">
+                            Người gởi :
+                            <asp:Literal ID="ltSenderName" runat="server"></asp:Literal>
+                        </p>
                     </td>
                     <td class="tr3 td4">
                         <p class="p1 ft1">&nbsp;</p>
                     </td>
                     <td class="tr3 td5">
-                        <p class="p6 ft4">Người nhận : Trinh Ngan</p>
+                        <p class="p6 ft4">
+                            Người nhận :
+                            <asp:Literal ID="ltReceiverName" runat="server"></asp:Literal>
+                        </p>
                     </td>
                 </tr>
                 <tr>
                     <td class="tr4 td3">
-                        <p class="p7 ft4">******7409</p>
+                        <p class="p7 ft4">
+                            <asp:Literal ID="ltSenderPhone" runat="server"></asp:Literal>
+                        </p>
                     </td>
                     <td class="tr4 td4">
                         <p class="p1 ft1">&nbsp;</p>
                     </td>
                     <td class="tr4 td5">
-                        <p class="p5 ft4">******5358</p>
+                        <p class="p5 ft4">
+                            <asp:Literal ID="ltReceiverPhone" runat="server"></asp:Literal>
+                        </p>
                     </td>
                 </tr>
                 <tr>
                     <td colspan="2" class="tr5 td9">
-                        <p class="p8 ft4">Địa chỉ : 133 Đường C12, Phường 13, Quận Tân</p>
+                        <p class="p8 ft4">
+                            Địa chỉ :
+                            <asp:Literal ID="ltSenderAddressLine1" runat="server"></asp:Literal>
+                        </p>
                     </td>
                     <td class="tr5 td5">
-                        <p class="p6 ft4">Địa chỉ : 153 ấp 5, Xã An Thái, Huyện Phú Giáo,</p>
+                        <p class="p6 ft4">
+                            Địa chỉ :
+                            <asp:Literal ID="ltReceiverAddressLine1" runat="server"></asp:Literal>
+                        </p>
                     </td>
                 </tr>
                 <tr>
                     <td class="tr5 td3">
-                        <p class="p9 ft4">Bình, Hồ Chí Minh</p>
+                        <p class="p9 ft4">
+                            <asp:Literal ID="ltSenderAddressLine2" runat="server"></asp:Literal>
+                        </p>
                     </td>
                     <td class="tr5 td4">
                         <p class="p1 ft1">&nbsp;</p>
                     </td>
                     <td class="tr5 td5">
-                        <p class="p10 ft4">Bình Dương</p>
+                        <p class="p10 ft4">
+                            <asp:Literal ID="ltReceiverAddressLine2" runat="server"></asp:Literal>
+                        </p>
                     </td>
                 </tr>
                 <tr>
                     <td class="tr6 td6">
-                        <p class="p1 ft1">&nbsp;</p>
+                        <p class="p9 ft4">
+                            <asp:Literal ID="ltSenderAddressLine3" runat="server"></asp:Literal>
+                        </p>
                     </td>
                     <td class="tr6 td7">
                         <p class="p1 ft1">&nbsp;</p>
                     </td>
                     <td class="tr6 td8">
-                        <p class="p1 ft1">&nbsp;</p>
+                        <p class="p10 ft4">
+                             <asp:Literal ID="ltReceiverAddressLine3" runat="server"></asp:Literal>
+                        </p>
                     </td>
                 </tr>
             </table>
@@ -108,7 +139,9 @@
             <table cellpadding="0" cellspacing="0" class="t1">
                 <tr>
                     <td rowspan="3" class="tr7 td10">
-                        <p class="p11 ft5">BDG</p>
+                        <p class="p11 ft5">
+                            <asp:Literal ID="ltPostalCode" runat="server"></asp:Literal>
+                        </p>
                     </td>
                     <td class="tr8 td11">
                         <p class="p12 ft6">Số kiện</p>
@@ -116,12 +149,17 @@
                 </tr>
                 <tr>
                     <td class="tr9 td11">
-                        <p class="p13 ft7">Mã đơn KH</p>
+                        <p class="p13 ft7">
+                            Mã đơn KH:
+                            <asp:Literal ID="ltOrderIdBody" runat="server"></asp:Literal>
+                        </p>
                     </td>
                 </tr>
                 <tr>
                     <td class="tr5 td11">
-                        <p class="p14 ft8">1</p>
+                        <p class="p14 ft8">
+                            <asp:Literal ID="ltItemNumber" runat="server"></asp:Literal>
+                        </p>
                     </td>
                 </tr>
                 <tr>
@@ -134,7 +172,9 @@
                 </tr>
                 <tr>
                     <td class="tr1 td10">
-                        <p class="p15 ft10">274</p>
+                        <p class="p15 ft10">
+                            <asp:Literal ID="ltPostalBranchCodeLine1" runat="server"></asp:Literal>
+                        </p>
                     </td>
                     <td class="tr1 td11">
                         <p class="p16 ft11">Nội dung</p>
@@ -142,10 +182,14 @@
                 </tr>
                 <tr>
                     <td class="tr6 td12">
-                        <p class="p17 ft12">F01</p>
+                        <p class="p17 ft12">
+                            <asp:Literal ID="ltPostalBranchCodeLine2" runat="server"></asp:Literal>
+                        </p>
                     </td>
                     <td class="tr11 td11">
-                        <p class="p18 ft2">Hàng hóa,</p>
+                        <p class="p18 ft2">
+                            <asp:Literal ID="ltItemName" runat="server"></asp:Literal>
+                        </p>
                     </td>
                 </tr>
                 <tr>
@@ -220,10 +264,23 @@
                         <p class="p1 ft1">&nbsp;</p>
                     </td>
                 </tr>
+                <tr>
+                    <td class="tr1 td10">
+                        <p class="p19 ft11"><asp:Literal ID="ltCod" runat="server"></asp:Literal></p>
+                    </td>
+                    <td class="tr1 td11">
+                        <p class="p1 ft1">&nbsp;</p>
+                    </td>
+                </tr>
             </table>
 
             <p class="p21 ft2">Trọng lượng</p>
-            <p class="p22 ft11"><span class="ft11">0.5</span><span class="ft15">KG</span></p>
+            <p class="p22 ft11">
+                <span class="ft11">
+                    <asp:Literal ID="ltWeight" runat="server"></asp:Literal>
+                </span>
+                <span class="ft15">KG</span>
+            </p>
 
             <table cellpadding="0" cellspacing="0" class="t2">
                 <tr>
@@ -238,7 +295,8 @@
 
             <p class="p23 ft16">Xác nhận đã nhận được bưu kiện trong tình trạng tốt</p>
             <p class="p24 ft11">Ghi chú</p>
-            <p class="p25 ft4">Vui lòng cho khách kiểm tra hàng và nhận hàng về nếu có</p>
+            <p class="p25 ft4">
+                <asp:Literal ID="ltNote" runat="server"></asp:Literal></p>
         </div>
 
         <div id="id1_2">

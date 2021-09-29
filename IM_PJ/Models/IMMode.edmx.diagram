@@ -25,7 +25,6 @@
         <EntityTypeShape EntityType="inventorymanagementModel.DeliverySaveReason" Width="1.5" PointX="5.25" PointY="30.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.DeliverySaveReport" Width="1.5" PointX="18.75" PointY="11.125" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.DeliverySaveStatu" Width="1.5" PointX="5.25" PointY="40.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.DeliveryStatu" Width="1.5" PointX="9.75" PointY="15.125" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.ExchangeRate" Width="1.5" PointX="9.75" PointY="23.125" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.Fee" Width="1.5" PointX="11.75" PointY="23.125" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.FeeType" Width="1.5" PointX="18.75" PointY="19.125" IsExpanded="true" />
