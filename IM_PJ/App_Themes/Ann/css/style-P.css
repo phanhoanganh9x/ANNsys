@@ -26,7 +26,7 @@
 .bg-order-type-2 {
     background: #EE4D2A;
 }
-.bg-order-type-3 {
+.bg-order-type-4 {
     background: #1a1f74;
 }
 .bg-delivery-type {
@@ -68,6 +68,10 @@
 
 .bg-delivery-type-14 {
     background: #231f20;
+}
+
+.bg-delivery-type-15 {
+    background: #1d4c76;
 }
 
 /* Start: Trạng thái đơn hàng */

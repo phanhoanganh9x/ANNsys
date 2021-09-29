@@ -127,8 +127,7 @@ function _updateFilter() {
         if (searchTypeDOM.value)
             controller.filter.searchType = +searchTypeDOM.value || 3; // Trường hợp đơn đặt hàng
     }
-    else
-    {
+    else {
         controller.filter.search = null;
         controller.filter.searchType = null;
     }
@@ -172,8 +171,7 @@ function _updateFilter() {
     // Quantity
     let quantityFilterDOM = document.querySelector("[id$='_ddlQuantityFilter']");
 
-    if (quantityFilterDOM.value)
-    {
+    if (quantityFilterDOM.value) {
         controller.filter.quantityFilter = +quantityFilterDOM.value || null
 
         if (controller.filter.quantityFilter == 3) {
@@ -241,19 +239,16 @@ function _createPaginationHTML(pagination, pageNumberDisplay) {
     let start = 0;
     let end = 0;
 
-    if (pagination.totalPages < pageNumberDisplay)
-    {
+    if (pagination.totalPages < pageNumberDisplay) {
         start = 1;
         end = pagination.totalPages;
     }
     else {
-        if (pagination.page <= Math.ceil(pageNumberDisplay / 2.0))
-        {
+        if (pagination.page <= Math.ceil(pageNumberDisplay / 2.0)) {
             start = 1;
             end = pageNumberDisplay;
         }
-        else if (pagination.page > pagination.totalPages - Math.ceil(pageNumberDisplay / 2.0))
-        {
+        else if (pagination.page > pagination.totalPages - Math.ceil(pageNumberDisplay / 2.0)) {
             start = pagination.totalPages - pageNumberDisplay + 1;
             end = pagination.totalPages;
         }
@@ -265,8 +260,7 @@ function _createPaginationHTML(pagination, pageNumberDisplay) {
 
     html += "<ul>";
 
-    if (pagination.previousPage == 'Yes')
-    {
+    if (pagination.previousPage == 'Yes') {
         html += "<li><a title='Trang đầu' href='javascript:;' onclick='onClick_Pagination(1)'>Trang đầu</a></li>";
         html += "<li><a title='Trang trước' href='javascript:;' onclick='onClick_Pagination(" + (pagination.page - 1).toString() + ")'>Trang trước</a></li>";
 
@@ -280,8 +274,7 @@ function _createPaginationHTML(pagination, pageNumberDisplay) {
         else
             html += "<li><a href='javascript:;' onclick='onClick_Pagination(" + page + ")'>" + page + "</a></li>";
 
-    if (pagination.nextPage == 'Yes')
-    {
+    if (pagination.nextPage == 'Yes') {
         if (end < pagination.totalPages - Math.ceil(length / 2.0))
             html += "<li><a href='javascript:;'>&hellip;</a></li>";
 
@@ -357,8 +350,7 @@ function _createPreOrderTableHTML(data) {
     html += "</thead>";
     html += "<tbody>";
 
-    if (data.length == 0)
-    {
+    if (data.length == 0) {
         if (controller.role == 0)
             html += "    <tr><td colspan='12'>Không tìm thấy đơn hàng...</td></tr>";
         else
