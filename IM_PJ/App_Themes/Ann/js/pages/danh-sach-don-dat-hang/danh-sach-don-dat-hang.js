@@ -439,7 +439,7 @@ function _createPreOrderTableHTML(data) {
 
                 // thông tin thêm
                 html += "    <tr class='tr-more-info'>";
-                html += "        <td colspan='2'><strong>Nguồn đặt hàng: " + item.source + "</strong></td>";
+                html += "        <td colspan='2'><strong>" + item.source + "</strong></td>";
                 html += "        <td colspan='11'>";
 
                 if (item.discount > 0) {

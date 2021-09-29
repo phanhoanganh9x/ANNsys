@@ -1,6 +1,6 @@
 ﻿.bg-delivery-status {
     color: #fff;
-    display: block;
+    display: inline-block;
     padding: 5px 6px;
     white-space: nowrap;
     font-size: 12px;
@@ -14,7 +14,7 @@
 }
 .bg-order-type {
     color: #fff;
-    display: block;
+    display: inline-block;
     padding: 5px 6px;
     white-space: nowrap;
     font-size: 12px;
@@ -31,7 +31,7 @@
 }
 .bg-delivery-type {
     color: #fff;
-    display: block;
+    display: inline-block;
     padding: 5px 6px;
     white-space: nowrap;
     font-size: 12px;
@@ -101,7 +101,7 @@
 }
 
 .bg-order-status-5 {
-    background: #fd7e14;
+    background: #9814fd;
 }
 /* End: Trạng thái đơn hàng */
 
