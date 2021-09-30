@@ -18,10 +18,12 @@
     <!-- Add Select2 library -->
     <!-- https://select2.org/getting-started/installation -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="/App_Themes/NewUI/js/sweet/sweet-alert.css?v=202109301351" rel="stylesheet" />
     <link href="/App_Themes/Ann/css/HoldOn.css?v=202107071153" rel="stylesheet" type="text/css" />
     <link type="text/css" rel="stylesheet" href="App_Themes/Ann/css/pages/dang-ky-jt/dang-ky-jt.css?v=202107071153" />
 
     <title>Tạo đơn J&T Express</title>
+
 </head>
 <body class="bg07">
     <form id="form12" runat="server" enctype="multipart/form-data">
@@ -213,7 +215,7 @@
                 integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
                 crossorigin="anonymous"></script>
             <!-- Sweet Alert -->
-            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+            <script src="/App_Themes/NewUI/js/sweet/sweet-alert.js?v=202109301351" type="text/javascript"></script>
             <!-- Select2 -->
             <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
             <script src="/App_Themes/Ann/js/HoldOn.js?v=202107071153"></script>

@@ -595,7 +595,7 @@ function _alterError(title, responseJSON) {
     return swal({
         title: title,
         text: message,
-        icon: "error",
+        type: "error",
         html: true
     });
 }
