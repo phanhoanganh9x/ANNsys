@@ -14,8 +14,6 @@ namespace IM_PJ
 {
     public partial class quan_ly_don_giao_hang : System.Web.UI.Page
     {
-        private readonly IList<int> ALLOW_DELIVERY_METHODS = new List<int>() { 2, 6, 7, 10, 11, 12, 13, 14 };
-
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -196,9 +194,9 @@ namespace IM_PJ
             else
             {
                 if (!String.IsNullOrEmpty(query))
-                    query += String.Format("&fromDate={0:MM/dd/yyyy}", fromDate);
+                    query += String.Format("&fromDate={0:MM/dd/yyyy HH:mm}", fromDate);
                 else
-                    query += String.Format("?fromDate={0:MM/dd/yyyy}", fromDate);
+                    query += String.Format("?fromDate={0:MM/dd/yyyy HH:mm}", fromDate);
             }
 
 
@@ -212,9 +210,9 @@ namespace IM_PJ
             var queryToDate = Request.QueryString["toDate"];
 
             if (!String.IsNullOrEmpty(queryToDate))
-                toDate = Convert.ToDateTime(queryToDate).AddDays(1).AddMinutes(-1);
+                toDate = Convert.ToDateTime(queryToDate);
             else
-                query += String.Format("&toDate={0:MM/dd/yyyy}", toDate);
+                query += String.Format("&toDate={0:MM/dd/yyyy HH:mm}", toDate);
 
             dpToDate.SelectedDate = toDate;
             dpToDate.MinDate = dateConfig;

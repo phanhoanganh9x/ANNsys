@@ -39,17 +39,17 @@
                                 </div>
                                 <div class="col-md-2 col-xs-6">
                                     <label>Từ ngày</label>
-                                    <telerik:RadDatePicker RenderMode="Lightweight" ID="dpFromDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate">
-                                        <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
+                                    <telerik:RadDateTimePicker RenderMode="Lightweight" ID="dpFromDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate" DateInput-EmptyMessage="Từ ngày">
+                                        <DateInput DisplayDateFormat="dd/MM/yyyy HH:mm" runat="server">
                                         </DateInput>
-                                    </telerik:RadDatePicker>
+                                    </telerik:RadDateTimePicker>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
                                     <label>Đến ngày</label>
-                                    <telerik:RadDatePicker RenderMode="Lightweight" ID="dpToDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate">
-                                        <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
+                                    <telerik:RadDateTimePicker RenderMode="Lightweight" ID="dpToDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate" DateInput-EmptyMessage="Đến ngày">
+                                        <DateInput DisplayDateFormat="dd/MM/yyyy HH:mm" runat="server">
                                         </DateInput>
-                                    </telerik:RadDatePicker>
+                                    </telerik:RadDateTimePicker>
                                 </div>
                                 <div class="col-md-1 col-xs-6 search-button">
                                     <a href="javascript:;" onclick="onClickSearch()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>
@@ -97,7 +97,7 @@
         <script type="text/javascript" src="/App_Themes/Ann/js/utils/string-format.js?v=202109300102"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=202109250230"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/services/quan-ly-don-giao-hang/quan-ly-don-giao-hang-service.js?v=202109271901"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/controllers/quan-ly-don-giao-hang/quan-ly-don-giao-hang-controller.js?v=202109271901"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/pages/quan-ly-don-giao-hang/quan-ly-don-giao-hang.js?v=202109300102"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/controllers/quan-ly-don-giao-hang/quan-ly-don-giao-hang-controller.js?v=202109302151"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/pages/quan-ly-don-giao-hang/quan-ly-don-giao-hang.js?v=202109302151"></script>
     </main>
 </asp:Content>

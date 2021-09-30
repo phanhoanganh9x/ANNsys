@@ -123,27 +123,29 @@ function _updateFilter() {
         controller.filter.deliveryMethod = null;
 
     // Khoảng thời gian
-    let fromDateDOM = document.querySelector("[id$='_dpFromDate_dateInput']");
-    let toDateDOM = document.querySelector("[id$='_dpToDate_dateInput']");
+    let fromDateDOM = document.querySelector("[id$='_dpFromDate']");
+    let toDateDOM = document.querySelector("[id$='_dpToDate']");
 
-    if (fromDateDOM.value.trim()) {
-        let date = fromDateDOM.value.split('/').filter(x => x);
+    if (fromDateDOM.value) {
+        let date = fromDateDOM.value.substring(0,10);
+        let time = fromDateDOM.value.substring(11, 16).replace(/-/g, ':');
+        let strDate = date + ' ' + time;
 
-        if (date.length == 3)
-            controller.filter.fromDate = date[1] + '/' + date[0] + '/' + date[2];
+        controller.filter.fromDate = strFormat.datetimeToString(strDate, 'MM/dd/yyyy HH:mm');
     }
     else {
-        controller.filter.fromDate = '12/15/2019';
+        controller.filter.fromDate = '12/15/2019 00:00';
     }
 
-    if (toDateDOM.value.trim()) {
-        let date = toDateDOM.value.split('/').filter(x => x);
+    if (toDateDOM.value) {
+        let date = toDateDOM.value.substring(0,10);
+        let time = toDateDOM.value.substring(11, 16).replace(/-/g, ':');
+        let strDate = date + ' ' + time;
 
-        if (date.length == 3)
-            controller.filter.toDate = date[1] + '/' + date[0] + '/' + date[2];
+        controller.filter.toDate = strFormat.datetimeToString(strDate, 'MM/dd/yyyy HH:mm');
     }
     else {
-        controller.filter.toDate = strFormat.datetimeToString(new Date(), 'MM/dd/yyyy')
+        controller.filter.toDate = strFormat.datetimeToString(new Date(), 'MM/dd/yyyy HH:mm')
     }
 
     // Tìm theo trạng thái giao hàng
@@ -302,12 +304,12 @@ function _createReportTableHTML(data) {
                 // Ngày gửi
                 html += "        <td  data-title='Ngày gửi'>";
                 if (item.sentDate)
-                    html += "            " + strFormat.datetimeToString(item.sentDate, 'dd/MM/yyyy hh:mm:ss');
+                    html += "            " + strFormat.datetimeToString(item.sentDate, 'dd/MM/yyyy HH:mm');
                 html += "        </td>";
                 // Ngày phát
                 html += "        <td  data-title='Ngày chuyển hoàn'>";
                 if (item.refundDate)
-                    html += "            " + strFormat.datetimeToString(item.refundDate, 'dd/MM/yyyy hh:mm:ss');
+                    html += "            " + strFormat.datetimeToString(item.refundDate, 'dd/MM/yyyy HH:mm');
                 html += "        </td>";
                 // Nhân viên
                 if (controller.role == 0)

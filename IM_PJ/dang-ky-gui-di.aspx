@@ -31,10 +31,10 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Ngày gửi</label>
-                                        <telerik:RadDatePicker RenderMode="Lightweight" ID="rSentDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate">
-                                            <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
+                                        <telerik:RadDateTimePicker RenderMode="Lightweight" ID="rSentDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate" DateInput-EmptyMessage="Ngày gửi">
+                                            <DateInput DisplayDateFormat="dd/MM/yyyy HH:mm" runat="server">
                                             </DateInput>
-                                        </telerik:RadDatePicker>
+                                        </telerik:RadDateTimePicker>
                                     </div>
                                 </div>
                                 <div class="col-md-1">
@@ -80,6 +80,6 @@
         <script type="text/javascript" src="App_Themes/Ann/js/utils/string-format.js?v=202109300102"></script>
         <script type="text/javascript" src="App_Themes/Ann/js/services/dang-ky-gui-di/dang-ky-gui-di-service.js?v=202109271901"></script>
         <script type="text/javascript" src="App_Themes/Ann/js/controllers/dang-ky-gui-di/dang-ky-gui-di-controller.js?v=202109271901"></script>
-        <script type="text/javascript" src="App_Themes/Ann/js/pages/dang-ky-gui-di/dang-ky-gui-di.js?v=202109271901"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/pages/dang-ky-gui-di/dang-ky-gui-di.js?v=202109302151"></script>
     </main>
 </asp:Content>

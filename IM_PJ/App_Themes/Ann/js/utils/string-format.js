@@ -60,6 +60,36 @@
 
             return strMonth + '/' + strDate + '/' + strYear;
         }
+        else if (format == 'MM/dd/yyyy HH:mm') {
+            let strDate = ''
+            let strMonth = ''
+            let strYear = year.toString();
+            let strHour = ''
+            let strMinute = ''
+            let strSeconds = '';
+
+            if (date < 10)
+                strDate = '0' + date.toString();
+            else
+                strDate = date.toString();
+
+            if (month < 10)
+                strMonth = '0' + month.toString();
+            else
+                strMonth = month.toString();
+
+            if (hour < 10)
+                strHour = '0' + hour.toString();
+            else
+                strHour = hour.toString();
+
+            if (minute < 10)
+                strMinute = '0' + minute.toString();
+            else
+                strMinute = minute.toString();
+
+            return strMonth + '/' + strDate + '/' + strYear + ' ' + strHour + ':' + strMinute;
+        }
         else if (format == 'dd/MM') {
             let strDate = ''
             let strMonth = ''
@@ -92,7 +122,36 @@
 
             return strHour + ':' + strMinute
         }
-        else if (format == 'dd/MM/yyyy hh:mm:ss') {
+        else if (format == 'dd/MM/yyyy HH:mm') {
+            let strDate = ''
+            let strMonth = ''
+            let strYear = year.toString();
+            let strHour = ''
+            let strMinute = '';
+
+            if (date < 10)
+                strDate = '0' + date.toString();
+            else
+                strDate = date.toString();
+
+            if (month < 10)
+                strMonth = '0' + month.toString();
+            else
+                strMonth = month.toString();
+
+            if (hour < 10)
+                strHour = '0' + hour.toString();
+            else
+                strHour = hour.toString();
+
+            if (minute < 10)
+                strMinute = '0' + minute.toString();
+            else
+                strMinute = minute.toString();
+
+            return strDate + '/' + strMonth + '/' + strYear + ' ' + strHour + ':' + strMinute;
+        }
+        else if (format == 'dd/MM/yyyy HH:mm:ss') {
             let strDate = ''
             let strMonth = ''
             let strYear = year.toString();
