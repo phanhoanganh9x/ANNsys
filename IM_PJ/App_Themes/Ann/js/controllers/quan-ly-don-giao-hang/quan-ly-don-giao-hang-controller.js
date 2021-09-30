@@ -55,7 +55,6 @@
             // Từ ngày
             if (key == "fromDate") {
                 value = unescape(value);
-                value = value.split(" ")[0] || null;
 
                 if (value != null)
                     this.filter.fromDate = value;
@@ -63,7 +62,6 @@
             // Tới ngày
             if (key == "toDate") {
                 value = unescape(value);
-                value = value.split(" ")[0] || null;
 
                 if (value != null)
                     this.filter.toDate = value;
