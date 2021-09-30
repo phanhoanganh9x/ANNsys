@@ -316,7 +316,7 @@
     </asp:Panel>
 
     <telerik:RadScriptBlock ID="sc" runat="server">
-        <script type="text/javascript" src="/App_Themes/Ann/js/utils/string-format.js?v=202109300102"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/utils/string-format.js?v=202109302253"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=202101081451"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/services/common/order-service.js?v=202109271901"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/services/thong-tin-don-dat-hang/thong-tin-don-dat-hang-service.js?v=202101081451"></script>

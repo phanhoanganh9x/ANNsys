@@ -77,7 +77,7 @@
 
         <asp:HiddenField ID="hdfShippingCode" runat="server" />
         <asp:HiddenField ID="hdfStaff" runat="server" />
-        <script type="text/javascript" src="App_Themes/Ann/js/utils/string-format.js?v=202109300102"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/utils/string-format.js?v=202109302253"></script>
         <script type="text/javascript" src="App_Themes/Ann/js/services/dang-ky-gui-di/dang-ky-gui-di-service.js?v=202109271901"></script>
         <script type="text/javascript" src="App_Themes/Ann/js/controllers/dang-ky-gui-di/dang-ky-gui-di-controller.js?v=202109271901"></script>
         <script type="text/javascript" src="App_Themes/Ann/js/pages/dang-ky-gui-di/dang-ky-gui-di.js?v=202109302151"></script>
