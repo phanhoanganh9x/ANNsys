@@ -1,6 +1,7 @@
 ﻿using CronNET;
 using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Properties;
 using IM_PJ.Utils;
 using Newtonsoft.Json;
 using System;
@@ -13,6 +14,7 @@ namespace IM_PJ.CronJob
 {
     public class CreateScheduleProductStatus : BaseJob
     {
+        private Settings _settings = new Settings();
         private const string CRON_NAME = "Product Status";
         private const string JOB_NAME = "CreateScheduleProductStatus";
         private Log _log;
@@ -111,7 +113,12 @@ namespace IM_PJ.CronJob
 
         private bool isPause()
         {
+            // Kiểm tra điều kiện để chạy cron job
+            if (_settings.ASPNETCORE_ENVIRONMENT != "Production")
+                return true;
+
             var cron = CronJobController.get(CRON_NAME);
+
             if (cron != null)
                 return cron.Status == 0 ? true : false;
             else
