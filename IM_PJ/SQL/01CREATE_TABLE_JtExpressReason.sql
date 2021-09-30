@@ -10,7 +10,7 @@ CREATE TABLE [dbo].[JtExpressReason](
     [SpecificOccurrence] [nvarchar](MAX) NULL,
     [CreatedDate] [datetime] NOT NULL,
     [ModifiedDate] [datetime] NOT NULL,
- CONSTRAINT [PK_JtExpressReason] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_JtExpressReason] PRIMARY KEY CLUSTERED
 (
     [Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
@@ -78,6 +78,7 @@ INSERT INTO [JtExpressReason]([Id], [Description], [SpecificOccurrence]) VALUES 
 INSERT INTO [JtExpressReason]([Id], [Description], [SpecificOccurrence]) VALUES (N'B029', N'URL items>itemurl Not Null', NULL);
 INSERT INTO [JtExpressReason]([Id], [Description], [SpecificOccurrence]) VALUES (N'B030', N'Sender area sender> area Not Exists', NULL);
 INSERT INTO [JtExpressReason]([Id], [Description], [SpecificOccurrence]) VALUES (N'B031', N'Receiver area sender>area Not Exists', NULL);
+INSERT INTO [JtExpressReason]([Id], [Description], [SpecificOccurrence]) VALUES (N'B031-STOP', N'Khu vực người nhận đang trong vùng dịch', NULL);
 INSERT INTO [JtExpressReason]([Id], [Description], [SpecificOccurrence]) VALUES (N'B035', N'items Errros', NULL);
 INSERT INTO [JtExpressReason]([Id], [Description], [SpecificOccurrence]) VALUES (N'B036', N'Receiver email receiver>postcode Errors', NULL);
 INSERT INTO [JtExpressReason]([Id], [Description], [SpecificOccurrence]) VALUES (N'B038', N'Customerid not null', NULL);
