@@ -3,9 +3,12 @@ using IM_PJ.Models.Pages.print_jt_express;
 using Newtonsoft.Json;
 using NHST.Bussiness;
 using System;
+using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Web;
 
 namespace IM_PJ
 {
@@ -192,15 +195,42 @@ namespace IM_PJ
                 ltReceiverAddressLine3.Text = "&nbsp;";
             }
         }
+        public string createBarcode(string barcodeValue)
+        {
+            // Tạo barcode cho bưu điện
+            var temps = new List<String>();
+            var imageName = String.Format("{0}{1}.png", DateTime.UtcNow.ToString("yyyyMMddHHmmss"), Guid.NewGuid());
+            string barcodeImage = "/uploads/shipping-barcodes/" + imageName;
+            System.Drawing.Image barCode = PJUtils.MakeShippingBarcode(barcodeValue, 2, false);
+            barCode.Save(HttpContext.Current.Server.MapPath("" + barcodeImage + ""), ImageFormat.Png);
+            temps.Add(imageName);
+            string result = "data:image/png;base64, " + Convert.ToBase64String(File.ReadAllBytes(Server.MapPath("" + barcodeImage + "")));
 
+            // Xóa barcode sau khi tạo
+            string[] filePaths = Directory.GetFiles(Server.MapPath("/uploads/shipping-barcodes/"));
+            foreach (string filePath in filePaths)
+            {
+                foreach (var item in temps)
+                {
+                    if (filePath.EndsWith(item))
+                    {
+                        File.Delete(filePath);
+                    }
+                }
+            }
+
+            return result;
+        }
         private void _loadInvoice (OrderResponseModel data)
         {
             // Mã vận đơn
             ltJtCode.Text = data.code;
+            // Barcode 
+            ltBarcode.Text = "<img class='barcode-img' src='" + createBarcode(data.code) + "' />";
             // Mã đơn khách đặt tại shop
             ltOrderIdHeader.Text = data.orderId.ToString();
             // Ngày gửi hàng
-            ltSentDate.Text = String.Format("{0:dd-MM-yyyy HH:mm:ss}", data.sentDate);
+            ltSentDate.Text = String.Format("{0:yyyy-MM-dd HH:mm:ss}", data.sentDate);
             // Tên người gửi (chủ shop)
             ltSenderName.Text = data.sender.name;
             // Tên người nhận

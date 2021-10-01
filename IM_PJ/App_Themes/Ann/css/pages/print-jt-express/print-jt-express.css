@@ -353,7 +353,6 @@
 }
 
 .td0 {
-    border-top: #cccccc 1px solid;
     padding: 0px;
     margin: 0px;
     width: 173px;
@@ -361,8 +360,6 @@
 }
 
 .td1 {
-    border-right: #cccccc 1px solid;
-    border-top: #cccccc 1px solid;
     padding: 0px;
     margin: 0px;
     width: 83px;
@@ -370,7 +367,6 @@
 }
 
 .td2 {
-    border-top: #cccccc 1px solid;
     padding: 0px;
     margin: 0px;
     width: 254px;
@@ -385,7 +381,6 @@
 }
 
 .td4 {
-    border-right: #cccccc 1px solid;
     padding: 0px;
     margin: 0px;
     width: 83px;
@@ -400,7 +395,6 @@
 }
 
 .td6 {
-    border-bottom: #cccccc 1px solid;
     padding: 0px;
     margin: 0px;
     width: 173px;
@@ -408,8 +402,6 @@
 }
 
 .td7 {
-    border-right: #cccccc 1px solid;
-    border-bottom: #cccccc 1px solid;
     padding: 0px;
     margin: 0px;
     width: 83px;
@@ -417,7 +409,6 @@
 }
 
 .td8 {
-    border-bottom: #cccccc 1px solid;
     padding: 0px;
     margin: 0px;
     width: 254px;
@@ -425,7 +416,6 @@
 }
 
 .td9 {
-    border-right: #cccccc 1px solid;
     padding: 0px;
     margin: 0px;
     width: 256px;
@@ -455,7 +445,6 @@
 }
 
 .td13 {
-    border-bottom: #cccccc 1px solid;
     padding: 0px;
     margin: 0px;
     width: 408px;
