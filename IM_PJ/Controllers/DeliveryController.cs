@@ -522,6 +522,13 @@ namespace IM_PJ.Controllers
             }
             catch (WebException wex)
             {
+                #region Trường hợp đã đăng ký rồi
+                var response  = (HttpWebResponse)wex.Response;
+
+                if (response.StatusCode == HttpStatusCode.Conflict)
+                    return;
+                #endregion
+
                 throw wex;
             }
             catch (Exception ex)

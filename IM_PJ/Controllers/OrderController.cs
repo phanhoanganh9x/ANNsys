@@ -521,18 +521,14 @@ namespace IM_PJ.Controllers
                 var config = ConfigController.GetByTop1();
 
                 if (config.ViewAllOrders == 1)
-                {
                     year = new DateTime(2018, 6, 22);
-                }
 
                 if (config.ViewAllReports == 0)
-                {
                     year = DateTime.Now.AddMonths(-2);
-                }
 
                 #region Table Order
                 var orders = con.tbl_Order
-                    .Where(x => x.CreatedDate >= year)
+                    .Where(x => x.CreatedDate.HasValue && x.CreatedDate >= year)
                     .Select(x => new
                     {
                         ID = x.ID,
@@ -628,7 +624,7 @@ namespace IM_PJ.Controllers
 
                 #region Table Refunds
                 var refundGoods = con.tbl_RefundGoods
-                    .Where(x => x.CreatedDate >= year)
+                    .Where(x => x.CreatedDate.HasValue && x.CreatedDate >= year)
                     .Select(x => new
                     {
                         RefundsGoodsID = x.ID,
@@ -644,105 +640,70 @@ namespace IM_PJ.Controllers
                 #region Các filter trức tiếp trên bản tbl_Order
                 // Filter Created By
                 if (!String.IsNullOrEmpty(filter.orderCreatedBy))
-                {
-                    orders = orders.Where(x =>
-                        x.CreatedBy == filter.orderCreatedBy
-                    );
-                }
+                    orders = orders.Where(x => x.CreatedBy == filter.orderCreatedBy);
+
                 // Filter Order Type
                 if (filter.orderType > 0)
-                {
-                    orders = orders.Where(x =>
-                        x.OrderType == filter.orderType
-                    );
-                }
+                    orders = orders.Where(x => x.OrderType == filter.orderType);
+
                 // Filter Payment Type
                 if (filter.paymentType > 0)
-                {
-                    orders = orders.Where(x =>
-                        x.PaymentType == filter.paymentType
-                    );
-                }
+                    orders = orders.Where(x => x.PaymentType == filter.paymentType);
+
                 // Filter Payment Status
                 if (filter.paymentStatus > 0)
-                {
-                    orders = orders.Where(x =>
-                        x.PaymentStatus == filter.paymentStatus
-                    );
-                }
+                    orders = orders.Where(x => x.PaymentStatus == filter.paymentStatus);
+
                 // Filter Excute Status
                 if (filter.excuteStatus.Count() > 0)
-                {
-                    orders = orders.Where(x =>
-                       filter.excuteStatus.Contains(x.ExcuteStatus.HasValue ? x.ExcuteStatus.Value : 0)
-                    );
-                }
+                    orders = orders.Where(x => x.ExcuteStatus.HasValue && filter.excuteStatus.Contains(x.ExcuteStatus.Value));
+
                 // Filter Shipping Type
                 if (filter.shippingType.Count() > 0)
-                {
-                    orders = orders.Where(x =>
-                       filter.shippingType.Contains(x.ShippingType.HasValue ? x.ShippingType.Value : 0)
-                    );
-                }
+                    orders = orders.Where(x => x.ShippingType.HasValue && filter.shippingType.Contains(x.ShippingType.Value));
+
                 // Filter Transport Company
                 if (filter.transportCompany > 0)
-                {
-                    orders = orders.Where(x =>
-                       x.TransportCompanyID == filter.transportCompany
-                    );
-                }
+                    orders = orders.Where(x => x.TransportCompanyID == filter.transportCompany);
+
                 // Filter Discount
                 if (!String.IsNullOrEmpty(filter.discount))
                 {
                     if (filter.discount.Equals("yes"))
-                    {
-                        orders = orders.Where(x =>
-                           x.TotalDiscount > 0
-                        );
-                    }
+                        orders = orders.Where(x => x.TotalDiscount > 0);
                     else
-                    {
-                        orders = orders.Where(x =>
-                           x.TotalDiscount == 0
-                        );
-                    }
+                        orders = orders.Where(x => x.TotalDiscount == 0);
                 }
+
                 // Filter Order Created Date
                 if (filter.orderFromDate.HasValue && filter.orderToDate.HasValue)
                 {
                     if (filter.excuteStatus.Count() == 1 && filter.excuteStatus.Contains(2))
-                    {
                         orders = orders
-                            .Where(x => x.DateDone.HasValue)
                             .Where(x =>
-                                x.DateDone.Value >= filter.orderFromDate &&
-                                x.DateDone.Value <= filter.orderToDate
+                                x.DateDone.HasValue &&
+                                x.DateDone >= filter.orderFromDate &&
+                                x.DateDone <= filter.orderToDate
                             );
-                    }
                     else
                     {
                         orders = orders.Where(x =>
+                            x.CreatedDate.HasValue &&
                             x.CreatedDate >= filter.orderFromDate &&
                             x.CreatedDate <= filter.orderToDate
                         );
                     }
                 }
+
                 // Filter Order Note
                 if (!String.IsNullOrEmpty(filter.orderNote))
                 {
                     if (filter.orderNote.Equals("yes"))
-                    {
-                        orders = orders.Where(x =>
-                            !String.IsNullOrEmpty(x.OrderNote)
-                        );
-                    }
+                        orders = orders.Where(x => !String.IsNullOrEmpty(x.OrderNote));
                     else
-                    {
-                        orders = orders.Where(x =>
-                            String.IsNullOrEmpty(x.OrderNote)
-                        );
-                    }
+                        orders = orders.Where(x => String.IsNullOrEmpty(x.OrderNote));
                 }
+
                 // Filter những order được chọn để in report
                 if (filter.selected && filter.account != null)
                 {
