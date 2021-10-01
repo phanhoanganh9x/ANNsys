@@ -130,14 +130,10 @@ namespace IM_PJ
                 DateTime OrderToDate = DateTime.Now;
 
                 if (!String.IsNullOrEmpty(Request.QueryString["orderfromdate"]))
-                {
                     OrderFromDate = Convert.ToDateTime(Request.QueryString["orderfromdate"]);
-                }
 
                 if (!String.IsNullOrEmpty(Request.QueryString["ordertodate"]))
-                {
                     OrderToDate = Convert.ToDateTime(Request.QueryString["ordertodate"]).AddDays(1).AddMinutes(-1);
-                }
 
                 rOrderFromDate.SelectedDate = OrderFromDate;
                 rOrderFromDate.MinDate = DateConfig;
@@ -200,7 +196,7 @@ namespace IM_PJ
                 {
                     searchType = (int)SearchType.Order,
                     search = TextSearch,
-                    excuteStatus = new List<int>() { (int)ExcuteStatus.Done },
+                    excuteStatus = new List<int>() { (int)ExcuteStatus.Done, (int)ExcuteStatus.Sent },
                     paymentType = PaymentType,
                     shippingType = ShippingType,
                     orderCreatedBy = CreatedBy, // CreatedBy
@@ -439,11 +435,11 @@ namespace IM_PJ
             {
                 if (acc.RoleID == 0)
                 {
-                    html.Append("<tr><td colspan='14'>Không tìm thấy đơn hàng...</td></tr>");
+                    html.Append("<tr><td colspan='16'>Không tìm thấy đơn hàng...</td></tr>");
                 }
                 else
                 {
-                    html.Append("<tr><td colspan='13'>Không tìm thấy đơn hàng...</td></tr>");
+                    html.Append("<tr><td colspan='15'>Không tìm thấy đơn hàng...</td></tr>");
                 }
             }
             html.Append("</tbody>");
