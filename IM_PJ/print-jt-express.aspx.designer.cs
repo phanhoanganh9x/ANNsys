@@ -166,15 +166,6 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.Literal ltPostalBranchCodeLine1;
         
         /// <summary>
-        /// ltOrderIdBody control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltOrderIdBody;
-        
-        /// <summary>
         /// ltPostalBranchCodeLine2 control.
         /// </summary>
         /// <remarks>
@@ -184,24 +175,6 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.Literal ltPostalBranchCodeLine2;
         
         /// <summary>
-        /// ltItemName control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltItemName;
-        
-        /// <summary>
-        /// ltCod control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltCod;
-        
-        /// <summary>
         /// ltWeight control.
         /// </summary>
         /// <remarks>
@@ -209,6 +182,15 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal ltWeight;
+        
+        /// <summary>
+        /// ltItemName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltItemName;
         
         /// <summary>
         /// ltNote control.

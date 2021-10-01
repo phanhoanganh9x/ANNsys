@@ -195,6 +195,7 @@ namespace IM_PJ
                 ltReceiverAddressLine3.Text = "&nbsp;";
             }
         }
+
         public string createBarcode(string barcodeValue)
         {
             // Tạo barcode cho bưu điện
@@ -236,17 +237,21 @@ namespace IM_PJ
             // Tên người nhận
             ltReceiverName.Text = data.receiver.name;
             // Sđt người gửi
-            ltSenderPhone.Text = data.sender.phone;
+            string senderPhone = data.sender.phone;
+            senderPhone = senderPhone.Remove(0, 6).Insert(0, "******");
+            ltSenderPhone.Text = senderPhone;
             // Sđt người nhận
-            ltReceiverPhone.Text = data.receiver.phone;
-            // Đại chỉ nhận
+            string receiverPhone = data.receiver.phone;
+            receiverPhone = receiverPhone.Remove(0, 6).Insert(0, "******");
+            ltReceiverPhone.Text = receiverPhone;
+            // Đại chỉ gửi
             _loadSenderAddress(data.sender);
-            // Địa chỉ gửi
+            // Địa chỉ nhận
             _loadReceiverAddress(data.receiver);
             // Mã bưu cục
             ltPostalCode.Text = data.postalCode;
             // Mã đơn khách đặt tại shop
-            ltOrderIdBody.Text = data.orderId.ToString();
+            //ltOrderIdBody.Text = data.orderId.ToString();
             // Số lượng kiện
             ltItemNumber.Text = data.item.number.ToString();
             // Mã chi nhánh bưu cục
@@ -255,7 +260,7 @@ namespace IM_PJ
             // Nội dung
             ltItemName.Text = data.item.name;
             // COD
-            ltCod.Text = data.cod > 0 ? String.Format("{0:N0}", data.cod) : "&nbsp;";
+            //ltCod.Text = data.cod > 0 ? String.Format("{0:N0}", data.cod) : "&nbsp;";
             // Trọng lượng
             ltWeight.Text = String.Format("{0:0.0#}", data.weight);
             // Note
