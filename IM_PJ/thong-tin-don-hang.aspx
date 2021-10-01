@@ -1573,27 +1573,36 @@
             // Các loại phí khác
             function _initOtherFees() {
                 // Load Fee Type List
-                let data = JSON.parse($("#<%=hdfFeeType.ClientID%>").val());
-                data.forEach((item) => {
-                    feetype.push(new FeeType(item.ID, item.Name, item.IsNegativeFee));
-                });
+                let strFeeType = $("#<%=hdfFeeType.ClientID%>").val();
+
+                if (strFeeType) {
+                    let data = JSON.parse(strFeeType);
+
+                    data.forEach((item) => {
+                        feetype.push(new FeeType(item.ID, item.Name, item.IsNegativeFee));
+                    });
+                }
 
                 // Load Fee List
-                let obj = JSON.parse($("#<%=hdfOtherFees.ClientID%>").val());
-                if ($.isArray(obj))
-                {
-                    obj.forEach((item) => {
-                        let fee = new Fee(
-                            item.UUID,
-                            item.FeeTypeID,
-                            item.FeeTypeName,
-                            item.FeePrice,
-                            item.Note
-                        );
+                let strOtherFees = $("#<%=hdfOtherFees.ClientID%>").val();
 
-                        fees.push(fee);
-                        $("#fee-list").append(createFeeHTML(fee));
-                    });
+                if (strOtherFees) {
+                    let obj = JSON.parse(strOtherFees);
+
+                    if ($.isArray(obj)) {
+                        obj.forEach((item) => {
+                            let fee = new Fee(
+                                item.UUID,
+                                item.FeeTypeID,
+                                item.FeeTypeName,
+                                item.FeePrice,
+                                item.Note
+                            );
+
+                            fees.push(fee);
+                            $("#fee-list").append(createFeeHTML(fee));
+                        });
+                    }
                 }
             }
 
