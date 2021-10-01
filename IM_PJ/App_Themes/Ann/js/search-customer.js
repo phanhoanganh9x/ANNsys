@@ -347,10 +347,11 @@ function selectCustomer() {
         var id = $(this).closest('tr').attr("data-id");
         var createdby = $(this).closest('tr').find("td.createdby").html();
         var username = $("input[id$='_hdfUsername']").val();
+        // 2021-10-01: Yêu cầu bỏ làm đơn hộ
+        let hasHelp = false;
 
 
-
-        if (createdby !== username) {
+        if (createdby !== username && hasHelp) {
             swal({
                 title: 'Lưu ý',
                 text: 'Chọn khách hàng này đồng nghĩa em đang tính tiền giúp <strong>' + createdby + '</strong>.<br><br>Đồng ý không???',
@@ -449,7 +450,6 @@ function selectCustomer() {
             closePopup();
 
             $("input[id$='_hdfCustomerID']").val(id);
-            $("input[id$='_hdfUsernameCurrent']").val(createdby);
 
             if (typeof getDeliveryAddressLast === 'function')
                 getDeliveryAddressLast(phone);
