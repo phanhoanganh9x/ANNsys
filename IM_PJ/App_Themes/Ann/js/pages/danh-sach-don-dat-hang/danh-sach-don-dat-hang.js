@@ -361,19 +361,19 @@ function _createPreOrderTableHTML(data) {
             try {
                 html += "    <tr data-pre-order-id='" + item.id + "'>";
                 html += "        <td data-title='Mã đơn'>";
-                html += "            <a target='_blank' href='" + orderService.generateOrderUrl(item.status.key, item.id) + "'>" + item.id + "</a>";
+                html += "            <a target='_blank' href='" + orderService.generateOrderUrl(item.status.key, item.id, item.isPreOrder) + "'>" + item.id + "</a>";
                 html += "        </td>";
                 html += "        <td data-title='Loại đơn'>" + orderService.generateOrderTypeHTML(item.orderType.key) + "</td>";
 
                 if (item.customer.nick) {
                     html += "        <td  class='customer-td' data-title='Khách hàng'>";
-                    html += "            <a class='col-customer-name-link' target='_blank' href='" + orderService.generateOrderUrl(item.status.key, item.id) + "'>" + strFormat.toTitleCase(item.customer.nick) + "</a>";
+                    html += "            <a class='col-customer-name-link' target='_blank' href='" + orderService.generateOrderUrl(item.status.key, item.id, item.isPreOrder) + "'>" + strFormat.toTitleCase(item.customer.nick) + "</a>";
                     html += "            <br><span class='name-bottom-nick'>(" + strFormat.toTitleCase(item.customer.name) + ")</span>";
                     html += "        </td>";
                 }
                 else if (item.customer.name) {
                     html += "        <td  class='customer-td' data-title='Khách hàng'>";
-                    html += "            <a class='col-customer-name-link' target='_blank' href='" + orderService.generateOrderUrl(item.status.key, item.id) + "'>" + strFormat.toTitleCase(item.customer.name) + "</a>";
+                    html += "            <a class='col-customer-name-link' target='_blank' href='" + orderService.generateOrderUrl(item.status.key, item.id, item.isPreOrder) + "'>" + strFormat.toTitleCase(item.customer.name) + "</a>";
                     html += "        </td>";
                 } else {
                     html += "        <td  class='customer-td' data-title='Khách hàng'><span class='bg-yellow'>Vùi lòng tạo thông tin khách hàng</span></td>";
@@ -414,7 +414,7 @@ function _createPreOrderTableHTML(data) {
                 if (item.staff) {
                     if (item.status.key == 0)
                         html += _createBtnCancelPreOrder(item.id, item.staff);
-                    else if (item.status.key == 3)
+                    else if (item.status.key == 3 && item.isPreOrder)
                         html += _createBtnRecoveryPreOrder(item.id, item.staff);
                 }
 
@@ -431,7 +431,7 @@ function _createPreOrderTableHTML(data) {
 
                 // thông tin thêm
                 html += "    <tr class='tr-more-info'>";
-                html += "        <td colspan='2'><strong>" + item.source + "</strong></td>";
+                html += "        <td colspan='2'><strong>" + (item.source || '') + "</strong></td>";
                 html += "        <td colspan='11'>";
 
                 if (item.discount > 0) {
