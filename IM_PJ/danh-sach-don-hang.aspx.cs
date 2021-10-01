@@ -537,7 +537,15 @@ namespace IM_PJ
 
                     html.AppendLine("   <td data-title='Thao tác' class='update-button'>");
                     html.AppendLine("       <a href='/print-invoice?id=" + item.ID + "' title='In hóa đơn' target='_blank' class='btn primary-btn h45-btn'><i class='fa fa-print' aria-hidden='true'></i></a>");
-                    html.AppendLine("       <a href='/print-shipping-note?id=" + item.ID + "' title='In phiếu gửi hàng' target='_blank' class='btn primary-btn btn-red h45-btn'><i class='fa fa-file-text-o' aria-hidden='true'></i></a>");
+                    if (item.ShippingType == 10 && !String.IsNullOrEmpty(item.ShippingCode))
+                    {
+                        html.AppendLine("       <a href='/print-jt-express?id=" + item.ID + "' title='In phiếu gửi hàng' target='_blank' class='btn primary-btn btn-red h45-btn'><i class='fa fa-file-text-o' aria-hidden='true'></i></a>");
+                    }
+                    else
+                    {
+                        html.AppendLine("       <a href='/print-shipping-note?id=" + item.ID + "' title='In phiếu gửi hàng' target='_blank' class='btn primary-btn btn-red h45-btn'><i class='fa fa-file-text-o' aria-hidden='true'></i></a>");
+                    }
+                    
                     //html.AppendLine("       <a href='/chi-tiet-khach-hang?id=" + item.CustomerID + "' title='Thông tin khách hàng " + item.CustomerName + "' target='_blank' class='btn primary-btn btn-black h45-btn'><i class='fa fa-user-circle' aria-hidden='true'></i></a>");
                     if (item.DeliveryStatus.HasValue && item.DeliveryStatus.Value == 1 && !string.IsNullOrEmpty(item.InvoiceImage))
                         html.AppendLine("       <a href='javascript:;' onclick='openImageInvoice($(this))' data-link='" + item.InvoiceImage + "' title='Biên nhận gửi hàng' class='btn primary-btn btn-blue h45-btn'><i class='fa fa-file-text-o' aria-hidden='true'></i></a>");
