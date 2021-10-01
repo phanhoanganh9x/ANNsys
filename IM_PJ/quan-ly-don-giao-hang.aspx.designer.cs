@@ -37,7 +37,7 @@ namespace IM_PJ {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Telerik.Web.UI.RadDatePicker dpFromDate;
+        protected global::Telerik.Web.UI.RadDateTimePicker dpFromDate;
 
         /// <summary>
         /// dpToDate control.
@@ -46,7 +46,7 @@ namespace IM_PJ {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Telerik.Web.UI.RadDatePicker dpToDate;
+        protected global::Telerik.Web.UI.RadDateTimePicker dpToDate;
 
         /// <summary>
         /// ddlStatus control.

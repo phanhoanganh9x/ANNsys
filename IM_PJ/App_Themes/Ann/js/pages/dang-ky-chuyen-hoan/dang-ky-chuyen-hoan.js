@@ -48,32 +48,57 @@ function _initDeliveryMethod() {
 }
 
 function _updateDelivery() {
+    //#region Thông tin loại đơn hàng
     let orderTypeDOM = document.querySelector("[id$='_ddlOrderType']");
+    let orderType = {
+        key: parseInt(orderTypeDOM.value),
+        value: orderTypeDOM.options[orderTypeDOM.selectedIndex].text,
+    };
+    //#endregion
+
+    // Mã đơn hàng hoặc mã vận đơn
     let codeDOM = document.querySelector("[id$='_txtCode']");
+
+    //#region Thông tin phương thức giao hàng
     let $deliveryMethod = $("#ddlDeliveryMethod");
+    let deliveryMethod = {
+        key: parseInt($deliveryMethod.val()),
+        value: $deliveryMethod.find("option:selected").text()
+    };
+    //#endregion
+
+    // Mã vận đơn
     let shippingCodeDOM = document.querySelector("[id$='_hdfShippingCode']");
+    // Ngày gửi hàng
     let sentDateDOM = document.querySelector("[id$='_hdfSentDate']");
+
+    //#region Ngày chuyển hoàn
     let refundDateDOM = document.querySelector("[id$='_rRefundDate']");
+    let refundDateTime = '';
+
+    if (refundDateDOM.value) {
+        let refundDate = refundDateDOM.value.substring(0, 10);
+        let refundTime = refundDateDOM.value.substring(11).replace(/-/g, ':');
+
+        refundDateTime = refundDate + ' ' + refundTime;
+    }
+    //#endregion
+
+    // Nhân viên tạo đơn
     let staffDOM = document.querySelector("[id$='_hdfStaff']");
+    // Đơn hàng chưa đăng ký gửi đi
     let isNewDOM = document.querySelector("[id$='_hdfIsNew']");
-    let data = {
-        orderType: {
-            key: parseInt(orderTypeDOM.value),
-            value: orderTypeDOM.options[orderTypeDOM.selectedIndex].text,
-        },
+
+    controller.setDelivery({
+        orderType: orderType,
         code: codeDOM.value,
-        deliveryMethod: {
-            key: parseInt($deliveryMethod.val()),
-            value: $deliveryMethod.find("option:selected").text()
-        },
+        deliveryMethod: deliveryMethod,
         shippingCode: shippingCodeDOM.value,
         sentDate: sentDateDOM.value,
-        refundDate: refundDateDOM.value,
+        refundDate: refundDateTime,
         staff: staffDOM.value,
         isNew: parseInt(isNewDOM.value)
-    };
-
-    controller.setDelivery(data);
+    });
 }
 
 function _updateDeliveryMethod(callback) {
@@ -224,10 +249,10 @@ function _createDeliveryHtml(index, data) {
     html += '    <td><span class="bg-delivery-type bg-delivery-type-' + data.deliveryMethod.key + '">' + data.deliveryMethod.value + '</span></td>';
     html += '    <td>' + data.shippingCode + '</td>';
     if (data.sentDate)
-        html += '    <td>' + stringFormat.datetimeToString(data.sentDate, 'dd/MM/yyyy') + '</td>';
+        html += '    <td>' + stringFormat.datetimeToString(data.sentDate, 'dd/MM/yyyy HH:mm') + '</td>';
     else
         html += '    <td><span class="bg-red">Chưa đăng ký</span></td>';
-    html += '    <td>' + stringFormat.datetimeToString(data.refundDate, 'dd/MM/yyyy') + '</td>';
+    html += '    <td>' + stringFormat.datetimeToString(data.refundDate, 'dd/MM/yyyy HH:mm') + '</td>';
     html += '    <td>';
     html += '        <a href="javascript:;"';
     html += '           title="Xóa"';

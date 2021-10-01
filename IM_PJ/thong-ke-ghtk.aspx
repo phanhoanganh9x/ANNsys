@@ -141,7 +141,7 @@
             </div>
         </div>
 
-        <script type="text/javascript" src="/App_Themes/Ann/js/utils/string-format.js?v=202109300102"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/utils/string-format.js?v=202109302253"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=202106061418"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/services/thong-ke-ghtk/thong-ke-ghtk-service.js?v=202106061418"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/controllers/thong-ke-ghtk/thong-ke-ghtk-controller.js?v=202106061418"></script>

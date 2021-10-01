@@ -48,28 +48,51 @@ function _initDeliveryMethod() {
 }
 
 function _updateDelivery() {
+    //#region Thông tin loại đơn hàng
     let orderTypeDOM = document.querySelector("[id$='_ddlOrderType']");
-    let codeDOM = document.querySelector("[id$='_txtCode']");
-    let $deliveryMethod = $("#ddlDeliveryMethod");
-    let shippingCodeDOM = document.querySelector("[id$='_hdfShippingCode']");
-    let sentDateDOM = document.querySelector("[id$='_rSentDate']");
-    let staffDOM = document.querySelector("[id$='_hdfStaff']");
-    let data = {
-        orderType: {
-            key: parseInt(orderTypeDOM.value),
-            value: orderTypeDOM.options[orderTypeDOM.selectedIndex].text,
-        },
-        code: codeDOM.value,
-        deliveryMethod: {
-            key: parseInt($deliveryMethod.val()),
-            value: $deliveryMethod.find("option:selected").text()
-        },
-        shippingCode: shippingCodeDOM.value,
-        sentDate: sentDateDOM.value,
-        staff: staffDOM.value
+    let orderType = {
+        key: parseInt(orderTypeDOM.value),
+        value: orderTypeDOM.options[orderTypeDOM.selectedIndex].text,
     };
+    //#endregion
 
-    controller.setDelivery(data);
+    // Mã đơn hàng hoặc mã vận đơn
+    let codeDOM = document.querySelector("[id$='_txtCode']");
+
+    //#region Thông tin phương thức giao hàng
+    let $deliveryMethod = $("#ddlDeliveryMethod");
+    let deliveryMethod = {
+        key: parseInt($deliveryMethod.val()),
+        value: $deliveryMethod.find("option:selected").text()
+    };
+    //#endregion
+
+    // Mã vận đơn
+    let shippingCodeDOM = document.querySelector("[id$='_hdfShippingCode']");
+
+    //#region Ngày gửi hàng
+    let sentDateDOM = document.querySelector("[id$='_rSentDate']");
+    let sentDateTime = '';
+
+    if (sentDateDOM.value) {
+        let sentDate = sentDateDOM.value.substring(0, 10);
+        let sentTime = sentDateDOM.value.substring(11).replace(/-/g, ':');
+
+        sentDateTime = sentDate + ' ' + sentTime;
+    }
+    //#endregion
+
+    // Nhân viên tạo đơn
+    let staffDOM = document.querySelector("[id$='_hdfStaff']");
+
+    controller.setDelivery({
+        orderType: orderType,
+        code: codeDOM.value,
+        deliveryMethod: deliveryMethod,
+        shippingCode: shippingCodeDOM.value,
+        sentDate: sentDateTime,
+        staff: staffDOM.value
+    });
 }
 
 function _updateDeliveryMethod(callback) {
@@ -194,7 +217,7 @@ function _createDeliveryHtml(index, data) {
     html += '    <td>' + data.code + '</td>';
     html += '    <td><span class="bg-delivery-type bg-delivery-type-' + data.deliveryMethod.key + '">' + data.deliveryMethod.value + '</span></td>';
     html += '    <td>' + data.shippingCode + '</td>';
-    html += '    <td>' + stringFormat.datetimeToString(data.sentDate, 'dd/MM/yyyy') + '</td>';
+    html += '    <td>' + stringFormat.datetimeToString(data.sentDate, 'dd/MM/yyyy HH:mm') + '</td>';
     html += '    <td>';
     html += '        <a href="javascript:;"';
     html += '           title="Xóa"';

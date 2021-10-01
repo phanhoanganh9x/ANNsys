@@ -31,10 +31,10 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Ngày chuyển hoàn</label>
-                                        <telerik:RadDatePicker RenderMode="Lightweight" ID="rRefundDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate">
-                                            <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
+                                        <telerik:RadDateTimePicker RenderMode="Lightweight" ID="rRefundDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate" DateInput-EmptyMessage="Ngày chuyển hoàn">
+                                            <DateInput DisplayDateFormat="dd/MM/yyyy HH:mm" runat="server">
                                             </DateInput>
-                                        </telerik:RadDatePicker>
+                                        </telerik:RadDateTimePicker>
                                     </div>
                                 </div>
                                 <div class="col-md-1">
@@ -80,9 +80,9 @@
         <asp:HiddenField ID="hdfShippingCode" runat="server" />
         <asp:HiddenField ID="hdfStaff" runat="server" />
         <asp:HiddenField ID="hdfIsNew" runat="server" value="1"/>
-        <script type="text/javascript" src="App_Themes/Ann/js/utils/string-format.js?v=202109300102"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/utils/string-format.js?v=202109302253"></script>
         <script type="text/javascript" src="App_Themes/Ann/js/services/dang-ky-chuyen-hoan/dang-ky-chuyen-hoan-service.js?v=202109271901"></script>
         <script type="text/javascript" src="App_Themes/Ann/js/controllers/dang-ky-chuyen-hoan/dang-ky-chuyen-hoan-controller.js?v=202109271901"></script>
-        <script type="text/javascript" src="App_Themes/Ann/js/pages/dang-ky-chuyen-hoan/dang-ky-chuyen-hoan.js?v=202109271901"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/pages/dang-ky-chuyen-hoan/dang-ky-chuyen-hoan.js?v=202109302151"></script>
     </main>
 </asp:Content>
