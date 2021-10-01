@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="Chi tiết khách hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="chi-tiet-khach-hang.aspx.cs" Inherits="IM_PJ.chi_tiet_khach_hang" EnableSessionState="ReadOnly" EnableEventValidation="false"%>
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=04092021"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=202110012121"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">

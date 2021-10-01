@@ -125,7 +125,7 @@ namespace IM_PJ
         public static string searchCustomerByText(string textsearch, string createdby = "")
         {
             string search = Regex.Replace(textsearch.Trim(), @"[^0-9a-zA-Z\s_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]+", "");
-            var customer = CustomerController.Find(search, createdby);
+            var customer = CustomerController.Find(search, String.Empty);
             if (customer.Count > 0)
             {
                 JavaScriptSerializer serializer = new JavaScriptSerializer();

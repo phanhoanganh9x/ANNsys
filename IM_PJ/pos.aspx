@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=04092021"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=202110012121"></script>
     <script src="/App_Themes/Ann/js/search-product.js?v=04092021"></script>
     <script src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=04092021"></script>
 </asp:Content>
@@ -25,7 +25,7 @@
                             <div class="panel-heading clear">
                                 <h3 class="page-title left not-margin-bot">Khách hàng</h3>
                                 <a href="javascript:;" class="search-customer" onclick="searchCustomer()" title="Tìm khách hàng"><i class="fa fa-search" aria-hidden="true"></i> Tìm</a>
-                                <a href="javascript:;" class="change-user" onclick="changeUser()" title="Tính tiền giúp nhân viên khác"><i class="fa fa-user" aria-hidden="true"></i></a>
+                                <%--<a href="javascript:;" class="change-user" onclick="changeUser()" title="Tính tiền giúp nhân viên khác"><i class="fa fa-user" aria-hidden="true"></i></a>--%>
                                 <a href="/danh-sach-don-hang" class="change-user" target="_blank" title="Danh sách đơn hàng"><i class="fa fa-list-ul" aria-hidden="true"></i></a>
                             </div>
                             <div class="panel-body">
