@@ -38,7 +38,7 @@
             text-align: center;
         }
         .barcode-img {
-            width: 350px;
+            width: 370px;
             height: 63px;
         }
         .barcode-text {
