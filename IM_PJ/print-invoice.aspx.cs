@@ -653,22 +653,13 @@ namespace IM_PJ
 
                 #region Địa chỉ
                 invoiceHtml.AppendLine("                <div class='ct'>");
-                invoiceHtml.AppendLine("                    <div class='ct-title'></div>");
                 invoiceHtml.AppendLine("                    <div class='ct-detail'> " + address + "</div>");
                 invoiceHtml.AppendLine("                </div>");
                 #endregion
 
                 #region Số điện thoại
                 invoiceHtml.AppendLine("                <div class='ct'>");
-                invoiceHtml.AppendLine("                    <div class='ct-title'> </div>");
                 invoiceHtml.AppendLine("                    <div class='ct-detail'> " + phone + "</div>");
-                invoiceHtml.AppendLine("                </div>");
-                #endregion
-
-                #region Web
-                invoiceHtml.AppendLine("                <div class='ct'>");
-                invoiceHtml.AppendLine("                    <div class='ct-title'></div>");
-                invoiceHtml.AppendLine("                    <div class='ct-detail'>http://ann.com.vn</div>");
                 invoiceHtml.AppendLine("                </div>");
                 #endregion
 
