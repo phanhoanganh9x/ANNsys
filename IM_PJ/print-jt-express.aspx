@@ -18,8 +18,8 @@
         .table {
             display: block;
             width: 384px; 
-            height: 562px; 
-            background: url('https://simyphamonline.com/wp-content/uploads/bgjt-ann-384px-4.png'); 
+            height: 543px; 
+            background: url('https://simyphamonline.com/wp-content/uploads/bgjt-ann-384px-5.png'); 
         }
 
         .row {
@@ -231,7 +231,7 @@
     
     
 <div class="table">
-    <div class="row" style="height: 14%;">
+    <div class="row" style="height: 14.5%;">
         <div class="column" style="width: 50%;">
             <div class="barcode-row">
                 <asp:Literal ID="ltBarcode" runat="server"></asp:Literal>
@@ -251,7 +251,7 @@
             </div>
         </div>
     </div>
-    <div class="row" style="height: 12%;">
+    <div class="row" style="height: 12.5%;">
         <div class="column" style="width: 50%;">
             <div class="sender-address">
                 Người gởi :
@@ -275,12 +275,12 @@
             </div>
         </div>
     </div>
-    <div class="row" style="height: 6.4%;">
+    <div class="row" style="height: 6.9%;">
         <div class="column" style="width: 20%;"><div class="postal-code"><asp:Literal ID="ltPostalCode" runat="server"></asp:Literal></div></div>
         <div class="column" style="width: 66%;"><div class="customer-order">Mã đơn KH</div></div>
         <div class="column" style="width: 14%;"><div class="item-number">Số kiện<br /><asp:Literal ID="ltItemNumber" runat="server"></asp:Literal></div></div>
     </div>
-    <div class="row" style="height: 38.6%;">
+    <div class="row" style="height: 39.5%;">
         <div class="column" style="width: 20.2%; height: 100%">
             <div class="column" style="width: 100%; height: 16.8%;">
                 <div class="postal-branch-code-1"><asp:Literal ID="ltPostalBranchCodeLine1" runat="server"></asp:Literal></div>
@@ -313,7 +313,7 @@
             <div class="content-value"><asp:Literal ID="ltItemName" runat="server"></asp:Literal></div>
         </div>
     </div>
-    <div class="row" style="height: 9.7%;">
+    <div class="row" style="height: 10.2%;">
         <div class="column" style="width: 50%;">
             <div class="sender-sig">
                 Người gởi ký tên
@@ -328,7 +328,7 @@
             </div>
         </div>
     </div>
-    <div class="row" style="height: 6.7%;">
+    <div class="row" style="height: 6.9%;">
         <div class="column" style="width: 100%;">
             <div class="note-label">
                 Ghi chú
