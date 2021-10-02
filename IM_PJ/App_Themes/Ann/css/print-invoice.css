@@ -40,7 +40,7 @@ img {
 
 h1 {
   margin-bottom: 10px!important;
-  font-size: 20px!important;
+  font-size: 18px!important;
   text-align: center;
 }
 
@@ -95,7 +95,7 @@ h1.invoice-return {
 }
 
 .hoadon .table-1 table .col-left {
-  width: 40%;
+  width: 30%;
 }
 
 .hoadon .table-1 table th,

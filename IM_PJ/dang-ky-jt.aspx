@@ -186,7 +186,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="fa fa-file-o"></i></span>
                                     </div>
-                                    <input type="text" id="note" class="form-control" maxlength="120" value="Vui lòng cho khách kiểm tra hàng và nhận hàng về nếu có" placeholder="Hãy thêm thông tin để GHTK phục vụ tốt hơn.">
+                                    <input type="text" id="note" class="form-control" maxlength="120" value="">
                                 </div>
                             </div>
                         </div>

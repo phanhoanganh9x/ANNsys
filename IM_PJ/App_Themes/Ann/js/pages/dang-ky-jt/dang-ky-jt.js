@@ -175,7 +175,15 @@ function _initTableProduct() {
     $("#ddlProduct").select2({
         placeholder: 'Chọn tên hàng hóa',
         minimumResultsForSearch: Infinity,
+        ajax: {
+            method: 'GET',
+            url: '/api/v1/delivery-save/products/select2'
+        },
         width: '100%'
+    });
+
+    $('#ddlProduct').on('select2:select', (e) => {
+        _calculateFee();
     });
 
     $("#weight").blur(function () {
@@ -210,7 +218,10 @@ function _initFee() {
 
 function _initNote() {
     let $note = $("#note");
+    let urlParams = new URLSearchParams(window.location.search);
+    let orderID = +urlParams.get('orderID') || 0;
 
+    $note.val("Vui lòng cho khách kiểm tra hàng! Nếu khách không nhận hàng vui lòng gọi shop (mã đơn shop: " + orderID + " )");
     _order.note = $note.val();
 
     $note.change(function () {
@@ -223,10 +234,10 @@ function _initPage() {
     $("#pick_address").val('133 Đường C12');
 
     // Cài đặt loại hàng hóa mặc định
-    let newProduct = new Option('Hàng hóa', 1, false, false);
-    $('#ddlProduct').append(newProduct).trigger('change');
-    $('#ddlProduct').attr('disabled', true);
-    $('#ddlProduct').attr('readonly', 'readonly');
+    //let newProduct = new Option('Hàng hóa', 1, false, false);
+    //$('#ddlProduct').append(newProduct).trigger('change');
+    //$('#ddlProduct').attr('disabled', true);
+    //$('#ddlProduct').attr('readonly', 'readonly');
 
     // Cài đặt trọng lượng mặc định cho sản phẩm
     $("#weight").val(_weight_min).trigger('blur');
@@ -544,7 +555,7 @@ function _calculateMoney() {
 }
 
 function _submit() {
-    let titleAlert = "Đồng bộ đơn hàng J&T Express";
+    let titleAlert = "Đồng bộ J&T Express";
 
     $.ajax({
         method: 'POST',
@@ -563,11 +574,20 @@ function _submit() {
                     return swal({
                         title: titleAlert,
                         text: "Đồng bộ thành công",
-                        icon: "success",
-                    })
-                    .then(() => {
-                        let code = response.data.code;
-                        window.location.href = "https://vip.jtexpress.vn/#/service/expressTrack?id=" + code;
+                        type: "success",
+                        showCancelButton: true,
+                        cancelButtonText: "Đóng",
+                        confirmButtonText: "In phiếu gửi hàng",
+                        closeOnConfirm: true,
+                    }, function (confirm) {
+                        if (confirm) {
+                            sweetAlert.close();
+                            let code = response.data.code;
+                            window.location.href = "/print-jt-express?id=" + _order.orderId + "&code=" + code;
+                        }
+                        else {
+                            window.close();
+                        }
                     });
                 else
                     return _alterError(titleAlert, response);

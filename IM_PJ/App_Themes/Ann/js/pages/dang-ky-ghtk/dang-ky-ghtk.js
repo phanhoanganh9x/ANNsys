@@ -342,7 +342,10 @@ function _initFee() {
 
 function _initNote() {
     let $note = $("#note");
+    let urlParams = new URLSearchParams(window.location.search);
+    let orderID = +urlParams.get('orderID') || 0;
 
+    $note.val("Vui lòng cho khách kiểm tra hàng! Nếu khách không nhận hàng vui lòng gọi về shop (mã đơn shop: " + orderID + " )");
     _order.note = $note.val();
 
     $note.change(function () {
@@ -796,7 +799,7 @@ function _submit() {
                     return swal({
                         title: titleAlert,
                         text: "Đồng bộ thành công",
-                        icon: "success",
+                        type: "success",
                     })
                     .then(() => {
                         let label = data.order['label'];

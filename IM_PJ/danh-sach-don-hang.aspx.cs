@@ -539,7 +539,7 @@ namespace IM_PJ
                     html.AppendLine("       <a href='/print-invoice?id=" + item.ID + "' title='In hóa đơn' target='_blank' class='btn primary-btn h45-btn'><i class='fa fa-print' aria-hidden='true'></i></a>");
                     if (item.ShippingType == 10 && !String.IsNullOrEmpty(item.ShippingCode))
                     {
-                        html.AppendLine("       <a href='/print-jt-express?id=" + item.ID + "' title='In phiếu gửi hàng' target='_blank' class='btn primary-btn btn-red h45-btn'><i class='fa fa-file-text-o' aria-hidden='true'></i></a>");
+                        html.AppendLine("       <a href='/print-jt-express?id=" + item.ID + "&code=" + item.ShippingCode + "' title='In phiếu gửi hàng' target='_blank' class='btn primary-btn btn-red h45-btn'><i class='fa fa-file-text-o' aria-hidden='true'></i></a>");
                     }
                     else
                     {

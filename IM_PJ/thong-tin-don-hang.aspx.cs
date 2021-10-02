@@ -729,7 +729,7 @@ namespace IM_PJ
                     }
                     if (order.ShippingType == 6 && !String.IsNullOrEmpty(order.ShippingCode))
                     {
-                        ltrPrint.Text += "<a id='btnShowGhtk' target='_blank' href='https://khachhang.giaohangtietkiem.vn/khachhang?code=" + order.ShippingCode + "' class='btn primary-btn btn-ghtk fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-upload' aria-hidden='true'></i> Xem đơn GHTK</a>";
+                        ltrPrint.Text += "<a id='btnShowGhtk' target='_blank' href='https://khachhang.giaohangtietkiem.vn/khachhang?code=" + order.ShippingCode + "' class='btn primary-btn btn-ghtk fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-upload' aria-hidden='true'></i> Tra cứu GHTK</a>";
                         ltrPrint.Text += "<a id='btnCancelGhtk' href='javascript:;' onclick='cancelGhtk(" + ID + ", `" + order.ShippingCode + "`)' class='btn primary-btn btn-red fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-trash' aria-hidden='true'></i> Hủy đơn GHTK</a>";
                     }
                     if (order.ShippingType == 3 && !String.IsNullOrEmpty(order.ShippingCode))
@@ -743,7 +743,7 @@ namespace IM_PJ
                     }
                     if (order.ShippingType == (int)DeliveryType.JT && !String.IsNullOrEmpty(order.ShippingCode))
                     {
-                        ltrPrint.Text += "<a id='btnShowJtExpress' target='_blank' href='https://vip.jtexpress.vn/#/service/expressTrack?id=" + order.ShippingCode + "' class='btn primary-btn btn-jt fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-upload' aria-hidden='true'></i> Xem đơn J&T</a>";
+                        ltrPrint.Text += "<a id='btnShowJtExpress' target='_blank' href='https://vip.jtexpress.vn/#/service/expressTrack?id=" + order.ShippingCode + "' class='btn primary-btn btn-jt fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-upload' aria-hidden='true'></i> Tra cứu J&T</a>";
                         ltrPrint.Text += "<a id='btnCancelJtExpress' href='javascript:;' onclick='cancelJtExpress(" + ID + ", `" + order.ShippingCode + "`)' class='btn primary-btn btn-red fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-trash' aria-hidden='true'></i> Hủy đơn J&T</a>";
                     }
                     #endregion

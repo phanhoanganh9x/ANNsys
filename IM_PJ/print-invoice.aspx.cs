@@ -411,20 +411,18 @@ namespace IM_PJ
             orderHtml.AppendLine("            <tbody>");
 
             #region Khách hàng
-            orderHtml.AppendLine("                <tr>");
-            orderHtml.AppendLine("                    <td>Khách hàng</td>");
-            orderHtml.AppendLine("                    <td>" + order.CustomerName.ToTitleCase() + "</td>");
-            orderHtml.AppendLine("                </tr>");
-            #endregion
-
             #region Nick
+            string nick = "";
             if (!String.IsNullOrEmpty(customer.Nick) && order.ShippingType != 1)
             {
-                orderHtml.AppendLine("                <tr>");
-                orderHtml.AppendLine("                    <td>Nick</td>");
-                orderHtml.AppendLine("                    <td>" + customer.Nick.ToTitleCase() + "</td>");
-                orderHtml.AppendLine("                </tr>");
+                nick = " (" + customer.Nick.ToTitleCase() + ")";
             }
+            #endregion
+
+            orderHtml.AppendLine("                <tr>");
+            orderHtml.AppendLine("                    <td>Khách hàng</td>");
+            orderHtml.AppendLine("                    <td>" + order.CustomerName.ToTitleCase() + nick + "</td>");
+            orderHtml.AppendLine("                </tr>");
             #endregion
 
             #region Số điện thoại
@@ -439,20 +437,13 @@ namespace IM_PJ
             {
                 orderHtml.AppendLine("                <tr>");
                 orderHtml.AppendLine("                    <td>Ngày hoàn tất</td>");
-                orderHtml.AppendLine("                    <td>" + String.Format("{0:dd/MM/yyyy HH:mm}", order.DateDone) + "</td>");
+                orderHtml.AppendLine("                    <td>" + String.Format("{0:dd/MM HH:mm}", order.DateDone) + " (" + order.CreatedBy + ")</td>");
                 orderHtml.AppendLine("                </tr>");
             }
             else
             {
                 error += "Đơn hàng chưa hoàn tất";
             }
-            #endregion
-
-            #region Nhân viên tạo đơn
-            orderHtml.AppendLine("                <tr>");
-            orderHtml.AppendLine("                    <td>Nhân viên</td>");
-            orderHtml.AppendLine("                    <td>" + order.CreatedBy + "</td>");
-            orderHtml.AppendLine("                </tr>");
             #endregion
 
             #region Chú thích
