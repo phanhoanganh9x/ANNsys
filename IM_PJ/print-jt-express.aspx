@@ -347,10 +347,10 @@
     </div>
 </div>
     <script type="text/javascript">
-        //window.onload = setTimeout(function () {
-        //    window.print();
-        //    setTimeout(function () { window.close(); }, 1);
-        //}, 1000);
+        window.onload = setTimeout(function () {
+            window.print();
+            setTimeout(function () { window.close(); }, 1);
+        }, 1000);
     </script>
 </body>
 </html>
