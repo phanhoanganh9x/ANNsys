@@ -54,6 +54,7 @@ function _initParameterLocal() {
         chooseShopFee: true,
         weight: _weight_min,
         note: null,
+        itemName: null
     }
 }
 
@@ -183,6 +184,18 @@ function _initTableProduct() {
     });
 
     $('#ddlProduct').on('select2:select', (e) => {
+        let ddlProductDOM = e.currentTarget;
+        let key = +parseInt(ddlProductDOM.value) || 0;
+
+        if (key) {
+            let value = ddlProductDOM.options[ddlProductDOM.selectedIndex].text;
+
+            _order.itemName = value
+        }
+        else {
+            _order.itemName = null;
+        }
+
         _calculateFee();
     });
 
@@ -253,11 +266,10 @@ function _initPage() {
         return swal({
             title: "Lỗi",
             text: "Giá trị query param orderId không đúng",
-            icon: "error",
-        })
-          .then(() => {
-              window.location.href = "/danh-sach-don-hang";
-          });
+            type: "error",
+        }, function () {
+            window.location.href = "/danh-sach-don-hang";
+        });
 
     let titleAlert = "Lấy thông tin đơn hàng";
 
@@ -372,7 +384,7 @@ function _checkSubmit() {
         return swal({
             title: titleAlert,
             text: "Đơn hàng chưa hoàn tất!",
-            icon: "error",
+            type: "error",
         });
     }
 
@@ -380,38 +392,52 @@ function _checkSubmit() {
         return swal({
             title: titleAlert,
             text: "Số điện thoại khách hàng chưa nhập",
-            icon: "error",
-        })
-          .then(() => { $('#tel').focus(); });
+            type: "error",
+        }, function () {
+            $('#tel').focus();
+        });
 
     if (!_order.customer.province)
         return swal({
             title: titleAlert,
             text: "Địa chỉ tỉnh/thành khách hàng chưa chọn",
-            icon: "error",
+            type: "error",
+        }, function () {
+            $("#ddlProvince").select2('open');
         })
-          .then(() => { $("#ddlProvince").select2('open'); });
+          .then(() => {  });
     if (_order.customer.province && !_order.customer.district)
         return swal({
             title: titleAlert,
             text: "Địa chỉ quận/huyện khách hàng chưa chọn",
-            icon: "error",
-        })
-          .then(() => { $("#ddlDistrict").select2('open'); });
+            type: "error",
+        }, function () {
+            $("#ddlDistrict").select2('open');
+        });
     if (_order.customer.province && _order.customer.district && !_order.customer.ward)
         return swal({
             title: titleAlert,
             text: "Địa chỉ phường/xã khách hàng chưa chọn",
-            icon: "error",
-        })
-          .then(() => { $("#ddlDistrict").select2('open'); });
+            type: "error",
+        }, function () {
+            $("#ddlDistrict").select2('open');
+        });
     if (!_order.customer.address)
         return swal({
             title: titleAlert,
             text: "Địa chỉ khách hàng chưa nhập",
-            icon: "error",
-        })
-          .then(() => { $('#address').focus(); });
+            type: "error",
+        }, function () {
+            $('#address').focus();
+        });
+    if (!_order.itemName)
+        return swal({
+            title: titleAlert,
+            text: "Bạn chưa chọn tên hàng hóa",
+            type: "error",
+        }, function () {
+            $('#ddlProduct').select2('open');
+        });
 
     let shipFee = parseFloat($("#feeship").text().replace(/,/g, ''));
     let insuranceFee = parseFloat($("#insuranceFee").text().replace(/,/g, ''));
@@ -422,7 +448,7 @@ function _checkSubmit() {
         return swal({
             title: titleAlert,
             text: "Phí ship nhân viên tính phải tối thiểu bằng phí ship J&T Express. Có thể chọn vào phí J&T Express tính mà không cần vào sửa đơn!",
-            icon: "error"
+            type: "error"
         });
     }
 

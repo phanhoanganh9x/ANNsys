@@ -66,7 +66,10 @@ namespace IM_PJ.Controllers
             using (var con = new inventorymanagementEntities())
             {
                 var header = con.tbl_Order
-                    .Where(x => x.ExcuteStatus == 2) // Đơn đã hoàn tất
+                    .Where(x =>
+                        x.ExcuteStatus == (int)ExcuteStatus.Done ||
+                        x.ExcuteStatus == (int)ExcuteStatus.Sent
+                    ) // Đơn hoàn tất hoặc đơn đã gửi đi
                     .Where(x => x.ShippingType == 4) // Chuyển tới nhà xe
                     .Where(x => orders.Contains(x.ID))
                     .OrderBy(o => o.ID);
@@ -219,7 +222,10 @@ namespace IM_PJ.Controllers
                     .OrderBy(o => o.OrderID);
 
                 var order = con.tbl_Order
-                     .Where(x => x.ExcuteStatus == 2) // Đơn đã hoàn tất
+                     .Where(x =>
+                        x.ExcuteStatus == (int)ExcuteStatus.Done ||
+                        x.ExcuteStatus == (int)ExcuteStatus.Sent
+                    ) // Đơn hoàn tất hoặc đơn đã gửi đi
                      .Where(x => x.ShippingType == 5) // Nhân viên giao hàng
                      .Where(x => orders.Contains(x.ID))
                      .OrderBy(o => o.ID);
