@@ -374,10 +374,10 @@
             </div>
         </div>
 
-        <script src="/App_Themes/Ann/js/copy-product-info.js?v=04092021"></script>
-        <script src="/App_Themes/Ann/js/sync-product-v2.js?v=04092021"></script>
-        <script src="/App_Themes/Ann/js/download-product-image.js?v=04092021"></script>
-        <script src="/App_Themes/Ann/js/services/common/product-service.js?v=04092021"></script>
+        <script src="/App_Themes/Ann/js/copy-product-info.js?v=07102021"></script>
+        <script src="/App_Themes/Ann/js/sync-product-v2.js?v=07102021"></script>
+        <script src="/App_Themes/Ann/js/download-product-image.js?v=07102021"></script>
+        <script src="/App_Themes/Ann/js/services/common/product-service.js?v=07102021"></script>
         
         <script type="text/javascript">
             $("#<%=txtSearchProduct.ClientID%>").keyup(function (e) {

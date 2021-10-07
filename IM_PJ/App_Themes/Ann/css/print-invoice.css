@@ -25,6 +25,7 @@
 .info {
   font-size: 14px;
   margin-top: 10px;
+  text-align: center;
 }
 
 .merge-alert {
@@ -71,7 +72,7 @@ h1.invoice-return {
 }
 
 .hoadon .head {
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .hoadon .head .logo {

@@ -799,11 +799,23 @@ function _submit() {
                     return swal({
                         title: titleAlert,
                         text: "Đồng bộ thành công",
-                        type: "success",
+                        icon: "success",
+                        buttons: {
+                            cancel: "Đóng",
+                            text: "In phiếu gửi hàng",
+                            closeModal: false,
+                        },
+                        dangerMode: true,
                     })
-                    .then(() => {
-                        let label = data.order['label'];
-                        window.location.href = "https://khachhang.giaohangtietkiem.vn/khachhang?code=" + label;
+                    .then((confirm) => {
+                        if (confirm) {
+                            window.location.href = "/print-shipping-note?id=" + _order.id;
+                        }
+                        else {
+                            let label = data.order['label'];
+                            window.location.href = "https://khachhang.giaohangtietkiem.vn/khachhang?code=" + label;
+                        }
+                        
                     });
                 else
                     return _alterError(titleAlert, { message: data.message });

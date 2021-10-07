@@ -36,7 +36,7 @@ namespace IM_PJ
 
             // Common
             bundles.Add(new ScriptBundle("~/ANN/common").Include(
-                            "~/App_Themes/Ann/js/search-product.js?v=04092021"));
+                            "~/App_Themes/Ann/js/search-product.js?v=07102021"));
 
             ScriptManager.ScriptResourceMapping.AddDefinition(
                 "respond",

@@ -485,9 +485,9 @@
             </div>
         </div>
 
-        <script src="/App_Themes/Ann/js/copy-product-info-public.js?v=04092021"></script>
-        <script src="/App_Themes/Ann/js/download-product-image-public.js?v=04092021"></script>
-        <script src="/App_Themes/Ann/js/services/common/product-service.js?v=04092021"></script>
+        <script src="/App_Themes/Ann/js/copy-product-info-public.js?v=07102021"></script>
+        <script src="/App_Themes/Ann/js/download-product-image-public.js?v=07102021"></script>
+        <script src="/App_Themes/Ann/js/services/common/product-service.js?v=07102021"></script>
         
         <script type="text/javascript">
             let observeKvCategory = false;
