@@ -675,91 +675,30 @@ function ajaxCheckCustomer() {
                 var username = $("input[id$='_hdfUsername']").val();
 
                 if (data !== null) {
-                    if (username !== data.CreatedBy) {
-                        swal({
-                            title: "Tin nửa vui nửa buồn!!",
-                            text: "Số điện thoại này của khách hàng <strong>" + data.CustomerName + "</strong>. Khách này do <strong>" + data.CreatedBy + "</strong> phụ trách.<br><br>Em có lấy thông tin khách này tính tiền không?",
-                            type: "info",
-                            showCancelButton: true,
-                            closeOnConfirm: false,
-                            closeOnCancel: true,
-                            cancelButtonText: "Để em kiểm tra lại..",
-                            confirmButtonText: "Lấy luôn sếp ơi..",
-                            html: true,
-                        }, function (isconfirm) {
-                            if (isconfirm) {
-                                if ($("input[id$='_notAcceptChangeUser']").val() === "1") {
-                                    swal({
-                                        title: "Giởn thôi...",
-                                        text: "Làm vậy không ổn đâu cưng à!!<br><br>Bắt buộc bàn giao đơn hàng này cho <strong>" + data.CreatedBy + "</strong> thôi!<br><br>Hihi!",
-                                        type: "info",
-                                        confirmButtonText: "Hihi OK sếp..",
-                                        html: true,
-                                    }, function () {
-                                        $("input[id$='_hdfCustomerID']").val("");
-                                        $("input[id$='_txtPhone']").val("");
-                                    });
-                                }
-                                else {
-                                    swal({
-                                        title: "Nếu như vậy thì...",
-                                        text: "Đơn hàng này sẽ được cưng tính tiền giúp cho <strong>" + data.CreatedBy + "</strong>.<br><br>Cưng đồng ý không?",
-                                        type: "info",
-                                        showCancelButton: true,
-                                        closeOnConfirm: true,
-                                        cancelButtonText: "Để em suy nghỉ lại..",
-                                        confirmButtonText: "OK sếp ơi..",
-                                        html: true,
-                                    }, function (confirm) {
-                                        if (confirm) {
-                                            $("input[id$='_hdfCustomerID']").val(data.ID);
-                                            $("input[id$='_hdfUsernameCurrent']").val(data.CreatedBy);
-                                            selectCustomerDetail(data);
+                    swal({
+                        title: "Cười lên nào!!",
+                        text: "Số điện thoại này của khách hàng <strong>" + data.CustomerName + "</strong>.<br><br>Em có lấy thông tin khách này tính tiền không?",
+                        type: "info",
+                        showCancelButton: true,
+                        closeOnConfirm: true,
+                        cancelButtonText: "Để em kiểm tra lại..",
+                        confirmButtonText: "Lấy luôn sếp ơi..",
+                        html: true,
+                    }, function (confirm) {
+                        if (confirm) {
+                            $("input[id$='_hdfCustomerID']").val(data.ID);
+                            selectCustomerDetail(data);
 
-                                            if (typeof getDeliveryAddressLast === 'function')
-                                                getDeliveryAddressLast(phone);
+                            if (typeof getDeliveryAddressLast === 'function')
+                                getDeliveryAddressLast(phone);
 
-                                            $("#txtSearch").focus();
-                                        }
-                                        else {
-                                            $("input[id$='_hdfCustomerID']").val("");
-                                            $("input[id$='_txtPhone']").val("");
-                                        }
-                                    });
-                                }
-                            }
-                            else {
-                                $("input[id$='_hdfCustomerID']").val("");
-                                $("input[id$='_txtPhone']").val("");
-                            }
-                        });
-                    }
-                    else {
-                        swal({
-                            title: "Cười lên nào!!",
-                            text: "Số điện thoại này của khách hàng <strong>" + data.CustomerName + "</strong>.<br><br>Em có lấy thông tin khách này tính tiền không?",
-                            type: "info",
-                            showCancelButton: true,
-                            closeOnConfirm: true,
-                            cancelButtonText: "Để em kiểm tra lại..",
-                            confirmButtonText: "Lấy luôn sếp ơi..",
-                            html: true,
-                        }, function (confirm) {
-                            if (confirm) {
-                                $("input[id$='_hdfCustomerID']").val(data.ID);
-                                selectCustomerDetail(data);
-
-                                if (typeof getDeliveryAddressLast === 'function')
-                                    getDeliveryAddressLast(phone);
-
-                                $("#txtSearch").focus();
-                            }
-                            else {
-                                $("input[id$='_hdfCustomerID']").val("");
-                                $("input[id$='_txtPhone']").val("");
-                            }
-                        });
-                    }
+                            $("#txtSearch").focus();
+                        }
+                        else {
+                            $("input[id$='_hdfCustomerID']").val("");
+                            $("input[id$='_txtPhone']").val("");
+                        }
+                    });
                 }
                 else {
                     let name = $("input[id$='_txtFullname']").val();
