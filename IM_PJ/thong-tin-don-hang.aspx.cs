@@ -884,7 +884,7 @@ namespace IM_PJ
                 foreach (var orderDetail in listOrderDetail)
                 {
                     int AgentID = Convert.ToInt32(acc.AgentID);
-                    int OrderID = orderDetail.ID;
+                    int OrderID = orderDetail.OrderID;
                     string OrderSKU = orderDetail.SKU;
                     int ProductID = orderDetail.ProductID.Value;
                     double quantitynew = orderDetail.Quantity.Value;
