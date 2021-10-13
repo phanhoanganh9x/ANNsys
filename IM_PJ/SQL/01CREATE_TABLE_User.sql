@@ -1,0 +1,2 @@
+﻿ALTER TABLE [dbo].[User] ALTER COLUMN [ViewStatus] INT NOT NULL
+GO
