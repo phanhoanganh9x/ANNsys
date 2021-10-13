@@ -80,4 +80,25 @@
             });
         });
     };
+
+    checkOldOrder(customerId) {
+        let url = '/them-moi-don-hang.aspx/checkOrderOld';
+        let data = JSON.stringify({ 'customerId': customerId });
+
+        return new Promise(function (reslove, reject) {
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: data,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    reslove(response.d);
+                },
+                error: function (err) {
+                    reject(err);
+                }
+            });
+        });
+    }
 }

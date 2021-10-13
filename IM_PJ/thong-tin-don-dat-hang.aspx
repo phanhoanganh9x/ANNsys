@@ -311,7 +311,30 @@
                 </div>
             </div>
 
+            <!-- Checking Old Order Modal -->
+            <div class="modal fade" id="oldOrderModal" role="dialog" data-backdrop="false">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Thông báo</h4>
+                        </div>
+                        <div class="modal-body">
+                            <h4 id="txtOrder" class="hide"></h4>
+                            <h4 id="txtRefundGoods" class="hide">Khách hàng này đang có đơn hàng đổi trả chưa trừ tiền!</h4>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="btnCloseOrderOld" type="button" class="btn btn-default">Vẫn tiếp tục</button>
+                            <button id="btnOpenOrder" type="button" class="btn btn-primary">Xem đơn</button>
+                            <button id="btnOpenRefundGoods" type="button" class="btn btn-primary">Xem đơn đổi trả</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <asp:HiddenField ID="hdRole" runat="server" />
+            <asp:HiddenField ID="hdfCustomer" runat="server" />
         </main>
     </asp:Panel>
 
@@ -319,8 +342,8 @@
         <script type="text/javascript" src="/App_Themes/Ann/js/utils/string-format.js?v=202109302253"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=202101081451"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/services/common/order-service.js?v=202109271901"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/services/thong-tin-don-dat-hang/thong-tin-don-dat-hang-service.js?v=202101081451"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/controllers/thong-tin-don-dat-hang/thong-tin-don-dat-hang-controller.js?v=202101081451"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/pages/thong-tin-don-dat-hang/thong-tin-don-dat-hang.js?v=202107291639"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/services/thong-tin-don-dat-hang/thong-tin-don-dat-hang-service.js?v=202110132304"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/controllers/thong-tin-don-dat-hang/thong-tin-don-dat-hang-controller.js?v=202110132304"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/pages/thong-tin-don-dat-hang/thong-tin-don-dat-hang.js?v=202110132304"></script>
     </telerik:RadScriptBlock>
 </asp:Content>

@@ -19,6 +19,7 @@ namespace IM_PJ.Models
 
     public enum ExcuteStatus
     {
+        Waiting = 0,        // Chờ xử tiếp nhận
         Doing = 1,          // Đang xử lý
         Done = 2,           // Đã hoàn tất
         Cancel = 3,         // Đã hủy
@@ -168,5 +169,13 @@ namespace IM_PJ.Models
     {
         One = 1,
         Two = 2
+    }
+
+    public enum RefundGoodsStatus
+    {
+        // Chưa trừ tiền
+        Processing = 1,
+        // Trừ tiền
+        Done = 2
     }
 }

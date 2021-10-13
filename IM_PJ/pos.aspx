@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=202110012121"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=202110131611"></script>
     <script src="/App_Themes/Ann/js/search-product.js?v=07102021"></script>
     <script src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=07102021"></script>
 </asp:Content>
@@ -332,12 +332,14 @@
                             <h4 class="modal-title">Thông báo</h4>
                         </div>
                         <div class="modal-body">
-                            <h4 id="warningTextOrder" class="hide">Khách hàng này đang có đơn hàng đang xử lý!</h4>
+                            <h4 id="txtPreOrder" class="hide">Khách hàng này đang có đơn online</h4>
+                            <h4 id="txtOrder" class="hide">Khách hàng này đang có đơn hàng</h4>
                             <h4 id="warningTextOrderReturn" class="hide">Khách hàng này đang có đơn hàng đổi trả chưa trừ tiền!</h4>
                         </div>
                         <div class="modal-footer">
                             <button id="closeOrderOld" type="button" class="btn btn-default" data-dismiss="modal">Vẫn tiếp tục</button>
-                            <button id="openOrder" type="button" class="btn btn-primary">Xem đơn đang xử lý</button>
+                            <button id="btnOpenPreOrder" type="button" class="btn btn-primary">Xem đơn online</button>
+                            <button id="btnOpenOrder" type="button" class="btn btn-primary">Xem đơn</button>
                             <button id="openOrderReturn" type="button" class="btn btn-primary">Xem đơn đổi trả</button>
                         </div>
                     </div>
