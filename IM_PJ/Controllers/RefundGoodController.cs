@@ -172,35 +172,17 @@ namespace IM_PJ.Controllers
             }
         }
 
-        public static int GetByCustomerID(int CustomerID, int Status)
+        public static tbl_RefundGoods getLastRefundGoods(int CustomerId, int status)
         {
             using (var con = new inventorymanagementEntities())
             {
-                var refundTarget = con.tbl_RefundGoods
-                    .Where(x => x.CustomerID == CustomerID)
-                    .Where(x => x.Status == Status)
-                    .OrderBy(x => x.ID);
+                var lastRefundGoods = con.tbl_RefundGoods
+                    .Where(x => x.CustomerID == CustomerId)
+                    .Where(x => x.Status == status)
+                    .OrderByDescending(x => x.ID)
+                    .FirstOrDefault();
 
-                var refundDetailTarget = con.tbl_RefundGoodsDetails.OrderBy(x => x.RefundGoodsID).ThenBy(x => x.ID);
-
-                var infoRefund = refundTarget
-                    .Join(
-                        refundDetailTarget,
-                        refund => refund.ID,
-                        detail => detail.RefundGoodsID,
-                        (refund, detail) => new
-                        {
-                            RefundGoodsID = refund.ID,
-                            ProductStyle = detail.ProductType.Value,
-                            SKU = detail.SKU,
-                            SoldPrice = detail.SoldPricePerProduct,
-                            Quantity = detail.Quantity.Value,
-                            TotalRefundPrice = refund.TotalPrice,
-                            TotalRefundFee = refund.TotalRefundFee
-                        })
-                      .ToList();
-
-                return infoRefund.GroupBy(x => x.RefundGoodsID).Count();
+                return lastRefundGoods;
             }
         }
 

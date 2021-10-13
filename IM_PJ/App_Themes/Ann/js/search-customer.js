@@ -482,46 +482,85 @@ function checkOrderOld(customerID) {
     $.ajax({
         url: "/them-moi-don-hang.aspx/checkOrderOld",
         type: "POST",
-        data: JSON.stringify({ 'customerID': customerID, 'status': 1 }),
+        data: JSON.stringify({ 'customerId': customerID }),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (response) {
-            let data = JSON.parse(response.d);
-            if (data) {
-                let openOrderDOM = $("#openOrder");
-                let openOrderReturnDOM = $("#openOrderReturn");
+            if (response.d) {
+                let data = JSON.parse(response.d);
+
+                // Đơn hàng online
+                let $txtPreOrder = $("#txtPreOrder");
+                let $btnOpenPreOrder = $("#btnOpenPreOrder");
+                // Đơn hàng
+                let $txtOrder = $("#txtOrder");
+                let $btnOpenOrder = $("#btnOpenOrder");
+                // Đơn hàng đổi trả
+                let $txtRefundGoods = $("#warningTextOrderReturn");
+                let $btnOpenRefundGoods = $("#openOrderReturn");
                 let show = 0;
 
-                // Thông tin đơn hàng cũ chưa xử lý
-                if (data.numberOrder) {
+                // Thông tin đơn hàng online
+                if (data.preOrderId) {
+                    $txtPreOrder.removeClass("hide");
+                    $btnOpenPreOrder.removeAttr('style');
+                    $btnOpenPreOrder.attr(
+                        'onClick',
+                        "window.open('/thong-tin-don-dat-hang?id=" + data.preOrderId + "', '_blank')"
+                    );
+
                     show = 1;
-                    $("#warningTextOrder").removeClass("hide");
-                    openOrderDOM.removeAttr('style');
-                    openOrderDOM.attr('onClick', "window.open('/danh-sach-don-hang?searchtype=1&textsearch=" + data.phone + "&excutestatus=1', '_blank')")
                 }
                 else {
-                    $("#warningTextOrder").addClass("hide");
-                    openOrderDOM.removeAttr('onClick');
-                    openOrderDOM.attr('style', 'display: none');
+                    $txtPreOrder.addClass("hide");
+                    $btnOpenPreOrder.removeAttr('onClick');
+                    $btnOpenPreOrder.attr('style', 'display: none');
+                }
+
+                // Thông tin đơn hàng cũ chưa xử lý hoặc hoàn tất trong ngày
+                if (data.orderId && data.orderStatus) {
+                    let message = 'Khách hàng này đang có đơn hàng ' + (data.orderStatus == 2 ? 'đã hoàn tất' : 'đang xử lý');
+
+                    $txtOrder.removeClass("hide");
+                    $txtOrder.html(message);
+                    $btnOpenOrder.removeAttr('style');
+                    $btnOpenOrder.attr(
+                        'onClick',
+                        "window.open('/thong-tin-don-hang?id=" + data.orderId + "', '_blank')"
+                    );
+
+                    show = 1;
+                }
+                else {
+                    $txtOrder.addClass("hide");
+                    $btnOpenOrder.removeAttr('onClick');
+                    $btnOpenOrder.attr('style', 'display: none');
                 }
 
                 // Thông tin đơn hàng đổ trả chưa trừ tiền
-                if (data.numberOrderReturn) {
+                if (data.refundGoodsId) {
+                    $txtRefundGoods.removeClass("hide");
+                    $btnOpenRefundGoods.removeAttr('style');
+                    $btnOpenRefundGoods.attr(
+                        'onClick',
+                        "window.open('/xem-don-hang-doi-tra?id=" + data.refundGoodsId + "', '_blank')"
+                    );
+
                     show = 1;
-                    $("#warningTextOrderReturn").removeClass("hide");
-                    openOrderReturnDOM.removeAttr('style');
-                    openOrderReturnDOM.attr('onClick', "window.open('/danh-sach-don-tra-hang?&textsearch=" + data.phone + "&status=1', '_blank')")
                 }
                 else {
-                    $("#warningTextOrderReturn").addClass("hide");
-                    openOrderReturnDOM.removeAttr('onClick');
-                    openOrderReturnDOM.attr('style', 'display: none');
+                    $txtRefundGoods.addClass("hide");
+                    $btnOpenRefundGoods.removeAttr('onClick');
+                    $btnOpenRefundGoods.attr('style', 'display: none');
                 }
 
                 // Show thông báo
-                if (show == 1) {
-                    $("#orderOldModal").modal({ show: 'true', backdrop: 'static', keyboard: 'false' });
-                }
+                if (show == 1)
+                    $("#orderOldModal").modal({
+                        show: 'true',
+                        backdrop: 'static',
+                        keyboard: 'false'
+                    });
 
             }
         },

@@ -668,26 +668,33 @@ namespace IM_PJ
         /// <param name="status">1: Đơn hàng đang xử lý | Đơn hàng chưa trừ tiền</param>
         /// <returns></returns>
         [WebMethod]
-        public static string checkOrderOld(int customerID, int status = 1)
+        public static string checkOrderOld(int customerId)
         {
-            var customer = CustomerController.GetByID(customerID);
-            var order = OrderController.GetByCustomerID(customerID, status);
-            int orderReturn = RefundGoodController.GetByCustomerID(customerID, status);
+            #region Kiểm tra xem khách hàng có tồn tại không
+            var customer = CustomerController.GetByID(customerId);
+
+            if (customer == null)
+                return String.Empty;
+            #endregion
+
+            var preOrder = OrderController.getLastPreOrder(customer.CustomerPhone, (int)ExcuteStatus.Waiting);
+            var orderStatuses = new List<int>()
+            {
+                (int)ExcuteStatus.Doing,
+                (int)ExcuteStatus.Done
+            };
+            var order = OrderController.getLastOrderOfDay(DateTime.Now, customerId, orderStatuses);
+            var refundGoods = RefundGoodController.getLastRefundGoods(customerId, (int)RefundGoodsStatus.Processing);
             var serializer = new JavaScriptSerializer();
 
-            if (customer != null)
+            return serializer.Serialize(new
             {
-                return serializer.Serialize(new
-                {
-                    phone = customer.CustomerPhone,
-                    numberOrder = order.Count,
-                    numberOrderReturn = orderReturn
-                });
-            }
-            else
-            {
-                return "null";
-            }
+                phone = customer.CustomerPhone,
+                preOrderId = preOrder != null ? (int?)preOrder.Id : null,
+                orderId = order != null ? (int?)order.ID : null,
+                orderStatus = order != null ? order.ExcuteStatus : null,
+                refundGoodsId = refundGoods != null ? (int?)refundGoods.ID : null
+            });
         }
 
         [WebMethod]

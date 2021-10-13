@@ -50,4 +50,8 @@
     recoveryPreOrder(staff) {
         return this._service.recoveryPreOrder(this.preOrderId, staff);
     }
+
+    checkOldOrder(customerId) {
+        return this._service.checkOldOrder(customerId);
+    }
 }

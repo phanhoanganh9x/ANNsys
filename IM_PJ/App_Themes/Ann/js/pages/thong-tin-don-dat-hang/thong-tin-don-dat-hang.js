@@ -2,6 +2,8 @@
 let orderService = new OrderService();
 let controller = new PreOrderController();
 
+let loading = false;
+
 document.addEventListener('DOMContentLoaded', function (event) {
     _initRole();
     _initQueryParams();
@@ -107,6 +109,13 @@ function _initHeader(data) {
 }
 
 function _initCustomer(customer) {
+    // ID khách hàng
+    if (customer.id) {
+        let hdfCustomerDOM = document.querySelector('[id$="_hdfCustomer"]');
+
+        hdfCustomerDOM.value = customer.id;
+    }
+
     // Họ tên khách hàng
     if (customer.name) {
         let fullNameDOM = document.getElementById('txtFullname');
@@ -466,31 +475,22 @@ function _initPage() {
             });
         });
 }
-// #endregion
 
-// #region Public
-function createOrder() {
-    HoldOn.open();
-    let staffDOM = document.querySelector('[id$="_ddlCreatedBy"]');
-
-    if (!staffDOM.value) {
-        HoldOn.close();
-
-        return swal({
-            title: 'Error',
-            text: 'Vui lòng chọn nhân viên xử lý đơn hàng',
-            type: 'error',
-            showCloseButton: true,
-            html: true,
-        });
+function _createOrder(staff) {
+    if (!loading) {
+        HoldOn.open();
+        loading = true;
     }
 
-    controller.createOrder(staffDOM.value)
+    controller.createOrder(staff)
         .then(function (response) {
-            HoldOn.close();
+            if (loading) {
+                HoldOn.close();
+                loading = false;
+            }
 
             if (response.success)
-                return swal({
+                swal({
                     title: 'Thành Công',
                     text: 'Đơn đặt hàng #' + controller.preOrderId + ' này đã được chuyển thành đơn hàng #' + response.data + '.',
                     type: 'success',
@@ -501,7 +501,7 @@ function createOrder() {
                     window.location.replace(url);
                 });
             else {
-                return swal({
+                swal({
                     title: 'Error',
                     text: response.message,
                     type: 'error',
@@ -511,11 +511,15 @@ function createOrder() {
             }
         })
         .catch(function (e) {
-            HoldOn.close();
             console.log(e);
 
+            if (loading) {
+                HoldOn.close();
+                loading = false;
+            }
+
             if (e.status == 400)
-                return swal({
+                swal({
                     title: 'Error',
                     text: e.responseJSON.message,
                     type: 'error',
@@ -523,7 +527,7 @@ function createOrder() {
                     html: true,
                 });
             else
-                return swal({
+                swal({
                     title: 'Error',
                     text: 'Đã có lỗi xảy ra trong quá trình lấy thông tin tạo đơn hàng.',
                     type: 'error',
@@ -531,6 +535,137 @@ function createOrder() {
                     html: true,
                 });
         });
+};
+// #endregion
+
+// #region Public
+function createOrder() {
+    // #region Kiểm tra thông tin nhân viên xử lý đơn
+    let staffDOM = document.querySelector('[id$="_ddlCreatedBy"]');
+
+    if (!staffDOM.value) {
+        swal({
+            title: 'Error',
+            text: 'Vui lòng chọn nhân viên xử lý đơn hàng',
+            type: 'error',
+            showCloseButton: true,
+            html: true,
+        });
+        return;
+    }
+    // #endregion
+
+    // #region Kiểm thông tin đơn củ của khách hàng
+    let hdfCustomerDOM = document.querySelector('[id$="_hdfCustomer"]');
+    let customerId = parseInt(hdfCustomerDOM.value) || 0;
+
+    if (customerId) {
+        if (!loading) {
+            HoldOn.open();
+            loading = true;
+        }
+
+        controller.checkOldOrder(customerId)
+            .then(function (response) {
+                if (loading) {
+                    HoldOn.close();
+                    loading = false;
+                }
+
+                if (response)
+                {
+                    let data = JSON.parse(response);
+
+                    // Đơn hàng
+                    let $txtOrder = $("#txtOrder");
+                    let $btnOpenOrder = $("#btnOpenOrder");
+                    // Đơn hàng đổi trả
+                    let $txtRefundGoods = $("#txtRefundGoods");
+                    let $btnOpenRefundGoods = $("#btnOpenRefundGoods");
+                    // Button đóng modal
+                    let $btnCloseOrderOld = $("#btnCloseOrderOld");
+                    let show = 0;
+
+                    // Thông tin đơn hàng cũ chưa xử lý hoặc hoàn tất trong ngày
+                    if (data.orderId && data.orderStatus) {
+                        let message = 'Khách hàng này đang có đơn hàng ' + (data.orderStatus == 2 ? 'đã hoàn tất' : 'đang xử lý');
+
+                        $txtOrder.removeClass("hide");
+                        $txtOrder.html(message);
+                        $btnOpenOrder.removeAttr('style');
+                        $btnOpenOrder.attr(
+                            'onClick',
+                            "window.open('/thong-tin-don-hang?id=" + data.orderId + "', '_blank')"
+                        );
+
+                        show = 1;
+                    }
+                    else {
+                        $txtOrder.addClass("hide");
+                        $btnOpenOrder.removeAttr('onClick');
+                        $btnOpenOrder.attr('style', 'display: none');
+                    }
+
+                    // Thông tin đơn hàng đổ trả chưa trừ tiền
+                    if (data.refundGoodsId) {
+                        $txtRefundGoods.removeClass("hide");
+                        $btnOpenRefundGoods.removeAttr('style');
+                        $btnOpenRefundGoods.attr(
+                            'onClick',
+                            "window.open('/xem-don-hang-doi-tra?id=" + data.refundGoodsId + "', '_blank')"
+                        );
+
+                        show = 1;
+                    }
+                    else {
+                        $txtRefundGoods.addClass("hide");
+                        $btnOpenRefundGoods.removeAttr('onClick');
+                        $btnOpenRefundGoods.attr('style', 'display: none');
+                    }
+
+                    // Show thông báo
+                    if (show == 1) {
+                        $btnCloseOrderOld.attr(
+                            'onClick',
+                            '$("#oldOrderModal").modal("toggle"); _createOrder("' + staffDOM.value + '")'
+                        );
+
+                        $("#oldOrderModal").modal({
+                            show: 'true',
+                            backdrop: 'static',
+                            keyboard: 'false'
+                        });
+                    }
+                    else
+                        $btnCloseOrderOld.removeAttr('onClick');
+
+                    return;
+                }
+
+                _createOrder(staffDOM.value);
+            })
+            .catch(function (e) {
+                console.log(e);
+
+                if (loading) {
+                    HoldOn.close();
+                    loading = false;
+                }
+
+                swal({
+                    title: 'Error',
+                    text: 'Đã có lỗi xảy ra trong quá trình kiểm tra đơn hàng cũ.',
+                    type: 'error',
+                    showCloseButton: true,
+                    html: true,
+                });
+            });
+
+        return;
+    }
+    // #endregion
+
+    _createOrder(staffDOM.value);
 }
 
 function cancelPreOrder() {

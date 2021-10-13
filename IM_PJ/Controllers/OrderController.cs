@@ -2393,18 +2393,35 @@ namespace IM_PJ.Controllers
             }
         }
 
-        public static List<tbl_Order> GetByCustomerID(int ID, int ExcuteStatus)
+        public static PreOrder getLastPreOrder(string customerPhone, int statuses)
         {
             using (var con = new inventorymanagementEntities())
             {
-                var las = con.tbl_Order
-                    .Where(x => x.CustomerID == ID)
-                    .Where(x => x.ExcuteStatus == ExcuteStatus)
-                    .OrderByDescending(x => x.ID)
-                    .ToList();
-                return las;
+                var lastPreOrder = con.PreOrders
+                    .Where(x => x.CreatedBy == customerPhone)
+                    .Where(x => x.Status == statuses)
+                    .OrderByDescending(x => x.Id)
+                    .FirstOrDefault();
+
+                return lastPreOrder;
             }
         }
+
+        public static tbl_Order getLastOrderOfDay(DateTime createDate, int customerId, IList<int> statuses)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var lastOrder = con.tbl_Order
+                    .Where(x => x.CreatedDate >= createDate.Date)
+                    .Where(x => x.CustomerID == customerId)
+                    .Where(x => x.ExcuteStatus.HasValue && statuses.Contains(x.ExcuteStatus.Value))
+                    .OrderByDescending(x => x.ID)
+                    .FirstOrDefault();
+
+                return lastOrder;
+            }
+        }
+
         public static List<OrderReportHomePage> ReportHomePage(DateTime fromDate, DateTime toDate)
         {
             var result = new List<OrderReportHomePage>();
