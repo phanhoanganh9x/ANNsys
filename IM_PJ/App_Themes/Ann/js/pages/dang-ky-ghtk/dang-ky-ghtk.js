@@ -229,36 +229,46 @@ function _initShipment() {
 
     // Cài đặt drop dơwn list pick_work_shift
     let now = new Date();
-    let strNow = "";
-    let hours = now.getHours() + 1;
+    //let strNow = "";
+    //let hours = now.getHours() + 1;
     let pick_work_shift = [];
 
-    strNow = now.toISOString().substring(0, 10).replace(/-/g, '/');
+    //strNow = now.toISOString().substring(0, 10).replace(/-/g, '/');
 
-    if (hours <= 10) {
-        pick_work_shift.push({ id: 1, text: "Sáng nay" });
-        pick_work_shift.push({ id: 2, text: "Chiều nay" });
-        pick_work_shift.push({ id: 3, text: "Tối nay" });
+    //if (hours <= 10) {
+    //    pick_work_shift.push({ id: 1, text: "Sáng nay" });
+    //    pick_work_shift.push({ id: 2, text: "Chiều nay" });
+    //    pick_work_shift.push({ id: 3, text: "Tối nay" });
 
-        _order.pick_date = strNow;
-        _order.pick_work_shift = 1;
-    }
-    else if (hours <= 16) {
-        pick_work_shift.push({ id: 1, text: "Chiều nay" });
-        pick_work_shift.push({ id: 2, text: "Tối nay" });
-        pick_work_shift.push({ id: 3, text: "Sáng mai" });
+    //    _order.pick_date = strNow;
+    //    _order.pick_work_shift = 1;
+    //}
+    //else if (hours <= 16) {
+    //    pick_work_shift.push({ id: 1, text: "Chiều nay" });
+    //    pick_work_shift.push({ id: 2, text: "Tối nay" });
+    //    pick_work_shift.push({ id: 3, text: "Sáng mai" });
 
-        _order.pick_date = strNow;
-        _order.pick_work_shift = 2;
-    }
-    else {
-        pick_work_shift.push({ id: 1, text: "Tối nay" });
-        pick_work_shift.push({ id: 2, text: "Sáng mai" });
-        pick_work_shift.push({ id: 3, text: "Chiều mai" });
+    //    _order.pick_date = strNow;
+    //    _order.pick_work_shift = 2;
+    //}
+    //else {
+    //    pick_work_shift.push({ id: 1, text: "Tối nay" });
+    //    pick_work_shift.push({ id: 2, text: "Sáng mai" });
+    //    pick_work_shift.push({ id: 3, text: "Chiều mai" });
 
-        _order.pick_date = strNow;
-        _order.pick_work_shift = 3;
-    }
+    //    _order.pick_date = strNow;
+    //    _order.pick_work_shift = 3;
+    //}
+
+    now.setDate(now.getDate() + 1)
+    let strPickDate = now.toISOString().substring(0, 10).replace(/-/g, '/');
+
+    _order.pick_date = strPickDate;
+    _order.pick_work_shift = 1;
+
+    pick_work_shift.push({ id: 1, text: "Sáng mai" });
+    pick_work_shift.push({ id: 2, text: "Chiều mai" });
+    pick_work_shift.push({ id: 3, text: "Sáng nay" });
 
     $("#pick_work_shift").select2({
         minimumResultsForSearch: Infinity,
@@ -266,7 +276,6 @@ function _initShipment() {
     });
 
     _onChangePickWorkShift(pick_work_shift[0].text);
-
 
     $('#pick_work_shift').on('select2:select', function (e) {
         let data = e.params.data;
@@ -815,7 +824,7 @@ function _submit() {
                             let label = data.order['label'];
                             window.location.href = "https://khachhang.giaohangtietkiem.vn/khachhang?code=" + label;
                         }
-                        
+
                     });
                 else
                     return _alterError(titleAlert, { message: data.message });

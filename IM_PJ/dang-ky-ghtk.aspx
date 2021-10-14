@@ -228,7 +228,7 @@
             <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
             <script src="/App_Themes/Ann/js/HoldOn.js?v=07102021"></script>
 
-            <script type="text/javascript" src="App_Themes/Ann/js/pages/dang-ky-ghtk/dang-ky-ghtk.js?v=202109172046"></script>
+            <script type="text/javascript" src="App_Themes/Ann/js/pages/dang-ky-ghtk/dang-ky-ghtk.js?v=202110141312"></script>
         </div>
     </form>
 </body>

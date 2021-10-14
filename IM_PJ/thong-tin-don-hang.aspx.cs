@@ -876,43 +876,53 @@ namespace IM_PJ
         [WebMethod]
         public static void Delete(List<tbl_OrderDetail> listOrderDetail)
         {
-            DateTime currentDate = DateTime.Now;
-            string username = HttpContext.Current.Request.Cookies["usernameLoginSystem_ANN123"].Value;
+            var now = DateTime.Now;
+            var username = HttpContext.Current.Request.Cookies["usernameLoginSystem_ANN123"].Value;
             var acc = AccountController.GetByUsername(username);
+
             if (listOrderDetail != null && listOrderDetail.Count > 0)
             {
                 foreach (var orderDetail in listOrderDetail)
                 {
-                    int AgentID = Convert.ToInt32(acc.AgentID);
-                    int OrderID = orderDetail.OrderID.HasValue ? orderDetail.OrderID.Value : 0;
-                    string OrderSKU = orderDetail.SKU;
-                    int ProductID = orderDetail.ProductID.Value;
-                    double quantitynew = orderDetail.Quantity.Value;
-                    string ord = OrderDetailController.Delete(OrderID, OrderSKU);
+                    // ID nhà phân phối
+                    var agentId = Convert.ToInt32(acc.AgentID);
+                    // ID của đơn hàng
+                    var orderId = orderDetail.OrderID.HasValue ? orderDetail.OrderID.Value : 0;
+                    // ID của chi tiết đơn hàng cần xóa
+                    var orderDetailId = orderDetail.ID;
+                    // SKU của sản phẩm
+                    var productSKU = orderDetail.SKU;
+                    // ID của sản phẩm (có thể là ID sản phẩm hoặc biến thể)
+                    var productID = orderDetail.ProductID.Value;
+                    // Số lượng sản phẩm bị xóa
+                    var quantity = orderDetail.Quantity.Value;
 
-                    var parent = ProductVariableController.GetBySKU(OrderSKU);
+                    // Xóa chi tiết đơn hàng
+                    OrderDetailController.Delete(orderDetailId, productSKU);
 
-                    if (parent != null)
+                    var productVariation = ProductVariableController.GetBySKU(productSKU);
+
+                    if (productVariation != null)
                     {
                         StockManagerController.Insert(
                             new tbl_StockManager
                             {
-                                AgentID = AgentID,
+                                AgentID = agentId,
                                 ProductID = 0,
-                                ProductVariableID = ProductID,
-                                Quantity = quantitynew,
+                                ProductVariableID = productID,
+                                Quantity = quantity,
                                 QuantityCurrent = 0,
                                 Type = 1,
                                 NoteID = "Nhập kho khi xóa sản phẩm trong sửa đơn",
-                                OrderID = OrderID,
+                                OrderID = orderId,
                                 Status = 10,
-                                SKU = OrderSKU,
-                                CreatedDate = currentDate,
+                                SKU = productSKU,
+                                CreatedDate = now,
                                 CreatedBy = username,
-                                ModifiedDate = currentDate,
+                                ModifiedDate = now,
                                 ModifiedBy = username,
                                 MoveProID = 0,
-                                ParentID = parent.ProductID
+                                ParentID = productVariation.ProductID
                             });
                     }
                     else
@@ -920,22 +930,22 @@ namespace IM_PJ
                         StockManagerController.Insert(
                             new tbl_StockManager
                             {
-                                AgentID = AgentID,
-                                ProductID = ProductID,
+                                AgentID = agentId,
+                                ProductID = productID,
                                 ProductVariableID = 0,
-                                Quantity = quantitynew,
+                                Quantity = quantity,
                                 QuantityCurrent = 0,
                                 Type = 1,
                                 NoteID = "Nhập kho khi xóa sản phẩm trong sửa đơn",
-                                OrderID = OrderID,
+                                OrderID = orderId,
                                 Status = 10,
-                                SKU = OrderSKU,
-                                CreatedDate = currentDate,
+                                SKU = productSKU,
+                                CreatedDate = now,
                                 CreatedBy = username,
-                                ModifiedDate = currentDate,
+                                ModifiedDate = now,
                                 ModifiedBy = username,
                                 MoveProID = 0,
-                                ParentID = ProductID
+                                ParentID = productID
                             });
                     }
                 }
