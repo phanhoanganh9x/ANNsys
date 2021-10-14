@@ -344,6 +344,6 @@
         <script type="text/javascript" src="/App_Themes/Ann/js/services/common/order-service.js?v=202109271901"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/services/thong-tin-don-dat-hang/thong-tin-don-dat-hang-service.js?v=202110132304"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/controllers/thong-tin-don-dat-hang/thong-tin-don-dat-hang-controller.js?v=202110132304"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/pages/thong-tin-don-dat-hang/thong-tin-don-dat-hang.js?v=202110132304"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/pages/thong-tin-don-dat-hang/thong-tin-don-dat-hang.js?v=202110141258"></script>
     </telerik:RadScriptBlock>
 </asp:Content>

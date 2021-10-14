@@ -625,21 +625,20 @@ function createOrder() {
 
                     // Show thông báo
                     if (show == 1) {
+                        // Clear event củ của button close modal
+                        $btnCloseOrderOld.removeAttr('onClick');
+                        // Add event mới (tên nhân viên mới) của button modal
                         $btnCloseOrderOld.attr(
                             'onClick',
                             '$("#oldOrderModal").modal("toggle"); _createOrder("' + staffDOM.value + '")'
                         );
-
+                        // Mở modal
                         $("#oldOrderModal").modal({
                             show: 'true',
                             backdrop: 'static',
                             keyboard: 'false'
                         });
                     }
-                    else
-                        $btnCloseOrderOld.removeAttr('onClick');
-
-                    return;
                 }
 
                 _createOrder(staffDOM.value);
