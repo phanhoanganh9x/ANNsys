@@ -587,6 +587,7 @@
     <Content Include="SQL\01CREATE_TABLE_DeliverySaveReport.sql" />
     <Content Include="SQL\01CREATE_TABLE_DeliverySaveStatus.sql" />
     <Content Include="SQL\01CREATE_TABLE_ExchangeRate.sql" />
+    <Content Include="SQL\01CREATE_TABLE_GroupOrder.sql" />
     <Content Include="SQL\01CREATE_TABLE_OrderStatus.sql" />
     <Content Include="SQL\01CREATE_TABLE_OrderType.sql" />
     <Content Include="SQL\01CREATE_TABLE_JtExpressAddress.sql" />
@@ -603,9 +604,11 @@
     <Content Include="SQL\01CREATE_TABLE_User.sql" />
     <Content Include="SQL\01CREATE_TABLE_Video.sql" />
     <Content Include="SQL\01CREATE_TABLE_ViewOrder.sql" />
+    <Content Include="SQL\05CREATE_STORE_PROCEDURE_GenerateGroupOrderCode.sql" />
     <Content Include="SQL\05CREATE_STORE_PROCEDURE_ClearCronJobsql.sql" />
     <Content Include="SQL\05CREATE_STORE_PROCEDURE_ClearStock2.sql" />
     <Content Include="SQL\05CREATE_STORE_PROCEDURE_SyncStock1BasedOnStock2.sql" />
+    <Content Include="SQL\06CREATE_SEQUENCE_GroupOrder.sql" />
     <Content Include="SQL\Add_Quantity_COGS_Order.sql" />
     <Content Include="SQL\Add_Quantity_COGS_Refund.sql" />
     <Content Include="SQL\Cal_Profit.sql" />
