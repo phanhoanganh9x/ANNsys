@@ -186,7 +186,7 @@ namespace IM_PJ
             ltrTotalRevenue.Text = string.Format("{0:N0}", totalRevenue);
             ltrTotalProfit.Text = string.Format("{0:N0}", totalProfit);
             ltrAverageProfit.Text = string.Format("{0:N0}", totalProfit / day).ToString();
-            ltrTotalStock.Text = productStockReport.totalStock.ToString() + " cái";
+            ltrTotalStock.Text = string.Format("{0:N0} cái", productStockReport.totalStock);
             ltrTotalStockValue.Text = string.Format("{0:N0}", productStockReport.totalStockValue);
 
             if (day > 1)
