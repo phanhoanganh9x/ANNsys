@@ -56,7 +56,7 @@ namespace IM_PJ
 
                 ltrList.Text += "<tr>";
                 ltrList.Text += String.Format("    <td>{0}: {1:N0} cái</td>", item.CategoryName, productStock.totalStock);
-                ltrList.Text += String.Format("    <td>Tổng vốn {0}: {0:N0} VNĐ</td>", item.CategoryName, productStock.totalStockValue);
+                ltrList.Text += String.Format("    <td>Tổng vốn {0}: {1:N0} VNĐ</td>", item.CategoryName, productStock.totalStockValue);
                 ltrList.Text += "</tr>";
 
                 // Tính tổng tất cả danh mục
