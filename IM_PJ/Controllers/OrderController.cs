@@ -2873,10 +2873,11 @@ namespace IM_PJ.Controllers
             sql.AppendLine("SELECT");
             sql.AppendLine("    CONVERT(VARCHAR(10), Ord.DateDone, 121) AS DateDone");
             sql.AppendLine(",   Ord.ID");
-            sql.AppendLine(",   Ord.DiscountPerProduct");
             sql.AppendLine(",   OrdDetail.SKU");
             sql.AppendLine(",   OrdDetail.Quantity");
             sql.AppendLine(",   OrdDetail.Price");
+            sql.AppendLine(",   OrdDetail.DiscountPrice");
+            sql.AppendLine(",   OrdDetail.TotalCostOfGood");
             sql.AppendLine("INTO #data");
             sql.AppendLine("FROM tbl_Order AS Ord");
             sql.AppendLine("INNER JOIN tbl_OrderDetail AS OrdDetail");
@@ -2901,41 +2902,9 @@ namespace IM_PJ.Controllers
             sql.AppendLine("    DAT.DateDone");
             sql.AppendLine(",   DAT.ID");
             sql.AppendLine(",   SUM(ISNULL(DAT.Quantity, 0)) AS Quantity");
-            sql.AppendLine(",   SUM(DAT.Quantity * ISNULL(PRO.CostOfGood, 0)) AS TotalCost");
-            sql.AppendLine(",   SUM(DAT.Quantity * (DAT.Price - DAT.DiscountPerProduct)) AS TotalRevenue");
+            sql.AppendLine(",   SUM(DAT.TotalCostOfGood) AS TotalCost");
+            sql.AppendLine(",   SUM(DAT.Quantity * (DAT.Price - DAT.DiscountPrice)) AS TotalRevenue");
             sql.AppendLine("FROM #data AS DAT");
-            sql.AppendLine("INNER JOIN (");
-            sql.AppendLine("    SELECT");
-            sql.AppendLine("        Product.CategoryID,");
-            sql.AppendLine("        (");
-            sql.AppendLine("            CASE Product.ProductStyle");
-            sql.AppendLine("                WHEN 1 THEN Product.ProductSKU");
-            sql.AppendLine("                ELSE Variable.SKU");
-            sql.AppendLine("            END");
-            sql.AppendLine("        ) AS SKU,");
-            sql.AppendLine("        (");
-            sql.AppendLine("            CASE Product.ProductStyle");
-            sql.AppendLine("                WHEN 1 THEN Product.CostOfGood");
-            sql.AppendLine("                ELSE Variable.CostOfGood");
-            sql.AppendLine("            END");
-            sql.AppendLine("        ) AS CostOfGood");
-            sql.AppendLine("    FROM tbl_Product AS Product");
-            sql.AppendLine("    LEFT JOIN tbl_ProductVariable AS Variable");
-            sql.AppendLine("    ON Product.ID = Variable.ProductID");
-            sql.AppendLine("    WHERE 1 = 1");
-            if (CategoryID > 0)
-            {
-                sql.AppendLine("    AND EXISTS(");
-                sql.AppendLine("            SELECT");
-                sql.AppendLine("                    NULL AS DUMMY");
-                sql.AppendLine("            FROM");
-                sql.AppendLine("                    #category");
-                sql.AppendLine("            WHERE");
-                sql.AppendLine("                    ID = Product.CategoryID");
-                sql.AppendLine("    )");
-            }
-            sql.AppendLine(") AS PRO");
-            sql.AppendLine("ON     DAT.SKU = PRO.SKU");
             sql.AppendLine("GROUP BY");
             sql.AppendLine("    DAT.DateDone");
             sql.AppendLine(",   DAT.ID");

@@ -44,35 +44,28 @@ namespace IM_PJ
 
         public void LoadData()
         {
-            var cate = CategoryController.API_GetAllCategory();
-            ltrList.Text = "";
-            double totalCost = 0;
-            int totalProduct = 0;
-            if (cate.Count > 0)
-            {
-                foreach (var item in cate)
-                {
-                    ltrList.Text += "<tr>";
+            var totalProduct = 0;
+            var totalCost = 0D;
+            var categories = CategoryController.API_GetAllCategory();
+            
+            ltrList.Text = String.Empty;
 
-                    int quantity = 0;
-                    double totalprice = 0;
-                    var list = ProductController.GetProductReport(item.ID);
-                    {
-                        foreach (var temp in list)
-                        {
-                            quantity += Convert.ToInt32(temp.TotalProductInstockQuantityLeft);
-                            totalprice += temp.CostOfGood * temp.TotalProductInstockQuantityLeft;
-                        }
-                    }
-                    totalProduct += quantity;
-                    totalCost += totalprice;
-                    ltrList.Text += "<td>" + item.CategoryName + ": " + quantity +" cái"+ "</td>";
-                    ltrList.Text += "<td>Tổng vốn: " + item.CategoryName + ": " + string.Format("{0:N0}", totalprice) + " VNĐ" + "</td>";
-                    ltrList.Text += "</tr>";
-                }
+            foreach (var item in categories)
+            {
+                var productStock = ProductController.GetProductReport(item.ID);
+
+                ltrList.Text += "<tr>";
+                ltrList.Text += String.Format("    <td>{0}: {1:N0} cái</td>", item.CategoryName, productStock.totalStock);
+                ltrList.Text += String.Format("    <td>Tổng vốn {0}: {1:N0} VNĐ</td>", item.CategoryName, productStock.totalStockValue);
+                ltrList.Text += "</tr>";
+
+                // Tính tổng tất cả danh mục
+                totalProduct += productStock.totalStock;
+                totalCost += productStock.totalStockValue;
             }
-            ltrTotalCost.Text = "<p>Tổng vốn: " + string.Format("{0:N0}",totalCost) + " VNĐ</p>";
-            ltrTotalProduct.Text = "<p>Tổng số lượng: " + string.Format("{0:N0}", totalProduct) + " cái</p>";
+
+            ltrTotalProduct.Text = String.Format("<p>Tổng số lượng: {0:N0} cái</p>", totalProduct);
+            ltrTotalCost.Text = String.Format("<p>Tổng vốn: {0:N0} VNĐ</p>", totalCost);
         }
     }
 }
