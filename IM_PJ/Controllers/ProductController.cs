@@ -473,9 +473,6 @@ namespace IM_PJ.Controllers
             sql.AppendLine("            PRD.ProductStyle = 1");
 
             #region Lọc sản phẩm
-            if (!String.IsNullOrEmpty(SKU))
-                sql.AppendLine("    AND (PRD.ProductSKU like '" + SKU + "%')");
-
             if (CategoryID > 0)
             {
                 sql.AppendLine("    AND EXISTS(");
@@ -512,9 +509,6 @@ namespace IM_PJ.Controllers
             sql.AppendLine("        1 = 1");
 
             #region Lọc biến thể sản phẩm
-            if (!String.IsNullOrEmpty(SKU))
-                sql.AppendLine("    AND (PRD.ProductSKU like '" + SKU + "%')");
-
             if (CategoryID > 0)
             {
                 sql.AppendLine("    AND EXISTS(");
