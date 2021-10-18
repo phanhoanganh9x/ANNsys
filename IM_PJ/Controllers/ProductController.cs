@@ -646,7 +646,7 @@ namespace IM_PJ.Controllers
                 var raw = new ProductStockReport();
 
                 if (reader["QuantityLeft"] != DBNull.Value)
-                    raw.totalStock = Convert.Int32(reader["QuantityLeft"]);
+                    raw.totalStock = Convert.ToInt32(reader["QuantityLeft"]);
 
                 if (reader["CostOfGood"] != DBNull.Value)
                     raw.totalStockValue = Convert.ToDouble(reader["CostOfGood"]);
