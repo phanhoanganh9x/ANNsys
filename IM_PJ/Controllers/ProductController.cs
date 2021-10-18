@@ -436,9 +436,9 @@ namespace IM_PJ.Controllers
         /// <remarks>
         /// Sử dụng cho báo cáo "Thống kê số lượng tồn kho theo danh mục"
         /// </remarks>
-        /// <param name="categoryID">ID danh mục</param>
+        /// <param name="CategoryID">ID danh mục</param>
         /// <returns>Danh sách sản phầm cùng với thông tin số lượng tồn kho và giá gốc</returns>
-        public static ProductStockReport GetProductReport(int categoryID)
+        public static ProductStockReport GetProductReport(int CategoryID)
         {
             #region Khởi tạo SQL
             var sql = new StringBuilder();
