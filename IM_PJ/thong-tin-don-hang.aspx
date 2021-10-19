@@ -865,6 +865,11 @@
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
         <script type="text/javascript" src="App_Themes/Ann/js/delivery-address.js?v=07102021"></script>
         <script type="text/javascript">
+            const PaymentMethodEnum = {
+                "Cash": 1,              // Tiền mặt
+                "CashCollection": 3,    // Thu hộ
+            }
+
             // #region Private
             // Kiểm tra xác nhận thông tin khách hàng
             function _checkCustomerValidation() {
@@ -3659,8 +3664,8 @@
                     return;
                 }
 
-                let price = +$(".totalpriceorderall").html().replace(',', '') || 0
-                let paymentType = +$("select[id$='_ddlPaymentType']").val() || 1;
+                let price = +$(".totalpriceorderall").html().replace(/,/g, '') || 0;
+                let paymentMethod = +$("select[id$='_ddlPaymentType']").val() || PaymentMethodEnum.Cash;
                 let weight = +$("input[id$='_txtWeight']").val() || 0;
                 let url = '/api/v1/jt-express/fee';
                 let query = '';
@@ -3671,7 +3676,7 @@
                 {
                     query += '&price=' + price.toString();
 
-                    if (paymentType == 6)
+                    if (paymentMethod == PaymentMethodEnum.CashCollection)
                         query += '&cod=' + price.toString();
                 }
 
