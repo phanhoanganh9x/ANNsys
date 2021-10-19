@@ -556,8 +556,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("    FROM");
                 sql.AppendLine("            tbl_Category");
                 sql.AppendLine("    WHERE");
-                sql.AppendLine("            1 = 1");
-                sql.AppendLine("    AND     ID = " + CategoryID);
+                sql.AppendLine("            ID = " + CategoryID);
                 sql.AppendLine("");
                 sql.AppendLine("    UNION ALL");
                 sql.AppendLine("");
@@ -592,14 +591,10 @@ namespace IM_PJ.Controllers
             sql.AppendLine("WHERE 1 = 1");
 
             if (!String.IsNullOrEmpty(CreatedBy))
-            {
                 sql.AppendLine(String.Format("    AND Ord.CreatedBy = '{0}'", CreatedBy));
-            }
 
             if (!String.IsNullOrEmpty(SKU))
-            {
                 sql.AppendLine(String.Format("    AND OrdDetail.SKU LIKE '{0}%'", SKU));
-            }
 
             sql.AppendLine(String.Format("    AND    CONVERT(NVARCHAR(10), Ord.CreatedDate, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121)", fromDate, toDate));
 
@@ -649,6 +644,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine(" END");
 
             var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
+
             while (reader.Read())
             {
                 var entity = new RefundReport();

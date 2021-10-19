@@ -2837,6 +2837,7 @@ namespace IM_PJ.Controllers
 
             sql.AppendLine("BEGIN");
 
+            #region Lấy tất cả các danh mục con của danh mục đc chọn
             if (CategoryID > 0)
             {
                 sql.AppendLine(String.Empty);
@@ -2848,8 +2849,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("    FROM");
                 sql.AppendLine("            tbl_Category");
                 sql.AppendLine("    WHERE");
-                sql.AppendLine("            1 = 1");
-                sql.AppendLine("    AND     ID = " + CategoryID);
+                sql.AppendLine("            ID = " + CategoryID);
                 sql.AppendLine("");
                 sql.AppendLine("    UNION ALL");
                 sql.AppendLine("");
@@ -2869,7 +2869,32 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("INTO #category");
                 sql.AppendLine("FROM category;");
             }
+            #endregion
 
+            #region Lấy thông tin sản phẩn
+            sql.AppendLine(String.Empty);
+            sql.AppendLine("SELECT");
+            sql.AppendLine("    (");
+            sql.AppendLine("        CASE");
+            sql.AppendLine("            WHEN PRD.ProductStyle = 2 THEN PDV.SKU");
+            sql.AppendLine("            ELSE PRD.ProductSKU");
+            sql.AppendLine("        END");
+            sql.AppendLine("    ) AS SKU");
+            sql.AppendLine("INTO #Product");
+            sql.AppendLine("FROM");
+            sql.AppendLine("    tbl_Product AS PRD");
+            // Lọc theo mã danh mục
+            if (CategoryID > 0)
+            {
+                sql.AppendLine("INNER JOIN #category AS CTG");
+                sql.AppendLine("    ON CTG.ID = PRD.CategoryID");
+            }
+            sql.AppendLine("LEFT JOIN tbl_ProductVariable AS PDV");
+            sql.AppendLine("    ON PRD.ID = PDV.ProductID");
+            sql.AppendLine("     ;");
+            #endregion
+
+            #region Lấy thông tin sẩn phẩm đã được bán
             sql.AppendLine("SELECT");
             sql.AppendLine("    CONVERT(VARCHAR(10), Ord.DateDone, 121) AS DateDone");
             sql.AppendLine(",   Ord.ID");
@@ -2882,21 +2907,27 @@ namespace IM_PJ.Controllers
             sql.AppendLine("FROM tbl_Order AS Ord");
             sql.AppendLine("INNER JOIN tbl_OrderDetail AS OrdDetail");
             sql.AppendLine("ON     Ord.ID = OrdDetail.OrderID");
+            sql.AppendLine("INNER JOIN #Product AS PRD");
+            sql.AppendLine("ON     PRD.SKU = OrdDetail.SKU");
             sql.AppendLine("WHERE 1 = 1");
             sql.AppendLine("    AND Ord.ExcuteStatus = 2");
             sql.AppendLine("    AND (Ord.PaymentStatus = 2 OR Ord.PaymentStatus = 3 OR Ord.PaymentStatus = 4)");
 
+            #region Lọc thông tin sản phẩm bán
+            // Theo nhân viên
             if (!String.IsNullOrEmpty(CreatedBy))
-            {
                 sql.AppendLine(String.Format("    AND Ord.CreatedBy = '{0}'", CreatedBy));
-            }
 
+            // Theo mã sản phẩm
             if (!String.IsNullOrEmpty(SKU))
-            {
                 sql.AppendLine(String.Format("    AND OrdDetail.SKU LIKE '{0}%'", SKU));
-            }
 
+            // Theo khoản thời gian
             sql.AppendLine(String.Format("    AND    CONVERT(NVARCHAR(10), Ord.DateDone, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121);", fromDate, toDate));
+            #endregion
+
+            sql.AppendLine(";");
+            #endregion
 
             sql.AppendLine("SELECT");
             sql.AppendLine("    DAT.DateDone");
@@ -2938,6 +2969,7 @@ namespace IM_PJ.Controllers
 
             return result;
         }
+
         public static ReportModel getReport(string SKU, int CategoryID, string user, DateTime fromdate, DateTime todate)
         {
             int day = Convert.ToInt32((todate - fromdate).TotalDays);
