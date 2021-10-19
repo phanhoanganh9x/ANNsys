@@ -1,7 +1,12 @@
-﻿let _feeShipment, // Dùng để lấy trạng thái trước của radio Shipment
+﻿const PaymentMethodEnum = {
+    "Cash": 1,              // Tiền mặt
+    "CashCollection": 3,    // Thu hộ
+}
+
+let _feeShipment, // Dùng để lấy trạng thái trước của radio Shipment
     _fee,
     _feeShop,
-    _paymentType,
+    _paymentMethod,
     _order,
     _weight_min,
     _personal;
@@ -35,8 +40,8 @@ function _initParameterLocal() {
     _fee = 0;
     _feeShop = 0;
 
-    // payment Type
-    _paymentType = 1; // Tiền mặt
+    // Phương thức thanh toán
+    _paymentMethod = PaymentMethodEnum.Cash;
 
     // Order
     _order = {
@@ -51,6 +56,7 @@ function _initParameterLocal() {
             ward: null
         },
         price: 0,
+        cod: 0,
         chooseShopFee: true,
         weight: _weight_min,
         note: null,
@@ -295,7 +301,7 @@ function _initPage() {
             }
 
             // Hình thức thanh toán
-            _paymentType = data.paymentType;
+            _paymentMethod = data.paymentType;
 
             // Giá trị đơn hàng
             _order.price = data.price;
@@ -356,11 +362,15 @@ function _initPage() {
             // Tiền thu hộ
             let $cod = $("#cod");
 
-
-            if (_paymentType == 3)
-                $("#cod").val(_formatThousand(_order.price));
-            else
-                $("#cod").val(0);
+            if (_paymentMethod == PaymentMethodEnum.CashCollection)
+            {
+                _order.cod = _order.price;
+                $cod.val(_formatThousand(_order.price));
+            }
+            else {
+                _order.cod = 0;
+                $cod.val(0);
+            }
 
             if (data.note)
                 $("#note").val($("#note").val() + ". " + data.note).trigger('change');
@@ -478,12 +488,10 @@ function _calculateFee() {
 
         if (_order.customer.ward)
             query += "&ward=" + _order.customer.ward;
-        if (_order.price) {
+        if (_order.price)
             query += "&price=" + _order.price.toString();
-
-            if (_paymentType == 3)
-                query += "&cod=" + _order.price.toString();
-        }
+        if (_order.cod)
+            query += "&cod=" + _order.cod.toString();
 
         query += "&weight=" + (+_order.weight || _weight_min);
 
@@ -574,10 +582,16 @@ function _calculateMoney() {
     _feeShipment = feeShipment;
     _order.chooseShopFee = _feeShipment == 2;
 
-    if (_paymentType == 3)
+    if (_paymentMethod == PaymentMethodEnum.CashCollection)
+    {
+        _order.cod = _order.price;
         $cod.val(_formatThousand(_order.price));
-    else
+    }
+    else 
+    {
+        _order.cod = 0;
         $cod.val(0);
+    }
 }
 
 function _submit() {
