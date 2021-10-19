@@ -3664,7 +3664,7 @@
                     return;
                 }
 
-                let price = +$(".totalpriceorderall").html().replace(',', '') || 0
+                let price = +$(".totalpriceorderall").html().replace(/,/g, '') || 0;
                 let paymentMethod = +$("select[id$='_ddlPaymentType']").val() || PaymentMethodEnum.Cash;
                 let weight = +$("input[id$='_txtWeight']").val() || 0;
                 let url = '/api/v1/jt-express/fee';
