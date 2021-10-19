@@ -540,129 +540,155 @@ namespace IM_PJ.Controllers
 
         public static List<RefundProductReportModel> getRefundProductReport(string SKU, int CategoryID, string CreatedBy, DateTime fromDate, DateTime toDate)
         {
-            var list = new List<RefundReport>();
+            #region Khởi tạo SQL
             var sql = new StringBuilder();
 
             sql.AppendLine("BEGIN");
 
+            #region Lấy danh mục
             if (CategoryID > 0)
             {
                 sql.AppendLine(String.Empty);
-                sql.AppendLine("WITH category AS(");
+                sql.AppendLine("    WITH category AS(");
+                sql.AppendLine("        SELECT");
+                sql.AppendLine("                ID");
+                sql.AppendLine("        ,       CategoryName");
+                sql.AppendLine("        ,       ParentID");
+                sql.AppendLine("        FROM");
+                sql.AppendLine("                tbl_Category");
+                sql.AppendLine("        WHERE");
+                sql.AppendLine("                ID = " + CategoryID);
+                sql.AppendLine("    ");
+                sql.AppendLine("        UNION ALL");
+                sql.AppendLine("    ");
+                sql.AppendLine("        SELECT");
+                sql.AppendLine("                CHI.ID");
+                sql.AppendLine("        ,       CHI.CategoryName");
+                sql.AppendLine("        ,       CHI.ParentID");
+                sql.AppendLine("        FROM");
+                sql.AppendLine("                category AS PAR");
+                sql.AppendLine("        INNER JOIN tbl_Category AS CHI");
+                sql.AppendLine("            ON PAR.ID = CHI.ParentID");
+                sql.AppendLine("    )");
                 sql.AppendLine("    SELECT");
                 sql.AppendLine("            ID");
                 sql.AppendLine("    ,       CategoryName");
                 sql.AppendLine("    ,       ParentID");
-                sql.AppendLine("    FROM");
-                sql.AppendLine("            tbl_Category");
-                sql.AppendLine("    WHERE");
-                sql.AppendLine("            ID = " + CategoryID);
-                sql.AppendLine("");
-                sql.AppendLine("    UNION ALL");
-                sql.AppendLine("");
-                sql.AppendLine("    SELECT");
-                sql.AppendLine("            CHI.ID");
-                sql.AppendLine("    ,       CHI.CategoryName");
-                sql.AppendLine("    ,       CHI.ParentID");
-                sql.AppendLine("    FROM");
-                sql.AppendLine("            category AS PAR");
-                sql.AppendLine("    INNER JOIN tbl_Category AS CHI");
-                sql.AppendLine("        ON PAR.ID = CHI.ParentID");
-                sql.AppendLine(")");
-                sql.AppendLine("SELECT");
-                sql.AppendLine("        ID");
-                sql.AppendLine(",       CategoryName");
-                sql.AppendLine(",       ParentID");
-                sql.AppendLine("INTO #category");
-                sql.AppendLine("FROM category;");
+                sql.AppendLine("    INTO #category");
+                sql.AppendLine("    FROM category");
+                sql.AppendLine("    ;");
             }
+            #endregion
 
-            sql.AppendLine("SELECT");
-            sql.AppendLine("    CONVERT(VARCHAR(10), Ord.CreatedDate, 121) AS CreatedDate,");
-            sql.AppendLine("    Ord.ID,");
-            sql.AppendLine("    OrdDetail.SKU,");
-            sql.AppendLine("    OrdDetail.Quantity,");
-            sql.AppendLine("    OrdDetail.SoldPricePerProduct,");
-            sql.AppendLine("    OrdDetail.RefundFeePerProduct");
-            sql.AppendLine("INTO #data");
-            sql.AppendLine("FROM tbl_RefundGoods AS Ord");
-            sql.AppendLine("INNER JOIN tbl_RefundGoodsDetails AS OrdDetail");
-            sql.AppendLine("ON     Ord.ID = OrdDetail.RefundGoodsID");
-            sql.AppendLine("WHERE 1 = 1");
-
-            if (!String.IsNullOrEmpty(CreatedBy))
-                sql.AppendLine(String.Format("    AND Ord.CreatedBy = '{0}'", CreatedBy));
-
-            if (!String.IsNullOrEmpty(SKU))
-                sql.AppendLine(String.Format("    AND OrdDetail.SKU LIKE '{0}%'", SKU));
-
-            sql.AppendLine(String.Format("    AND    CONVERT(NVARCHAR(10), Ord.CreatedDate, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121)", fromDate, toDate));
-
-            sql.AppendLine("SELECT");
-            sql.AppendLine("    DAT.CreatedDate,");
-            sql.AppendLine("    DAT.ID,");
-            sql.AppendLine("    SUM(ISNULL(DAT.Quantity, 0)) AS Quantity,");
-            sql.AppendLine("    SUM(DAT.Quantity * ISNULL(PRO.CostOfGood, 0)) AS TotalCost,");
-            sql.AppendLine("    SUM(DAT.Quantity * DAT.SoldPricePerProduct) AS TotalRevenue,");
-            sql.AppendLine("    SUM(DAT.Quantity * DAT.RefundFeePerProduct) AS TotalRefundFee");
-            sql.AppendLine("FROM #data AS DAT");
-            sql.AppendLine("INNER JOIN (");
+            #region Lấy thông tin sản phẩn
+            sql.AppendLine(String.Empty);
             sql.AppendLine("    SELECT");
-            sql.AppendLine("        Product.CategoryID,");
             sql.AppendLine("        (");
-            sql.AppendLine("            CASE Product.ProductStyle");
-            sql.AppendLine("                WHEN 1 THEN Product.ProductSKU");
-            sql.AppendLine("                ELSE Variable.SKU");
+            sql.AppendLine("            CASE");
+            sql.AppendLine("                WHEN PRD.ProductStyle = 2 THEN PDV.SKU");
+            sql.AppendLine("                ELSE PRD.ProductSKU");
             sql.AppendLine("            END");
-            sql.AppendLine("        ) AS SKU,");
-            sql.AppendLine("        (");
-            sql.AppendLine("            CASE Product.ProductStyle");
-            sql.AppendLine("                WHEN 1 THEN Product.CostOfGood");
-            sql.AppendLine("                ELSE Variable.CostOfGood");
-            sql.AppendLine("            END");
-            sql.AppendLine("        ) AS CostOfGood");
-            sql.AppendLine("    FROM tbl_Product AS Product");
-            sql.AppendLine("    LEFT JOIN tbl_ProductVariable AS Variable");
-            sql.AppendLine("    ON Product.ID = Variable.ProductID");
-            sql.AppendLine("    WHERE 1 = 1");
+            sql.AppendLine("        ) AS SKU");
+            sql.AppendLine("    INTO #Product");
+            sql.AppendLine("    FROM");
+            sql.AppendLine("        tbl_Product AS PRD");
+            sql.AppendLine("    LEFT JOIN tbl_ProductVariable AS PDV");
+            sql.AppendLine("        ON PRD.ID = PDV.ProductID");
+            
+            #region Lọc sản phẩm
+            // Danh mục
             if (CategoryID > 0)
             {
-                sql.AppendLine("    AND EXISTS(");
-                sql.AppendLine("            SELECT");
-                sql.AppendLine("                    NULL AS DUMMY");
-                sql.AppendLine("            FROM");
-                sql.AppendLine("                    #category");
-                sql.AppendLine("            WHERE");
-                sql.AppendLine("                    ID = Product.CategoryID");
-                sql.AppendLine("    )");
+                sql.AppendLine("    INNER JOIN #category AS CTG");
+                sql.AppendLine("        ON CTG.ID = PRD.CategoryID");
             }
-            sql.AppendLine(") AS PRO");
-            sql.AppendLine("ON     DAT.SKU = PRO.SKU");
-            sql.AppendLine("GROUP BY");
-            sql.AppendLine("    DAT.CreatedDate");
-            sql.AppendLine(",   DAT.ID");
-            sql.AppendLine(" END");
 
+            // Theo mã sản phẩm
+            if (!String.IsNullOrEmpty(SKU)) {
+                sql.AppendLine("    WHERE");
+                sql.AppendLine(String.Format("        (PRD.ProductStyle = 1 AND PRD.ProductSKU LIKE '{0}%')", SKU));
+                sql.AppendLine(String.Format("        OR (PRD.ProductStyle = 2 AND PDV.SKU LIKE '{0}%')", SKU));
+            }
+            #endregion
+
+            sql.AppendLine("    ;");
+            #endregion
+
+            #region Lấy thông tin sẩn phẩm đã được bán
+            sql.AppendLine(String.Empty);
+            sql.AppendLine("    SELECT");
+            sql.AppendLine("        CONVERT(VARCHAR(10), Ord.CreatedDate, 121) AS CreatedDate");
+            sql.AppendLine("    ,   Ord.ID");
+            sql.AppendLine("    ,   ISNULL(OrdDetail.Quantity, 0) AS Quantity");
+            sql.AppendLine("    ,   ISNULL(OrdDetail.SoldPricePerProduct, 0) AS SoldPricePerProduct");
+            sql.AppendLine("    ,   ISNULL(OrdDetail.RefundFeePerProduct, 0) AS RefundFeePerProduct");
+            sql.AppendLine("    ,   ISNULL(OrdDetail.TotalCostOfGood, 0) AS TotalCostOfGood");
+            sql.AppendLine("    INTO #data");
+            sql.AppendLine("    FROM tbl_RefundGoods AS Ord");
+            sql.AppendLine("    INNER JOIN tbl_RefundGoodsDetails AS OrdDetail");
+            sql.AppendLine("    ON     Ord.ID = OrdDetail.RefundGoodsID");
+            sql.AppendLine("    INNER JOIN #Product AS PRD");
+            sql.AppendLine("    ON     PRD.SKU = OrdDetail.SKU");
+            sql.AppendLine("    WHERE");
+            sql.AppendLine("        Ord.Status = 2");
+
+            #region Lọc thông tin
+            // Theo khoản thời gian
+            sql.AppendLine(String.Format("        AND CONVERT(NVARCHAR(10), Ord.CreatedDate, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121)", fromDate, toDate));
+
+            // Theo nhân viên
+            if (!String.IsNullOrEmpty(CreatedBy))
+                sql.AppendLine(String.Format("        AND Ord.CreatedBy = '{0}'", CreatedBy));
+            #endregion
+            sql.AppendLine("    ;");
+            #endregion
+
+            #region Xuất dữ liệu báo cáo sản phẩm
+            sql.AppendLine("    SELECT");
+            sql.AppendLine("        DAT.CreatedDate");
+            sql.AppendLine("    ,   DAT.ID");
+            sql.AppendLine("    ,   SUM(DAT.Quantity) AS Quantity");
+            sql.AppendLine("    ,   SUM(DAT.TotalCostOfGood) AS TotalCost");
+            sql.AppendLine("    ,   SUM(DAT.Quantity * DAT.SoldPricePerProduct) AS TotalRevenue");
+            sql.AppendLine("    ,   SUM(DAT.Quantity * DAT.RefundFeePerProduct) AS TotalRefundFee");
+            sql.AppendLine("    FROM #data AS DAT");
+            sql.AppendLine("    GROUP BY");
+            sql.AppendLine("        DAT.CreatedDate");
+            sql.AppendLine("    ,   DAT.ID");
+            sql.AppendLine("    ;");
+            #endregion
+
+            sql.AppendLine(" END");
+            #endregion
+
+            #region Thực thi SQL
+            var data = new List<RefundReport>();
             var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
 
             while (reader.Read())
             {
-                var entity = new RefundReport();
-                entity.CreatedDate = Convert.ToDateTime(reader["CreatedDate"]);
-                entity.ID = Convert.ToInt32(reader["ID"]);
-                entity.Quantity = Convert.ToInt32(reader["Quantity"]);
-                entity.TotalCost = Convert.ToDouble(reader["TotalCost"]);
-                entity.TotalRevenue = Convert.ToDouble(reader["TotalRevenue"]);
-                entity.TotalRefundFee = Convert.ToInt32(reader["TotalRefundFee"]);
-                list.Add(entity);
-            }
-            reader.Close();
+                var row = new RefundReport(){
+                    CreatedDate = Convert.ToDateTime(reader["CreatedDate"]),
+                    ID = Convert.ToInt32(reader["ID"]),
+                    Quantity = Convert.ToInt32(reader["Quantity"]),
+                    Quantity = Convert.ToInt32(reader["Quantity"]),
+                    TotalCost = Convert.ToDouble(reader["TotalCost"]),
+                    TotalRevenue = Convert.ToDouble(reader["TotalRevenue"]),
+                    TotalRefundFee = Convert.ToInt32(reader["TotalRefundFee"])
+                };
 
-            var result = list.GroupBy(g => g.CreatedDate)
+                data.Add(row);
+            }
+
+            reader.Close();
+            #endregion
+
+            var result = data
+                .GroupBy(g => g.CreatedDate)
                 .Select(x => new RefundProductReportModel()
                 {
                     reportDate = x.Key,
-                    totalRefund = x.Sum(s => s.Quantity),
+                    totalRefund = x.Count(),
                     totalRevenue = x.Sum(s => s.TotalRevenue),
                     totalCost = x.Sum(s => s.TotalCost),
                     totalRefundFee = x.Sum(s => s.TotalRefundFee),
