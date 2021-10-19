@@ -457,6 +457,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("FROM tbl_Category");
                 sql.AppendLine("WHERE");
                 sql.AppendLine("    ID = " + CategoryID);
+                sql.AppendLine(";");
             }
             #endregion
 
@@ -479,9 +480,9 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("            SELECT");
                 sql.AppendLine("                    NULL AS DUMMY");
                 sql.AppendLine("            FROM");
-                sql.AppendLine("                    #category");
+                sql.AppendLine("                    #category AS CTG");
                 sql.AppendLine("            WHERE");
-                sql.AppendLine("                    ID = PRD.CategoryID");
+                sql.AppendLine("                    CTG.ID = PRD.CategoryID");
                 sql.AppendLine("    )");
             }
             #endregion
@@ -2028,8 +2029,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("    FROM");
                 sql.AppendLine("            tbl_Category");
                 sql.AppendLine("    WHERE");
-                sql.AppendLine("            1 = 1");
-                sql.AppendLine("    AND     ID = " + CategoryID);
+                sql.AppendLine("            ID = " + CategoryID);
                 sql.AppendLine("");
                 sql.AppendLine("    UNION ALL");
                 sql.AppendLine("");
@@ -2073,9 +2073,9 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("            SELECT");
                 sql.AppendLine("                    NULL AS DUMMY");
                 sql.AppendLine("            FROM");
-                sql.AppendLine("                    #category");
+                sql.AppendLine("                    #category AS CTG");
                 sql.AppendLine("            WHERE");
-                sql.AppendLine("                    ID = PRD.CategoryID");
+                sql.AppendLine("                    CTG.ID = PRD.CategoryID");
                 sql.AppendLine("    )");
             }
             #endregion
@@ -2112,9 +2112,9 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("            SELECT");
                 sql.AppendLine("                    NULL AS DUMMY");
                 sql.AppendLine("            FROM");
-                sql.AppendLine("                    #category");
+                sql.AppendLine("                    #category AS CTG");
                 sql.AppendLine("            WHERE");
-                sql.AppendLine("                    ID = PRD.CategoryID");
+                sql.AppendLine("                    CTG.ID = PRD.CategoryID");
                 sql.AppendLine("    )");
             }
             #endregion
