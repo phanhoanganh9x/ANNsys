@@ -916,8 +916,8 @@ namespace IM_PJ.Controllers
 
         public static List<ProductSQL> GetAllSql(ProductFilterModel filter, ref PaginationMetadataModel page)
         {
-            var list = new List<ProductSQL>();
-            StringBuilder sql = new StringBuilder();
+            #region Khởi tạo SQL
+            var sql = new StringBuilder();
 
             sql.AppendLine("BEGIN");
             #region Khai báo biến phân trang
@@ -933,37 +933,37 @@ namespace IM_PJ.Controllers
             if (filter.category > 0)
             {
                 sql.AppendLine(String.Empty);
-                sql.AppendLine("WITH category AS(");
-                sql.AppendLine("    SELECT");
+                sql.AppendLine("    WITH RecursiveCategory AS(");
+                sql.AppendLine("        SELECT");
                 sql.AppendLine("            ID");
-                sql.AppendLine("    ,       CategoryName");
-                sql.AppendLine("    ,       Slug");
-                sql.AppendLine("    ,       ParentID");
-                sql.AppendLine("    FROM");
+                sql.AppendLine("        ,   CategoryName");
+                sql.AppendLine("        ,   Slug");
+                sql.AppendLine("        ,   ParentID");
+                sql.AppendLine("        FROM");
                 sql.AppendLine("            tbl_Category");
-                sql.AppendLine("    WHERE");
-                sql.AppendLine("            1 = 1");
-                sql.AppendLine("    AND     ID = " + filter.category);
-                sql.AppendLine("");
-                sql.AppendLine("    UNION ALL");
-                sql.AppendLine("");
-                sql.AppendLine("    SELECT");
+                sql.AppendLine("        WHERE");
+                sql.AppendLine("            ID = " + filter.category);
+                sql.AppendLine(String.Empty);
+                sql.AppendLine("        UNION ALL");
+                sql.AppendLine(String.Empty);
+                sql.AppendLine("        SELECT");
                 sql.AppendLine("            CHI.ID");
-                sql.AppendLine("    ,       CHI.CategoryName");
-                sql.AppendLine("    ,       CHI.Slug");
-                sql.AppendLine("    ,       CHI.ParentID");
-                sql.AppendLine("    FROM");
-                sql.AppendLine("            category AS PAR");
-                sql.AppendLine("    INNER JOIN tbl_Category AS CHI");
-                sql.AppendLine("        ON PAR.ID = CHI.ParentID");
-                sql.AppendLine(")");
-                sql.AppendLine("SELECT");
+                sql.AppendLine("        ,   CHI.CategoryName");
+                sql.AppendLine("        ,   CHI.Slug");
+                sql.AppendLine("        ,   CHI.ParentID");
+                sql.AppendLine("        FROM");
+                sql.AppendLine("            RecursiveCategory AS PAR");
+                sql.AppendLine("        INNER JOIN tbl_Category AS CHI");
+                sql.AppendLine("            ON PAR.ID = CHI.ParentID");
+                sql.AppendLine("    )");
+                sql.AppendLine("    SELECT");
                 sql.AppendLine("        ID");
-                sql.AppendLine(",       CategoryName");
-                sql.AppendLine(",       Slug");
-                sql.AppendLine(",       ParentID");
-                sql.AppendLine("INTO #category");
-                sql.AppendLine("FROM category;");
+                sql.AppendLine("    ,   CategoryName");
+                sql.AppendLine("    ,   Slug");
+                sql.AppendLine("    ,   ParentID");
+                sql.AppendLine("    INTO #Category");
+                sql.AppendLine("    FROM RecursiveCategory");
+                sql.AppendLine("    ;");
             }
             #endregion
 
@@ -974,11 +974,12 @@ namespace IM_PJ.Controllers
                 sql.AppendLine(String.Empty);
                 sql.AppendLine("    With VariableValue AS (");
                 sql.AppendLine("        SELECT");
-                sql.AppendLine("            *");
+                sql.AppendLine("            ID");
                 sql.AppendLine("        FROM");
                 sql.AppendLine("            tbl_VariableValue");
                 sql.AppendLine("        WHERE");
-                sql.AppendLine(String.Format("        VariableID = 1 AND  LOWER(VariableValue) LIKE N'%{0}%'", filter.color.ToLower()));
+                sql.AppendLine("            VariableID = 1");
+                sql.AppendLine(String.Format("            AND LOWER(VariableValue) LIKE N'%{0}%'", filter.color.ToLower()));
                 sql.AppendLine("    )");
                 sql.AppendLine("    SELECT");
                 sql.AppendLine("        PVA.ProductID AS ID");
@@ -990,12 +991,15 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("        FROM");
                 sql.AppendLine("            VariableValue AS VAV");
                 sql.AppendLine("        INNER JOIN tbl_ProductVariableValue AS PVV");
-                sql.AppendLine("        ON  VAV.ID = PVV.VariableValueID");
-                sql.AppendLine("        GROUP BY PVV.ProductVariableID");
+                sql.AppendLine("            ON VAV.ID = PVV.VariableValueID");
+                sql.AppendLine("        GROUP BY");
+                sql.AppendLine("            PVV.ProductVariableID");
                 sql.AppendLine("    ) AS PVF");
                 sql.AppendLine("    INNER JOIN tbl_ProductVariable AS PVA");
-                sql.AppendLine("    ON  PVF.ProductVariableID = PVA.ID");
-                sql.AppendLine("    GROUP BY PVA.ProductID;");
+                sql.AppendLine("        ON PVF.ProductVariableID = PVA.ID");
+                sql.AppendLine("    GROUP BY");
+                sql.AppendLine("        PVA.ProductID");
+                sql.AppendLine("    ;");
             }
             #endregion
 
@@ -1006,11 +1010,12 @@ namespace IM_PJ.Controllers
                 sql.AppendLine(String.Empty);
                 sql.AppendLine("    With VariableValue AS (");
                 sql.AppendLine("        SELECT");
-                sql.AppendLine("            *");
+                sql.AppendLine("            ID");
                 sql.AppendLine("        FROM");
                 sql.AppendLine("            tbl_VariableValue");
                 sql.AppendLine("        WHERE");
-                sql.AppendLine(String.Format("        VariableID = 2 AND  LOWER(VariableValue) LIKE N'%{0}%'", filter.size.ToLower()));
+                sql.AppendLine("            VariableID = 2");
+                sql.AppendLine(String.Format("            AND  LOWER(VariableValue) LIKE N'%{0}%'", filter.size.ToLower()));
                 sql.AppendLine("    )");
                 sql.AppendLine("    SELECT");
                 sql.AppendLine("        PVA.ProductID AS ID");
@@ -1022,12 +1027,15 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("        FROM");
                 sql.AppendLine("            VariableValue AS VAV");
                 sql.AppendLine("        INNER JOIN tbl_ProductVariableValue AS PVV");
-                sql.AppendLine("        ON  VAV.ID = PVV.VariableValueID");
-                sql.AppendLine("        GROUP BY PVV.ProductVariableID");
+                sql.AppendLine("            ON VAV.ID = PVV.VariableValueID");
+                sql.AppendLine("        GROUP BY");
+                sql.AppendLine("            PVV.ProductVariableID");
                 sql.AppendLine("    ) AS PVF");
                 sql.AppendLine("    INNER JOIN tbl_ProductVariable AS PVA");
-                sql.AppendLine("    ON  PVF.ProductVariableID = PVA.ID");
-                sql.AppendLine("    GROUP BY PVA.ProductID;");
+                sql.AppendLine("        ON PVF.ProductVariableID = PVA.ID");
+                sql.AppendLine("    GROUP BY");
+                sql.AppendLine("        PVA.ProductID");
+                sql.AppendLine("    ;");
             }
             #endregion
 
@@ -1035,57 +1043,46 @@ namespace IM_PJ.Controllers
             #region Trích xuất dữ liệu chính
             sql.AppendLine(String.Empty);
             sql.AppendLine("    SELECT");
-            sql.AppendLine("            PRD.*");
+            sql.AppendLine("        PRD.*");
             sql.AppendLine("    INTO #Product");
             sql.AppendLine("    FROM");
-            sql.AppendLine("            tbl_Product AS PRD");
+            sql.AppendLine("        tbl_Product AS PRD");
             sql.AppendLine("    WHERE");
-            sql.AppendLine("            1 = 1");
+            sql.AppendLine("        1 = 1");
 
             #region Loc theo từ khóa (Tên sản phẩm, SKU, màu)
             if (!string.IsNullOrEmpty(filter.search))
             {
-                sql.AppendLine("    AND (");
-                sql.AppendLine(String.Format("        PRD.ProductSKU like N'%{0}%'", filter.search));
-                sql.AppendLine(String.Format("        OR PRD.ProductTitle like N'%{0}%'", filter.search));
-                sql.AppendLine(String.Format("        OR PRD.UnSignedTitle like N'%{0}%'", filter.search));
-                sql.AppendLine(String.Format("        OR PRD.Materials like N'%{0}%'", filter.search));
-                sql.AppendLine(String.Format("        OR PRD.ProductContent like N'%{0}%'", filter.search));
-                sql.AppendLine("    )");
+                sql.AppendLine("        AND (");
+                sql.AppendLine(String.Format("            PRD.ProductSKU like N'%{0}%'", filter.search));
+                sql.AppendLine(String.Format("            OR PRD.ProductTitle like N'%{0}%'", filter.search));
+                sql.AppendLine(String.Format("            OR PRD.UnSignedTitle like N'%{0}%'", filter.search));
+                sql.AppendLine(String.Format("            OR PRD.Materials like N'%{0}%'", filter.search));
+                sql.AppendLine(String.Format("            OR PRD.ProductContent like N'%{0}%'", filter.search));
+                sql.AppendLine("        )");
             }
             #endregion
 
             #region Tìm sản phẩm có giá bằng ...
             if (filter.price > 0)
-            {
-                sql.AppendLine("    AND (");
-                sql.AppendLine(String.Format("        PRD.Regular_Price = {0}", filter.price));
-                sql.AppendLine("    )");
-            }
+                sql.AppendLine(String.Format("        AND PRD.Regular_Price = {0}", filter.price));
             else if (filter.price == -1)
             {
-                sql.AppendLine("    AND (");
-                sql.AppendLine(String.Format("        PRD.Regular_Price <> 30000 AND PRD.Regular_Price <> 35000 AND PRD.Regular_Price <> 49000 AND PRD.Regular_Price <> 135000 ", filter.price));
-                sql.AppendLine("    )");
+                sql.AppendLine("        AND PRD.Regular_Price <> 30000");
+                sql.AppendLine("        AND PRD.Regular_Price <> 35000");
+                sql.AppendLine("        AND PRD.Regular_Price <> 49000");
+                sql.AppendLine("        AND PRD.Regular_Price <> 135000");
             }
             #endregion
 
             #region Lọc sản phẩm show lên home page
             if (!string.IsNullOrEmpty(filter.showHomePage))
-            {
-                sql.AppendLine("    AND (");
-                sql.AppendLine(String.Format("        PRD.ShowHomePage = {0}", filter.showHomePage));
-                sql.AppendLine("    )");
-            }
+                sql.AppendLine(String.Format("        AND PRD.ShowHomePage = {0}", filter.showHomePage));
             #endregion
 
             #region Lọc sản phẩm hiển thị tại trang quảng cáo
             if (!string.IsNullOrEmpty(filter.webPublish))
-            {
-                sql.AppendLine("    AND (");
-                sql.AppendLine(String.Format("        PRD.WebPublish = {0}", filter.webPublish));
-                sql.AppendLine("    )");
-            }
+                sql.AppendLine(String.Format("        AND PRD.WebPublish = {0}", filter.webPublish));
             #endregion
 
             #region Lọc sản phẩm theo ngày khởi tạo
@@ -1130,417 +1127,222 @@ namespace IM_PJ.Controllers
                         todate = DateTime.Now;
                         break;
                 }
-                sql.AppendLine(String.Format("	AND	(CONVERT(NVARCHAR(10), PRD.CreatedDate, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121))", fromdate, todate));
+                
+                sql.AppendLine(String.Format("        AND CONVERT(NVARCHAR(10), PRD.CreatedDate, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121)", fromdate, todate));
             }
 
             if (filter.fromDate.HasValue && filter.toDate.HasValue)
-            {
-                sql.AppendLine(String.Format("	AND	(CONVERT(NVARCHAR(10), PRD.CreatedDate, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121))", filter.fromDate, filter.toDate));
-            }
+                sql.AppendLine(String.Format("        AND CONVERT(NVARCHAR(10), PRD.CreatedDate, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121)", filter.fromDate, filter.toDate));
             #endregion
 
             #region Lọc sản phẩm theo màu
             if (!String.IsNullOrEmpty(filter.color))
             {
-                sql.AppendLine("    AND (");
-                sql.AppendLine(String.Format("        LOWER(PRD.ProductTitle) like N'%{0}%'", filter.color.ToLower()));
-                sql.AppendLine(String.Format("        OR LOWER(PRD.Color) like N'%{0}%'", filter.color.ToLower()));
-                sql.AppendLine("        OR EXISTS (");
-                sql.AppendLine("            SELECT");
-                sql.AppendLine("                NULL AS DUMMY");
-                sql.AppendLine("            FROM");
-                sql.AppendLine("                #ProductColor AS PRC");
-                sql.AppendLine("            WHERE");
-                sql.AppendLine("                PRD.ID = PRC.ID");
+                sql.AppendLine("        AND (");
+                sql.AppendLine(String.Format("            LOWER(PRD.ProductTitle) like N'%{0}%'", filter.color.ToLower()));
+                sql.AppendLine(String.Format("            OR LOWER(PRD.Color) like N'%{0}%'", filter.color.ToLower()));
+                sql.AppendLine("            OR EXISTS (");
+                sql.AppendLine("                SELECT");
+                sql.AppendLine("                    NULL AS DUMMY");
+                sql.AppendLine("                FROM");
+                sql.AppendLine("                    #ProductColor AS PRC");
+                sql.AppendLine("                WHERE");
+                sql.AppendLine("                    PRD.ID = PRC.ID");
+                sql.AppendLine("            )");
                 sql.AppendLine("        )");
-                sql.AppendLine("    )");
             }
             #endregion
 
             #region Lọc sản phẩm theo size
             if (!String.IsNullOrEmpty(filter.size))
             {
-                sql.AppendLine("    AND EXISTS (");
-                sql.AppendLine("        SELECT");
-                sql.AppendLine("            NULL AS DUMMY");
-                sql.AppendLine("        FROM");
-                sql.AppendLine("            #ProductSize AS PRS");
-                sql.AppendLine("        WHERE");
-                sql.AppendLine("            PRD.ID = PRS.ID");
-                sql.AppendLine("    )");
+                sql.AppendLine("        AND EXISTS (");
+                sql.AppendLine("            SELECT");
+                sql.AppendLine("                NULL AS DUMMY");
+                sql.AppendLine("            FROM");
+                sql.AppendLine("                #ProductSize AS PRS");
+                sql.AppendLine("            WHERE");
+                sql.AppendLine("                PRD.ID = PRS.ID");
+                sql.AppendLine("        )");
             }
             #endregion
 
             #region Lọc sản phẩm theo nhanh cateory (gồm cha và con)
             if (filter.category > 0)
             {
-                sql.AppendLine("    AND EXISTS(");
+                sql.AppendLine("        AND EXISTS(");
                 sql.AppendLine("            SELECT");
                 sql.AppendLine("                    NULL AS DUMMY");
                 sql.AppendLine("            FROM");
-                sql.AppendLine("                    #category");
+                sql.AppendLine("                    #Category");
                 sql.AppendLine("            WHERE");
                 sql.AppendLine("                    ID = PRD.CategoryID");
-                sql.AppendLine("    )");
+                sql.AppendLine("        )");
             }
             #endregion
 
             #region Lọc theo sản phẩm Order
             if (!String.IsNullOrEmpty(filter.preOrder))
-                sql.AppendLine(String.Format("    AND PRD.PreOrder = '{0}'", filter.preOrder));
+                sql.AppendLine(String.Format("        AND PRD.PreOrder = '{0}'", filter.preOrder));
             #endregion
 
             #region Lọc theo sản phẩm được phép đồng bộ lên KiotViet
             if (filter.syncKiotViet.HasValue)
-                sql.AppendLine(String.Format("    AND PRD.SyncKiotViet = {0}", filter.syncKiotViet.Value ? 1 : 0));
+                sql.AppendLine(String.Format("        AND PRD.SyncKiotViet = {0}", filter.syncKiotViet.Value ? 1 : 0));
             #endregion
 
-            sql.AppendLine("     ORDER BY");
-            sql.AppendLine("             PRD.ProductStyle");
-            sql.AppendLine("     ,       PRD.ID");
-            sql.AppendLine("     ;");
+            sql.AppendLine("    ORDER BY");
+            sql.AppendLine("         PRD.ProductStyle");
+            sql.AppendLine("    ,    PRD.ID");
+            sql.AppendLine("    ;");
             sql.AppendLine(String.Empty);
-            sql.AppendLine("     CREATE INDEX [ID_PROCDUCT] ON #Product([ProductStyle], [ID])");
+            sql.AppendLine("    CREATE INDEX [ID_PROCDUCT] ON #Product([ProductStyle], [ID])");
             #endregion
 
             #region Trích xuất thông tin kho
             #region Kho 1
-            #region Thông tin kho 1 với sản phẩm thường
             sql.AppendLine(String.Empty);
-            sql.AppendLine("     SELECT");
-            sql.AppendLine("             STM.ProductID");
-            sql.AppendLine("     ,       STM.Quantity");
-            sql.AppendLine("     ,       STM.QuantityCurrent");
-            sql.AppendLine("     ,       STM.Type");
-            sql.AppendLine("     ,       STM.Status");
-            sql.AppendLine("     ,       STM.CreatedDate");
-            sql.AppendLine("     ,       STM.ParentID");
-            sql.AppendLine("     INTO #StockProduct");
-            sql.AppendLine("     FROM");
-            sql.AppendLine("             #Product AS PRD");
-            sql.AppendLine("     INNER JOIN tbl_StockManager AS STM");
-            sql.AppendLine("         ON  PRD.ProductStyle = 1");
-            sql.AppendLine("         AND PRD.ID = STM.ParentID");
-            sql.AppendLine("     ORDER BY");
-            sql.AppendLine("             STM.ProductID");
-            sql.AppendLine("     ,       STM.CreatedDate");
-            sql.AppendLine("     ;");
+            sql.AppendLine("    SELECT");
+            sql.AppendLine("         STM.ParentID AS ProductID");
+            sql.AppendLine("    ,    ISNULL(STM.Quantity, 0) AS Quantity");
+            sql.AppendLine("    ,    ISNULL(STM.QuantityCurrent, 0) AS QuantityCurrent");
+            sql.AppendLine("    ,    ISNULL(STM.Type, 1) AS Type");
+            sql.AppendLine("    ,    STM.Status");
+            sql.AppendLine("    INTO #ProductStock1");
+            sql.AppendLine("    FROM");
+            sql.AppendLine("         #Product AS PRD");
+            sql.AppendLine("    INNER JOIN tbl_StockManager AS STM");
+            sql.AppendLine("        ON PRD.ID = STM.ParentID");
+            sql.AppendLine("    ;");
             sql.AppendLine(String.Empty);
-            sql.AppendLine("     CREATE INDEX [ID_PROCDUCT] ON #StockProduct(");
-            sql.AppendLine("             [ProductID] ASC");
-            sql.AppendLine("     ,       [CreatedDate] DESC");
-            sql.AppendLine("     )");
-            #endregion
-
-            #region Thông tin kho 1 với sản phẩm biến thể
-            sql.AppendLine(String.Empty);
-            sql.AppendLine("     SELECT");
-            sql.AppendLine("             STM.ProductVariableID");
-            sql.AppendLine("     ,       STM.Quantity");
-            sql.AppendLine("     ,       STM.QuantityCurrent");
-            sql.AppendLine("     ,       STM.Type");
-            sql.AppendLine("     ,       STM.Status");
-            sql.AppendLine("     ,       STM.CreatedDate");
-            sql.AppendLine("     ,       STM.ParentID");
-            sql.AppendLine("     INTO #StockProductVariable");
-            sql.AppendLine("     FROM");
-            sql.AppendLine("             #Product AS PRD");
-            sql.AppendLine("     INNER JOIN tbl_StockManager AS STM");
-            sql.AppendLine("         ON  PRD.ProductStyle = 2");
-            sql.AppendLine("         AND PRD.ID = STM.ParentID");
-            sql.AppendLine("     ORDER BY");
-            sql.AppendLine("             STM.ParentID");
-            sql.AppendLine("     ,       STM.ProductVariableID");
-            sql.AppendLine("     ,       STM.CreatedDate");
-            sql.AppendLine("     ;");
-            sql.AppendLine(String.Empty);
-            sql.AppendLine("     CREATE INDEX [ID_PROCDUCT] ON #StockProductVariable(");
-            sql.AppendLine("             [ParentID] ASC");
-            sql.AppendLine("     ,       [ProductVariableID] ASC");
-            sql.AppendLine("     ,       [CreatedDate] DESC");
-            sql.AppendLine("     )");
-            #endregion
-            #endregion
+            sql.AppendLine("    CREATE INDEX [ID_PROCDUCT_STOCK_1] ON #ProductStock1([ProductID]);");
 
             #region Kho 2
-            #region Thông tin kho 2 với sản phẩm thường
             sql.AppendLine(String.Empty);
-            sql.AppendLine("     SELECT");
-            sql.AppendLine("             STM.ProductID");
-            sql.AppendLine("     ,       STM.Quantity");
-            sql.AppendLine("     ,       STM.QuantityCurrent");
-            sql.AppendLine("     ,       STM.Type");
-            sql.AppendLine("     ,       STM.Status");
-            sql.AppendLine("     ,       STM.CreatedDate");
-            sql.AppendLine("     INTO #StockProduct2");
-            sql.AppendLine("     FROM");
-            sql.AppendLine("             #Product AS PRD");
-            sql.AppendLine("     INNER JOIN StockManager2 AS STM");
-            sql.AppendLine("         ON  PRD.ProductStyle = 1");
-            sql.AppendLine("         AND PRD.ID = STM.ProductID");
-            sql.AppendLine("     ORDER BY");
-            sql.AppendLine("             STM.ProductID");
-            sql.AppendLine("     ,       STM.CreatedDate");
-            sql.AppendLine("     ;");
+            sql.AppendLine("    SELECT");
+            sql.AppendLine("         STM.ProductID");
+            sql.AppendLine("    ,    ISNULL(STM.Quantity, 0) AS Quantity");
+            sql.AppendLine("    ,    ISNULL(STM.QuantityCurrent, 0) AS QuantityCurrent");
+            sql.AppendLine("    ,    ISNULL(STM.Type, 1) AS Type");
+            sql.AppendLine("    ,    STM.Status");
+            sql.AppendLine("    INTO #ProductStock2");
+            sql.AppendLine("    FROM");
+            sql.AppendLine("         #Product AS PRD");
+            sql.AppendLine("    INNER JOIN StockManager2 AS STM");
+            sql.AppendLine("         ON PRD.ID = STM.ProductID");
+            sql.AppendLine("    ;");
             sql.AppendLine(String.Empty);
-            sql.AppendLine("     CREATE INDEX [ID_PROCDUCT] ON #StockProduct2(");
-            sql.AppendLine("             [ProductID] ASC");
-            sql.AppendLine("     ,       [CreatedDate] DESC");
-            sql.AppendLine("     )");
+            sql.AppendLine("     CREATE INDEX [ID_PROCDUCT_STOCK_2] ON #ProductStock2([ProductID]);");
             #endregion
 
-            #region Thông tin kho 2 với sản phẩm biến thể
+            #region Tính thông tin kho của tất cả sản phẩm
             sql.AppendLine(String.Empty);
-            sql.AppendLine("     SELECT");
-            sql.AppendLine("             STM.ProductVariableID");
-            sql.AppendLine("     ,       STM.Quantity");
-            sql.AppendLine("     ,       STM.QuantityCurrent");
-            sql.AppendLine("     ,       STM.Type");
-            sql.AppendLine("     ,       STM.Status");
-            sql.AppendLine("     ,       STM.CreatedDate");
-            sql.AppendLine("     ,       STM.ProductID");
-            sql.AppendLine("     INTO #StockProductVariable2");
-            sql.AppendLine("     FROM");
-            sql.AppendLine("             #Product AS PRD");
-            sql.AppendLine("     INNER JOIN StockManager2 AS STM");
-            sql.AppendLine("         ON  PRD.ProductStyle = 2");
-            sql.AppendLine("         AND PRD.ID = STM.ProductID");
-            sql.AppendLine("     ORDER BY");
-            sql.AppendLine("             STM.ProductID");
-            sql.AppendLine("     ,       STM.ProductVariableID");
-            sql.AppendLine("     ,       STM.CreatedDate");
-            sql.AppendLine("     ;");
+            sql.AppendLine("    SELECT");
+            sql.AppendLine("         PRQ.ParentID");
+            sql.AppendLine("    ,    SUM(PRQ.QuantityLeft) AS QuantityLeft");
+            sql.AppendLine("    ,    MIN(PRQ.Liquidated) AS Liquidated");
+            sql.AppendLine("    ,    MAX(PRQ.HasStock2) AS HasStock2");
+            sql.AppendLine("    ,    SUM(PRQ.QuantityLeft2) AS QuantityLeft2");
+            sql.AppendLine("    INTO #ProductQuantity");
+            sql.AppendLine("    FROM (");
+            sql.AppendLine("        SELECT");
+            sql.AppendLine("            PST1.ParentID");
+            sql.AppendLine("        ,   (");
+            sql.AppendLine("                CASE");
+            sql.AppendLine("                    WHEN PST1.Type = 2 THEN PST1.QuantityCurrent - PST1.Quantity");
+            sql.AppendLine("                    ELSE PST1.QuantityCurrent + PST1.Quantity");
+            sql.AppendLine("                END");
+            sql.AppendLine("            ) AS QuantityLeft");
+            sql.AppendLine("        ,   (");
+            sql.AppendLine("                CASE");
+            sql.AppendLine("                    WHEN PST1.Status = 14 THEN 1");
+            sql.AppendLine("                    ELSE 0");
+            sql.AppendLine("                END");
+            sql.AppendLine("            ) AS Liquidated");
+            sql.AppendLine("        ,   0 AS HasStock2");
+            sql.AppendLine("        ,   0 AS QuantityLeft2");
+            sql.AppendLine("        FROM ");
+            sql.AppendLine("            #ProductStock1 AS PST1");
             sql.AppendLine(String.Empty);
-            sql.AppendLine("     CREATE INDEX [ID_PROCDUCT] ON #StockProductVariable2(");
-            sql.AppendLine("             [ProductID] ASC");
-            sql.AppendLine("     ,       [ProductVariableID] ASC");
-            sql.AppendLine("     ,       [CreatedDate] DESC");
-            sql.AppendLine("     )");
+            sql.AppendLine("        UNION ALL");
+            sql.AppendLine(String.Empty);
+            sql.AppendLine("        SELECT");
+            sql.AppendLine("            PST2.ProductID AS ParentID");
+            sql.AppendLine("        ,   0 AS QuantityLeft");
+            sql.AppendLine("        ,   (");
+            sql.AppendLine("                CASE");
+            sql.AppendLine("                    WHEN PST2.Status = 14 THEN 1");
+            sql.AppendLine("                    ELSE 0");
+            sql.AppendLine("                END");
+            sql.AppendLine("            ) AS Liquidated");
+            sql.AppendLine("        ,   1 AS HasStock2");
+            sql.AppendLine("        ,   (");
+            sql.AppendLine("                CASE");
+            sql.AppendLine("                    WHEN PST2.Type = 2 THEN PST2.QuantityCurrent - PST2.Quantity");
+            sql.AppendLine("                    ELSE PST2.QuantityCurrent + PST2.Quantity");
+            sql.AppendLine("                END");
+            sql.AppendLine("            ) AS QuantityLeft2");
+            sql.AppendLine("        FROM ");
+            sql.AppendLine("            #ProductStock2 AS PST2");
+            sql.AppendLine("    ) AS PRQ");
+            sql.AppendLine("    GROUP BY");
+            sql.AppendLine("        PRQ.ParentID");
+            sql.AppendLine("    ;");
+            sql.AppendLine(String.Empty);
+            sql.AppendLine("    CREATE INDEX [ID_PROCDUCT_QUANTITY] ON #ProductQuantity([ParentID]);");
             #endregion
             #endregion
-
-            #region Tính thông tin kho của tất cả sản phẩm ( sản phẩm thường và sản phẩm biến thể)
-            sql.AppendLine(String.Empty);
-            sql.AppendLine("     SELECT");
-            sql.AppendLine("             PRQ.ProductStyle");
-            sql.AppendLine("     ,       PRQ.ParentID");
-            sql.AppendLine("     ,       SUM(ISNULL(PRQ.QuantityLeft, 0)) AS QuantityLeft");
-            sql.AppendLine("     ,       MIN(ISNULL(PRQ.Liquidated, 0)) AS Liquidated");
-            sql.AppendLine("     ,       MAX(ISNULL(PRQ.HasStock2, 0)) AS HasStock2");
-            sql.AppendLine("     ,       SUM(ISNULL(PRQ.QuantityLeft2, 0)) AS QuantityLeft2");
-            sql.AppendLine("     INTO #ProductQuantity");
-            sql.AppendLine("     FROM (");
-            sql.AppendLine("         SELECT");
-            sql.AppendLine("                 1 AS ProductStyle");
-            sql.AppendLine("         ,       STP.ParentID");
-            sql.AppendLine("         ,       (");
-            sql.AppendLine("                     CASE STP.Type");
-            sql.AppendLine("                         WHEN 1");
-            sql.AppendLine("                             THEN STP.QuantityCurrent + STP.Quantity");
-            sql.AppendLine("                         WHEN 2");
-            sql.AppendLine("                             THEN STP.QuantityCurrent - STP.Quantity");
-            sql.AppendLine("                         ELSE");
-            sql.AppendLine("                             0");
-            sql.AppendLine("                     END");
-            sql.AppendLine("                 ) AS QuantityLeft");
-            sql.AppendLine("         ,       (");
-            sql.AppendLine("                     CASE STP.Status");
-            sql.AppendLine("                         WHEN 14");
-            sql.AppendLine("                             THEN 1");
-            sql.AppendLine("                         ELSE");
-            sql.AppendLine("                             0");
-            sql.AppendLine("                     END");
-            sql.AppendLine("                 ) AS Liquidated");
-            sql.AppendLine("         ,       0 AS HasStock2");
-            sql.AppendLine("         ,       0 AS QuantityLeft2");
-            sql.AppendLine("         FROM ");
-            sql.AppendLine("                 #StockProduct AS STP");
-            sql.AppendLine("         INNER JOIN (");
-            sql.AppendLine("                 SELECT");
-            sql.AppendLine("                         ProductID");
-            sql.AppendLine("                 ,       MAX(CreatedDate) AS CreatedDate");
-            sql.AppendLine("                 FROM");
-            sql.AppendLine("                         #StockProduct");
-            sql.AppendLine("                 GROUP BY");
-            sql.AppendLine("                         ProductID");
-            sql.AppendLine("             ) AS SPM");
-            sql.AppendLine("             ON  STP.ProductID = SPM.ProductID");
-            sql.AppendLine("             AND STP.CreatedDate = SPM.CreatedDate");
-            sql.AppendLine(String.Empty);
-            sql.AppendLine("         UNION ALL");
-            sql.AppendLine(String.Empty);
-            sql.AppendLine("         SELECT");
-            sql.AppendLine("                 1 AS ProductStyle");
-            sql.AppendLine("         ,       STP.ProductID  AS ParentID");
-            sql.AppendLine("         ,       0 AS QuantityLeft");
-            sql.AppendLine("         ,       (");
-            sql.AppendLine("                     CASE STP.Status");
-            sql.AppendLine("                         WHEN 14");
-            sql.AppendLine("                             THEN 1");
-            sql.AppendLine("                         ELSE");
-            sql.AppendLine("                             0");
-            sql.AppendLine("                     END");
-            sql.AppendLine("                 ) AS Liquidated");
-            sql.AppendLine("         ,       1 AS HasStock2");
-            sql.AppendLine("         ,       (");
-            sql.AppendLine("                     CASE STP.Type");
-            sql.AppendLine("                         WHEN 1");
-            sql.AppendLine("                             THEN STP.QuantityCurrent + STP.Quantity");
-            sql.AppendLine("                         WHEN 2");
-            sql.AppendLine("                             THEN STP.QuantityCurrent - STP.Quantity");
-            sql.AppendLine("                         ELSE");
-            sql.AppendLine("                             0");
-            sql.AppendLine("                     END");
-            sql.AppendLine("                 ) AS QuantityLeft2");
-            sql.AppendLine("         FROM ");
-            sql.AppendLine("                 #StockProduct2 AS STP");
-            sql.AppendLine("         INNER JOIN (");
-            sql.AppendLine("                 SELECT");
-            sql.AppendLine("                         ProductID");
-            sql.AppendLine("                 ,       MAX(CreatedDate) AS CreatedDate");
-            sql.AppendLine("                 FROM");
-            sql.AppendLine("                         #StockProduct2");
-            sql.AppendLine("                 GROUP BY");
-            sql.AppendLine("                         ProductID");
-            sql.AppendLine("             ) AS SPM");
-            sql.AppendLine("             ON  STP.ProductID = SPM.ProductID");
-            sql.AppendLine("             AND STP.CreatedDate = SPM.CreatedDate");
-            sql.AppendLine(String.Empty);
-            sql.AppendLine("         UNION ALL");
-            sql.AppendLine(String.Empty);
-            sql.AppendLine("         SELECT");
-            sql.AppendLine("                 2 AS ProductStyle");
-            sql.AppendLine("         ,       STP.ParentID");
-            sql.AppendLine("         ,       (");
-            sql.AppendLine("                     CASE STP.Type");
-            sql.AppendLine("                         WHEN 1");
-            sql.AppendLine("                             THEN STP.QuantityCurrent + STP.Quantity");
-            sql.AppendLine("                         WHEN 2");
-            sql.AppendLine("                             THEN STP.QuantityCurrent - STP.Quantity");
-            sql.AppendLine("                         ELSE");
-            sql.AppendLine("                             0");
-            sql.AppendLine("                     END");
-            sql.AppendLine("                 ) AS QuantityLeft");
-            sql.AppendLine("         ,       (");
-            sql.AppendLine("                     CASE STP.Status");
-            sql.AppendLine("                         WHEN 14");
-            sql.AppendLine("                             THEN 1");
-            sql.AppendLine("                         ELSE");
-            sql.AppendLine("                             0");
-            sql.AppendLine("                     END");
-            sql.AppendLine("                 ) AS Liquidated");
-            sql.AppendLine("         ,       0 AS HasStock2");
-            sql.AppendLine("         ,       0 AS QuantityLeft2");
-            sql.AppendLine("         FROM ");
-            sql.AppendLine("                 #StockProductVariable AS STP");
-            sql.AppendLine("         INNER JOIN (");
-            sql.AppendLine("                 SELECT");
-            sql.AppendLine("                         ParentID");
-            sql.AppendLine("                 ,       ProductVariableID");
-            sql.AppendLine("                 ,       MAX(CreatedDate) AS CreatedDate");
-            sql.AppendLine("                 FROM");
-            sql.AppendLine("                         #StockProductVariable");
-            sql.AppendLine("                 GROUP BY");
-            sql.AppendLine("                         ParentID");
-            sql.AppendLine("                 ,       ProductVariableID");
-            sql.AppendLine("             ) AS SPM");
-            sql.AppendLine("             ON  STP.ParentID = SPM.ParentID");
-            sql.AppendLine("             AND STP.ProductVariableID = SPM.ProductVariableID");
-            sql.AppendLine("             AND STP.CreatedDate = SPM.CreatedDate");
-            sql.AppendLine(String.Empty);
-            sql.AppendLine("         UNION ALL");
-            sql.AppendLine(String.Empty);
-            sql.AppendLine("         SELECT");
-            sql.AppendLine("                 2 AS ProductStyle");
-            sql.AppendLine("         ,       STP.ProductID AS ParentID");
-            sql.AppendLine("         ,       0 AS QuantityLeft");
-            sql.AppendLine("         ,       (");
-            sql.AppendLine("                     CASE STP.Status");
-            sql.AppendLine("                         WHEN 14");
-            sql.AppendLine("                             THEN 1");
-            sql.AppendLine("                         ELSE");
-            sql.AppendLine("                             0");
-            sql.AppendLine("                     END");
-            sql.AppendLine("                 ) AS Liquidated");
-            sql.AppendLine("         ,       1 AS HasStock2");
-            sql.AppendLine("         ,       (");
-            sql.AppendLine("                     CASE STP.Type");
-            sql.AppendLine("                         WHEN 1");
-            sql.AppendLine("                             THEN STP.QuantityCurrent + STP.Quantity");
-            sql.AppendLine("                         WHEN 2");
-            sql.AppendLine("                             THEN STP.QuantityCurrent - STP.Quantity");
-            sql.AppendLine("                         ELSE");
-            sql.AppendLine("                             0");
-            sql.AppendLine("                     END");
-            sql.AppendLine("                 ) AS QuantityLeft2");
-            sql.AppendLine("         FROM ");
-            sql.AppendLine("                 #StockProductVariable2 AS STP");
-            sql.AppendLine("         INNER JOIN (");
-            sql.AppendLine("                 SELECT");
-            sql.AppendLine("                         ProductID");
-            sql.AppendLine("                 ,       ProductVariableID");
-            sql.AppendLine("                 ,       MAX(CreatedDate) AS CreatedDate");
-            sql.AppendLine("                 FROM");
-            sql.AppendLine("                         #StockProductVariable2");
-            sql.AppendLine("                 GROUP BY");
-            sql.AppendLine("                         ProductID");
-            sql.AppendLine("                 ,       ProductVariableID");
-            sql.AppendLine("             ) AS SPM");
-            sql.AppendLine("             ON  STP.ProductID = SPM.ProductID");
-            sql.AppendLine("             AND STP.ProductVariableID = SPM.ProductVariableID");
-            sql.AppendLine("             AND STP.CreatedDate = SPM.CreatedDate");
-            sql.AppendLine("     ) AS PRQ");
-            sql.AppendLine("     GROUP BY");
-            sql.AppendLine("             PRQ.ProductStyle");
-            sql.AppendLine("     ,       PRQ.ParentID");
-            sql.AppendLine("     ;");
-            sql.AppendLine(String.Empty);
-            sql.AppendLine("     CREATE INDEX [ID_PROCDUCT] ON #ProductQuantity([ProductStyle], [ParentID])");
-            #endregion
-            #endregion
-            #endregion
-
+            
             #region Lọc lại dữ liệu liên quan đến kho
-            #region Lọc theo số lượng
+            #region Lọc theo trạng thái và số lượng kho
             if (filter.stockStatus != 0 || !String.IsNullOrEmpty(filter.quantity))
             {
                 sql.AppendLine(String.Empty);
-                sql.AppendLine("DELETE #Product");
-                sql.AppendLine("WHERE ID NOT IN (");
-                sql.AppendLine("    SELECT");
-                sql.AppendLine("        p.ID AS ProductID");
-                sql.AppendLine("    FROM");
-                sql.AppendLine("        #Product AS p");
-                sql.AppendLine("    LEFT JOIN #ProductQuantity AS PRQ");
-                sql.AppendLine("    ON  p.ProductStyle = PRQ.ProductStyle");
-                sql.AppendLine("    AND p.ID = PRQ.ParentID");
-                sql.AppendLine("    WHERE 1 = 1");
+                sql.AppendLine("    DELETE #Product");
+                sql.AppendLine("    WHERE NOT EXISTS (");
+                sql.AppendLine("        SELECT");
+                sql.AppendLine("            NULL AS DUMMY");
+                sql.AppendLine("        FROM (");
+                sql.AppendLine("            SELECT");
+                sql.AppendLine("                PRD.ID AS ProductID");
+                sql.AppendLine("            FROM");
+                sql.AppendLine("                #Product AS PRD");
+                sql.AppendLine("            LEFT JOIN #ProductQuantity AS PRQ");
+                sql.AppendLine("                ON PRD.ID = PRQ.ParentID");
+                sql.AppendLine("            WHERE 1 = 1");
+                
+                #region Theo trạng thái kho
                 if (filter.stockStatus == (int)StockStatus.stocking)
-                    sql.AppendLine("    AND PRQ.QuantityLeft > 0");
+                    sql.AppendLine("                AND PRQ.QuantityLeft > 0");
                 else if (filter.stockStatus == (int)StockStatus.stockOut)
-                    sql.AppendLine("    AND PRQ.QuantityLeft <= 0");
+                    sql.AppendLine("                AND PRQ.QuantityLeft <= 0");
                 else if (filter.stockStatus == (int)StockStatus.stockIn)
-                    sql.AppendLine("    AND PRQ.QuantityLeft IS NULL");
+                    sql.AppendLine("                AND PRQ.QuantityLeft IS NULL");
+                #endregion
 
+                #region Theo số lượng
                 if (filter.quantity.Equals("greaterthan"))
-                    sql.AppendLine(String.Format("  AND PRQ.QuantityLeft >= {0}", filter.quantityFrom));
+                    sql.AppendLine(String.Format("                AND PRQ.QuantityLeft >= {0}", filter.quantityFrom));
                 else if (filter.quantity.Equals("lessthan"))
-                    sql.AppendLine(String.Format("  AND PRQ.QuantityLeft <= {0}", filter.quantityTo));
+                    sql.AppendLine(String.Format("                AND PRQ.QuantityLeft <= {0}", filter.quantityTo));
                 else if (filter.quantity.Equals("between"))
-                    sql.AppendLine(String.Format("  AND PRQ.QuantityLeft BETWEEN {0} AND {1}", filter.quantityFrom, filter.quantityTo));
-                sql.AppendLine(");");
+                    sql.AppendLine(String.Format("                AND PRQ.QuantityLeft BETWEEN {0} AND {1}", filter.quantityFrom, filter.quantityTo));
+                #endregion
 
+                sql.AppendLine("        ) AS PDF");
+                sql.AppendLine("        WHERE");
+                sql.AppendLine("            ID = PDF.ProductID");
+                sql.AppendLine("    );");
                 sql.AppendLine(String.Empty);
-                sql.AppendLine("DELETE #ProductQuantity");
-                sql.AppendLine("WHERE NOT EXISTS (");
-                sql.AppendLine("    SELECT");
-                sql.AppendLine("        NULL AS DUMMY");
-                sql.AppendLine("    FROM");
-                sql.AppendLine("        #Product AS p");
-                sql.AppendLine("    WHERE");
-                sql.AppendLine("        p.ProductStyle = ProductStyle");
-                sql.AppendLine("    AND p.ID = ParentID");
-                sql.AppendLine(");");
+                sql.AppendLine("    DELETE #ProductQuantity");
+                sql.AppendLine("    WHERE NOT EXISTS (");
+                sql.AppendLine("        SELECT");
+                sql.AppendLine("            NULL AS DUMMY");
+                sql.AppendLine("        FROM");
+                sql.AppendLine("            #Product AS PRD");
+                sql.AppendLine("        WHERE");
+                sql.AppendLine("            PRD.ID = ParentID");
+                sql.AppendLine("    );");
             }
             #endregion
 
@@ -1549,66 +1351,38 @@ namespace IM_PJ.Controllers
             {
                 case 1:
                     sql.AppendLine(String.Empty);
-                    sql.AppendLine("DELETE #Product");
-                    sql.AppendLine("WHERE NOT EXISTS (");
+                    sql.AppendLine("    DELETE #Product");
+                    sql.AppendLine("    WHERE NOT EXISTS (");
                     sql.AppendLine("        SELECT");
-                    sql.AppendLine("            S.ParentID");
+                    sql.AppendLine("            NULL AS DUMMY");
                     sql.AppendLine("        FROM (");
                     sql.AppendLine("            SELECT ");
-                    sql.AppendLine("                SP.ParentID");
+                    sql.AppendLine("                PST1.ParentID");
                     sql.AppendLine("            FROM");
-                    sql.AppendLine("                #StockProduct AS SP");
+                    sql.AppendLine("                #ProductStock1 AS PST1");
                     sql.AppendLine("            GROUP BY");
-                    sql.AppendLine("                SP.ParentID");
-                    sql.AppendLine("        ) AS S");
+                    sql.AppendLine("                PST1.ParentID");
+                    sql.AppendLine("        ) AS PRD");
                     sql.AppendLine("        WHERE");
-                    sql.AppendLine("            ID = S.ParentID");
-                    sql.AppendLine("    )");
-                    sql.AppendLine("    AND NOT EXISTS (");
-                    sql.AppendLine("        SELECT");
-                    sql.AppendLine("            S.ParentID");
-                    sql.AppendLine("        FROM (");
-                    sql.AppendLine("            SELECT ");
-                    sql.AppendLine("                SP.ParentID");
-                    sql.AppendLine("            FROM");
-                    sql.AppendLine("                #StockProductVariable AS SP");
-                    sql.AppendLine("            GROUP BY");
-                    sql.AppendLine("                SP.ParentID");
-                    sql.AppendLine("        ) AS S");
-                    sql.AppendLine("        WHERE");
-                    sql.AppendLine("            ID = S.ParentID");
+                    sql.AppendLine("            ID = PRD.ParentID");
                     sql.AppendLine("    );");
                     break;
                 case 2:
                     sql.AppendLine(String.Empty);
-                    sql.AppendLine("DELETE #Product");
-                    sql.AppendLine("WHERE NOT EXISTS (");
+                    sql.AppendLine("    DELETE #Product");
+                    sql.AppendLine("    WHERE NOT EXISTS (");
                     sql.AppendLine("        SELECT");
-                    sql.AppendLine("            S.ProductID");
+                    sql.AppendLine("            NULL AS DUMMY");
                     sql.AppendLine("        FROM (");
                     sql.AppendLine("            SELECT ");
-                    sql.AppendLine("                SP.ProductID");
+                    sql.AppendLine("                PST2.ProductID");
                     sql.AppendLine("            FROM");
-                    sql.AppendLine("                #StockProduct2 AS SP");
+                    sql.AppendLine("                #ProductStock2 AS PST2");
                     sql.AppendLine("            GROUP BY");
-                    sql.AppendLine("                SP.ProductID");
-                    sql.AppendLine("        ) AS S");
+                    sql.AppendLine("                PST2.ProductID");
+                    sql.AppendLine("        ) AS PRD");
                     sql.AppendLine("        WHERE");
-                    sql.AppendLine("            ID = S.ProductID");
-                    sql.AppendLine("    )");
-                    sql.AppendLine("    AND NOT EXISTS (");
-                    sql.AppendLine("        SELECT");
-                    sql.AppendLine("            S.ProductID");
-                    sql.AppendLine("        FROM (");
-                    sql.AppendLine("            SELECT ");
-                    sql.AppendLine("                SP.ProductID");
-                    sql.AppendLine("            FROM");
-                    sql.AppendLine("                #StockProductVariable2 AS SP");
-                    sql.AppendLine("            GROUP BY");
-                    sql.AppendLine("                SP.ProductID");
-                    sql.AppendLine("        ) AS S");
-                    sql.AppendLine("        WHERE");
-                    sql.AppendLine("            ID = S.ProductID");
+                    sql.AppendLine("            ID = PRD.ProductID");
                     sql.AppendLine("    );");
                     break;
                 default:
@@ -1618,17 +1392,17 @@ namespace IM_PJ.Controllers
             if (filter.warehouse != 0)
             {
                 sql.AppendLine(String.Empty);
-                sql.AppendLine("DELETE #ProductQuantity");
-                sql.AppendLine("WHERE NOT EXISTS (");
-                sql.AppendLine("    SELECT");
-                sql.AppendLine("        NULL AS DUMMY");
-                sql.AppendLine("    FROM");
-                sql.AppendLine("        #Product AS p");
-                sql.AppendLine("    WHERE");
-                sql.AppendLine("        p.ProductStyle = ProductStyle");
-                sql.AppendLine("    AND p.ID = ParentID");
-                sql.AppendLine(");");
+                sql.AppendLine("    DELETE #ProductQuantity");
+                sql.AppendLine("    WHERE NOT EXISTS (");
+                sql.AppendLine("        SELECT");
+                sql.AppendLine("            NULL AS DUMMY");
+                sql.AppendLine("        FROM");
+                sql.AppendLine("            #Product AS PRD");
+                sql.AppendLine("        WHERE");
+                sql.AppendLine("            PRD.ID = ParentID");
+                sql.AppendLine("    );");
             }
+            #endregion
             #endregion
 
             #region Lọc lại dữ liệu liên quan tag
@@ -1636,182 +1410,198 @@ namespace IM_PJ.Controllers
             {
                 sql.AppendLine(String.Empty);
                 sql.AppendLine("    SELECT");
-                sql.AppendLine("        T.ProductID");
+                sql.AppendLine("        PRD.ID AS ProductID");
                 sql.AppendLine("    INTO #ProductTag");
                 sql.AppendLine("    FROM ");
-                sql.AppendLine("        ProductTag AS T");
-                sql.AppendLine("    INNER JOIN #Product AS P");
-                sql.AppendLine("    ON  T.ProductID = P.ID");
+                sql.AppendLine("        #Product AS PRD");
+                sql.AppendLine("    INNER JOIN ProductTag AS TAG");
+                sql.AppendLine("        ON PRD.ID = TAG.ProductID");
                 sql.AppendLine("    WHERE");
-                sql.AppendLine(String.Format("        T.TagID = {0}", filter.tag));
-                sql.AppendLine("    GROUP BY T.ProductID;");
+                sql.AppendLine(String.Format("        TAG.TagID = {0}", filter.tag));
+                sql.AppendLine("    GROUP BY");
+                sql.AppendLine("        PRD.ID");
+                sql.AppendLine("    ;");
 
                 sql.AppendLine(String.Empty);
-                sql.AppendLine("DELETE #Product");
-                sql.AppendLine("FROM ");
-                sql.AppendLine("    #Product AS P");
-                sql.AppendLine("WHERE NOT EXISTS (");
-                sql.AppendLine("    SELECT");
-                sql.AppendLine("        NULL AS DUMMY");
-                sql.AppendLine("    FROM");
-                sql.AppendLine("        #ProductTag AS T");
-                sql.AppendLine("    WHERE");
-                sql.AppendLine("        P.ID = T.ProductID");
-                sql.AppendLine(");");
+                sql.AppendLine("    DELETE #Product");
+                sql.AppendLine("    WHERE NOT EXISTS (");
+                sql.AppendLine("        SELECT");
+                sql.AppendLine("            NULL AS DUMMY");
+                sql.AppendLine("        FROM");
+                sql.AppendLine("            #ProductTag AS TAG");
+                sql.AppendLine("        WHERE");
+                sql.AppendLine("            ID = TAG.ProductID");
+                sql.AppendLine("    );");
             }
-
             #endregion
-
+            #endregion
+            
             #region Tính toán phân trang
             sql.AppendLine(String.Empty);
-            sql.AppendLine("SELECT");
-            sql.AppendLine("    @totalCount = COUNT(*),");
-            sql.AppendLine("    @totalPages = CEILING(COUNT(*) / (@pageSize * 1.0))");
-            sql.AppendLine("FROM");
-            sql.AppendLine("    #Product AS p;");
+            sql.AppendLine("    SELECT");
+            sql.AppendLine("        @totalCount = COUNT(*),");
+            sql.AppendLine("        @totalPages = CEILING(COUNT(*) / (@pageSize * 1.0))");
+            sql.AppendLine("    FROM");
+            sql.AppendLine("        #Product AS PRD");
+            sql.AppendLine("    ;");
             #endregion
 
             #region Lấy sản phẩm đã phân trang
             sql.AppendLine(String.Empty);
             sql.AppendLine("     SELECT");
-            sql.AppendLine("             p.*");
+            sql.AppendLine("        PRD.*");
             sql.AppendLine("     INTO #ProductPagination");
             sql.AppendLine("     FROM");
-            sql.AppendLine("             #Product AS p");
+            sql.AppendLine("        #Product AS PRD");
+            
             if (!String.IsNullOrEmpty(filter.orderBy) && (filter.orderBy == ProductOrderBy.stockAsc || filter.orderBy == ProductOrderBy.stockDesc))
             {
                 sql.AppendLine("     LEFT JOIN #ProductQuantity AS PRQ");
-                sql.AppendLine("         ON  p.ProductStyle = PRQ.ProductStyle");
-                sql.AppendLine("         AND p.ID = PRQ.ParentID");
+                sql.AppendLine("         ON PRD.ID = PRQ.ParentID");
             }
+            
             sql.AppendLine("     ORDER BY");
+            
             if (!String.IsNullOrEmpty(filter.orderBy))
             {
                 switch (filter.orderBy)
                 {
                     case ProductOrderBy.latestOnApp:
-                        sql.AppendLine("             p.WebUpdate DESC");
+                        sql.AppendLine("          PRD.WebUpdate DESC");
                         break;
                     case ProductOrderBy.latestOnSystem:
-                        sql.AppendLine("             p.ID DESC");
+                        sql.AppendLine("          PRD.ID DESC");
                         break;
                     case ProductOrderBy.stockDesc:
-                        sql.AppendLine("             ISNULL(PRQ.QuantityLeft, 0) DESC");
+                        sql.AppendLine("          ISNULL(PRQ.QuantityLeft, 0) DESC");
                         break;
                     case ProductOrderBy.stockAsc:
-                        sql.AppendLine("             ISNULL(PRQ.QuantityLeft, 0) ASC");
+                        sql.AppendLine("          ISNULL(PRQ.QuantityLeft, 0) ASC");
                         break;
                     default:
-                        sql.AppendLine("             p.ID DESC");
+                        sql.AppendLine("          PRD.ID DESC");
                         break;
                 }
             }
             else
             {
-                sql.AppendLine("             p.ID DESC");
+                sql.AppendLine("          PRD.ID DESC");
             }
-            sql.AppendLine("     OFFSET @pageSize * (@currentPage - 1) ROWS");
-            sql.AppendLine("     FETCH NEXT @pageSize ROWS ONLY");
-            sql.AppendLine("     ;");
-            sql.AppendLine("     DELETE #ProductQuantity");
-            sql.AppendLine("     WHERE NOT EXISTS (");
-            sql.AppendLine("         SELECT");
-            sql.AppendLine("             NULL AS DUMMY");
-            sql.AppendLine("         FROM");
-            sql.AppendLine("             #ProductPagination AS p");
-            sql.AppendLine("         WHERE");
-            sql.AppendLine("             p.ProductStyle = ProductStyle");
-            sql.AppendLine("         AND p.ID = ParentID");
-            sql.AppendLine(");");
+            sql.AppendLine("    OFFSET @pageSize * (@currentPage - 1) ROWS");
+            sql.AppendLine("    FETCH NEXT @pageSize ROWS ONLY");
+            sql.AppendLine("    ;");
             sql.AppendLine(String.Empty);
+            sql.AppendLine("    DELETE #ProductQuantity");
+            sql.AppendLine("    WHERE NOT EXISTS (");
+            sql.AppendLine("        SELECT");
+            sql.AppendLine("            NULL AS DUMMY");
+            sql.AppendLine("        FROM");
+            sql.AppendLine("            #ProductPagination AS PDP");
+            sql.AppendLine("        WHERE");
+            sql.AppendLine("           PDP.ID = ParentID");
+            sql.AppendLine("    );");
+            #endregion
+
+            #region Lấy thông tin danh mục
+            if (filter.category == 0) {
+                sql.AppendLine("    SELECT");
+                sql.AppendLine("        CTG.ID");
+                sql.AppendLine("    ,   CTG.CategoryName");
+                sql.AppendLine("    ,   CTG.Slug");
+                sql.AppendLine("    ,   CTG.ParentID");
+                sql.AppendLine("    INTO #Category");
+                sql.AppendLine("    FROM");
+                sql.AppendLine("        tbl_Category AS CTG");
+                sql.AppendLine("    INNER JOIN (");
+                sql.AppendLine("        SELECT");
+                sql.AppendLine("            CTG.CategoryID");
+                sql.AppendLine("        FROM");
+                sql.AppendLine("            #ProductPagination AS PDP");
+                sql.AppendLine("        GROUP BY");
+                sql.AppendLine("            PDP.CategoryID");
+                sql.AppendLine("    ) AS CGF");
+                sql.AppendLine("        ON CTG.ID = CGF.CategoryID");
+            }
             #endregion
 
             #region Lấy thông tin video sản phẩm
             sql.AppendLine(String.Empty);
-            sql.AppendLine("     SELECT");
-            sql.AppendLine("        f.ProductId");
-            sql.AppendLine("     ,  v.*");
-            sql.AppendLine("     INTO #ProductVideo");
-            sql.AppendLine("     FROM (");
-            sql.AppendLine("         SELECT");
-            sql.AppendLine("            pv.ProductId");
-            sql.AppendLine("         ,  pv.VideoId");
-            sql.AppendLine("         FROM");
-            sql.AppendLine("                 #ProductPagination AS p");
-            sql.AppendLine("         INNER JOIN ProductVideo AS pv");
-            sql.AppendLine("             ON  p.ID = pv.ProductId");
-            sql.AppendLine("     ) AS f");
-            sql.AppendLine("     INNER JOIN Video AS v");
-            sql.AppendLine("         ON  f.VideoId = v.Id");
-            sql.AppendLine("     ;");
-            sql.AppendLine(String.Empty);
+            sql.AppendLine("    SELECT");
+            sql.AppendLine("        PDF.ProductId");
+            sql.AppendLine("    ,   VID.*");
+            sql.AppendLine("    INTO #ProductVideo");
+            sql.AppendLine("    FROM (");
+            sql.AppendLine("        SELECT");
+            sql.AppendLine("            PDP.ID AS ProductId");
+            sql.AppendLine("        ,   PDV.VideoId");
+            sql.AppendLine("        FROM");
+            sql.AppendLine("            #ProductPagination AS PDP");
+            sql.AppendLine("        INNER JOIN ProductVideo AS PDV");
+            sql.AppendLine("            ON PDP.ID = PDV.ProductId");
+            sql.AppendLine("    ) AS PDF");
+            sql.AppendLine("    INNER JOIN Video AS VID");
+            sql.AppendLine("        ON PDF.VideoId = VID.Id");
+            sql.AppendLine("    ;");
             #endregion
 
             #region Kết thúc
             sql.AppendLine(String.Empty);
-            sql.AppendLine("     SELECT");
-            sql.AppendLine("             @totalCount AS TotalCount");
-            sql.AppendLine("     ,       @totalPages AS TotalPages");
-            sql.AppendLine("     ,       p.ProductStyle AS ProductStyle");
-            sql.AppendLine("     ,       c.CategoryName");
-            sql.AppendLine("     ,       c.Slug as CategorySlug");
-            sql.AppendLine("     ,       dbo.ufnGetTagByProductID(p.ID) AS Tags");
-            sql.AppendLine("     ,       p.*");
-            sql.AppendLine("     ,       PRQ.QuantityLeft");
-            sql.AppendLine("     ,       PRQ.Liquidated");
-            sql.AppendLine("     ,       PRQ.HasStock2");
-            sql.AppendLine("     ,       PRQ.QuantityLeft2");
-            sql.AppendLine("     ,       pv.Id AS VideoId");
-            sql.AppendLine("     ,       pv.SubUrl AS LinkDownload");
-            sql.AppendLine("     FROM");
-            sql.AppendLine("             #ProductPagination AS p");
-            sql.AppendLine("     LEFT JOIN #ProductQuantity AS PRQ");
-            sql.AppendLine("         ON  p.ProductStyle = PRQ.ProductStyle");
-            sql.AppendLine("         AND p.ID = PRQ.ParentID");
-            sql.AppendLine("     LEFT JOIN (");
-            sql.AppendLine("             SELECT");
-            sql.AppendLine("                     ID");
-            sql.AppendLine("             ,       CategoryName");
-            sql.AppendLine("             ,       Slug");
-            sql.AppendLine("             FROM");
-            sql.AppendLine("                     dbo.tbl_Category");
-            sql.AppendLine("     ) AS c");
-            sql.AppendLine("     ON c.ID = p.CategoryID");
-            sql.AppendLine("     LEFT JOIN #ProductVideo AS pv");
-            sql.AppendLine("         ON  p.Id = pv.ProductId");
-            sql.AppendLine("     ;");
-            sql.AppendLine(String.Empty);
+            sql.AppendLine("    SELECT");
+            sql.AppendLine("        @totalCount AS TotalCount");
+            sql.AppendLine("    ,   @totalPages AS TotalPages");
+            sql.AppendLine("    ,   PDP.ProductStyle");
+            sql.AppendLine("    ,   CTG.CategoryName");
+            sql.AppendLine("    ,   CTG.Slug as CategorySlug");
+            sql.AppendLine("    ,   ufnGetTagByProductID(PDP.ID) AS Tags");
+            sql.AppendLine("    ,   PDP.*");
+            sql.AppendLine("    ,   PRQ.QuantityLeft");
+            sql.AppendLine("    ,   PRQ.Liquidated");
+            sql.AppendLine("    ,   PRQ.HasStock2");
+            sql.AppendLine("    ,   PRQ.QuantityLeft2");
+            sql.AppendLine("    ,   PDV.Id AS VideoId");
+            sql.AppendLine("    ,   PDV.SubUrl AS LinkDownload");
+            sql.AppendLine("    FROM");
+            sql.AppendLine("        #ProductPagination AS PDP");
+            sql.AppendLine("    LEFT JOIN #ProductQuantity AS PRQ");
+            sql.AppendLine("        ON  PDP.ID = PRQ.ParentID");
+            sql.AppendLine("    LEFT JOIN #Category AS CTG");
+            sql.AppendLine("        ON CTG.ID = PDP.CategoryID");
+            sql.AppendLine("    LEFT JOIN #ProductVideo AS PDV");
+            sql.AppendLine("        ON PDP.Id = PDV.ProductId");
+            sql.AppendLine("    ;");
             #endregion
-            #endregion
+            
             sql.AppendLine(" END");
+            #endregion
 
+            #region Thực thi SQL
+            var data = new List<ProductSQL>();
             var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
 
             while (reader.Read())
             {
-                double quantityLeft = 0;
+                var quantityLeft = 0D;
+                var row = new ProductSQL();
 
-                var entity = new ProductSQL();
-
-                entity.ID = Convert.ToInt32(reader["ID"]);
-
-                entity.ProductImage = reader["ProductImage"].ToString();
-
+                // ID sản phẩm
+                row.ID = Convert.ToInt32(reader["ID"]);
+                // Hình ảnh sản phẩm
+                row.ProductImage = reader["ProductImage"].ToString();
+                // Hình ảnh sách của sản phẩm
                 if (!string.IsNullOrEmpty(reader["ProductImageClean"].ToString()))
-                {
-                    entity.ProductImageClean = reader["ProductImageClean"].ToString();
-                }
-
+                    row.ProductImageClean = reader["ProductImageClean"].ToString();
+                // Tên sản phẩm
                 if (reader["ProductTitle"] != DBNull.Value)
-                    entity.ProductTitle = reader["ProductTitle"].ToString();
+                    row.ProductTitle = reader["ProductTitle"].ToString();
+                // Mã của sản phẩm
                 if (reader["ProductSKU"] != DBNull.Value)
-                    entity.ProductSKU = reader["ProductSKU"].ToString();
-
-
+                    row.ProductSKU = reader["ProductSKU"].ToString();
+                
+                #region Trạng thái kho của sản phẩm
                 if (reader["PreOrder"] != DBNull.Value && Convert.ToInt32(reader["PreOrder"]) == 1)
                 {
-                    entity.ProductInstockStatus = "<span class='bg-blue'>Hàng order</span>";
-                    entity.StockStatus = 4;
+                    row.ProductInstockStatus = "<span class='bg-blue'>Hàng order</span>";
+                    row.StockStatus = 4;
                 }
                 else
                 {
@@ -1821,58 +1611,76 @@ namespace IM_PJ.Controllers
 
                         if (quantityLeft > 0)
                         {
-                            entity.ProductInstockStatus = "<span class='bg-green'>Còn hàng</span>";
-                            entity.StockStatus = 1;
+                            row.ProductInstockStatus = "<span class='bg-green'>Còn hàng</span>";
+                            row.StockStatus = 1;
                         }
                         else
                         {
-                            entity.ProductInstockStatus = "<span class='bg-red'>Hết hàng</span>";
-                            entity.StockStatus = 2;
+                            row.ProductInstockStatus = "<span class='bg-red'>Hết hàng</span>";
+                            row.StockStatus = 2;
                         }
                     }
                     else
                     {
-                        entity.ProductInstockStatus = "<span class='bg-yellow'>Nhập hàng</span>";
-                        entity.StockStatus = 3;
+                        row.ProductInstockStatus = "<span class='bg-yellow'>Nhập hàng</span>";
+                        row.StockStatus = 3;
                     }
                 }
+                #endregion
 
-
-                entity.TotalProductInstockQuantityLeft = quantityLeft;
+                // Số lượng còn của sản phẩm
+                row.TotalProductInstockQuantityLeft = quantityLeft;
+                // Giá của sản phẩm khi sản phẩm thực hiện sale
                 if (reader["Old_Price"] != DBNull.Value)
-                    entity.OldPrice = Convert.ToDouble(reader["Old_Price"].ToString());
+                    row.OldPrice = Convert.ToDouble(reader["Old_Price"].ToString());
+                // Giá bán sỉ của sản phẩm
                 if (reader["Regular_Price"] != DBNull.Value)
-                    entity.RegularPrice = Convert.ToDouble(reader["Regular_Price"].ToString());
+                    row.RegularPrice = Convert.ToDouble(reader["Regular_Price"].ToString());
+                // Giá vốn của sản phẩm
                 if (reader["CostOfGood"] != DBNull.Value)
-                    entity.CostOfGood = Convert.ToDouble(reader["CostOfGood"].ToString());
+                    row.CostOfGood = Convert.ToDouble(reader["CostOfGood"].ToString());
+                // Giá bán lẻ của sản phẩm
                 if (reader["Retail_Price"] != DBNull.Value)
-                    entity.RetailPrice = Convert.ToDouble(reader["Retail_Price"].ToString());
+                    row.RetailPrice = Convert.ToDouble(reader["Retail_Price"].ToString());
+                // Tên danh mục của sản phẩm
                 if (reader["CategoryName"] != DBNull.Value)
-                    entity.CategoryName = reader["CategoryName"].ToString();
+                    row.CategoryName = reader["CategoryName"].ToString();
+                // Slug của danh của của sản phẩm
                 if (reader["CategorySlug"] != DBNull.Value)
-                    entity.CategorySlug = reader["CategorySlug"].ToString();
+                    row.CategorySlug = reader["CategorySlug"].ToString();
+                // ID danh mục của sản phẩm
                 if (reader["CategoryID"] != DBNull.Value)
-                    entity.CategoryID = reader["CategoryID"].ToString().ToInt(0);
+                    row.CategoryID = reader["CategoryID"].ToString().ToInt(0);
+                // Danh sách tag của sản phẩm
                 if (reader["Tags"] != DBNull.Value)
-                    entity.Tags = reader["Tags"].ToString();
+                    row.Tags = reader["Tags"].ToString();
+                // Ngày khởi tạo sản phẩm
                 if (reader["CreatedDate"] != DBNull.Value)
-                    entity.CreatedDate = Convert.ToDateTime(reader["CreatedDate"]);
+                    row.CreatedDate = Convert.ToDateTime(reader["CreatedDate"]);
+                // Nội dung của sản phẩm
                 if (reader["ProductContent"] != DBNull.Value)
-                    entity.ProductContent = reader["ProductContent"].ToString();
+                    row.ProductContent = reader["ProductContent"].ToString();
+                // Phân biệt sản phẩm biến thể hay sản phẩm đơn giản
                 if (reader["ProductStyle"] != DBNull.Value)
-                    entity.ProductStyle = reader["ProductStyle"].ToString().ToInt(0);
+                    row.ProductStyle = reader["ProductStyle"].ToString().ToInt(0);
+                // Có cho phép sản phẩm show tại màn hình home của các trang web vệ tinh
                 if (reader["ShowHomePage"] != DBNull.Value)
-                    entity.ShowHomePage = reader["ShowHomePage"].ToString().ToInt(0);
+                    row.ShowHomePage = reader["ShowHomePage"].ToString().ToInt(0);
+                // Chất liệu sản phẩm
                 if (reader["Materials"] != DBNull.Value)
-                    entity.Materials = reader["Materials"].ToString();
+                    row.Materials = reader["Materials"].ToString();
+                // Cho phép thấy ở các trang web vệ tinh
                 if (reader["WebPublish"] != DBNull.Value)
-                    entity.WebPublish = reader["WebPublish"].ToString().ToBool();
+                    row.WebPublish = reader["WebPublish"].ToString().ToBool();
+                // Dùng để sort sản phẩm ở các trang web vệ tinh
                 if (reader["WebUpdate"] != DBNull.Value)
-                    entity.WebUpdate = Convert.ToDateTime(reader["WebUpdate"]);
+                    row.WebUpdate = Convert.ToDateTime(reader["WebUpdate"]);
+                // Có phải là sản phẩm thanh lý không
                 if (reader["Liquidated"] != DBNull.Value)
-                    entity.Liquidated = Convert.ToBoolean(reader["Liquidated"]);
+                    row.Liquidated = Convert.ToBoolean(reader["Liquidated"]);
+                // Cho phép ẩn / hiện sản phẩm  
                 if (reader["IsHidden"] != DBNull.Value)
-                    entity.IsHidden = Convert.ToBoolean(reader["IsHidden"]);
+                    row.IsHidden = Convert.ToBoolean(reader["IsHidden"]);
                 // get infe page header
                 if (reader["TotalCount"] != DBNull.Value)
                     page.totalCount = reader["TotalCount"].ToString().ToInt(0);
@@ -1881,29 +1689,35 @@ namespace IM_PJ.Controllers
 
                 #region Stock 2
                 if (reader["HasStock2"] != DBNull.Value)
-                    entity.HasStock2 = Convert.ToBoolean(reader["HasStock2"]);
+                    row.HasStock2 = Convert.ToBoolean(reader["HasStock2"]);
                 else
-                    entity.HasStock2 = false;
+                    row.HasStock2 = false;
                 if (reader["QuantityLeft2"] != DBNull.Value)
-                    entity.Stock2Quantity = Convert.ToInt32(reader["QuantityLeft2"]);
+                    row.Stock2Quantity = Convert.ToInt32(reader["QuantityLeft2"]);
                 else
-                    entity.Stock2Quantity = 0;
+                    row.Stock2Quantity = 0;
                 #endregion
 
                 #region Product video
                 if (reader["VideoId"] != DBNull.Value)
-                    entity.VideoId = reader["VideoId"].ToString();
+                    row.VideoId = reader["VideoId"].ToString();
                 if (reader["LinkDownload"] != DBNull.Value)
-                    entity.LinkDownload = reader["LinkDownload"].ToString();
+                    row.LinkDownload = reader["LinkDownload"].ToString();
                 #endregion
+
+                // Giá bán triết khấu 10 cái
                 if (reader["Price10"] != DBNull.Value)
-                    entity.Price10 = Convert.ToDouble(reader["Price10"].ToString());
+                    row.Price10 = Convert.ToDouble(reader["Price10"].ToString());
+                // Giá bán triết khấu 1 thùng
                 if (reader["BestPrice"] != DBNull.Value)
-                    entity.BestPrice = Convert.ToDouble(reader["BestPrice"].ToString());
-                list.Add(entity);
+                    row.BestPrice = Convert.ToDouble(reader["BestPrice"].ToString());
+                data.Add(entity);
             }
+            
             reader.Close();
-            return list;
+            #endregion
+
+            return data;
         }
 
         /// <summary>
