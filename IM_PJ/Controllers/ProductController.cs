@@ -485,13 +485,6 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("    INNER JOIN #category AS CTG");
                 sql.AppendLine("        ON CTG.ID = PRD.CategoryID");
             }
-
-            // Theo mã sản phẩm
-            if (!String.IsNullOrEmpty(SKU)) {
-                sql.AppendLine("    WHERE");
-                sql.AppendLine(String.Format("        (PRD.ProductStyle = 1 AND PRD.ProductSKU LIKE '{0}%')", SKU));
-                sql.AppendLine(String.Format("        OR (PRD.ProductStyle = 2 AND PDV.SKU LIKE '{0}%')", SKU));
-            }
             #endregion
 
             sql.AppendLine("     ;");

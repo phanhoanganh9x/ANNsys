@@ -671,7 +671,6 @@ namespace IM_PJ.Controllers
                     CreatedDate = Convert.ToDateTime(reader["CreatedDate"]),
                     ID = Convert.ToInt32(reader["ID"]),
                     Quantity = Convert.ToInt32(reader["Quantity"]),
-                    Quantity = Convert.ToInt32(reader["Quantity"]),
                     TotalCost = Convert.ToDouble(reader["TotalCost"]),
                     TotalRevenue = Convert.ToDouble(reader["TotalRevenue"]),
                     TotalRefundFee = Convert.ToInt32(reader["TotalRefundFee"])
