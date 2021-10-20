@@ -2841,7 +2841,7 @@ namespace IM_PJ.Controllers
             if (CategoryID > 0)
             {
                 sql.AppendLine(String.Empty);
-                sql.AppendLine("    WITH category AS(");
+                sql.AppendLine("    WITH RecursiveCategory AS(");
                 sql.AppendLine("        SELECT");
                 sql.AppendLine("                ID");
                 sql.AppendLine("        ,       CategoryName");
@@ -2858,7 +2858,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("        ,       CHI.CategoryName");
                 sql.AppendLine("        ,       CHI.ParentID");
                 sql.AppendLine("        FROM");
-                sql.AppendLine("                category AS PAR");
+                sql.AppendLine("                RecursiveCategory AS PAR");
                 sql.AppendLine("        INNER JOIN tbl_Category AS CHI");
                 sql.AppendLine("            ON PAR.ID = CHI.ParentID");
                 sql.AppendLine("    )");
@@ -2866,8 +2866,8 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("            ID");
                 sql.AppendLine("    ,       CategoryName");
                 sql.AppendLine("    ,       ParentID");
-                sql.AppendLine("    INTO #category");
-                sql.AppendLine("    FROM category");
+                sql.AppendLine("    INTO #Category");
+                sql.AppendLine("    FROM RecursiveCategory");
                 sql.AppendLine("    ;");
             }
             #endregion
@@ -2891,7 +2891,7 @@ namespace IM_PJ.Controllers
             // Danh mục
             if (CategoryID > 0)
             {
-                sql.AppendLine("    INNER JOIN #category AS CTG");
+                sql.AppendLine("    INNER JOIN #Category AS CTG");
                 sql.AppendLine("        ON CTG.ID = PRD.CategoryID");
             }
 
@@ -2915,7 +2915,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("    ,   ISNULL(OrdDetail.Price, 0) AS Price");
             sql.AppendLine("    ,   ISNULL(OrdDetail.DiscountPrice, 0) AS DiscountPrice");
             sql.AppendLine("    ,   ISNULL(OrdDetail.TotalCostOfGood, 0) AS TotalCostOfGood");
-            sql.AppendLine("    INTO #data");
+            sql.AppendLine("    INTO #Data");
             sql.AppendLine("    FROM tbl_Order AS Ord");
             sql.AppendLine("    INNER JOIN tbl_OrderDetail AS OrdDetail");
             sql.AppendLine("    ON     Ord.ID = OrdDetail.OrderID");
@@ -2945,7 +2945,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("    ,   SUM(DAT.Quantity) AS Quantity");
             sql.AppendLine("    ,   SUM(DAT.TotalCostOfGood) AS TotalCost");
             sql.AppendLine("    ,   SUM(DAT.Quantity * (DAT.Price - DAT.DiscountPrice)) AS TotalRevenue");
-            sql.AppendLine("    FROM #data AS DAT");
+            sql.AppendLine("    FROM #Data AS DAT");
             sql.AppendLine("    GROUP BY");
             sql.AppendLine("        DAT.DateDone");
             sql.AppendLine("    ,   DAT.ID");

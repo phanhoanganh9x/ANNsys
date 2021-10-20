@@ -453,7 +453,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("            ID");
                 sql.AppendLine("    ,       CategoryName");
                 sql.AppendLine("    ,       ParentID");
-                sql.AppendLine("    INTO #category");
+                sql.AppendLine("    INTO #Category");
                 sql.AppendLine("    FROM tbl_Category");
                 sql.AppendLine("    WHERE");
                 sql.AppendLine("        ID = " + CategoryID);
@@ -482,7 +482,7 @@ namespace IM_PJ.Controllers
             // Danh mục
             if (CategoryID > 0)
             {
-                sql.AppendLine("    INNER JOIN #category AS CTG");
+                sql.AppendLine("    INNER JOIN #Category AS CTG");
                 sql.AppendLine("        ON CTG.ID = PRD.CategoryID");
             }
             #endregion
@@ -501,7 +501,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("     ,       ISNULL(STM.QuantityCurrent, 0) AS QuantityCurrent");
             sql.AppendLine("     ,       ISNULL(STM.Type, 1) AS Type");
             sql.AppendLine("     ,       PRD.CostOfGood");
-            sql.AppendLine("     INTO #StockProduct");
+            sql.AppendLine("     INTO #ProductStock");
             sql.AppendLine("     FROM");
             sql.AppendLine("             #Product AS PRD");
             sql.AppendLine("     INNER JOIN tbl_StockManager AS STM");
@@ -509,16 +509,15 @@ namespace IM_PJ.Controllers
             sql.AppendLine("         AND PRD.VariationID = STM.ProductVariableID");
             sql.AppendLine("     ;");
             sql.AppendLine(String.Empty);
-            sql.AppendLine("     CREATE INDEX [ID_STOCK_PROCDUCT] ON #StockProduct([ProductID], [ProductVariationID]);");
+            sql.AppendLine("     CREATE INDEX [ID_PROCDUCT_STOCK] ON #ProductStock([ProductID], [ProductVariationID]);");
             #endregion
 
-            #region Thông tin số lượng và giá vốn của sản phẩm
+            #region Xuất báo cáo thông tin số lượng và giá vốn của sản phẩm
             sql.AppendLine(String.Empty);
             sql.AppendLine("    SELECT");
             sql.AppendLine("         PRQ.ProductID");
             sql.AppendLine("    ,    SUM(PRQ.QuantityLeft) AS QuantityLeft");
             sql.AppendLine("    ,    SUM(PRQ.QuantityLeft * PRQ.CostOfGood) AS CostOfGood");
-            sql.AppendLine("    INTO #ProductQuantity");
             sql.AppendLine("    FROM (");
             sql.AppendLine("        SELECT");
             sql.AppendLine("             STP.ProductID");
@@ -526,35 +525,19 @@ namespace IM_PJ.Controllers
             sql.AppendLine("        ,    (");
             sql.AppendLine("                 CASE STP.Type");
             sql.AppendLine("                     WHEN 1 THEN STP.QuantityCurrent + STP.Quantity");
-            sql.AppendLine("                         ");
             sql.AppendLine("                     WHEN 2 THEN STP.QuantityCurrent - STP.Quantity");
             sql.AppendLine("                     ELSE 0");
             sql.AppendLine("                 END");
             sql.AppendLine("             ) AS QuantityLeft");
             sql.AppendLine("        ,    STP.CostOfGood");
             sql.AppendLine("        FROM");
-            sql.AppendLine("            #StockProduct AS STP");
+            sql.AppendLine("            #ProductStock AS STP");
             sql.AppendLine("    ) AS PRQ");
             sql.AppendLine("    GROUP BY");
-            sql.AppendLine("            PRQ.ProductID");
-            sql.AppendLine("    ;");
-            sql.AppendLine(String.Empty);
-            sql.AppendLine("     CREATE INDEX [ID_PROCDUCT_QUANTITY] ON #ProductQuantity([ProductID]);");
-            #endregion
-
-            #region Xuất báo cáo thông tin số lượng và giá vốn của sản phẩm
-            sql.AppendLine(String.Empty);
-            sql.AppendLine("     SELECT");
-            sql.AppendLine("             p.ID");
-            sql.AppendLine("     ,       ISNULL(PRQ.QuantityLeft, 0) AS QuantityLeft");
-            sql.AppendLine("     ,       ISNULL(PRQ.CostOfGood, 0) AS CostOfGood");
-            sql.AppendLine("     FROM");
-            sql.AppendLine("             #Product AS p");
-            sql.AppendLine("     LEFT JOIN #ProductQuantity AS PRQ");
-            sql.AppendLine("         ON  p.ID = PRQ.ProductID");
+            sql.AppendLine("         PRQ.ProductID");
             sql.AppendLine("     ORDER BY");
-            sql.AppendLine("         p.ID");
-            sql.AppendLine("     ;");
+            sql.AppendLine("         PRQ.ProductID");
+            sql.AppendLine("    ;");
             #endregion
 
             sql.AppendLine(" END");
@@ -1943,7 +1926,7 @@ namespace IM_PJ.Controllers
             if (CategoryID > 0)
             {
                 sql.AppendLine(String.Empty);
-                sql.AppendLine("    WITH category AS(");
+                sql.AppendLine("    WITH RecursiveCategory AS(");
                 sql.AppendLine("        SELECT");
                 sql.AppendLine("                ID");
                 sql.AppendLine("        ,       CategoryName");
@@ -1960,7 +1943,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("        ,       CHI.CategoryName");
                 sql.AppendLine("        ,       CHI.ParentID");
                 sql.AppendLine("        FROM");
-                sql.AppendLine("                category AS PAR");
+                sql.AppendLine("                RecursiveCategory AS PAR");
                 sql.AppendLine("        INNER JOIN tbl_Category AS CHI");
                 sql.AppendLine("            ON PAR.ID = CHI.ParentID");
                 sql.AppendLine("    )");
@@ -1968,8 +1951,8 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("            ID");
                 sql.AppendLine("    ,       CategoryName");
                 sql.AppendLine("    ,       ParentID");
-                sql.AppendLine("    INTO #category");
-                sql.AppendLine("    FROM category");
+                sql.AppendLine("    INTO #Category");
+                sql.AppendLine("    FROM RecursiveCategory");
                 sql.AppendLine("    ;");
             }
             #endregion
@@ -1995,7 +1978,7 @@ namespace IM_PJ.Controllers
             // Danh mục
             if (CategoryID > 0)
             {
-                sql.AppendLine("    INNER JOIN #category AS CTG");
+                sql.AppendLine("    INNER JOIN #Category AS CTG");
                 sql.AppendLine("        ON CTG.ID = PRD.CategoryID");
             }
 
@@ -2021,7 +2004,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("     ,       ISNULL(STM.QuantityCurrent, 0) AS QuantityCurrent");
             sql.AppendLine("     ,       ISNULL(STM.Type, 1) AS Type");
             sql.AppendLine("     ,       PRD.CostOfGood");
-            sql.AppendLine("     INTO #StockProduct");
+            sql.AppendLine("     INTO #ProductStock");
             sql.AppendLine("     FROM");
             sql.AppendLine("             #Product AS PRD");
             sql.AppendLine("     INNER JOIN tbl_StockManager AS STM");
@@ -2029,16 +2012,15 @@ namespace IM_PJ.Controllers
             sql.AppendLine("         AND PRD.VariationID = STM.ProductVariableID");
             sql.AppendLine("     ;");
             sql.AppendLine(String.Empty);
-            sql.AppendLine("     CREATE INDEX [ID_STOCK_PROCDUCT] ON #StockProduct([ProductID], [ProductVariationID]);");
+            sql.AppendLine("     CREATE INDEX [ID_PROCDUCT_STOCK] ON #ProductStock([ProductID], [ProductVariationID]);");
             #endregion
 
-            #region Thông tin số lượng và giá vốn của sản phẩm
+            #region Xuất báo cáo thông tin số lượng và giá vốn của sản phẩm
             sql.AppendLine(String.Empty);
             sql.AppendLine("    SELECT");
             sql.AppendLine("         PRQ.ProductID");
             sql.AppendLine("    ,    SUM(PRQ.QuantityLeft) AS QuantityLeft");
             sql.AppendLine("    ,    SUM(PRQ.QuantityLeft * PRQ.CostOfGood) AS CostOfGood");
-            sql.AppendLine("    INTO #ProductQuantity");
             sql.AppendLine("    FROM (");
             sql.AppendLine("        SELECT");
             sql.AppendLine("             STP.ProductID");
@@ -2046,35 +2028,19 @@ namespace IM_PJ.Controllers
             sql.AppendLine("        ,    (");
             sql.AppendLine("                 CASE STP.Type");
             sql.AppendLine("                     WHEN 1 THEN STP.QuantityCurrent + STP.Quantity");
-            sql.AppendLine("                         ");
             sql.AppendLine("                     WHEN 2 THEN STP.QuantityCurrent - STP.Quantity");
             sql.AppendLine("                     ELSE 0");
             sql.AppendLine("                 END");
             sql.AppendLine("             ) AS QuantityLeft");
             sql.AppendLine("        ,    STP.CostOfGood");
             sql.AppendLine("        FROM");
-            sql.AppendLine("            #StockProduct AS STP");
+            sql.AppendLine("            #ProductStock AS STP");
             sql.AppendLine("    ) AS PRQ");
             sql.AppendLine("    GROUP BY");
-            sql.AppendLine("            PRQ.ProductID");
-            sql.AppendLine("    ;");
-            sql.AppendLine(String.Empty);
-            sql.AppendLine("     CREATE INDEX [ID_PROCDUCT_QUANTITY] ON #ProductQuantity([ProductID]);");
-            #endregion
-
-            #region Xuất báo cáo thông tin số lượng và giá vốn của sản phẩm
-            sql.AppendLine(String.Empty);
-            sql.AppendLine("     SELECT");
-            sql.AppendLine("             p.ID");
-            sql.AppendLine("     ,       ISNULL(PRQ.QuantityLeft, 0) AS QuantityLeft");
-            sql.AppendLine("     ,       ISNULL(PRQ.CostOfGood, 0) AS CostOfGood");
-            sql.AppendLine("     FROM");
-            sql.AppendLine("             #Product AS p");
-            sql.AppendLine("     LEFT JOIN #ProductQuantity AS PRQ");
-            sql.AppendLine("         ON  p.ID = PRQ.ProductID");
+            sql.AppendLine("         PRQ.ProductID");
             sql.AppendLine("     ORDER BY");
-            sql.AppendLine("         p.ID");
-            sql.AppendLine("     ;");
+            sql.AppendLine("         PRQ.ProductID");
+            sql.AppendLine("    ;");
             #endregion
 
             sql.AppendLine(" END");
