@@ -2886,7 +2886,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("        tbl_Product AS PRD");
             sql.AppendLine("    LEFT JOIN tbl_ProductVariable AS PDV");
             sql.AppendLine("        ON PRD.ID = PDV.ProductID");
-            
+
             #region Lọc sản phẩm
             // Danh mục
             if (CategoryID > 0)
@@ -2927,7 +2927,7 @@ namespace IM_PJ.Controllers
 
             #region Lọc thông tin
             // Theo khoản thời gian
-            sql.AppendLine(String.Format("        AND CONVERT(NVARCHAR(10), Ord.DateDone, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121);", fromDate, toDate));
+            sql.AppendLine(String.Format("        AND CONVERT(NVARCHAR(10), Ord.DateDone, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121)", fromDate, toDate));
 
             // Theo nhân viên
             if (!String.IsNullOrEmpty(CreatedBy))
@@ -2958,7 +2958,7 @@ namespace IM_PJ.Controllers
             #region Thực thi SQL
             var data = new List<OrderReport>();
             var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
-            
+
             while (reader.Read())
             {
                 var row = new OrderReport() {
@@ -2968,10 +2968,10 @@ namespace IM_PJ.Controllers
                     TotalRevenue = Convert.ToDouble(reader["TotalRevenue"]),
                     TotalCost = Convert.ToDouble(reader["TotalCost"])
                 };
-                
+
                 data.Add(row);
             }
-            
+
             reader.Close();
             #endregion
 
