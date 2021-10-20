@@ -1435,6 +1435,7 @@ namespace IM_PJ.Controllers
             }
             #endregion
             #endregion
+            #endregion
             
             #region Tính toán phân trang
             sql.AppendLine(String.Empty);
