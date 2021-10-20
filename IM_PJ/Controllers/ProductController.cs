@@ -1192,11 +1192,10 @@ namespace IM_PJ.Controllers
             #endregion
 
             sql.AppendLine("    ORDER BY");
-            sql.AppendLine("         PRD.ProductStyle");
-            sql.AppendLine("    ,    PRD.ID");
+            sql.AppendLine("         PRD.ID");
             sql.AppendLine("    ;");
             sql.AppendLine(String.Empty);
-            sql.AppendLine("    CREATE INDEX [ID_PROCDUCT] ON #Product([ProductStyle], [ID])");
+            sql.AppendLine("    CREATE INDEX [ID_PROCDUCT] ON #Product([ID] DESC)");
             #endregion
 
             #region Trích xuất thông tin kho
@@ -1215,7 +1214,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("        ON PRD.ID = STM.ParentID");
             sql.AppendLine("    ;");
             sql.AppendLine(String.Empty);
-            sql.AppendLine("    CREATE INDEX [ID_PROCDUCT_STOCK_1] ON #ProductStock1([ProductID]);");
+            sql.AppendLine("    CREATE INDEX [ID_PROCDUCT_STOCK_1] ON #ProductStock1([ProductID] DESC);");
 
             #region Kho 2
             sql.AppendLine(String.Empty);
@@ -1232,7 +1231,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("         ON PRD.ID = STM.ProductID");
             sql.AppendLine("    ;");
             sql.AppendLine(String.Empty);
-            sql.AppendLine("     CREATE INDEX [ID_PROCDUCT_STOCK_2] ON #ProductStock2([ProductID]);");
+            sql.AppendLine("     CREATE INDEX [ID_PROCDUCT_STOCK_2] ON #ProductStock2([ProductID] DESC);");
             #endregion
 
             #region Tính thông tin kho của tất cả sản phẩm
@@ -1289,7 +1288,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("        PRQ.ProductID");
             sql.AppendLine("    ;");
             sql.AppendLine(String.Empty);
-            sql.AppendLine("    CREATE INDEX [ID_PROCDUCT_QUANTITY] ON #ProductQuantity([ProductID]);");
+            sql.AppendLine("    CREATE INDEX [ID_PROCDUCT_QUANTITY] ON #ProductQuantity([ProductID] DESC);");
             #endregion
             #endregion
 
@@ -1449,45 +1448,48 @@ namespace IM_PJ.Controllers
 
             #region Lấy sản phẩm đã phân trang
             sql.AppendLine(String.Empty);
-            sql.AppendLine("     SELECT");
+            sql.AppendLine("    SELECT");
             sql.AppendLine("        PRD.*");
-            sql.AppendLine("     INTO #ProductPagination");
-            sql.AppendLine("     FROM");
+            sql.AppendLine("    INTO #ProductPagination");
+            sql.AppendLine("    FROM");
             sql.AppendLine("        #Product AS PRD");
 
             if (!String.IsNullOrEmpty(filter.orderBy) && (filter.orderBy == ProductOrderBy.stockAsc || filter.orderBy == ProductOrderBy.stockDesc))
             {
-                sql.AppendLine("     LEFT JOIN #ProductQuantity AS PRQ");
-                sql.AppendLine("         ON PRD.ID = PRQ.ProductID");
+                sql.AppendLine("    LEFT JOIN #ProductQuantity AS PRQ");
+                sql.AppendLine("        ON PRD.ID = PRQ.ProductID");
             }
 
-            sql.AppendLine("     ORDER BY");
+            #region Thực hiện sort để phân trang
+            sql.AppendLine("    ORDER BY");
 
             if (!String.IsNullOrEmpty(filter.orderBy))
             {
                 switch (filter.orderBy)
                 {
                     case ProductOrderBy.latestOnApp:
-                        sql.AppendLine("          PRD.WebUpdate DESC");
+                        sql.AppendLine("        PRD.WebUpdate DESC");
                         break;
                     case ProductOrderBy.latestOnSystem:
-                        sql.AppendLine("          PRD.ID DESC");
+                        sql.AppendLine("        PRD.ID DESC");
                         break;
                     case ProductOrderBy.stockDesc:
-                        sql.AppendLine("          ISNULL(PRQ.QuantityLeft, 0) DESC");
+                        sql.AppendLine("        ISNULL(PRQ.QuantityLeft, 0) DESC");
                         break;
                     case ProductOrderBy.stockAsc:
-                        sql.AppendLine("          ISNULL(PRQ.QuantityLeft, 0) ASC");
+                        sql.AppendLine("        ISNULL(PRQ.QuantityLeft, 0) ASC");
                         break;
                     default:
-                        sql.AppendLine("          PRD.ID DESC");
+                        sql.AppendLine("        PRD.ID DESC");
                         break;
                 }
             }
             else
             {
-                sql.AppendLine("          PRD.ID DESC");
+                sql.AppendLine("        PRD.ID DESC");
             }
+            #endregion
+
             sql.AppendLine("    OFFSET @pageSize * (@currentPage - 1) ROWS");
             sql.AppendLine("    FETCH NEXT @pageSize ROWS ONLY");
             sql.AppendLine("    ;");
@@ -1569,6 +1571,37 @@ namespace IM_PJ.Controllers
             sql.AppendLine("        ON CTG.ID = PDP.CategoryID");
             sql.AppendLine("    LEFT JOIN #ProductVideo AS PDV");
             sql.AppendLine("        ON PDP.Id = PDV.ProductId");
+
+            #region Thực hiện sort kết quả
+            sql.AppendLine("    ORDER BY");
+
+            if (!String.IsNullOrEmpty(filter.orderBy))
+            {
+                switch (filter.orderBy)
+                {
+                    case ProductOrderBy.latestOnApp:
+                        sql.AppendLine("        PDP.WebUpdate DESC");
+                        break;
+                    case ProductOrderBy.latestOnSystem:
+                        sql.AppendLine("        PDP.ID DESC");
+                        break;
+                    case ProductOrderBy.stockDesc:
+                        sql.AppendLine("        ISNULL(PRQ.QuantityLeft, 0) DESC");
+                        break;
+                    case ProductOrderBy.stockAsc:
+                        sql.AppendLine("        ISNULL(PRQ.QuantityLeft, 0) ASC");
+                        break;
+                    default:
+                        sql.AppendLine("        PDP.ID DESC");
+                        break;
+                }
+            }
+            else
+            {
+                sql.AppendLine("        PDP.ID DESC");
+            }
+            #endregion
+
             sql.AppendLine("    ;");
             #endregion
 
