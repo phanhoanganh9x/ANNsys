@@ -2832,99 +2832,151 @@ namespace IM_PJ.Controllers
 
         public static List<ProductReportModel> getProductReport(string SKU, int CategoryID, string CreatedBy, DateTime fromDate, DateTime toDate)
         {
-            var list = new List<OrderReport>();
+            #region Khởi tạo SQL
             var sql = new StringBuilder();
 
             sql.AppendLine("BEGIN");
 
+            #region Lấy danh mục
             if (CategoryID > 0)
             {
                 sql.AppendLine(String.Empty);
-                sql.AppendLine("WITH category AS(");
-                sql.AppendLine("    SELECT");
+                sql.AppendLine("    WITH RecursiveCategory AS(");
+                sql.AppendLine("        SELECT");
                 sql.AppendLine("            ID");
-                sql.AppendLine("    ,       CategoryName");
-                sql.AppendLine("    ,       ParentID");
-                sql.AppendLine("    FROM");
+                sql.AppendLine("        ,   CategoryName");
+                sql.AppendLine("        ,   ParentID");
+                sql.AppendLine("        FROM");
                 sql.AppendLine("            tbl_Category");
-                sql.AppendLine("    WHERE");
-                sql.AppendLine("            1 = 1");
-                sql.AppendLine("    AND     ID = " + CategoryID);
-                sql.AppendLine("");
-                sql.AppendLine("    UNION ALL");
-                sql.AppendLine("");
-                sql.AppendLine("    SELECT");
+                sql.AppendLine("        WHERE");
+                sql.AppendLine("            ID = " + CategoryID);
+                sql.AppendLine(String.Empty);
+                sql.AppendLine("        UNION ALL");
+                sql.AppendLine(String.Empty);
+                sql.AppendLine("        SELECT");
                 sql.AppendLine("            CHI.ID");
-                sql.AppendLine("    ,       CHI.CategoryName");
-                sql.AppendLine("    ,       CHI.ParentID");
-                sql.AppendLine("    FROM");
-                sql.AppendLine("            category AS PAR");
-                sql.AppendLine("    INNER JOIN tbl_Category AS CHI");
-                sql.AppendLine("        ON PAR.ID = CHI.ParentID");
-                sql.AppendLine(")");
-                sql.AppendLine("SELECT");
+                sql.AppendLine("        ,   CHI.CategoryName");
+                sql.AppendLine("        ,   CHI.ParentID");
+                sql.AppendLine("        FROM");
+                sql.AppendLine("            RecursiveCategory AS PAR");
+                sql.AppendLine("        INNER JOIN tbl_Category AS CHI");
+                sql.AppendLine("            ON PAR.ID = CHI.ParentID");
+                sql.AppendLine("    )");
+                sql.AppendLine("    SELECT");
                 sql.AppendLine("        ID");
-                sql.AppendLine(",       CategoryName");
-                sql.AppendLine(",       ParentID");
-                sql.AppendLine("INTO #category");
-                sql.AppendLine("FROM category;");
+                sql.AppendLine("    ,   CategoryName");
+                sql.AppendLine("    ,   ParentID");
+                sql.AppendLine("    INTO #Category");
+                sql.AppendLine("    FROM RecursiveCategory");
+                sql.AppendLine("    ;");
+            }
+            #endregion
+
+            #region Lấy thông tin sản phẩn
+            sql.AppendLine(String.Empty);
+            sql.AppendLine("    SELECT");
+            sql.AppendLine("        (");
+            sql.AppendLine("            CASE");
+            sql.AppendLine("                WHEN PRD.ProductStyle = 2 THEN PDV.SKU");
+            sql.AppendLine("                ELSE PRD.ProductSKU");
+            sql.AppendLine("            END");
+            sql.AppendLine("        ) AS SKU");
+            sql.AppendLine("    INTO #Product");
+            sql.AppendLine("    FROM");
+            sql.AppendLine("        tbl_Product AS PRD");
+            sql.AppendLine("    LEFT JOIN tbl_ProductVariable AS PDV");
+            sql.AppendLine("        ON PRD.ID = PDV.ProductID");
+
+            #region Lọc sản phẩm
+            // Danh mục
+            if (CategoryID > 0)
+            {
+                sql.AppendLine("    INNER JOIN #Category AS CTG");
+                sql.AppendLine("        ON CTG.ID = PRD.CategoryID");
             }
 
-            sql.AppendLine("SELECT");
-            sql.AppendLine("    CONVERT(VARCHAR(10), Ord.DateDone, 121) AS DateDone");
-            sql.AppendLine(",   Ord.ID");
-            sql.AppendLine(",   OrdDetail.SKU");
-            sql.AppendLine(",   OrdDetail.Quantity");
-            sql.AppendLine(",   OrdDetail.Price");
-            sql.AppendLine(",   OrdDetail.DiscountPrice");
-            sql.AppendLine(",   OrdDetail.TotalCostOfGood");
-            sql.AppendLine("INTO #data");
-            sql.AppendLine("FROM tbl_Order AS Ord");
-            sql.AppendLine("INNER JOIN tbl_OrderDetail AS OrdDetail");
-            sql.AppendLine("ON     Ord.ID = OrdDetail.OrderID");
-            sql.AppendLine("WHERE 1 = 1");
-            sql.AppendLine("    AND Ord.ExcuteStatus = 2");
-            sql.AppendLine("    AND (Ord.PaymentStatus = 2 OR Ord.PaymentStatus = 3 OR Ord.PaymentStatus = 4)");
+            // Theo mã sản phẩm
+            if (!String.IsNullOrEmpty(SKU)) {
+                sql.AppendLine("    WHERE");
+                sql.AppendLine(String.Format("        (PRD.ProductStyle = 1 AND PRD.ProductSKU LIKE '{0}%')", SKU));
+                sql.AppendLine(String.Format("        OR (PRD.ProductStyle = 2 AND PDV.SKU LIKE '{0}%')", SKU));
+            }
+            #endregion
 
+            sql.AppendLine("    ;");
+            #endregion
+
+            #region Lấy thông tin sẩn phẩm đã được bán
+            sql.AppendLine(String.Empty);
+            sql.AppendLine("    SELECT");
+            sql.AppendLine("        CONVERT(VARCHAR(10), Ord.DateDone, 121) AS DateDone");
+            sql.AppendLine("    ,   Ord.ID");
+            sql.AppendLine("    ,   ISNULL(OrdDetail.Quantity, 0) AS Quantity");
+            sql.AppendLine("    ,   ISNULL(OrdDetail.Price, 0) AS Price");
+            sql.AppendLine("    ,   ISNULL(OrdDetail.DiscountPrice, 0) AS DiscountPrice");
+            sql.AppendLine("    ,   ISNULL(OrdDetail.TotalCostOfGood, 0) AS TotalCostOfGood");
+            sql.AppendLine("    INTO #Data");
+            sql.AppendLine("    FROM tbl_Order AS Ord");
+            sql.AppendLine("    INNER JOIN tbl_OrderDetail AS OrdDetail");
+            sql.AppendLine("    ON     Ord.ID = OrdDetail.OrderID");
+            sql.AppendLine("    INNER JOIN #Product AS PRD");
+            sql.AppendLine("    ON     PRD.SKU = OrdDetail.SKU");
+            sql.AppendLine("    WHERE");
+            sql.AppendLine("        Ord.ExcuteStatus = 2");
+            sql.AppendLine("        AND (Ord.PaymentStatus = 2 OR Ord.PaymentStatus = 3 OR Ord.PaymentStatus = 4)");
+
+            #region Lọc thông tin
+            // Theo khoản thời gian
+            sql.AppendLine(String.Format("        AND CONVERT(NVARCHAR(10), Ord.DateDone, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121)", fromDate, toDate));
+
+            // Theo nhân viên
             if (!String.IsNullOrEmpty(CreatedBy))
-            {
-                sql.AppendLine(String.Format("    AND Ord.CreatedBy = '{0}'", CreatedBy));
-            }
+                sql.AppendLine(String.Format("        AND Ord.CreatedBy = '{0}'", CreatedBy));
+            #endregion
 
-            if (!String.IsNullOrEmpty(SKU))
-            {
-                sql.AppendLine(String.Format("    AND OrdDetail.SKU LIKE '{0}%'", SKU));
-            }
+            sql.AppendLine(";");
+            #endregion
 
-            sql.AppendLine(String.Format("    AND    CONVERT(NVARCHAR(10), Ord.DateDone, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121);", fromDate, toDate));
+            #region Xuất dữ liệu báo cáo sản phẩm
+            sql.AppendLine(String.Empty);
+            sql.AppendLine("    SELECT");
+            sql.AppendLine("        DAT.DateDone");
+            sql.AppendLine("    ,   DAT.ID");
+            sql.AppendLine("    ,   SUM(DAT.Quantity) AS Quantity");
+            sql.AppendLine("    ,   SUM(DAT.TotalCostOfGood) AS TotalCost");
+            sql.AppendLine("    ,   SUM(DAT.Quantity * (DAT.Price - DAT.DiscountPrice)) AS TotalRevenue");
+            sql.AppendLine("    FROM #Data AS DAT");
+            sql.AppendLine("    GROUP BY");
+            sql.AppendLine("        DAT.DateDone");
+            sql.AppendLine("    ,   DAT.ID");
+            sql.AppendLine("    ;");
+            #endregion
 
-            sql.AppendLine("SELECT");
-            sql.AppendLine("    DAT.DateDone");
-            sql.AppendLine(",   DAT.ID");
-            sql.AppendLine(",   SUM(ISNULL(DAT.Quantity, 0)) AS Quantity");
-            sql.AppendLine(",   SUM(DAT.TotalCostOfGood) AS TotalCost");
-            sql.AppendLine(",   SUM(DAT.Quantity * (DAT.Price - DAT.DiscountPrice)) AS TotalRevenue");
-            sql.AppendLine("FROM #data AS DAT");
-            sql.AppendLine("GROUP BY");
-            sql.AppendLine("    DAT.DateDone");
-            sql.AppendLine(",   DAT.ID");
+            sql.AppendLine("END");
+            #endregion
 
-            sql.AppendLine(" END");
-
+            #region Thực thi SQL
+            var data = new List<OrderReport>();
             var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
+
             while (reader.Read())
             {
-                var entity = new OrderReport();
-                entity.DateDone = Convert.ToDateTime(reader["DateDone"]);
-                entity.ID = Convert.ToInt32(reader["ID"]);
-                entity.Quantity = Convert.ToInt32(reader["Quantity"]);
-                entity.TotalRevenue = Convert.ToDouble(reader["TotalRevenue"]);
-                entity.TotalCost = Convert.ToDouble(reader["TotalCost"]);
-                list.Add(entity);
-            }
-            reader.Close();
+                var row = new OrderReport() {
+                    DateDone = Convert.ToDateTime(reader["DateDone"]),
+                    ID = Convert.ToInt32(reader["ID"]),
+                    Quantity = Convert.ToInt32(reader["Quantity"]),
+                    TotalRevenue = Convert.ToDouble(reader["TotalRevenue"]),
+                    TotalCost = Convert.ToDouble(reader["TotalCost"])
+                };
 
-            var result = list.GroupBy(g => g.DateDone)
+                data.Add(row);
+            }
+
+            reader.Close();
+            #endregion
+
+            var result = data
+                .GroupBy(g => g.DateDone)
                 .Select(x => new ProductReportModel()
                 {
                     reportDate = x.Key,
@@ -2938,6 +2990,7 @@ namespace IM_PJ.Controllers
 
             return result;
         }
+
         public static ReportModel getReport(string SKU, int CategoryID, string user, DateTime fromdate, DateTime todate)
         {
             int day = Convert.ToInt32((todate - fromdate).TotalDays);
