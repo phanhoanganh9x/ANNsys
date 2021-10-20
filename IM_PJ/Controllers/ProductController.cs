@@ -454,7 +454,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("    ,       CategoryName");
                 sql.AppendLine("    ,       ParentID");
                 sql.AppendLine("    INTO #category");
-                sql.AppendLine("    FROM category");
+                sql.AppendLine("    FROM tbl_Category");
                 sql.AppendLine("    WHERE");
                 sql.AppendLine("        ID = " + CategoryID);
                 sql.AppendLine("    ;");
