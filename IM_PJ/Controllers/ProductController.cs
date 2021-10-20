@@ -556,10 +556,10 @@ namespace IM_PJ.Controllers
 
                 if (reader["CostOfGood"] != DBNull.Value)
                     row.totalStockValue = Convert.ToDouble(reader["CostOfGood"]);
-                
+
                 data.Add(row);
             }
-            
+
             reader.Close();
             #endregion
 
@@ -1127,7 +1127,7 @@ namespace IM_PJ.Controllers
                         todate = DateTime.Now;
                         break;
                 }
-                
+
                 sql.AppendLine(String.Format("        AND CONVERT(NVARCHAR(10), PRD.CreatedDate, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121)", fromdate, todate));
             }
 
@@ -1203,7 +1203,7 @@ namespace IM_PJ.Controllers
             #region Kho 1
             sql.AppendLine(String.Empty);
             sql.AppendLine("    SELECT");
-            sql.AppendLine("         STM.ParentID AS ProductID");
+            sql.AppendLine("         PRD.ID AS ProductID");
             sql.AppendLine("    ,    ISNULL(STM.Quantity, 0) AS Quantity");
             sql.AppendLine("    ,    ISNULL(STM.QuantityCurrent, 0) AS QuantityCurrent");
             sql.AppendLine("    ,    ISNULL(STM.Type, 1) AS Type");
@@ -1238,7 +1238,7 @@ namespace IM_PJ.Controllers
             #region Tính thông tin kho của tất cả sản phẩm
             sql.AppendLine(String.Empty);
             sql.AppendLine("    SELECT");
-            sql.AppendLine("         PRQ.ParentID");
+            sql.AppendLine("         PRQ.ProductID");
             sql.AppendLine("    ,    SUM(PRQ.QuantityLeft) AS QuantityLeft");
             sql.AppendLine("    ,    MIN(PRQ.Liquidated) AS Liquidated");
             sql.AppendLine("    ,    MAX(PRQ.HasStock2) AS HasStock2");
@@ -1246,7 +1246,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("    INTO #ProductQuantity");
             sql.AppendLine("    FROM (");
             sql.AppendLine("        SELECT");
-            sql.AppendLine("            PST1.ParentID");
+            sql.AppendLine("            PST1.ProductID");
             sql.AppendLine("        ,   (");
             sql.AppendLine("                CASE");
             sql.AppendLine("                    WHEN PST1.Type = 2 THEN PST1.QuantityCurrent - PST1.Quantity");
@@ -1267,7 +1267,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("        UNION ALL");
             sql.AppendLine(String.Empty);
             sql.AppendLine("        SELECT");
-            sql.AppendLine("            PST2.ProductID AS ParentID");
+            sql.AppendLine("            PST2.ProductID");
             sql.AppendLine("        ,   0 AS QuantityLeft");
             sql.AppendLine("        ,   (");
             sql.AppendLine("                CASE");
@@ -1286,13 +1286,13 @@ namespace IM_PJ.Controllers
             sql.AppendLine("            #ProductStock2 AS PST2");
             sql.AppendLine("    ) AS PRQ");
             sql.AppendLine("    GROUP BY");
-            sql.AppendLine("        PRQ.ParentID");
+            sql.AppendLine("        PRQ.ProductID");
             sql.AppendLine("    ;");
             sql.AppendLine(String.Empty);
-            sql.AppendLine("    CREATE INDEX [ID_PROCDUCT_QUANTITY] ON #ProductQuantity([ParentID]);");
+            sql.AppendLine("    CREATE INDEX [ID_PROCDUCT_QUANTITY] ON #ProductQuantity([ProductID]);");
             #endregion
             #endregion
-            
+
             #region Lọc lại dữ liệu liên quan đến kho
             #region Lọc theo trạng thái và số lượng kho
             if (filter.stockStatus != 0 || !String.IsNullOrEmpty(filter.quantity))
@@ -1308,9 +1308,9 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("            FROM");
                 sql.AppendLine("                #Product AS PRD");
                 sql.AppendLine("            LEFT JOIN #ProductQuantity AS PRQ");
-                sql.AppendLine("                ON PRD.ID = PRQ.ParentID");
+                sql.AppendLine("                ON PRD.ID = PRQ.ProductID");
                 sql.AppendLine("            WHERE 1 = 1");
-                
+
                 #region Theo trạng thái kho
                 if (filter.stockStatus == (int)StockStatus.stocking)
                     sql.AppendLine("                AND PRQ.QuantityLeft > 0");
@@ -1341,7 +1341,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("        FROM");
                 sql.AppendLine("            #Product AS PRD");
                 sql.AppendLine("        WHERE");
-                sql.AppendLine("            PRD.ID = ParentID");
+                sql.AppendLine("            PRD.ID = ProductID");
                 sql.AppendLine("    );");
             }
             #endregion
@@ -1357,14 +1357,14 @@ namespace IM_PJ.Controllers
                     sql.AppendLine("            NULL AS DUMMY");
                     sql.AppendLine("        FROM (");
                     sql.AppendLine("            SELECT ");
-                    sql.AppendLine("                PST1.ParentID");
+                    sql.AppendLine("                PST1.ProductID");
                     sql.AppendLine("            FROM");
                     sql.AppendLine("                #ProductStock1 AS PST1");
                     sql.AppendLine("            GROUP BY");
-                    sql.AppendLine("                PST1.ParentID");
+                    sql.AppendLine("                PST1.ProductID");
                     sql.AppendLine("        ) AS PRD");
                     sql.AppendLine("        WHERE");
-                    sql.AppendLine("            ID = PRD.ParentID");
+                    sql.AppendLine("            ID = PRD.ProductID");
                     sql.AppendLine("    );");
                     break;
                 case 2:
@@ -1399,7 +1399,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("        FROM");
                 sql.AppendLine("            #Product AS PRD");
                 sql.AppendLine("        WHERE");
-                sql.AppendLine("            PRD.ID = ParentID");
+                sql.AppendLine("            PRD.ID = ProductID");
                 sql.AppendLine("    );");
             }
             #endregion
@@ -1436,7 +1436,7 @@ namespace IM_PJ.Controllers
             #endregion
             #endregion
             #endregion
-            
+
             #region Tính toán phân trang
             sql.AppendLine(String.Empty);
             sql.AppendLine("    SELECT");
@@ -1454,15 +1454,15 @@ namespace IM_PJ.Controllers
             sql.AppendLine("     INTO #ProductPagination");
             sql.AppendLine("     FROM");
             sql.AppendLine("        #Product AS PRD");
-            
+
             if (!String.IsNullOrEmpty(filter.orderBy) && (filter.orderBy == ProductOrderBy.stockAsc || filter.orderBy == ProductOrderBy.stockDesc))
             {
                 sql.AppendLine("     LEFT JOIN #ProductQuantity AS PRQ");
-                sql.AppendLine("         ON PRD.ID = PRQ.ParentID");
+                sql.AppendLine("         ON PRD.ID = PRQ.ProductID");
             }
-            
+
             sql.AppendLine("     ORDER BY");
-            
+
             if (!String.IsNullOrEmpty(filter.orderBy))
             {
                 switch (filter.orderBy)
@@ -1499,7 +1499,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("        FROM");
             sql.AppendLine("            #ProductPagination AS PDP");
             sql.AppendLine("        WHERE");
-            sql.AppendLine("           PDP.ID = ParentID");
+            sql.AppendLine("           PDP.ID = ProductID");
             sql.AppendLine("    );");
             #endregion
 
@@ -1515,7 +1515,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("        tbl_Category AS CTG");
                 sql.AppendLine("    INNER JOIN (");
                 sql.AppendLine("        SELECT");
-                sql.AppendLine("            CTG.CategoryID");
+                sql.AppendLine("            PDP.CategoryID");
                 sql.AppendLine("        FROM");
                 sql.AppendLine("            #ProductPagination AS PDP");
                 sql.AppendLine("        GROUP BY");
@@ -1553,7 +1553,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("    ,   PDP.ProductStyle");
             sql.AppendLine("    ,   CTG.CategoryName");
             sql.AppendLine("    ,   CTG.Slug as CategorySlug");
-            sql.AppendLine("    ,   ufnGetTagByProductID(PDP.ID) AS Tags");
+            sql.AppendLine("    ,   [dbo].ufnGetTagByProductID(PDP.ID) AS Tags");
             sql.AppendLine("    ,   PDP.*");
             sql.AppendLine("    ,   PRQ.QuantityLeft");
             sql.AppendLine("    ,   PRQ.Liquidated");
@@ -1564,14 +1564,14 @@ namespace IM_PJ.Controllers
             sql.AppendLine("    FROM");
             sql.AppendLine("        #ProductPagination AS PDP");
             sql.AppendLine("    LEFT JOIN #ProductQuantity AS PRQ");
-            sql.AppendLine("        ON  PDP.ID = PRQ.ParentID");
+            sql.AppendLine("        ON  PDP.ID = PRQ.ProductID");
             sql.AppendLine("    LEFT JOIN #Category AS CTG");
             sql.AppendLine("        ON CTG.ID = PDP.CategoryID");
             sql.AppendLine("    LEFT JOIN #ProductVideo AS PDV");
             sql.AppendLine("        ON PDP.Id = PDV.ProductId");
             sql.AppendLine("    ;");
             #endregion
-            
+
             sql.AppendLine(" END");
             #endregion
 
@@ -1597,7 +1597,7 @@ namespace IM_PJ.Controllers
                 // Mã của sản phẩm
                 if (reader["ProductSKU"] != DBNull.Value)
                     row.ProductSKU = reader["ProductSKU"].ToString();
-                
+
                 #region Trạng thái kho của sản phẩm
                 if (reader["PreOrder"] != DBNull.Value && Convert.ToInt32(reader["PreOrder"]) == 1)
                 {
@@ -1679,7 +1679,7 @@ namespace IM_PJ.Controllers
                 // Có phải là sản phẩm thanh lý không
                 if (reader["Liquidated"] != DBNull.Value)
                     row.Liquidated = Convert.ToBoolean(reader["Liquidated"]);
-                // Cho phép ẩn / hiện sản phẩm  
+                // Cho phép ẩn / hiện sản phẩm
                 if (reader["IsHidden"] != DBNull.Value)
                     row.IsHidden = Convert.ToBoolean(reader["IsHidden"]);
                 // get infe page header
@@ -1712,9 +1712,10 @@ namespace IM_PJ.Controllers
                 // Giá bán triết khấu 1 thùng
                 if (reader["BestPrice"] != DBNull.Value)
                     row.BestPrice = Convert.ToDouble(reader["BestPrice"].ToString());
-                data.Add(entity);
+
+                data.Add(row);
             }
-            
+
             reader.Close();
             #endregion
 
@@ -1874,10 +1875,10 @@ namespace IM_PJ.Controllers
 
                 if (reader["CostOfGood"] != DBNull.Value)
                     row.totalStockValue = Convert.ToDouble(reader["CostOfGood"]);
-                
+
                 data.Add(row);
             }
-            
+
             reader.Close();
             #endregion
 
