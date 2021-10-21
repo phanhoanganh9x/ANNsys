@@ -128,7 +128,7 @@ namespace IM_PJ
                 {
                     // So sánh tổng số lượng còn lại với tháng trước
                     int diffTotalRemainQuantity = uReport.totalRemainQuantity - uReportLastMonth.totalRemainQuantity;
-                    int percentTotalRemainQuantity = uReport.totalRemainQuantity * 100 / uReportLastMonth.totalRemainQuantity - 100;
+                    int percentTotalRemainQuantity = uReportLastMonth.totalRemainQuantity == 0 ? 0 : (uReport.totalRemainQuantity * 100 / uReportLastMonth.totalRemainQuantity - 100);
                     if (diffTotalRemainQuantity > 0)
                     {
                         compareTotalRemainQuantity += "<span class='font-green' title='Tăng so với Tổng tháng " + fromdateLastMonth.Month + "'>+" + diffTotalRemainQuantity + " (+" + percentTotalRemainQuantity + "%)</span>";
@@ -140,7 +140,7 @@ namespace IM_PJ
 
                     // So sánh tổng số lượng bán ra với tháng trước
                     int diffTotalSoldQuantity = uReport.totalSoldQuantity - uReportLastMonth.totalSoldQuantity;
-                    int percentTotalSoldQuantity = uReport.totalSoldQuantity * 100 / uReportLastMonth.totalSoldQuantity - 100;
+                    int percentTotalSoldQuantity = uReportLastMonth.totalSoldQuantity == 0 ? 0 : (uReport.totalSoldQuantity * 100 / uReportLastMonth.totalSoldQuantity - 100);
                     if (diffTotalSoldQuantity > 0)
                     {
                         compareTotalSoldQuantity += "<span class='font-green' title='Tăng so với Tổng tháng " + fromdateLastMonth.Month + "'>+" + diffTotalSoldQuantity + " (+" + percentTotalSoldQuantity + "%)</span>";
@@ -152,7 +152,7 @@ namespace IM_PJ
 
                     // So sánh tổng số đơn với tháng trước
                     int diffTotalSaleOrder = uReport.totalSaleOrder - uReportLastMonth.totalSaleOrder;
-                    int percentTotalSaleOrder = uReport.totalSaleOrder * 100 / uReportLastMonth.totalSaleOrder - 100;
+                    int percentTotalSaleOrder = uReportLastMonth.totalSaleOrder == 0 ? 0 : (uReport.totalSaleOrder * 100 / uReportLastMonth.totalSaleOrder - 100);
                     if (diffTotalSaleOrder > 0)
                     {
                         compareTotalSaleOrder += "<span class='font-green' title='Tăng so với Tổng tháng " + fromdateLastMonth.Month + "'>+" + diffTotalSaleOrder + " (+" + percentTotalSaleOrder + "%)</span>";
@@ -175,7 +175,7 @@ namespace IM_PJ
 
                     // So sánh số khách mới với tháng trước
                     int diffNewCustomer = uReport.totalNewCustomer - uReportLastMonth.totalNewCustomer;
-                    int percentNewCustomer = uReport.totalNewCustomer * 100 / uReportLastMonth.totalNewCustomer - 100;
+                    int percentNewCustomer = uReportLastMonth.totalNewCustomer == 0 ? 0 : (uReport.totalNewCustomer * 100 / uReportLastMonth.totalNewCustomer - 100);
                     if (diffNewCustomer > 0)
                     {
                         compareNewCustomer += "<span class='font-green' title='Tăng so với Tổng tháng " + fromdateLastMonth.Month + "'>+" + diffNewCustomer + " (+" + percentNewCustomer + "%)</span>";
@@ -191,7 +191,7 @@ namespace IM_PJ
                 {
                     // So sánh trung bình số lượng còn lại với tháng trước
                     int diffAverageRemainQuantity = uReport.averageRemainQuantity - uReportLastMonth.averageRemainQuantity;
-                    int percentAverageRemainQuantity = uReport.averageRemainQuantity * 100 / uReportLastMonth.averageRemainQuantity - 100;
+                    var percentAverageRemainQuantity = uReportLastMonth.averageRemainQuantity == 0 ? 0 : (uReport.averageRemainQuantity * 100 / uReportLastMonth.averageRemainQuantity - 100);
                     if (diffAverageRemainQuantity > 0)
                     {
                         compareAverageRemainQuantity += "<span class='font-green' title='Tăng so với Trung bình tháng " + fromdateLastMonth.Month + "'>+" + diffAverageRemainQuantity + " (+" + percentAverageRemainQuantity + "%)</span>";
@@ -210,7 +210,7 @@ namespace IM_PJ
                     }
                     var uReportThisMonth = OrderController.getReport(SKU, CategoryID, user, fromdateThisMonth, todateThisMonth);
                     int diffThisMonthAverageRemainQuantity = uReport.averageRemainQuantity - uReportThisMonth.averageRemainQuantity;
-                    int percentThisMonthAverageRemainQuantity = uReport.averageRemainQuantity * 100 / uReportThisMonth.averageRemainQuantity - 100;
+                    int percentThisMonthAverageRemainQuantity = uReportThisMonth.averageRemainQuantity == 0 ? 0 : (uReport.averageRemainQuantity * 100 / uReportThisMonth.averageRemainQuantity - 100);
                     if (diffThisMonthAverageRemainQuantity > 0)
                     {
                         compareAverageRemainQuantity += " <span class='font-blue' title='Tăng so với Trung bình tháng " + todateThisMonth.Month + "'>+" + diffThisMonthAverageRemainQuantity + " (+" + percentThisMonthAverageRemainQuantity + "%)</span>";
@@ -222,11 +222,7 @@ namespace IM_PJ
                 }
                 
                 // Tính phần trăm / toàn hệ thống
-                double PercentOfSystem = 0;
-                if (sysReport.totalProfit > 0)
-                {
-                    PercentOfSystem = uReport.totalProfit * 100 / sysReport.totalProfit;
-                }
+                double PercentOfSystem = sysReport.totalProfit == 0 ? 0 : (uReport.totalProfit * 100 / sysReport.totalProfit);
 
                 ltrTotalSaleOrder.Text = uReport.totalSaleOrder + " đơn " + compareTotalSaleOrder;
                 ltrAverageSaleOrder.Text = uReport.averageSaleOrder.ToString() + " đơn/ngày";

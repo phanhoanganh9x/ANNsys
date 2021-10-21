@@ -2446,9 +2446,9 @@ namespace IM_PJ.Controllers
 
                 // Get info order
                 var orderInfo = con.tbl_Order
-                    .Where(x => (x.DateDone >= fromDate && x.DateDone <= toDate)
-                                && x.ExcuteStatus == 2
-                                && x.PaymentStatus != 1)
+                    .Where(x => x.DateDone >= fromDate && x.DateDone <= toDate)
+                    .Where(x => x.ExcuteStatus == (int)ExcuteStatus.Done || x.ExcuteStatus == (int)ExcuteStatus.Sent)
+                    .Where(x => x.PaymentStatus != 1)
                     .Join(
                         customers,
                         order => order.CustomerID,
@@ -2522,7 +2522,7 @@ namespace IM_PJ.Controllers
                         DateTime td = Convert.ToDateTime(todate);
                         or = db.tbl_Order
                             .Where(r => r.DateDone >= fd && r.DateDone <= td)
-                            .Where(r => r.ExcuteStatus == 2)
+                            .Where(r => r.ExcuteStatus == (int)ExcuteStatus.Done || r.ExcuteStatus == (int)ExcuteStatus.Sent)
                             .Where(r => r.PaymentStatus != 1)
                             .ToList();
                     }
@@ -2531,7 +2531,7 @@ namespace IM_PJ.Controllers
                         DateTime fd = Convert.ToDateTime(fromdate);
                         or = db.tbl_Order
                             .Where(r => r.CreatedDate >= fd)
-                            .Where(r => r.ExcuteStatus == 2)
+                            .Where(r => r.ExcuteStatus == (int)ExcuteStatus.Done || r.ExcuteStatus == (int)ExcuteStatus.Sent)
                             .Where(r => r.PaymentStatus != 1)
                             .ToList();
                     }
@@ -2543,14 +2543,14 @@ namespace IM_PJ.Controllers
                         DateTime td = Convert.ToDateTime(todate);
                         or = db.tbl_Order
                             .Where(r => r.CreatedDate <= td)
-                            .Where(r => r.ExcuteStatus == 2)
+                            .Where(r => r.ExcuteStatus == (int)ExcuteStatus.Done || r.ExcuteStatus == (int)ExcuteStatus.Sent)
                             .Where(r => r.PaymentStatus != 1)
                             .ToList();
                     }
                     else
                     {
                         or = db.tbl_Order
-                            .Where(r => r.ExcuteStatus == 2)
+                            .Where(r => r.ExcuteStatus == (int)ExcuteStatus.Done || r.ExcuteStatus == (int)ExcuteStatus.Sent)
                             .Where(r => r.PaymentStatus != 1)
                             .ToList();
                     }
@@ -2652,7 +2652,7 @@ namespace IM_PJ.Controllers
                 #region Lọc dữ liệu chính
                 #region Order
                 var orders = con.tbl_Order
-                    .Where(x => x.ExcuteStatus == 2)
+                    .Where(x => x.ExcuteStatus == (int)ExcuteStatus.Done || x.ExcuteStatus == (int)ExcuteStatus.Sent)
                     .Where(x => x.PaymentStatus != 1)
                     .Where(x => x.DateDone.HasValue)
                     .Where(x => x.DateDone >= fromDate && x.DateDone <= toDate)
@@ -2797,7 +2797,7 @@ namespace IM_PJ.Controllers
             {
                 sql.AppendLine(String.Format("    AND Ord.CreatedBy = '{0}'", CreatedBy));
             }
-            sql.AppendLine("    AND Ord.ExcuteStatus = 2");
+            sql.AppendLine("    AND (Ord.ExcuteStatus = 2 OR Ord.ExcuteStatus = 5)");
             sql.AppendLine("    AND (Ord.PaymentStatus = 2 OR Ord.PaymentStatus = 3 OR Ord.PaymentStatus = 4)");
             sql.AppendLine(String.Format("    AND CONVERT(NVARCHAR(10), Ord.DateDone, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121)", fromDate, toDate));
             sql.AppendLine("GROUP BY Ord.ID");
@@ -2922,7 +2922,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("    INNER JOIN #Product AS PRD");
             sql.AppendLine("    ON     PRD.SKU = OrdDetail.SKU");
             sql.AppendLine("    WHERE");
-            sql.AppendLine("        Ord.ExcuteStatus = 2");
+            sql.AppendLine("        (Ord.ExcuteStatus = 2 or Ord.ExcuteStatus = 5)");
             sql.AppendLine("        AND (Ord.PaymentStatus = 2 OR Ord.PaymentStatus = 3 OR Ord.PaymentStatus = 4)");
 
             #region Lọc thông tin
@@ -3177,7 +3177,7 @@ namespace IM_PJ.Controllers
                 #region Kiếm những hóa đơn mà khách hàng đã mua trong khoảng thời gian
                 var orders = con.tbl_Order
                     .Where(x => x.CustomerID == customer.ID)
-                    .Where(x => x.ExcuteStatus == (int)ExcuteStatus.Done)
+                    .Where(x => x.ExcuteStatus == (int)ExcuteStatus.Done || x.ExcuteStatus == (int)ExcuteStatus.Sent)
                     .Where(x => x.DateDone.HasValue)
                     .Where(x => x.DateDone >= fromDate)
                     .Where(x => x.DateDone <= toDate)
@@ -3373,7 +3373,7 @@ namespace IM_PJ.Controllers
             using (var con = new inventorymanagementEntities())
             {
                 #region Lọc ra đơn khác hàng đã mua và tính số lượng mua
-                var order = con.tbl_Order.Where(x => x.ExcuteStatus == (int)ExcuteStatus.Done);
+                var order = con.tbl_Order.Where(x => x.ExcuteStatus == (int)ExcuteStatus.Done || x.ExcuteStatus == (int)ExcuteStatus.Sent);
 
                 if (customerID > 0)
                     order = order
@@ -3435,7 +3435,7 @@ namespace IM_PJ.Controllers
             {
                 #region Lọc ra đơn khác hàng đã mua và tính số lượng mua
                 var order = con.tbl_Order
-                    .Where(x => x.ExcuteStatus == (int)ExcuteStatus.Done)
+                    .Where(x => x.ExcuteStatus == (int)ExcuteStatus.Done || x.ExcuteStatus == (int)ExcuteStatus.Sent)
                     .Where(x => x.CustomerID.HasValue)
                     .Where(x => x.CustomerID == customerID);
 

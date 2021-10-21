@@ -529,7 +529,7 @@ namespace IM_PJ
                     html.AppendLine("   <td data-title='Ngày tạo'>" + date + "</td>");
 
                     string datedone = "";
-                    if (item.ExcuteStatus == 2)
+                    if (item.ExcuteStatus == 2 || item.ExcuteStatus == 5 || item.ExcuteStatus == 4)
                     {
                         datedone = string.Format("<strong>{0:dd/MM}</strong><br>{0:HH:mm}", item.DateDone);
                     }
