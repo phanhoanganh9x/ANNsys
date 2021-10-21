@@ -2446,9 +2446,9 @@ namespace IM_PJ.Controllers
 
                 // Get info order
                 var orderInfo = con.tbl_Order
-                    .Where(x => (x.DateDone >= fromDate && x.DateDone <= toDate)
-                                && x.ExcuteStatus == 2
-                                && x.PaymentStatus != 1)
+                    .Where(x => x.DateDone >= fromDate && x.DateDone <= toDate)
+                    .Where(x => x.ExcuteStatus == (int)ExcuteStatus.Done || x.ExcuteStatus == (int)ExcuteStatus.Sent)
+                    .Where(x => x.PaymentStatus != 1)
                     .Join(
                         customers,
                         order => order.CustomerID,
@@ -2522,7 +2522,7 @@ namespace IM_PJ.Controllers
                         DateTime td = Convert.ToDateTime(todate);
                         or = db.tbl_Order
                             .Where(r => r.DateDone >= fd && r.DateDone <= td)
-                            .Where(r => r.ExcuteStatus == 2)
+                            .Where(r => r.ExcuteStatus == (int)ExcuteStatus.Done || r.ExcuteStatus == (int)ExcuteStatus.Sent)
                             .Where(r => r.PaymentStatus != 1)
                             .ToList();
                     }
@@ -2531,7 +2531,7 @@ namespace IM_PJ.Controllers
                         DateTime fd = Convert.ToDateTime(fromdate);
                         or = db.tbl_Order
                             .Where(r => r.CreatedDate >= fd)
-                            .Where(r => r.ExcuteStatus == 2)
+                            .Where(r => r.ExcuteStatus == (int)ExcuteStatus.Done || r.ExcuteStatus == (int)ExcuteStatus.Sent)
                             .Where(r => r.PaymentStatus != 1)
                             .ToList();
                     }
@@ -2543,14 +2543,14 @@ namespace IM_PJ.Controllers
                         DateTime td = Convert.ToDateTime(todate);
                         or = db.tbl_Order
                             .Where(r => r.CreatedDate <= td)
-                            .Where(r => r.ExcuteStatus == 2)
+                            .Where(r => r.ExcuteStatus == (int)ExcuteStatus.Done || r.ExcuteStatus == (int)ExcuteStatus.Sent)
                             .Where(r => r.PaymentStatus != 1)
                             .ToList();
                     }
                     else
                     {
                         or = db.tbl_Order
-                            .Where(r => r.ExcuteStatus == 2)
+                            .Where(r => r.ExcuteStatus == (int)ExcuteStatus.Done || r.ExcuteStatus == (int)ExcuteStatus.Sent)
                             .Where(r => r.PaymentStatus != 1)
                             .ToList();
                     }
@@ -2652,7 +2652,7 @@ namespace IM_PJ.Controllers
                 #region Lọc dữ liệu chính
                 #region Order
                 var orders = con.tbl_Order
-                    .Where(x => x.ExcuteStatus == 2)
+                    .Where(x => x.ExcuteStatus == (int)ExcuteStatus.Done || x.ExcuteStatus == (int)ExcuteStatus.Sent)
                     .Where(x => x.PaymentStatus != 1)
                     .Where(x => x.DateDone.HasValue)
                     .Where(x => x.DateDone >= fromDate && x.DateDone <= toDate)
@@ -2668,6 +2668,20 @@ namespace IM_PJ.Controllers
                         TotalShippingFee = String.IsNullOrEmpty(x.FeeShipping) ? "0" : x.FeeShipping,
                         // Phí khác chỉ dùng để tham khảo
                         TotalOtherFee = x.OtherFeeValue.HasValue ? x.OtherFeeValue.Value : 0
+                    })
+                    .OrderBy(x => x.DateDone);
+
+                // Lấy các đơn hàng đổi trả
+                var returnOrders = con.tbl_Order
+                    .Where(x => x.ExcuteStatus == (int)ExcuteStatus.Return)
+                    .Where(x => x.PaymentStatus != 1)
+                    .Where(x => x.DateDone.HasValue)
+                    .Where(x => x.DateDone >= fromDate && x.DateDone <= toDate)
+                    .Select(x => new
+                    {
+                        DateDone = x.DateDone.Value,
+                        // Phí chuyển hoàn chỉ dùng để tham khảo
+                        ReturnFee = String.IsNullOrEmpty(x.FeeShipping) ? "0" : x.FeeShipping
                     })
                     .OrderBy(x => x.DateDone);
                 #endregion
@@ -2691,8 +2705,7 @@ namespace IM_PJ.Controllers
 
                 #region Tính toán số liệu báo cáo
                 #region Tính toán theo ngày với từng đơn hàng
-                var orderDate = orders
-                    .ToList()
+                var orderDate = orders.ToList()
                     .GroupBy(g => g.DateDone.ToString("yyyy-MM-dd"))
                     .Select(x => new
                     {
@@ -2709,11 +2722,21 @@ namespace IM_PJ.Controllers
                         TotalOtherFee = x.Sum(s => s.TotalOtherFee)
                     })
                     .ToList();
+
+                var returnOrderDate = returnOrders.ToList()
+                    .GroupBy(g => g.DateDone.ToString("yyyy-MM-dd"))
+                    .Select(x => new
+                    {
+                        DateDone = Convert.ToDateTime(x.Key),
+                        Count = x.Count(),
+                        // Phí chuyển hoàn chỉ dùng để tham khảo
+                        TotalReturnFee = x.Sum(s => Convert.ToDouble(s.ReturnFee)),
+                    })
+                    .ToList();
                 #endregion
 
                 #region Tính toán theo ngày với từng đơn hàng đổi trả
-                var refundDate = refundTarget
-                    .ToList()
+                var refundDate = refundTarget.ToList()
                     .GroupBy(g => g.DateDone.ToString("yyyy-MM-dd"))
                     .Select(x => new
                     {
@@ -2730,42 +2753,57 @@ namespace IM_PJ.Controllers
 
                 var result = orderDate
                     .GroupJoin(
-                        refundDate,
+                        returnOrderDate,
                         o => o.DateDone,
-                        r => r.DateDone,
-                        (o, r) => new { o, r }
+                        rO => rO.DateDone,
+                        (order, returnOrder) => new { order, returnOrder }
                     )
                     .SelectMany(
-                        x => x.r.DefaultIfEmpty(),
-                        (parent, child) =>
-                        {
-                            var item = new ProfitReportModel()
-                            {
-                                DateDone = parent.o.DateDone,
-                                TotalNumberOfOrder = parent.o.TotalNumberOfOrder,
-                                TotalSoldQuantity = parent.o.TotalSoldQuantity,
-                                TotalSalePrice = parent.o.TotalSalePrice,
-                                TotalSaleCost = parent.o.TotalSaleCost,
-                                TotalSaleDiscount = parent.o.TotalSaleDiscount,
-                                TotalCoupon = parent.o.TotalCoupon,
-                                // Phí giao hàng chỉ dùng để tham khảo
-                                TotalShippingFee = parent.o.TotalShippingFee,
-                                // Phí khác chỉ dùng để tham khảo
-                                TotalOtherFee = parent.o.TotalOtherFee
-                            };
-
-                            if (child != null)
-                            {
-                                item.TotalRefundQuantity = child.TotalRefundQuantity;
-                                item.TotalRefundCost = child.TotalRefundCost;
-                                // Tiền hoàn trả đã bao gồm phí hoàn trả
-                                item.TotalRefundPrice = child.TotalRefundPrice + child.TotalRefundFee;
-                                item.TotalRefundFee = child.TotalRefundFee;
-                            }
-
-                            return item;
-                        }
+                        x => x.returnOrder.DefaultIfEmpty(),
+                        (parent, child) => new { parent.order, returnOrder = child }
                     )
+                    .GroupJoin(
+                        refundDate,
+                        temp => temp.order.DateDone,
+                        r => r.DateDone,
+                        (temp, refund) => new { temp.order, temp.returnOrder, refund }
+                    )
+                    .SelectMany(
+                        x => x.refund.DefaultIfEmpty(),
+                        (parent, child) => new { parent.order, parent.returnOrder, refund = child }
+                    )
+                    .Select(x => {
+                        var item = new ProfitReportModel()
+                        {
+                            DateDone = x.order.DateDone,
+                            TotalNumberOfOrder = x.order.TotalNumberOfOrder,
+                            TotalSoldQuantity = x.order.TotalSoldQuantity,
+                            TotalSalePrice = x.order.TotalSalePrice,
+                            TotalSaleCost = x.order.TotalSaleCost,
+                            TotalSaleDiscount = x.order.TotalSaleDiscount,
+                            TotalCoupon = x.order.TotalCoupon,
+                            // Phí giao hàng chỉ dùng để tham khảo
+                            TotalShippingFee = x.order.TotalShippingFee,
+                            // Phí khác chỉ dùng để tham khảo
+                            TotalOtherFee = x.order.TotalOtherFee
+                        };
+
+                        if (x.returnOrder != null) {
+                            item.TotalReturnCount = x.returnOrder.Count;
+                            item.TotalReturnFee = x.returnOrder.TotalReturnFee;
+                        }
+
+                        if (x.refund != null)
+                        {
+                            item.TotalRefundQuantity = x.refund.TotalRefundQuantity;
+                            item.TotalRefundCost = x.refund.TotalRefundCost;
+                            // Tiền hoàn trả đã bao gồm phí hoàn trả
+                            item.TotalRefundPrice = x.refund.TotalRefundPrice + x.refund.TotalRefundFee;
+                            item.TotalRefundFee = x.refund.TotalRefundFee;
+                        }
+
+                        return item;
+                    })
                     .OrderBy(x => x.DateDone)
                     .ToList();
 
@@ -2797,7 +2835,7 @@ namespace IM_PJ.Controllers
             {
                 sql.AppendLine(String.Format("    AND Ord.CreatedBy = '{0}'", CreatedBy));
             }
-            sql.AppendLine("    AND Ord.ExcuteStatus = 2");
+            sql.AppendLine("    AND (Ord.ExcuteStatus = 2 OR Ord.ExcuteStatus = 5)");
             sql.AppendLine("    AND (Ord.PaymentStatus = 2 OR Ord.PaymentStatus = 3 OR Ord.PaymentStatus = 4)");
             sql.AppendLine(String.Format("    AND CONVERT(NVARCHAR(10), Ord.DateDone, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121)", fromDate, toDate));
             sql.AppendLine("GROUP BY Ord.ID");
@@ -2922,7 +2960,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("    INNER JOIN #Product AS PRD");
             sql.AppendLine("    ON     PRD.SKU = OrdDetail.SKU");
             sql.AppendLine("    WHERE");
-            sql.AppendLine("        Ord.ExcuteStatus = 2");
+            sql.AppendLine("        (Ord.ExcuteStatus = 2 or Ord.ExcuteStatus = 5)");
             sql.AppendLine("        AND (Ord.PaymentStatus = 2 OR Ord.PaymentStatus = 3 OR Ord.PaymentStatus = 4)");
 
             #region Lọc thông tin
@@ -3177,7 +3215,7 @@ namespace IM_PJ.Controllers
                 #region Kiếm những hóa đơn mà khách hàng đã mua trong khoảng thời gian
                 var orders = con.tbl_Order
                     .Where(x => x.CustomerID == customer.ID)
-                    .Where(x => x.ExcuteStatus == (int)ExcuteStatus.Done)
+                    .Where(x => x.ExcuteStatus == (int)ExcuteStatus.Done || x.ExcuteStatus == (int)ExcuteStatus.Sent)
                     .Where(x => x.DateDone.HasValue)
                     .Where(x => x.DateDone >= fromDate)
                     .Where(x => x.DateDone <= toDate)
@@ -3373,7 +3411,7 @@ namespace IM_PJ.Controllers
             using (var con = new inventorymanagementEntities())
             {
                 #region Lọc ra đơn khác hàng đã mua và tính số lượng mua
-                var order = con.tbl_Order.Where(x => x.ExcuteStatus == (int)ExcuteStatus.Done);
+                var order = con.tbl_Order.Where(x => x.ExcuteStatus == (int)ExcuteStatus.Done || x.ExcuteStatus == (int)ExcuteStatus.Sent);
 
                 if (customerID > 0)
                     order = order
@@ -3435,7 +3473,7 @@ namespace IM_PJ.Controllers
             {
                 #region Lọc ra đơn khác hàng đã mua và tính số lượng mua
                 var order = con.tbl_Order
-                    .Where(x => x.ExcuteStatus == (int)ExcuteStatus.Done)
+                    .Where(x => x.ExcuteStatus == (int)ExcuteStatus.Done || x.ExcuteStatus == (int)ExcuteStatus.Sent)
                     .Where(x => x.CustomerID.HasValue)
                     .Where(x => x.CustomerID == customerID);
 

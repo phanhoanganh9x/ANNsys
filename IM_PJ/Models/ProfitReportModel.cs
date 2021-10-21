@@ -20,7 +20,12 @@ namespace IM_PJ.Models
         // Phí khác chỉ dùng để tham khảo
         public double TotalOtherFee { get; set; }
         #endregion
-        
+
+        #region Return Order
+        public int TotalReturnCount { get; set; }
+        public double TotalReturnFee { get; set; }
+        #endregion
+
         #region Refund
         public int TotalRefundQuantity { get; set; }
         public double TotalRefundCost { get; set; }

@@ -681,7 +681,7 @@ namespace IM_PJ
                     ltrCreateBy.Text = order.CreatedBy;
                     ltrCreateDate.Text = order.CreatedDate.ToString();
                     ltrDateDone.Text = "Chưa hoàn tất";
-                    if (order.DateDone != null && order.ExcuteStatus == 2)
+                    if (order.DateDone != null && (order.ExcuteStatus == (int)ExcuteStatus.Done || order.ExcuteStatus == (int)ExcuteStatus.Sent || order.ExcuteStatus == (int)ExcuteStatus.Return))
                     {
                         ltrDateDone.Text = order.DateDone.ToString();
                     }
