@@ -82,13 +82,16 @@ namespace IM_PJ
                     TotalShippingFee = x.Sum(s => s.TotalShippingFee),
                     // Phí khác chỉ dùng để tham khảo
                     TotalOtherFee = x.Sum(s => s.TotalOtherFee),
+                    // Return Order
+                    TotalReturnOrderCount = x.Sum(s => s.TotalReturnOrderCount),
+                    TotalReturnFee = x.Sum(s => s.TotalReturnFee),
                     // Refund
                     TotalRefundQuantity = x.Sum(s => s.TotalRefundQuantity),
                     TotalRefundCost = x.Sum(s => s.TotalRefundCost),
                     TotalRefundPrice = x.Sum(s => s.TotalRefundPrice),
                     TotalRefundFee = x.Sum(s => s.TotalRefundFee),
                     // Profit
-                    TotalProfit = x.Sum(s => (s.TotalSalePrice - s.TotalSaleCost) - s.TotalSaleDiscount - s.TotalCoupon - (s.TotalRefundPrice - s.TotalRefundCost) + s.TotalRefundFee)
+                    TotalProfit = x.Sum(s => (s.TotalSalePrice - s.TotalSaleCost) - s.TotalSaleDiscount - s.TotalCoupon - s.TotalReturnFee - (s.TotalRefundPrice - s.TotalRefundCost) + s.TotalRefundFee)
                 })
                 .Single();
 

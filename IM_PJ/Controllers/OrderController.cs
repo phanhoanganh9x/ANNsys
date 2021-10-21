@@ -2670,6 +2670,20 @@ namespace IM_PJ.Controllers
                         TotalOtherFee = x.OtherFeeValue.HasValue ? x.OtherFeeValue.Value : 0
                     })
                     .OrderBy(x => x.DateDone);
+
+                // Lấy các đơn hàng đổi trả
+                var returnOrders = con.tbl_Order
+                    .Where(x => x.ExcuteStatus == (int)ExcuteStatus.Return)
+                    .Where(x => x.PaymentStatus != 1)
+                    .Where(x => x.DateDone.HasValue)
+                    .Where(x => x.DateDone >= fromDate && x.DateDone <= toDate)
+                    .Select(x => new
+                    {
+                        DateDone = x.DateDone.Value,
+                        // Phí chuyển hoàn chỉ dùng để tham khảo
+                        ReturnFee = String.IsNullOrEmpty(x.FeeShipping) ? "0" : x.FeeShipping
+                    })
+                    .OrderBy(x => x.DateDone);
                 #endregion
 
                 #region Refund
@@ -2691,8 +2705,7 @@ namespace IM_PJ.Controllers
 
                 #region Tính toán số liệu báo cáo
                 #region Tính toán theo ngày với từng đơn hàng
-                var orderDate = orders
-                    .ToList()
+                var orderDate = orders.ToList()
                     .GroupBy(g => g.DateDone.ToString("yyyy-MM-dd"))
                     .Select(x => new
                     {
@@ -2709,11 +2722,21 @@ namespace IM_PJ.Controllers
                         TotalOtherFee = x.Sum(s => s.TotalOtherFee)
                     })
                     .ToList();
+
+                var returnOrderDate = returnOrders.ToList()
+                    .GroupBy(g => g.DateDone.ToString("yyyy-MM-dd"))
+                    .Select(x => new
+                    {
+                        DateDone = Convert.ToDateTime(x.Key),
+                        Count = x.Count(),
+                        // Phí chuyển hoàn chỉ dùng để tham khảo
+                        TotalReturnFee = x.Sum(s => Convert.ToDouble(s.ReturnFee)),
+                    })
+                    .ToList();
                 #endregion
 
                 #region Tính toán theo ngày với từng đơn hàng đổi trả
-                var refundDate = refundTarget
-                    .ToList()
+                var refundDate = refundTarget.ToList()
                     .GroupBy(g => g.DateDone.ToString("yyyy-MM-dd"))
                     .Select(x => new
                     {
@@ -2730,42 +2753,57 @@ namespace IM_PJ.Controllers
 
                 var result = orderDate
                     .GroupJoin(
-                        refundDate,
+                        returnOrderDate,
                         o => o.DateDone,
-                        r => r.DateDone,
-                        (o, r) => new { o, r }
+                        rO => rO.DateDone,
+                        (order, returnOrder) => new { order, returnOrder }
                     )
                     .SelectMany(
-                        x => x.r.DefaultIfEmpty(),
-                        (parent, child) =>
-                        {
-                            var item = new ProfitReportModel()
-                            {
-                                DateDone = parent.o.DateDone,
-                                TotalNumberOfOrder = parent.o.TotalNumberOfOrder,
-                                TotalSoldQuantity = parent.o.TotalSoldQuantity,
-                                TotalSalePrice = parent.o.TotalSalePrice,
-                                TotalSaleCost = parent.o.TotalSaleCost,
-                                TotalSaleDiscount = parent.o.TotalSaleDiscount,
-                                TotalCoupon = parent.o.TotalCoupon,
-                                // Phí giao hàng chỉ dùng để tham khảo
-                                TotalShippingFee = parent.o.TotalShippingFee,
-                                // Phí khác chỉ dùng để tham khảo
-                                TotalOtherFee = parent.o.TotalOtherFee
-                            };
-
-                            if (child != null)
-                            {
-                                item.TotalRefundQuantity = child.TotalRefundQuantity;
-                                item.TotalRefundCost = child.TotalRefundCost;
-                                // Tiền hoàn trả đã bao gồm phí hoàn trả
-                                item.TotalRefundPrice = child.TotalRefundPrice + child.TotalRefundFee;
-                                item.TotalRefundFee = child.TotalRefundFee;
-                            }
-
-                            return item;
-                        }
+                        x => x.returnOrder.DefaultIfEmpty(),
+                        (parent, child) => new { parent.order, returnOrder = child }
                     )
+                    .GroupJoin(
+                        refundDate,
+                        temp => temp.order.DateDone,
+                        r => r.DateDone,
+                        (temp, refund) => new { temp.order, temp.returnOrder, refund }
+                    )
+                    .SelectMany(
+                        x => x.refund.DefaultIfEmpty(),
+                        (parent, child) => new { parent.order, temp.returnOrder, refund = child }
+                    )
+                    .Select(x => {
+                        var item = new ProfitReportModel()
+                        {
+                            DateDone = x.order.DateDone,
+                            TotalNumberOfOrder = x.order.TotalNumberOfOrder,
+                            TotalSoldQuantity = x.order.TotalSoldQuantity,
+                            TotalSalePrice = x.order.TotalSalePrice,
+                            TotalSaleCost = x.order.TotalSaleCost,
+                            TotalSaleDiscount = x.order.TotalSaleDiscount,
+                            TotalCoupon = x.order.TotalCoupon,
+                            // Phí giao hàng chỉ dùng để tham khảo
+                            TotalShippingFee = x.order.TotalShippingFee,
+                            // Phí khác chỉ dùng để tham khảo
+                            TotalOtherFee = x.order.TotalOtherFee
+                        };
+
+                        if (x.returnOrder) {
+                            item.TotalReturnOrderCount = x.refund.Count;
+                            item.TotalReturnFee = x.refund.TotalReturnFee;
+                        }
+
+                        if (x.refund != null)
+                        {
+                            item.TotalRefundQuantity = x.refund.TotalRefundQuantity;
+                            item.TotalRefundCost = x.refund.TotalRefundCost;
+                            // Tiền hoàn trả đã bao gồm phí hoàn trả
+                            item.TotalRefundPrice = x.refund.TotalRefundPrice + x.refund.TotalRefundFee;
+                            item.TotalRefundFee = x.refund.TotalRefundFee;
+                        }
+
+                        return item;
+                    })
                     .OrderBy(x => x.DateDone)
                     .ToList();
 
