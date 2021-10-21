@@ -472,7 +472,7 @@ namespace IM_PJ
                     }
 
                     html.AppendLine("   <td data-title='Đã mua'>" + item.Quantity + "</td>");
-                    if (item.ExcuteStatus == 2)
+                    if (item.ExcuteStatus == (int)ExcuteStatus.Done)
                         html.AppendLine("   <td data-title='Xử lý'><span class='bg-order-status bg-order-status-" + item.ExcuteStatus + "' style='cursor: pointer' onclick='onClick_spFinishStatusOrder(this, " + item.ID + ")'>Đã hoàn tất</span></td>");
                     else
                         html.AppendLine("   <td data-title='Xử lý'>" + PJUtils.OrderExcuteStatus(Convert.ToInt32(item.ExcuteStatus)) + "</td>");
@@ -529,7 +529,7 @@ namespace IM_PJ
                     html.AppendLine("   <td data-title='Ngày tạo'>" + date + "</td>");
 
                     string datedone = "";
-                    if (item.ExcuteStatus == 2 || item.ExcuteStatus == 5 || item.ExcuteStatus == 4)
+                    if (item.ExcuteStatus == (int)ExcuteStatus.Done || item.ExcuteStatus == (int)ExcuteStatus.Sent || item.ExcuteStatus == (int)ExcuteStatus.Return)
                     {
                         datedone = string.Format("<strong>{0:dd/MM}</strong><br>{0:HH:mm}", item.DateDone);
                     }
@@ -545,7 +545,7 @@ namespace IM_PJ
                     {
                         html.AppendLine("       <a href='/print-shipping-note?id=" + item.ID + "' title='In phiếu gửi hàng' target='_blank' class='btn primary-btn btn-red h45-btn'><i class='fa fa-file-text-o' aria-hidden='true'></i></a>");
                     }
-                    
+
                     //html.AppendLine("       <a href='/chi-tiet-khach-hang?id=" + item.CustomerID + "' title='Thông tin khách hàng " + item.CustomerName + "' target='_blank' class='btn primary-btn btn-black h45-btn'><i class='fa fa-user-circle' aria-hidden='true'></i></a>");
                     if (item.DeliveryStatus.HasValue && item.DeliveryStatus.Value == 1 && !string.IsNullOrEmpty(item.InvoiceImage))
                         html.AppendLine("       <a href='javascript:;' onclick='openImageInvoice($(this))' data-link='" + item.InvoiceImage + "' title='Biên nhận gửi hàng' class='btn primary-btn btn-blue h45-btn'><i class='fa fa-file-text-o' aria-hidden='true'></i></a>");

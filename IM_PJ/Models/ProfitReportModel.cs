@@ -22,10 +22,10 @@ namespace IM_PJ.Models
         #endregion
 
         #region Return Order
-        public int TotalReturnOrderCount { get; set; }
+        public int TotalReturnCount { get; set; }
         public double TotalReturnFee { get; set; }
         #endregion
-        
+
         #region Refund
         public int TotalRefundQuantity { get; set; }
         public double TotalRefundCost { get; set; }

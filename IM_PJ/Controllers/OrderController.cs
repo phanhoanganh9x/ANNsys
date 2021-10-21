@@ -2770,7 +2770,7 @@ namespace IM_PJ.Controllers
                     )
                     .SelectMany(
                         x => x.refund.DefaultIfEmpty(),
-                        (parent, child) => new { parent.order, temp.returnOrder, refund = child }
+                        (parent, child) => new { parent.order, parent.returnOrder, refund = child }
                     )
                     .Select(x => {
                         var item = new ProfitReportModel()
@@ -2788,9 +2788,9 @@ namespace IM_PJ.Controllers
                             TotalOtherFee = x.order.TotalOtherFee
                         };
 
-                        if (x.returnOrder) {
-                            item.TotalReturnOrderCount = x.refund.Count;
-                            item.TotalReturnFee = x.refund.TotalReturnFee;
+                        if (x.returnOrder != null) {
+                            item.TotalReturnCount = x.returnOrder.Count;
+                            item.TotalReturnFee = x.returnOrder.TotalReturnFee;
                         }
 
                         if (x.refund != null)

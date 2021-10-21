@@ -83,7 +83,7 @@ namespace IM_PJ
                     // Phí khác chỉ dùng để tham khảo
                     TotalOtherFee = x.Sum(s => s.TotalOtherFee),
                     // Return Order
-                    TotalReturnOrderCount = x.Sum(s => s.TotalReturnOrderCount),
+                    TotalReturnCount = x.Sum(s => s.TotalReturnCount),
                     TotalReturnFee = x.Sum(s => s.TotalReturnFee),
                     // Refund
                     TotalRefundQuantity = x.Sum(s => s.TotalRefundQuantity),
@@ -121,7 +121,10 @@ namespace IM_PJ
             ltrTotalActualRevenue.Text = string.Format("{0:N0}", TotalActualRevenue);
             ltrTotalOtherFee.Text = string.Format("{0:N0}", sumReport.TotalOtherFee);
             ltrTotalShippingFee.Text = string.Format("{0:N0}", sumReport.TotalShippingFee);
+
             ltrTotalCouponValue.Text = string.Format("{0:N0}", sumReport.TotalCoupon);
+            ltrTotalReturnCount.Text = String.Format("{0:N0} đơn", sumReport.TotalReturnCount);
+            ltrTotalReturnFee.Text = String.Format("{0:N0}", sumReport.TotalReturnFee);
 
             if (day > 1)
             {
@@ -135,13 +138,14 @@ namespace IM_PJ
 
                 foreach (var item in reportModel)
                 {
+                    var salesProfit = (item.TotalSalePrice - item.TotalSaleCost) - item.TotalSaleDiscount - item.TotalCoupon - item.TotalReturnFee;
+                    var refundAmount = (item.TotalRefundPrice - item.TotalRefundCost) - item.TotalRefundFee;
+                    var profit = salesProfit - refundAmount;
+                    var sellNumber = item.TotalSoldQuantity - item.TotalRefundQuantity;
+
                     dataDays.Add(String.Format("'{0:d/M}'", item.DateDone));
-
-                    double chartTotalRevenue = item.TotalSalePrice - item.TotalRefundPrice;
-                    double chartTotalCost = item.TotalSaleCost - item.TotalRefundCost;
-                    dataTotalProfit.Add((chartTotalRevenue - chartTotalCost - item.TotalSaleDiscount + item.TotalRefundFee).ToString());
-
-                    dataTotalRemainQuantity.Add((item.TotalSoldQuantity - item.TotalRefundQuantity).ToString());
+                    dataTotalProfit.Add(profit.ToString());
+                    dataTotalRemainQuantity.Add(sellNumber.ToString());
                 }
 
                 chartLabelDays = String.Join(", ", dataDays);

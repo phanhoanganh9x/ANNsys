@@ -218,7 +218,25 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-8">
+                                <div class="col-md-4">
+                                    <div class="report-column">
+                                        <div class="report-label">
+                                            Tổng đơn chuyển hoàn:
+                                        </div>
+                                        <div class="report-value">
+                                            <asp:Literal ID="ltrTotalReturnCount" runat="server" EnableViewState="false"></asp:Literal>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="report-column">
+                                        <div class="report-label">
+                                            Tổng phí chuyển hoàn:
+                                        </div>
+                                        <div class="report-value">
+                                            <asp:Literal ID="ltrTotalReturnFee" runat="server" EnableViewState="false"></asp:Literal>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row margin-bottom-15">
