@@ -176,7 +176,7 @@ namespace IM_PJ
                         .Join(
                             con.tbl_Order
                                 .Where(x => x.CustomerID == customerID)
-                                .Where(x => x.ExcuteStatus == (int)ExcuteStatus.Done),
+                                .Where(x => x.ExcuteStatus == (int)ExcuteStatus.Done || x.ExcuteStatus == (int)ExcuteStatus.Sent),
                             od => od.OrderID,
                             o => o.ID,
                             (od, o) => new
