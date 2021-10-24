@@ -1,10 +1,14 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Models.Pages.dang_ky_gui_di;
 using MB.Extensions;
+using Newtonsoft.Json;
 using NHST.Bussiness;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -22,32 +26,82 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["usernameLoginSystem_ANN123"] != null)
-                {
-                    string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
-                    var acc = AccountController.GetByUsername(username);
-
-                    if (acc != null)
-                    {
-                        if (acc.RoleID == 0)
-                        {
-                            LoadCreatedBy();
-                        }
-                        else
-                        {
-                            Response.Redirect("/trang-chu");
-                        }
-                    }
-                }
-                else
+                #region Kiểm tra cookies
+                if (Request.Cookies["usernameLoginSystem_ANN123"] == null)
                 {
                     Response.Redirect("/dang-nhap");
+                    return;
                 }
+                #endregion
+
+                #region Kiểm tra user name
+                string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
+                var acc = AccountController.GetByUsername(username);
+
+                if (acc == null || (acc.RoleID != 0 && acc.RoleID != 2))
+                {
+                    Response.Redirect("/dang-nhap");
+                    return;
+                }
+                #endregion
+
+                // Tình trạng đơn hàng
+                _loadStatus();
+
+                // Nhân viên tạo đơn
+                if (acc.RoleID == 0)
+                    LoadCreatedBy();
+                else if (acc.RoleID == 2)
+                    LoadCreatedBy(acc);
+
+                // Danh sách đơn chuyển khoản
                 LoadData();
             }
         }
 
-        public void LoadCreatedBy(tbl_Account acc = null)
+        #region Private
+        private void _loadStatus()
+        {
+            #region Khởi tạo API
+            var api = "http://ann-shop-dotnet-core.com/api/v1/order/statuses?page=danh-sach-don-hang";
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(api);
+
+            httpWebRequest.Method = "GET";
+            #endregion
+
+            try
+            {
+                // Thực thi API
+                var response = (HttpWebResponse)httpWebRequest.GetResponse();
+
+                ddlExcuteStatus.Items.Clear();
+                ddlExcuteStatus.Items.Add(new ListItem("Xử lý", ""));
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                    using (var reader = new StreamReader(response.GetResponseStream()))
+                    {
+                        var statuses = JsonConvert.DeserializeObject<IList<KeyValueModel>>(reader.ReadToEnd());
+                        var listItems = statuses
+                            .Select(x => new ListItem(x.value, x.key.ToString()))
+                            .ToArray();
+
+                        ddlExcuteStatus.Items.AddRange(listItems);
+                    }
+
+                ddlExcuteStatus.DataBind();
+            }
+            catch (WebException we)
+            {
+                throw we;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        #endregion
+
+        private void LoadCreatedBy(tbl_Account acc = null)
         {
             if (acc != null)
             {
@@ -95,6 +149,7 @@ namespace IM_PJ
                 ddlStatus.SelectedIndex = 0;
             }
         }
+
         public void LoadData()
         {
             string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
@@ -133,7 +188,7 @@ namespace IM_PJ
                 rOrderToDate.MaxDate = DateTime.Now;
 
                 int TransferStatus = 0;
-                var ExcuteStatus = new List<int>() { 1, 2 };
+                var ExcuteStatus = new List<int>() { 1, 2, 5, 4 };
                 int BankReceive = 0;
                 string TextSearch = "";
                 string CreatedBy = "";
@@ -283,7 +338,7 @@ namespace IM_PJ
                     }
 
                     string datedone = "";
-                    if (item.ExcuteStatus == 2)
+                    if (item.ExcuteStatus == (int)ExcuteStatus.Done || item.ExcuteStatus == (int)ExcuteStatus.Sent || item.ExcuteStatus == (int)ExcuteStatus.Return)
                     {
                         datedone = string.Format("{0:dd/MM}", item.DateDone);
                     }
@@ -429,7 +484,7 @@ namespace IM_PJ
             {
                 startPageNumbersFrom = 1;
 
-                //As page numbers are starting at one, output an even number of pages.  
+                //As page numbers are starting at one, output an even number of pages.
                 stopPageNumbersAt = pagesToOutput;
             }
 
@@ -448,7 +503,7 @@ namespace IM_PJ
             }
             /******************End: Xác định startPageNumbersFrom & stopPageNumbersAt**********************/
 
-            //Các dấu ... chỉ những trang phía trước  
+            //Các dấu ... chỉ những trang phía trước
             if (startPageNumbersFrom > 1)
             {
                 output.Append("<li><a href=\"" + string.Format(GetPageUrl(currentPage - 1, pageUrl), startPageNumbersFrom - 1) + "\">&hellip;</a></li>");
@@ -467,7 +522,7 @@ namespace IM_PJ
                 }
             }
 
-            //Các dấu ... chỉ những trang tiếp theo  
+            //Các dấu ... chỉ những trang tiếp theo
             if (stopPageNumbersAt < pageCount)
             {
                 output.Append("<li><a href=\"" + string.Format(pageUrl, stopPageNumbersAt + 1) + "\">&hellip;</a></li>");

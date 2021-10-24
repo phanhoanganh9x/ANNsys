@@ -108,11 +108,7 @@
                                     <asp:TextBox ID="txtSearchOrder" runat="server" CssClass="form-control" placeholder="Tìm đơn hàng" autocomplete="off"></asp:TextBox>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlExcuteStatus" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Xử lý đơn"></asp:ListItem>
-                                        <asp:ListItem Value="1" Text="Đang xử lý"></asp:ListItem>
-                                        <asp:ListItem Value="2" Text="Đã hoàn tất"></asp:ListItem>
-                                    </asp:DropDownList>
+                                    <asp:DropDownList ID="ddlExcuteStatus" runat="server" CssClass="form-control"></asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlTransferStatus" runat="server" CssClass="form-control">
@@ -443,7 +439,7 @@
                                 if ($("#<%=ddlAccoutBank.ClientID%>").val() != 0) {
                                     row.find('#accBankName').html(accBankName);
                                 }
-                            
+
                                 statusNameDOM.children("span").html(statusName);
 
                                 // Đã nhận tiền
@@ -477,7 +473,7 @@
                             }
                         });
                     }
-                    
+
                 });
             });
 
@@ -572,7 +568,7 @@
                 // original length
                 var original_len = input_val.length;
 
-                // initial caret position 
+                // initial caret position
                 var caret_pos = input.prop("selectionStart");
 
                 // check for decimal

@@ -1221,6 +1221,7 @@
     <Compile Include="Models\OrderType.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Pages\danh-sach-chuyen-khoan\KeyValueModel.cs" />
     <Compile Include="Models\Pages\danh-sach-don-hang\KeyValueModel.cs" />
     <Compile Include="Models\Pages\print-jt-express\OrderAddressResponseModel.cs" />
     <Compile Include="Models\Pages\print-jt-express\OrderItemResponseModel.cs" />
