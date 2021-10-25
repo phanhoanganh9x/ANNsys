@@ -155,7 +155,7 @@ namespace IM_PJ
                     error += "<p>- Đơn hàng này <strong>Chưa thanh toán</strong>!</p>";
                 }
 
-                if (order.ExcuteStatus != 2)
+                if (!(order.ExcuteStatus == (int)ExcuteStatus.Done || order.ExcuteStatus == (int)ExcuteStatus.Sent || order.ExcuteStatus == (int)ExcuteStatus.Return))
                 {
                     error += "<p>- Đơn hàng này <strong>Chưa hoàn tất</strong>!</p>";
                 }
