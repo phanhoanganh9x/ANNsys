@@ -433,12 +433,15 @@ namespace IM_PJ
             #endregion
 
             #region Ngày hoàn tất
-            if (order.ExcuteStatus == 2 && !String.IsNullOrEmpty(order.DateDone.ToString()))
+            if (order.ExcuteStatus == (int)ExcuteStatus.Done || order.ExcuteStatus == (int)ExcuteStatus.Sent || order.ExcuteStatus == (int)ExcuteStatus.Return)
             {
-                orderHtml.AppendLine("                <tr>");
-                orderHtml.AppendLine("                    <td>Ngày hoàn tất</td>");
-                orderHtml.AppendLine("                    <td>" + String.Format("{0:dd/MM HH:mm}", order.DateDone) + " (" + order.CreatedBy + ")</td>");
-                orderHtml.AppendLine("                </tr>");
+                if (order.DateDone.HasValue)
+                {
+                    orderHtml.AppendLine("                <tr>");
+                    orderHtml.AppendLine("                    <td>Ngày hoàn tất</td>");
+                    orderHtml.AppendLine("                    <td>" + String.Format("{0:dd/MM HH:mm}", order.DateDone) + " (" + order.CreatedBy + ")</td>");
+                    orderHtml.AppendLine("                </tr>");
+                }
             }
             else
             {

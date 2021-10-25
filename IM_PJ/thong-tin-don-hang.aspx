@@ -2867,7 +2867,7 @@
                     case 5:
                     // Chuyển hoàn
                     case 4:
-                        $("#infor-order").addClass("disable");
+                        $("#infor-order").removeClass("disable");
                         $("#infor-customer").addClass("disable");
                         $("#deliveryAddress").addClass("disable");
                         $("#detail").addClass("disable");
