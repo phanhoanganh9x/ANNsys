@@ -69,3 +69,7 @@ CREATE NONCLUSTERED INDEX [ID_DeliverySaveReport_FileName] ON [dbo].[DeliverySav
 	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 GO
+
+-- 2021-10-19: Đối ứng trường hợp đơn hàng nhóm của shop ANN
+ALTER TABLE [dbo].[DeliverySaveReport]
+ADD [MaDonHangGopShop] [nvarchar](6) NULL

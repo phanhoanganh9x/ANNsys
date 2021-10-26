@@ -1,5 +1,5 @@
 ﻿CREATE PROCEDURE [dbo].[usp_GenerateGroupOrderCode]
-    @NewCode NVARCHAR(6) OUT
+    @NewCode NVARCHAR(6) OUTPUT
 AS
 BEGIN
     DECLARE @IdSeq INT;

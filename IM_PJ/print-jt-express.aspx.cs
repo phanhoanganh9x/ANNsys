@@ -72,6 +72,40 @@ namespace IM_PJ
             }
         }
 
+        private OrderResponseModel _getJtOrder(string groupCode, string code)
+        {
+            #region Khởi tạo API
+            var api = String.Format("http://ann-shop-dotnet-core.com/api/v1/jt-express/order/{0}?groupCode={1}", code, groupCode);
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(api);
+
+            httpWebRequest.Method = "GET";
+            #endregion
+
+            try
+            {
+                // Thực thi API
+                var response = (HttpWebResponse)httpWebRequest.GetResponse();
+
+                if (response.StatusCode != HttpStatusCode.OK)
+                    return null;
+
+                using (var reader = new StreamReader(response.GetResponseStream()))
+                {
+                    var jtOrder = JsonConvert.DeserializeObject<OrderResponseModel>(reader.ReadToEnd());
+
+                    return jtOrder;
+                }
+            }
+            catch (WebException we)
+            {
+                throw we;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
         private void _loadSenderAddress(OrderAddressResponseModel sender)
         {
             var index = 1;
