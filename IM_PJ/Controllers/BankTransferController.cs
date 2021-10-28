@@ -60,55 +60,75 @@ namespace IM_PJ.Controllers
                 return last;
             }
         }
-        public static int getBankOfOrder(int orderID)
+
+        /// <summary>
+        /// Lấy ID ngân hàng nhận tiền của đơn hàng
+        /// </summary>
+        /// <param name="orderId">ID đơn hàng</param>
+        /// <returns></returns>
+        public static int getAccBankId(int orderId)
         {
             using (var con = new inventorymanagementEntities())
             {
                 var bank = con.BankTransfers
-                    .Where(x => x.OrderID == orderID)
+                    .Where(x => x.OrderID == orderId)
                     .FirstOrDefault();
-                if (bank != null)
-                    return bank.AccBankID;
-                else
-                    return 0;
+
+                return bank != null ?  bank.AccBankID : 0;
             }
         }
 
-        public static bool Create(tbl_Order order, int bankID, tbl_Account user)
+        /// <summary>
+        /// Khởi tạo thông tin chuyển khoản của đơn hàng
+        /// </summary>
+        /// <param name="orderId">ID đơn hàng</param>
+        /// <param name="accBankId">ID ngân hàng nhận</param>
+        /// <param name="staff">Nhân viên khởi tạo đơn hàng</param>
+        /// <returns></returns>
+        public static bool createBankTransfer(int orderId, int accBankId, int staff)
         {
-            using (var con = new inventorymanagementEntities())
+            try
             {
-                var cusBankID = con.Banks.Where(x => x.ID == bankID).FirstOrDefault();
-                var accBankID = con.BankAccounts.Where(x => x.BankID == bankID).FirstOrDefault();
-
-                if (cusBankID != null && accBankID != null)
+                using (var con = new inventorymanagementEntities())
                 {
                     var now = DateTime.Now;
-                    var nullDate = new DateTime(1970, 1, 1, 0, 0, 0);
-                    var transfer = new BankTransfer();
-                    transfer.UUID = Guid.NewGuid();
-                    transfer.OrderID = order.ID;
-                    transfer.CusBankID = cusBankID.ID;
-                    transfer.AccBankID = accBankID.ID;
-                    transfer.DoneAt = nullDate;
-                    transfer.Money = 0;
-                    transfer.Status = 2; // Chưa nhận tiền
-                    transfer.CreatedBy = user.ID;
-                    transfer.CreatedDate = now;
-                    transfer.ModifiedBy = user.ID;
-                    transfer.ModifiedDate = now;
+                    // Lấy thông tin mới về ngân hàng chuyển
+                    var cusBankId = con.Banks
+                        .Join(
+                            con.BankAccounts.Where(x => x.ID == accBankId),
+                            b => b.ID,
+                            ab => ab.BankID,
+                            (b, ab) => b
+                        )
+                        .Select(x => x.ID)
+                        .SingleOrDefault();
+                    var transfer = new BankTransfer()
+                    {
+                        UUID = Guid.NewGuid(),
+                        OrderID = orderId,
+                        CusBankID = cusBankId,
+                        AccBankID = accBankId,
+                        DoneAt = now,
+                        Money = 0,
+                        Status = 2, // Chưa nhận tiền
+                        CreatedBy = staff,
+                        CreatedDate = now,
+                        ModifiedBy = staff,
+                        ModifiedDate = now
+                    };
 
                     con.BankTransfers.Add(transfer);
                     con.SaveChanges();
                 }
-                else
-                {
-                    return false;
-                }
-            }
 
-            return true;
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
+
         public static bool Update(BankTransfer transfer)
         {
             using (var con = new inventorymanagementEntities())
@@ -135,20 +155,53 @@ namespace IM_PJ.Controllers
 
             return true;
         }
-        public static bool updateBankOfOrder(int OrderID, int AccBankID)
-        {
-            using (var con = new inventorymanagementEntities())
-            {
-                var old = con.BankTransfers.Where(x => x.OrderID == OrderID).SingleOrDefault();
-                if (old != null)
-                {
-                    old.AccBankID = AccBankID;
-                    con.SaveChanges();
-                }
-            }
 
-            return true;
+        /// <summary>
+        /// Cập nhật lại ngân hàng nhận tiền của đơn hàng
+        /// </summary>
+        /// <param name="orderId">ID đơn hàng</param>
+        /// <param name="newAccBankId">ID nhân hàng mới</param>
+        /// <returns></returns>
+        public static bool updateAccBank(int orderId, int newAccBankId, int staff)
+        {
+            try
+            {
+                using (var con = new inventorymanagementEntities())
+                {
+                    // Lấy thông tin mới về ngân hàng chuyển
+                    var newCusBankId = con.Banks
+                        .Join(
+                            con.BankAccounts.Where(x => x.ID == newAccBankId),
+                            b => b.ID,
+                            ab => ab.BankID,
+                            (b, ab) => b
+                        )
+                        .Select(x => x.ID)
+                        .SingleOrDefault();
+                    // Lây dòng dữ liệu thông tin chuyển khoản của đơn hàng
+                    var transfer = con.BankTransfers
+                        .Where(x => x.OrderID == orderId)
+                        .SingleOrDefault();
+
+                    if (transfer != null)
+                    {
+                        transfer.CusBankID = newCusBankId;
+                        transfer.AccBankID = newAccBankId;
+                        transfer.ModifiedDate = DateTime.Now;
+                        transfer.ModifiedBy = staff;
+
+                        con.SaveChanges();
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
+
         public static string getTransferLastJSON(int customerID)
         {
             using (var con = new inventorymanagementEntities())
