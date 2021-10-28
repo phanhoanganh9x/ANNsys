@@ -133,10 +133,11 @@ namespace IM_PJ
                 // Add Account Bank drop down list
                 var accBanks = BankAccountController.getDropDownList();
                 accBanks[0].Text = "Ngân hàng nhận";
+                // Filter at header
                 ddlBankReceive.Items.Clear();
                 ddlBankReceive.Items.AddRange(accBanks.ToArray());
                 ddlBankReceive.DataBind();
-
+                // Confirm modal
                 ddlAccoutBank.Items.Clear();
                 ddlAccoutBank.Items.AddRange(accBanks.ToArray());
                 ddlAccoutBank.DataBind();
