@@ -1371,7 +1371,7 @@ namespace IM_PJ.Controllers
                         AccBankName = x.account.AccBankName,
                         Money = x.transfer.Money,
                         Status = x.transfer.Status,
-                        StatusName = x.transfer.Status,
+                        StatusName = x.transfer.Status == 1 ? "Đã nhận tiền" : "Chưa nhận tiền",
                         DoneAt = x.transfer.DoneAt,
                         Note = x.transfer.Note,
                     })
@@ -1657,7 +1657,7 @@ namespace IM_PJ.Controllers
                             result.AccBankName = temp.trans.AccBankName;
                             result.MoneyReceive = temp.trans.Money;
                             result.TransferStatus = temp.trans.Status;
-                            result.StatusName = temp.trans.Status == 1 ? "Đã nhận tiền" : "Chưa nhận tiền";
+                            result.StatusName = temp.trans.StatusName;
                             result.DoneAt = temp.trans.DoneAt;
                             result.TransferNote = temp.trans.Note;
                         }

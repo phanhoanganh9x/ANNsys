@@ -61,13 +61,13 @@ namespace IM_PJ
                 if (acc.RoleID == 0)
                 {
                     hdfUsernameCurrent.Value = acc.Username;
-                    LoadCreatedBy();
+                    _loadCreatedBy();
                 }
                 else if (acc.RoleID == 2)
                 {
                     hdfUsername.Value = acc.Username;
                     hdfUsernameCurrent.Value = acc.Username;
-                    LoadCreatedBy(acc);
+                    _loadCreatedBy(acc);
                 }
 
 
@@ -165,9 +165,8 @@ namespace IM_PJ
                 throw e;
             }
         }
-        #endregion
 
-        public void LoadCreatedBy(tbl_Account acc = null)
+        private void _loadCreatedBy(tbl_Account acc = null)
         {
             if (acc != null)
             {
@@ -192,6 +191,26 @@ namespace IM_PJ
                 }
             }
         }
+
+        private void _loadAccBank(int? orderId)
+        {
+            var accBanks = BankAccountController.getDropDownList();
+            accBanks[0].Text = "Chọn ngân hàng nhận";
+
+            ddlBank.Items.Clear();
+            ddlBank.Items.AddRange(accBanks.ToArray());
+            ddlBank.DataBind();
+
+            if (orderId.HasValue)
+            {
+                int accBankId = BankTransferController.getAccBankId(orderId.Value);
+
+                if (accBankId != 0)
+                    ddlBank.SelectedValue = accBankId.ToString();
+            }
+        }
+        #endregion
+
         public void LoadData()
         {
             int n;
@@ -222,17 +241,7 @@ namespace IM_PJ
                     ddlFeeType.SelectedIndex = 0;
 
                     // Init drop down list Bank
-                    var banks = BankController.getDropDownList();
-                    banks[0].Text = "Chọn ngân hàng";
-
-                    ddlBank.Items.Clear();
-                    ddlBank.Items.AddRange(banks.ToArray());
-                    ddlBank.DataBind();
-                    int bankOfOrder = BankTransferController.getBankOfOrder(ID);
-                    if(bankOfOrder != 0)
-                    {
-                        ddlBank.SelectedValue = bankOfOrder.ToString();
-                    }
+                    _loadAccBank(ID);
 
                     // Init Price Type List
                     hdfFeeType.Value = FeeTypeController.getFeeTypeJSON();
@@ -1283,19 +1292,17 @@ namespace IM_PJ
                             }
                             #endregion
 
-                            #region Xử lý Transfer Bank
-                            var bankID = ddlBank.SelectedValue.ToInt(0);
-                            if (bankID != 0)
+                            #region Xử lý Bank Transfer
+                            var newAccBankId = ddlBank.SelectedValue.ToInt(0);
+
+                            if (newAccBankId != 0)
                             {
-                                int bankOfOrder = BankTransferController.getBankOfOrder(order.ID);
-                                if (bankOfOrder != 0)
-                                {
-                                    BankTransferController.updateBankOfOrder(order.ID, bankID);
-                                }
+                                int oldAccBankId = BankTransferController.getAccBankId(order.ID);
+
+                                if (oldAccBankId != 0)
+                                    BankTransferController.updateAccBank(order.ID, newAccBankId, acc.ID);
                                 else
-                                {
-                                    BankTransferController.Create(order, bankID, acc);
-                                }
+                                    BankTransferController.createBankTransfer(order.ID, newAccBankId, acc.ID);
                             }
                             #endregion
 

@@ -382,8 +382,8 @@
 
                 $("#updateTransfer").click(e => {
                     let orderID = $("#<%=hdOrderID.ClientID%>").val();
+                    let cusBankID = $("#<%=ddlCustomerBank.ClientID%>").val();
                     let accBankID = $("#<%=ddlAccoutBank.ClientID%>").val();
-                    let cusBankID = accBankID;
                     let status = $("#<%=ddlStatus.ClientID%>").val();
                     let money = $("#<%=txtMoneyReceived.ClientID%>").val().replace(/\,/g, '');
                     if (money == "")

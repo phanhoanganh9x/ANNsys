@@ -79,6 +79,19 @@ namespace IM_PJ
                 LoadData();
             }
         }
+
+        #region Private
+        private void _loadAccBank()
+        {
+            var accBanks = BankAccountController.getDropDownList();
+            accBanks[0].Text = "Chọn ngân hàng nhận";
+
+            ddlBank.Items.Clear();
+            ddlBank.Items.AddRange(accBanks.ToArray());
+            ddlBank.DataBind();
+        }
+        #endregion
+
         public void LoadData()
         {
 
@@ -131,12 +144,7 @@ namespace IM_PJ
             ddlPaymentType.SelectedIndex = 1;
 
             // Init drop down list Bank
-            var banks = BankController.getDropDownList();
-            banks[0].Text = "Chọn ngân hàng";
-
-            ddlBank.Items.Clear();
-            ddlBank.Items.AddRange(banks.ToArray());
-            ddlBank.DataBind();
+            _loadAccBank();
 
             // Init drop down list Shipping Type
             var shipType = new List<ListItem>();
@@ -435,12 +443,12 @@ namespace IM_PJ
                             FeeController.Update(ret.ID, fees);
                         }
                     }
-                    // Insert Transfer Bank
-                    var bankID = ddlBank.SelectedValue.ToInt(0);
-                    if (bankID != 0)
-                    {
-                        BankTransferController.Create(ret, bankID, acc);
-                    }
+
+                    // Khởi tạo Bank Transfer
+                    var newAccbankId = ddlBank.SelectedValue.ToInt(0);
+
+                    if (newAccbankId != 0)
+                        BankTransferController.createBankTransfer(ret.ID, newAccbankId, acc.ID);
 
                     // Inactive code coupon
                     if (orderNew.CouponID.HasValue && orderNew.CouponID.Value > 0)
