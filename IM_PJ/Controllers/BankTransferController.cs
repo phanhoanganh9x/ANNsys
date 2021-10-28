@@ -108,7 +108,7 @@ namespace IM_PJ.Controllers
                         OrderID = orderId,
                         CusBankID = cusBankId,
                         AccBankID = accBankId,
-                        DoneAt = now,
+                        DoneAt = new DateTime(1970, 1, 1, 0, 0, 0),
                         Money = 0,
                         Status = 2, // Chưa nhận tiền
                         CreatedBy = staff,
