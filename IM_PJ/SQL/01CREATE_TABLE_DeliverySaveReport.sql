@@ -71,5 +71,7 @@ CREATE NONCLUSTERED INDEX [ID_DeliverySaveReport_FileName] ON [dbo].[DeliverySav
 GO
 
 -- 2021-10-19: Đối ứng trường hợp đơn hàng nhóm của shop ANN
+DROP INDEX UC_DeliverySaveReport_MaDonHang ON [dbo].[DeliverySaveReport];
+
 ALTER TABLE [dbo].[DeliverySaveReport]
 ADD [MaDonHangGopShop] [nvarchar](6) NULL

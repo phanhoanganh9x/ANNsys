@@ -73,3 +73,23 @@ GO
 
 ALTER TABLE [dbo].[GroupOrder] CHECK CONSTRAINT [FK_GroupOrder_DeliveryMethod]
 GO
+
+-- 2021-10-19: Đối ứng trường hợp đơn hàng nhóm của shop ANN
+ALTER TABLE [dbo].[GroupOrder]
+ADD [Weight] [float] NULL
+
+ALTER TABLE [dbo].[GroupOrder]
+ADD [Cod] [money] NULL
+
+ALTER TABLE [dbo].[GroupOrder] ADD  CONSTRAINT [DF_GroupOrder_Cod]  DEFAULT (0) FOR [Cod]
+GO
+
+UPDATE [dbo].[GroupOrder]
+SET [Weight] = 0
+,   [Cod] = 0
+
+ALTER TABLE [dbo].[GroupOrder]
+ALTER COLUMN [Weight] [float] NOT NULL
+
+ALTER TABLE [dbo].[GroupOrder]
+ALTER COLUMN [Cod] [money] NOT NULL
