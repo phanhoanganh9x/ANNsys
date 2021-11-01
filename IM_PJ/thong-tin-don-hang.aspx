@@ -3428,13 +3428,14 @@
 
                 //#region Tính lại chiết khấu
                 let discount = +$pDiscount.val().replace(/,/g, '') || 0;
+                let strDiscount = formatThousands(discount, ',');
 
                 if (discount == 0 && $pDiscount.val() === '')
                     $pDiscount.val(0);
 
                 swal({
                     title: "Chiết khấu",
-                    text: "Áp dụng chiết khấu <strong>" + formatThousands(discount, ',') + "/cái</strong> cho tất sản phẩm?",
+                    text: "Áp dụng chiết khấu <strong>" + strDiscount + "/cái</strong> cho tất sản phẩm?",
                     type: "warning",
                     showCancelButton: true,
                     closeOnConfirm: true,
@@ -3449,13 +3450,19 @@
                                 let $discount = $(this).find('.discount');
 
                                 if (discount != 0)
-                                    $discount.val(formatThousands(discount, ','));
+                                {
+                                    $discount.val(strDiscount);
+                                    $discount.attr("value", strDiscount);
+                                }
                                 else
+                                {
                                     $discount.val(0);
+                                    $discount.attr("value", 0)
+                                }
                                 //#endregion
 
                                 //#region Kiểm tra chiết khấu
-                                let costOfGoods = $(this).data("costOfGoods");
+                                let costOfGoods = +$(this).data("costOfGoods") || 0;
                                 let price = +$(this).find(".gia-san-pham").data("price") || 0;
 
                                 if ((price - discount) < costOfGoods) {
@@ -3483,6 +3490,7 @@
              * Đối ứng chiết khấu từng dòng (END)
              * ============================================================
              */
+
             //#region J&T Express
             function _disabledJtRecipientDistrict(disabled) {
                 let placeHolder = '(Bấm để chọn: ' + $('[id$="_ddlRecipientDistrict"] option:selected').text() + ')';
