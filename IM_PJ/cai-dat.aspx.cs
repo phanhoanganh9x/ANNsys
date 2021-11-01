@@ -53,6 +53,13 @@ namespace IM_PJ
                 ddlHideProduct.SelectedValue = p.HideProduct.ToString();
                 ddlViewAllOrders.SelectedValue = p.ViewAllOrders.ToString();
                 ddlViewAllReports.SelectedValue = p.ViewAllReports.ToString();
+
+                txtWPFBClothes.Text = p.WPFBClothes;
+                txtWPFBCosmetics.Text = p.WPFBCosmetics;
+                txtWPNewsClothes.Text = p.WPNewsClothes;
+                txtWPNewsCosmetics.Text = p.WPNewsCosmetics;
+                txtWPZaloClothes.Text = p.WPZaloClothes;
+                txtWPZaloCosmetics.Text = p.WPZaloCosmetics;
             }
         }
         protected void btnLogin_Click(object sender, EventArgs e)
@@ -99,7 +106,13 @@ namespace IM_PJ
                         pCSSPrintBarcode.Text, 
                         Convert.ToInt32(ddlHideProduct.SelectedValue),
                         Convert.ToInt32(ddlViewAllOrders.SelectedValue),
-                        Convert.ToInt32(ddlViewAllReports.SelectedValue)
+                        Convert.ToInt32(ddlViewAllReports.SelectedValue),
+                        txtWPNewsClothes.Text,
+                        txtWPNewsCosmetics.Text,
+                        txtWPZaloClothes.Text,
+                        txtWPZaloCosmetics.Text,
+                        txtWPFBClothes.Text,
+                        txtWPFBCosmetics.Text
                         );
 
                     PJUtils.ShowMessageBoxSwAlert("Cập nhật thành công", "s", true, Page);

@@ -23,7 +23,13 @@ namespace IM_PJ.Controllers
             string CSSPrintBarcode, 
             int HideProduct, 
             int ViewAllOrders, 
-            int ViewAllReports
+            int ViewAllReports,
+            string WPNewsClothes,
+            string WPNewsCosmetics,
+            string WPZaloClothes,
+            string WPZaloCosmetics,
+            string WPFBClothes,
+            string WPFBCosmetics
             )
         {
             using (var dbe = new inventorymanagementEntities())
@@ -43,6 +49,13 @@ namespace IM_PJ.Controllers
                     ui.HideProduct = HideProduct;
                     ui.ViewAllOrders = ViewAllOrders;
                     ui.ViewAllReports = ViewAllReports;
+
+                    ui.WPFBClothes = WPFBClothes;
+                    ui.WPFBCosmetics = WPFBCosmetics;
+                    ui.WPNewsClothes = WPNewsClothes;
+                    ui.WPNewsCosmetics = WPNewsCosmetics;
+                    ui.WPZaloClothes = WPZaloClothes;
+                    ui.WPZaloCosmetics = WPZaloCosmetics;
 
                     int kq = dbe.SaveChanges();
                     return kq.ToString();

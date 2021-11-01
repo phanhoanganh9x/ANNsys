@@ -24,6 +24,6 @@ namespace IM_PJ.Models
         public string City { get; set; }
         public System.DateTime CreatedDate { get; set; }
         public System.DateTime ModifiedDate { get; set; }
-        public Nullable<int> ViewStatus { get; set; }
+        public int ViewStatus { get; set; }
     }
 }

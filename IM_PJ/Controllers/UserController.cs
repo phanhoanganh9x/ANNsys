@@ -104,7 +104,7 @@ namespace IM_PJ.Controllers
                             Birthday = parent.reg.BirthDay,
                             Address = parent.reg.Address,
                             City = parent.reg.City,
-                            Status = child != null ? 3 : parent.reg.ViewStatus.Value,
+                            Status = child != null ? 3 : parent.reg.ViewStatus,
                             CreatedDate = parent.reg.CreatedDate,
                         }
                     )

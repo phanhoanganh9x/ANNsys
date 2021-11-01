@@ -148,6 +148,60 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.DropDownList ddlViewAllReports;
         
         /// <summary>
+        /// txtWPNewsClothes control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtWPNewsClothes;
+        
+        /// <summary>
+        /// txtWPNewsCosmetics control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtWPNewsCosmetics;
+        
+        /// <summary>
+        /// txtWPZaloClothes control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtWPZaloClothes;
+        
+        /// <summary>
+        /// txtWPZaloCosmetics control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtWPZaloCosmetics;
+        
+        /// <summary>
+        /// txtWPFBClothes control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtWPFBClothes;
+        
+        /// <summary>
+        /// txtWPFBCosmetics control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtWPFBCosmetics;
+        
+        /// <summary>
         /// btnLogin control.
         /// </summary>
         /// <remarks>

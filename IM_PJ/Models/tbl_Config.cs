@@ -32,5 +32,11 @@ namespace IM_PJ.Models
         public Nullable<int> ViewAllReports { get; set; }
         public int MinQuantityOfOrder { get; set; }
         public int StaffIndex { get; set; }
+        public string WPNewsClothes { get; set; }
+        public string WPNewsCosmetics { get; set; }
+        public string WPZaloClothes { get; set; }
+        public string WPZaloCosmetics { get; set; }
+        public string WPFBClothes { get; set; }
+        public string WPFBCosmetics { get; set; }
     }
 }

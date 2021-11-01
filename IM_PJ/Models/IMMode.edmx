@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="inventorymanagementModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="inventorymanagementModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Bank">
           <Key>
             <PropertyRef Name="ID" />
@@ -986,6 +986,12 @@
           <Property Name="ViewAllReports" Type="int" />
           <Property Name="MinQuantityOfOrder" Type="int" Nullable="false" />
           <Property Name="StaffIndex" Type="int" Nullable="false" />
+          <Property Name="WPNewsClothes" Type="nvarchar(max)" />
+          <Property Name="WPNewsCosmetics" Type="nvarchar(max)" />
+          <Property Name="WPZaloClothes" Type="nvarchar(max)" />
+          <Property Name="WPZaloCosmetics" Type="nvarchar(max)" />
+          <Property Name="WPFBClothes" Type="nvarchar(max)" />
+          <Property Name="WPFBCosmetics" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="tbl_Customer">
           <Key>
@@ -1601,7 +1607,7 @@
           <Property Name="City" Type="nvarchar" MaxLength="255" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
-          <Property Name="ViewStatus" Type="int" />
+          <Property Name="ViewStatus" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="UserNotifyPromotion">
           <Key>
@@ -2126,8 +2132,7 @@
             <End Role="ViewOrder" EntitySet="ViewOrder" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="inventorymanagementModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -3145,6 +3150,12 @@
           <Property Name="ViewAllReports" Type="Int32" />
           <Property Name="MinQuantityOfOrder" Type="Int32" Nullable="false" />
           <Property Name="StaffIndex" Type="Int32" Nullable="false" />
+          <Property Name="WPNewsClothes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="WPNewsCosmetics" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="WPZaloClothes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="WPZaloCosmetics" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="WPFBClothes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="WPFBCosmetics" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_Customer">
           <Key>
@@ -3767,7 +3778,7 @@
           <Property Name="City" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ViewStatus" Type="Int32" />
+          <Property Name="ViewStatus" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="UserNotifyPromotion">
           <Key>
@@ -5317,6 +5328,12 @@
           <EntitySetMapping Name="tbl_Config">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Config">
               <MappingFragment StoreEntitySet="tbl_Config">
+                <ScalarProperty Name="WPFBCosmetics" ColumnName="WPFBCosmetics" />
+                <ScalarProperty Name="WPFBClothes" ColumnName="WPFBClothes" />
+                <ScalarProperty Name="WPZaloCosmetics" ColumnName="WPZaloCosmetics" />
+                <ScalarProperty Name="WPZaloClothes" ColumnName="WPZaloClothes" />
+                <ScalarProperty Name="WPNewsCosmetics" ColumnName="WPNewsCosmetics" />
+                <ScalarProperty Name="WPNewsClothes" ColumnName="WPNewsClothes" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="NumOfDateToChangeProduct" ColumnName="NumOfDateToChangeProduct" />
                 <ScalarProperty Name="NumOfProductCanChange" ColumnName="NumOfProductCanChange" />
