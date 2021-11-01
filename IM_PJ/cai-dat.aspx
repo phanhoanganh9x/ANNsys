@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Cài đặt hệ thống" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="cai-dat.aspx.cs" Inherits="IM_PJ.cai_dat" %>
+﻿<%@ Page Title="Cài đặt hệ thống" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="cai-dat.aspx.cs" Inherits="IM_PJ.cai_dat" validateRequest="false" %>
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
