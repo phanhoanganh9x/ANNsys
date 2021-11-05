@@ -140,6 +140,22 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
+                                    Wordpress - Ảnh quần áo
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox ID="txtWPImageClothes" TextMode="MultiLine" runat="server" CssClass="form-control" Height="400px"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Wordpress - Ảnh mỹ phẩm
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox ID="txtWPImageCosmetics" TextMode="MultiLine" runat="server" CssClass="form-control" Height="400px"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
                                     Wordpress - Zalo quần áo
                                 </div>
                                 <div class="row-right">
@@ -159,7 +175,7 @@
                                     Wordpress - Facebook quần áo
                                 </div>
                                 <div class="row-right">
-                                    <asp:TextBox ID="txtWPFBClothes" TextMode="MultiLine" runat="server" CssClass="form-control" Height="200px"></asp:TextBox>
+                                    <asp:TextBox ID="txtWPFBClothes" TextMode="MultiLine" runat="server" CssClass="form-control" Height="100px"></asp:TextBox>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -167,7 +183,23 @@
                                     Wordpress - Facebook mỹ phẩm
                                 </div>
                                 <div class="row-right">
-                                    <asp:TextBox ID="txtWPFBCosmetics" TextMode="MultiLine" runat="server" CssClass="form-control" Height="200px"></asp:TextBox>
+                                    <asp:TextBox ID="txtWPFBCosmetics" TextMode="MultiLine" runat="server" CssClass="form-control" Height="100px"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Wordpress - Hotline quần áo
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox ID="txtWPHotlineClothes" TextMode="MultiLine" runat="server" CssClass="form-control" Height="200px"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Wordpress - Hotline mỹ phẩm
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox ID="txtWPHotlineCosmetics" TextMode="MultiLine" runat="server" CssClass="form-control" Height="200px"></asp:TextBox>
                                 </div>
                             </div>
                             <div class="form-row">

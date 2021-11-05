@@ -166,6 +166,24 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.TextBox txtWPNewsCosmetics;
         
         /// <summary>
+        /// txtWPImageClothes control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtWPImageClothes;
+        
+        /// <summary>
+        /// txtWPImageCosmetics control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtWPImageCosmetics;
+        
+        /// <summary>
         /// txtWPZaloClothes control.
         /// </summary>
         /// <remarks>
@@ -200,6 +218,24 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtWPFBCosmetics;
+        
+        /// <summary>
+        /// txtWPHotlineClothes control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtWPHotlineClothes;
+        
+        /// <summary>
+        /// txtWPHotlineCosmetics control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtWPHotlineCosmetics;
         
         /// <summary>
         /// btnLogin control.
