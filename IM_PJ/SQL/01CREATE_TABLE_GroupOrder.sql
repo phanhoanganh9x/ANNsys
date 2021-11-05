@@ -93,3 +93,6 @@ ALTER COLUMN [Weight] [float] NOT NULL
 
 ALTER TABLE [dbo].[GroupOrder]
 ALTER COLUMN [Cod] [money] NOT NULL
+
+ALTER TABLE [dbo].[GroupOrder]
+ALTER COLUMN [Weight] [float] NOT NULL
