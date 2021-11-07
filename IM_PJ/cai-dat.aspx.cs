@@ -64,6 +64,16 @@ namespace IM_PJ
                 txtWPHotlineCosmetics.Text = p.WPHotlineCosmetics;
                 txtWPImageClothes.Text = p.WPImageClothes;
                 txtWPImageCosmetics.Text = p.WPImageCosmetics;
+                txtWPNewsLixi.Text = p.WPNewsLixi;
+                txtWPHotlineLixi.Text = p.WPHotlineLixi;
+                txtWPZaloLixi.Text = p.WPZaloLixi;
+                txtWPCategoryCosmetics.Text = p.WPCategoryCosmetics;
+                txtWPCategoryPerfume.Text = p.WPCategoryPerfume;
+                txtWPVideoClothes.Text = p.WPVideoClothes;
+                txtWPVideoCosmetics.Text = p.WPVideoCosmetics;
+                txtWPBannerTop.Text = p.WPBannerTop;
+                txtWPBannerProduct.Text = p.WPBannerProduct;
+                txtWPTime.Text = p.WPTime;
             }
         }
         protected void btnLogin_Click(object sender, EventArgs e)
@@ -120,7 +130,17 @@ namespace IM_PJ
                         txtWPHotlineClothes.Text,
                         txtWPHotlineCosmetics.Text,
                         txtWPImageClothes.Text,
-                        txtWPImageCosmetics.Text
+                        txtWPImageCosmetics.Text,
+                        txtWPNewsLixi.Text,
+                        txtWPHotlineLixi.Text,
+                        txtWPZaloLixi.Text,
+                        txtWPCategoryCosmetics.Text,
+                        txtWPCategoryPerfume.Text,
+                        txtWPVideoClothes.Text,
+                        txtWPVideoCosmetics.Text,
+                        txtWPBannerTop.Text,
+                        txtWPBannerProduct.Text,
+                        txtWPTime.Text
                         );
 
                     PJUtils.ShowMessageBoxSwAlert("Cập nhật thành công", "s", true, Page);

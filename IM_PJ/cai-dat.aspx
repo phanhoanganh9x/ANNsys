@@ -127,7 +127,7 @@
                                     Wordpress - Tin mới quần áo
                                 </div>
                                 <div class="row-right">
-                                    <asp:TextBox ID="txtWPNewsClothes" TextMode="MultiLine" runat="server" CssClass="form-control" Height="400px"></asp:TextBox>
+                                    <asp:TextBox ID="txtWPNewsClothes" TextMode="MultiLine" runat="server" CssClass="form-control" Height="350px"></asp:TextBox>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -135,7 +135,31 @@
                                     Wordpress - Tin mới mỹ phẩm
                                 </div>
                                 <div class="row-right">
-                                    <asp:TextBox ID="txtWPNewsCosmetics" TextMode="MultiLine" runat="server" CssClass="form-control" Height="400px"></asp:TextBox>
+                                    <asp:TextBox ID="txtWPNewsCosmetics" TextMode="MultiLine" runat="server" CssClass="form-control" Height="350px"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Wordpress - Tin mới lì xì
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox ID="txtWPNewsLixi" TextMode="MultiLine" runat="server" CssClass="form-control" Height="200px"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Wordpress - Tin danh mục mỹ phẩm
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox ID="txtWPCategoryCosmetics" TextMode="MultiLine" runat="server" CssClass="form-control" Height="200px"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Wordpress - Tin danh mục nước hoa
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox ID="txtWPCategoryPerfume" TextMode="MultiLine" runat="server" CssClass="form-control" Height="200px"></asp:TextBox>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -143,7 +167,7 @@
                                     Wordpress - Ảnh quần áo
                                 </div>
                                 <div class="row-right">
-                                    <asp:TextBox ID="txtWPImageClothes" TextMode="MultiLine" runat="server" CssClass="form-control" Height="400px"></asp:TextBox>
+                                    <asp:TextBox ID="txtWPImageClothes" TextMode="MultiLine" runat="server" CssClass="form-control" Height="300px"></asp:TextBox>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -151,7 +175,39 @@
                                     Wordpress - Ảnh mỹ phẩm
                                 </div>
                                 <div class="row-right">
-                                    <asp:TextBox ID="txtWPImageCosmetics" TextMode="MultiLine" runat="server" CssClass="form-control" Height="400px"></asp:TextBox>
+                                    <asp:TextBox ID="txtWPImageCosmetics" TextMode="MultiLine" runat="server" CssClass="form-control" Height="300px"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Wordpress - Video quần áo
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox ID="txtWPVideoClothes" TextMode="MultiLine" runat="server" CssClass="form-control" Height="200px"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Wordpress - Video mỹ phẩm
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox ID="txtWPVideoCosmetics" TextMode="MultiLine" runat="server" CssClass="form-control" Height="200px"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Wordpress - Banner Top
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox ID="txtWPBannerTop" TextMode="MultiLine" runat="server" CssClass="form-control" Height="100px"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Wordpress - Banner Product
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox ID="txtWPBannerProduct" TextMode="MultiLine" runat="server" CssClass="form-control" Height="100px"></asp:TextBox>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -168,6 +224,14 @@
                                 </div>
                                 <div class="row-right">
                                     <asp:TextBox ID="txtWPZaloCosmetics" TextMode="MultiLine" runat="server" CssClass="form-control" Height="200px"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Wordpress - Zalo lì xì
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox ID="txtWPZaloLixi" TextMode="MultiLine" runat="server" CssClass="form-control" Height="150px"></asp:TextBox>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -200,6 +264,22 @@
                                 </div>
                                 <div class="row-right">
                                     <asp:TextBox ID="txtWPHotlineCosmetics" TextMode="MultiLine" runat="server" CssClass="form-control" Height="200px"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Wordpress - Hotline lì xì
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox ID="txtWPHotlineLixi" TextMode="MultiLine" runat="server" CssClass="form-control" Height="150px"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Wordpress - Thời gian làm việc
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox ID="txtWPTime" TextMode="MultiLine" runat="server" CssClass="form-control" Height="100px"></asp:TextBox>
                                 </div>
                             </div>
                             <div class="form-row">

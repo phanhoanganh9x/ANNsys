@@ -33,7 +33,17 @@ namespace IM_PJ.Controllers
             string WPHotlineClothes,
             string WPHotlineCosmetics,
             string WPImageClothes,
-            string WPImageCosmetics
+            string WPImageCosmetics,
+            string WPNewsLixi,
+            string WPHotlineLixi,
+            string WPZaloLixi,
+            string WPCategoryCosmetics,
+            string WPCategoryPerfume,
+            string WPVideoClothes,
+            string WPVideoCosmetics,
+            string WPBannerTop,
+            string WPBannerProduct,
+            string WPTime
             )
         {
             using (var dbe = new inventorymanagementEntities())
@@ -64,6 +74,17 @@ namespace IM_PJ.Controllers
                     ui.WPHotlineCosmetics = WPHotlineCosmetics;
                     ui.WPImageClothes = WPImageClothes;
                     ui.WPImageCosmetics = WPImageCosmetics;
+                    ui.WPNewsLixi = WPNewsLixi;
+                    ui.WPHotlineLixi = WPHotlineLixi;
+                    ui.WPZaloLixi = WPZaloLixi;
+                    ui.WPCategoryCosmetics = WPCategoryCosmetics;
+                    ui.WPCategoryPerfume = WPCategoryPerfume;
+                    ui.WPVideoClothes = WPVideoClothes;
+                    ui.WPVideoCosmetics = WPVideoCosmetics;
+                    ui.WPBannerTop = WPBannerTop;
+                    ui.WPBannerProduct = WPBannerProduct;
+                    ui.WPTime = WPTime;
+
                     int kq = dbe.SaveChanges();
                     return kq.ToString();
                 }
