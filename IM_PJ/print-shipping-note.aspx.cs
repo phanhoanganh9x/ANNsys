@@ -1,5 +1,6 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Models.Pages.print_shipping_note;
 using MB.Extensions;
 using NHST.Bussiness;
 using System;
@@ -23,539 +24,532 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["usernameLoginSystem_ANN123"] != null)
-                {
-                    string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
-                    var acc = AccountController.GetByUsername(username);
-                    if (acc != null)
-                    {
-                        if (acc.RoleID == 0)
-                        {
-
-                        }
-                        else if (acc.RoleID == 2)
-                        {
-
-                        }
-                        else
-                        {
-                            Response.Redirect("/trang-chu");
-                        }
-                    }
-                }
-                else
-                {
+                if (Request.Cookies["usernameLoginSystem_ANN123"] == null)
                     Response.Redirect("/dang-nhap");
-                }
+
+                var username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
+                var acc = AccountController.GetByUsername(username);
+                
+                if (acc == null || acc.RoleID != 0 || acc.RoleID != 2))
+                    Response.Redirect("/trang-chu");
+                
                 LoadData();
             }
         }
-        public string createBarcode(string barcodeValue)
+
+        #region Private
+        private AddressModel _getReceiver(int customerId, long deliveryAddressId)
+        {
+            // Trường hợp có ID địa chỉ nhận hàng
+            if (order.DeliveryAddressId.HasValue)
+            {
+                var deliveryAddress = DeliveryController.getDeliveryAddressById(order.DeliveryAddressId.Value);
+                var province = ProvinceController.GetByID(deliveryAddress.ProvinceId);
+                var district = ProvinceController.GetByID(deliveryAddress.DistrictId);
+                var ward = ProvinceController.GetByID(deliveryAddress.WardId);
+
+                return AddressModel.map(deliveryAddress, province, district, ward);
+            }
+
+            // Nếu không có ID địa chỉ nhận hàng sẽ lấy theo địa chỉ của khác hàng
+            var customer = CustomerController.GetByID(order.CustomerID.Value);
+            var province = customer.ProvinceId.HasValue && customer.ProvinceId.Value > 0 
+                ? ProvinceController.GetByID(customer.ProvinceID.Value) : null;
+            var district = customer.DistrictID.HasValue && customer.DistrictID.Value > 0 
+                ? ProvinceController.GetByID(customer.DistrictID.Value) : null;
+            var ward = customer.WardId.HasValue && customer.WardId.Value > 0 
+                ? ProvinceController.GetByID(customer.WardId.Value) : null;
+
+            return AddressModel.map(customer, province, district, ward);
+        }
+
+        private string _createBarcode(string barcodeValue)
         {
             // Tạo barcode cho bưu điện
             var temps = new List<String>();
             var imageName = String.Format("{0}{1}.png", DateTime.UtcNow.ToString("yyyyMMddHHmmss"), Guid.NewGuid());
-            string barcodeImage = "/uploads/shipping-barcodes/" + imageName;
-            System.Drawing.Image barCode = PJUtils.MakeShippingBarcode(barcodeValue, 2, false);
+            var barcodeImage = "/uploads/shipping-barcodes/" + imageName;
+            var barCode = PJUtils.MakeShippingBarcode(barcodeValue, 2, false);
+
             barCode.Save(HttpContext.Current.Server.MapPath("" + barcodeImage + ""), ImageFormat.Png);
             temps.Add(imageName);
-            string result = "data:image/png;base64, " + Convert.ToBase64String(File.ReadAllBytes(Server.MapPath("" + barcodeImage + "")));
+            var imageBase64 = Convert.ToBase64String(File.ReadAllBytes(Server.MapPath("" + barcodeImage + "")));
+            var result = String.Format("data:image/png;base64, {0}", imageBase64);
 
             // Xóa barcode sau khi tạo
-            string[] filePaths = Directory.GetFiles(Server.MapPath("/uploads/shipping-barcodes/"));
+            var filePaths = Directory.GetFiles(Server.MapPath("/uploads/shipping-barcodes/"));
+            
             foreach (string filePath in filePaths)
-            {
                 foreach (var item in temps)
-                {
                     if (filePath.EndsWith(item))
-                    {
                         File.Delete(filePath);
-                    }
-                }
-            }
 
             return result;
         }
 
-        #region J&T Express
-        private void loadJtExpress(int orderId)
+        private string _createCodHtml(int paymentMethod, decimal cod) 
         {
-            #region Lấy data
-            var data = JtExpressOrderController.getOrder(orderId);
+            var html = String.Empty;
 
-            // Mã đơn đặt
-            var maShop = orderId;
-            // Mã vận đơn
-            var maVanDon = data.Cod;
-            // Tên người gửi
-            var tenNguoiGui = data.SenderName;
-            // Sđt người gửi
-            var sdtNguoiGui = data.SenderPhone;
-            // Địa chỉ chi tiết nơi gửi
-            var diaChiNguoiGui = String.Format(
-                "{0}, {1}, {2}, {3}",
-                data.SenderAddress,
-                Regex.Replace(data.SenderWard, @"-.+$", String.Empty),
-                data.SenderDistrict,
-                data.SenderProvince
-            );
-            // Tên người nhận
-            var tenNguoiNhan = data.ReceiverName;
-            // Sđt người nhận
-            var sdtNguoiNhan = data.ReceiverPhone;
-            // Địa chỉ chi tiết người nhận
-            var diaChiNguoiNhan = String.Format(
-                "{0}, {1}, {2}, {3}",
-                data.ReceiverAddress,
-                Regex.Replace(data.ReceiverWard, @"-.+$", String.Empty),
-                data.ReceiverDistrict,
-                data.ReceiverProvince
-            );
-            // Mã phân hàng (Mã bưu cục)
-            var maBuuCuc = data.PostalCode;
-            // Mã phân hàng (Mã phân hàng chi nhánh)
-            var maNhanhBuuCuc = data.PostalBranchCode;
-            // Phí vận chuyển
-            var fee = Math.Ceiling(data.Fee + data.CodFee);
-            // COD
-            var cod = data.Cod;
-            // Tên hàng hóa
-            var tenHangHoa = data.ItemName;
-            // Sô kiện hàng
-            var soLuongHangHoa = data.ItemNumber;
-            // Trọng lượng
-            var weight = data.Weight;
-            // Ghi chú
-            var note = data.Note;
+            if (paymentMethod == (int)PaymentType.CashCollection)
+                html = String.Format("<p class='cod'>Thu hộ: {0:N0}</p>", cod);
+            else
+                html = String.Format("<p class='cod'>Thu hộ: KHÔNG</p>");
+
+            return html;
+        }
+
+        private string _createSenderHtml(AddressModel sender) 
+        {
+            var html = new StringBuilder();
+
+            html.appendLine("<div class='top-left'>");
+            html.appendLine(String.Format("    <p>Người gửi: <span class='sender-name'>{0}</span></p>", sender.name));
+            html.appendLine(String.Format("    <p>{0} - {1}</p>", sender.phone, sender.phone2));
+            html.appendLine(String.Format("    <p class='agent-address'>{0}</p>", sender.address));
+            html.appendLine("</div>");
+
+            return html.ToString();
+        }
+
+        private string _createDeliveryHtml(OrderModel order) 
+        {
+            #region Logo ANN
+            var annLogo = String.Empty;
+
+            if (order.deliveryMethod != (int)DeliveryType.PostOffice && order.deliveryMethod != (int)DeliveryType.Proship && order.deliveryMethod != (int)DeliveryType.DeliverySave)
+                annLogo = "<img class='img' src='https://ann.com.vn/wp-content/uploads/ANN-logo-3.png'>");
             #endregion
+
+            #region Thông tin giao hàng
+            var deliveryInfo = new StringBuilder();
+
+            switch (order.deliveryMethod)
+            {
+                case (int)DeliveryType.PostOffice:
+                    var method = order.postalDeliveryMethod == 2 ? "Nhanh" : "Thường";
+
+                    deliveryInfo.appendLine(String.Format("<p class='delivery'><strong>Bưu điện - {0}:</strong> {1}</p>", method, order.shippingCode));
+                    deliveryInfo.appendLine(String.Format("<p><img src='{0}'></p>", _createBarcode(order.shippingCode)));
+
+                    break;
+                case (int)DeliveryType.Proship:
+                    deliveryInfo.appendLine(String.Format("<p class='delivery'><strong>Proship:</strong> {0}</p>", order.ShippingCode));
+                    deliveryInfo.appendLine(String.Format("<p><img src='{0}'></p>", _createBarcode(order.shippingCode)));
+
+                    break;
+                case (int)DeliveryType.TransferStation:
+                    #region Số điện thoại nhà xe
+                    var transportPhone = String.Empty;
+                    
+                    if (!String.IsNullOrEmpty(order.transport.phone))
+                        transportPhone = String.Format("<span class='transport-info'>({0})</span>", order.transport.phone);
+                    #endregion
+
+                    #region Note
+                    var transportNote = String.Empty;
+
+                    if (!String.IsNullOrEmpty(order.transport.note))
+                        transportNote = String.Format("<span class='transport-info capitalize'> - {0}</span>", order.transport.phone);
+                    #endregion
+
+                    deliveryInfo.appendLine(String.Format("<p class='delivery'>Xe: <strong>{0}</strong> {1} {2}</p>", order.transport.name, transportPhone, transportNote));
+                    deliveryInfo.appendLine(String.Format("<p><span class='transport-info'>'{0}'</span></p>", order.transport.address));
+
+                    break;
+                case (int)DeliveryType.Shipper:
+                    deliveryInfo.appendLine("<p class='delivery'>Nhân viên giao</p>");
+
+                    break;
+                case (int)DeliveryType.DeliverySave:
+                    var codes = order.ShippingCode.Split('.').Where(x => !String.IsNullOrEmpty(x)).ToList();
+                    var lastCode = order.LastOrDefault();
+
+                    deliveryInfo.appendLine(String.Format("<p class='delivery'><strong>GHTK:</strong> {0}</p>", order.ShippingCode));
+                    deliveryInfo.appendLine(String.Format("<p><img class='barcode-image' src='{0}'></p>", _createBarcode(lastCode)));
+                    break;
+                case (int)DeliveryType.Viettel:
+                    deliveryInfo.appendLine("<p class='delivery'><strong>Viettel</strong></p>");
+
+                    break;
+                case (int)DeliveryType.Grab:
+                    deliveryInfo.appendLine("<p class='delivery'><strong>Grab</strong></p>");
+
+                    break;
+                case (int)DeliveryType.AhaMove:
+                    deliveryInfo.appendLine("<p class='delivery'><strong>AhaMove</strong></p>");
+
+                    break;
+                case (int)DeliveryType.JT:
+                    deliveryInfo.appendLine("<p class='delivery'><strong>J&T</strong></p>");
+
+                    break;
+                case (int)DeliveryType.GHN:
+                    deliveryInfo.appendLine("<p class='delivery'><strong>GHN</strong></p>");
+
+                    break;
+                default:
+                    break;
+            }
+            #endregion
+
+            #region Phí nhân viên giao
+            var shopFeeInfo = String.Empty;
+
+            if (order.deliveryMethod == (int)DeliveryType.Shipper)
+            {
+                if (order.shopFee > 0)
+                    shopFeeInfo = String.Format("<p class='shipping-fee'>Phí ship (đã cộng vào thu hộ): {0:N0}</p>", order.shopFee);
+                else
+                    shopFeeInfo = "<p class='shipping-fee'>Phí ship: không</p>";
+            }
+            #endregion
+
+            var html = new StringBuilder();
+
+            html.appendLine(String.Format("<div class='top-right'>"));
+            // Logo ANN
+            if (!String.IsNullOrEmpty(annLogo))
+                html.appendLine(String.Format("    {0}", annLogo));
+            // Thông tin giao hàng
+            if (deliveryInfo.Length > 0)
+                html.appendLine(String.Format("    {0}", deliveryInfo.ToString()));
+            // Thu hộ
+            html.appendLine(String.Format("    {0}", _createCodHtml(order.paymentMethod, order.cod)));
+            // Phí nhân viên giao
+            if (!String.IsNullOrEmpty(shopFeeInfo))
+                html.appendLine(String.Format("    {0}", shopFeeInfo));
+            html.appendLine(String.Format("</div>"));
+
+            return html.ToString();
+        }
+
+        private string _createOrderHtml(OrderModel order) 
+        {
+            var html = new StringBuilder();
+
+            html.appendLine("<div class='bottom-left'>");
+            html.appendLine(_createCodHtml(order.paymentMethod, order.cod));
+            html.appendLine(String.Format("    <p>Nhân viên: {0}</p>", order.staff));
+            html.appendLine(String.Format("    <p><img src='{0}'></p>", _createBarcode(order.code)));
+            html.appendLine(String.Format("    <p>Mã đơn hàng: <strong class='order-id'>{0}</strong></p>", order.code));
+            html.appendLine("</div>");
+
+            return html.ToString();
+        }
+
+        private string _createReceiverHtml(AddressModel receiver, int deliveryMethod, TransportCompanyModel transport) 
+        {
+            #region SĐT nhận
+            var phoneHtml = String.Empty
+
+            if (deliveryMethod == (int)DeliveryType.DeliverySave || deliveryMethod == (int)DeliveryType.JT || deliveryMethod == (int)DeliveryType.GHN)
+                phoneHtml += "<span class='phone replace-phone'>";
+            else
+                phoneHtml = "<span class='phone'>";
+
+            phoneHtml += receiver.phone;
+
+            if (receiver.phone2)
+                phoneHtml += String.Format(" - {0}", receiver.phone2);
+
+            phoneHtml += "</span>";
+            #endregion
+
+            #region Địa chỉ nhận
+            var addressHtml = String.Empty;
+
+            if (deliveryMethod == (int)DeliveryType.TransferStation)
+            {
+                if (!String.IsNullOrEmpty(receiver.provinceName))
+                    addressHtml = String.Format("<span class='phone'>{0} (1)</span>", transport.shipTo, receiver.provinceName);
+                else
+                    addressHtml = String.Format("<span class='phone'>{0}</span>", transport.shipTo);
+            }
+            else 
+            {
+                addressHtml += receiver.address;
+
+                if (!String.IsNullOrEmpty(receiver.wardName))
+                    addressHtml += String.Format(", {0}", receiver.wardName); 
+
+                if (!String.IsNullOrEmpty(receiver.districtName))
+                    addressHtml += String.Format(", {0}", receiver.districtName);
+
+                if (!String.IsNullOrEmpty(receiver.provinceName))
+                    addressHtml += String.Format(", {0}", receiver.provinceName);
+            }
+            #endregion
+
+            var html = new StringBuilder();
+
+            html.appendLine("<div class='bottom-right'>");
+            html.appendLine(String.Format("    <p>Người nhận: <span class='receiver-name'>{0}</span></p>", receiver.name));
+            html.appendLine(String.Format("    <p>Điện thoại: {0}</p>", phoneHtml));
+            html.appendLine(String.Format("    <p><span class='address'>{0}</span></p>", addressHtml));
+            html.appendLine("</div>");
+
+            return html.ToString();
+        }
+
+        private string _createLabelHtml(string destination) 
+        {
+            var html = new StringBuilder();
+
+            if (!String.IsNullOrEmpty(destination))
+            {
+                html.appendLine("<div class='rotated ghtk'>");
+                html.appendLine(String.Format("    {0}", destination));
+                html.appendLine("</div>");
+                html.appendLine("<div class='rotated margin-left-ghtk'>");
+            }
+            else
+                html.appendLine("<div class='rotated'>");
+            
+            html.appendLine("    ANN.COM.VN");
+            html.appendLine("</div>");
+
+            return html.ToString();
+        }
+
+        private string _createDeliveryInvoiceHtml(OrderModel order, string bodyClass) 
+        {
+            var html = new StringBuilder();
+
+            html.appendLine(String.Format("<div class='table {0}'>", bodyClass));
+            html.appendLine(_createSenderHtml(order.sender));
+            html.appendLine(_createDeliveryHtml(order));
+            html.appendLine(_createOrderHtml(order));
+            html.appendLine(_createReceiverHtml(order.receiver));
+            html.appendLine(_createLabelHtml(order.destination));
+            html.appendLine("</div>");
+
+            return html.ToString();
+        }
+
+        private string _createDeliveryNoteHtml(string bodyClass)
+        {
+            var html = new StringBuilder();
+
+            html.appendLine(String.Format("<div class='table-note {0}'>", bodyClass));
+            html.appendLine("    <h2>CAM KẾT CHÍNH HÃNG 100%</h2>");
+            html.appendLine("    <p>Quý khách có nhu cầu xác minh hàng thật, vui lòng liên hệ hotline: 0922.474.777 - 0914.615.408</p>");
+            html.appendLine("    <p>Chúng tôi chấp nhận bồi thường gấp 10 lần giá trị đơn hàng, nếu quý khách phát hiện hàng giả!</p>");
+            html.appendLine("    <p>Địa chỉ công ty: 68 Đường C12, Phường 13, Tân Bình, TPHCM</p>");
+            html.appendLine("    <p>Người đại diện: Trần Yến Ngọc</p>");
+            html.appendLine("</div>");
+
+            return html.ToString();
+        }
+
+        private string _createFragileGoodsNoteHtml(string bodyClass)
+        {
+            var html = new StringBuilder();
+
+            html.appendLine(String.Format("<div class='table-fragile-goods {0}'>", bodyClass));
+            html.appendLine("    <h2>HÀNG DỄ VỠ</h2>");
+            html.appendLine("    <h2>XIN NHẸ TAY!</h2>");
+            html.appendLine("    <p>Hãy liên hệ chúng tôi, nếu khách hàng từ chối nhận hàng!</p>");
+            html.appendLine("    <p>CHÂN THÀNH CÁM ƠN!</p>");
+            html.appendLine("</div>");
+
+            return html.ToString();
+        }
+
+        private string _createButtonHtml(int paymentMethod, int deliveryMethod, string shippingCode, int role)
+        {
+            #region Button in phiếu giao hàng
+            var errorPrint = false;
+            var printerButtonHtml = "<a class='btn' href='javascript:;' onclick='printIt()'>In phiếu gửi hàng</a>";
+
+            if (paymentType != (int)PaymentType.CashCollection && acc.RoleID != 0)
+            {
+                if (deliveryMethod == (int)DeliveryType.PostOffice)
+                {
+                    printerButtonHtml = "<a class='btn btn-black' href='javascript:;' onclick='printError(`Bưu điện`)'>Không in được</a>";
+                    errorPrint = true;
+                }
+
+                if (deliveryMethod == (int)DeliveryType.Proship)
+                {
+                    printerButtonHtml = "<a class='btn btn-black' href='javascript:;' onclick='printError(`Proship`)'>Không in được</a>";
+                    errorPrint = true;
+                }
+                
+                if (deliveryMethod == (int)DeliveryType.DeliverySave)
+                {
+                    printerButtonHtml = "<a class='btn btn-black' href='javascript:;' onclick='printError(`GHTK`)'>Không in được</a>";
+                    errorPrint = true;
+                }
+            }
+
+            if (errorPrint)
+            {
+                ltrDisablePrint.Text = "<style type='text/css' media='print'>* { display: none; }</style>";
+                ltrDisablePrint.Text += "<script type='text/javascript'>jQuery(document).bind('keyup keydown', function(e){ if (e.ctrlKey && e.keyCode == 80){ return false;}});</script>";
+            }
+            #endregion
+            
+            var html = new StringBuilder();
+
+            html.appendLine("<div class='print-it'>");
+            html.appendLine(String.Format("    {0}", printerButtonHtml));
+            
+            // Button hiển thị nhà xe
+            if (deliveryMethod == (int)DeliveryType.TransferStation)
+                html.appendLine("    <a class='btn show-transport-info' href='javascript:;' onclick='showTransportInfo()'>Hiện thông tin nhà xe</a>");
+            
+            // Kiểm tra thu hộ Proship
+            if (paymentType == (int)PaymentType.CashCollection && deliveryMethod == (int)DeliveryType.Proship)
+            {
+                var proshipUrl = String.Format("https://proship.vn/quan-ly-van-don/?isInvoiceFilter=1&generalInfo={0}", shippingCode);
+
+                html.appendLine(String.Format("    <a class='btn show-transport-info' href='{0}' target='_blank'>Kiểm tra thu hộ trên Proship</a>", proshipUrl));
+            }
+            
+            html.appendLine("    <a class='btn btn-green' href='javascript:;' onclick='printNote()'>In phiếu cam kết</a>");
+            html.appendLine("    <a class='btn btn-blue' href='javascript:;' onclick='printFragileGoods()'>In phiếu hàng dễ vỡ</a>");
+            html.appendLine("</div>");
+
+            return html.ToString();
         }
         #endregion
 
         public void LoadData()
         {
-            string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
+            #region Thông tin nhân viên
+            var username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
             var acc = AccountController.GetByUsername(username);
+            #endregion
 
-            string error = "";
+            #region Kiểm tra thông tin đơn hàng
+            var errorHtml = new StringBuilder();
+            var orderId = Request.QueryString["id"].ToInt(0);
+            var order = OrderController.GetByID(id);
 
-            String rowHtml = String.Empty;
-
-            string PrintButton = "";
-
-            int ID = Request.QueryString["id"].ToInt(0);
-            var order = OrderController.GetByID(ID);
+            // Kiểm tra thông tin đơn hàng có tồn tại không
             if (order == null)
             {
-                error += "Không tìm thấy đơn hàng!";
+                errorHtml.appendLine("Không tìm thấy đơn hàng!");
+
+                goto Finish;
             }
-            else
+
+            // Kiểm tra trạng thái đơn hàng
+            if (!(order.ExcuteStatus == (int)ExcuteStatus.Done || order.ExcuteStatus == (int)ExcuteStatus.Sent || order.ExcuteStatus == (int)ExcuteStatus.Return))
+                errorHtml.appendLine("<p>- Đơn hàng này <strong>Chưa hoàn tất</strong>!</p>");
+
+            // Kiểm tra trạng thái thanh toán
+            if (order.PaymentStatus == 1)
+                errorHtml.appendLine("<p>- Đơn hàng này <strong>Chưa thanh toán</strong>!</p>");
+
+            // Kiểm tra hình thức thanh toán
+            if (order.PaymentType == 1 && acc.RoleID != 0)
+                errorHtml.appendLine("<p>- Đơn hàng này <strong>Thanh toán tiền mặt</strong>. Hãy chuyển sang phương thức khác hoặc nhờ chị Ngọc in phiếu!</p>");
+
+            #region Kiểm tra hình thức lấy hàng
+            var transportCompany = (tbl_TransportCompany)null;
+            var transportSubCompany = (tbl_TransportCompany)null;
+
+            if (order.ShippingType == (int)DeliveryType.Face && acc.RoleID != 0)
+                errorHtml.appendLine("<p>- Đơn hàng này <strong>Lấy trực tiếp</strong>. Hãy chuyển sang phương thức khác hoặc nhờ chị Ngọc in phiếu!</p>");
+
+            if (String.IsNullOrEmpty(order.ShippingCode))
             {
-                if (order.PaymentStatus == 1)
+                switch(order.ShippingType)
                 {
-                    error += "<p>- Đơn hàng này <strong>Chưa thanh toán</strong>!</p>";
-                }
+                    case (int)DeliveryType.PostOffice:
+                        errorHtml.appendLine("<p>- Đơn hàng này <strong>gửi Bưu điện</strong> nhưng <strong>chưa nhập</strong> MÃ VẬN ĐƠN!</p>");
+                        
+                        break;
+                    case (int)DeliveryType.Proship:
+                        errorHtml.appendLine("<p>- Đơn hàng này <strong>gửi Proship</strong> nhưng <strong>chưa nhập</strong> MÃ VẬN ĐƠN!</p>");
+                        
+                        break;
+                    case (int)DeliveryType.TransferStation:
+                        var transportCompanyId = Convert.ToInt32(order.TransportCompanyID);
 
-                if (!(order.ExcuteStatus == (int)ExcuteStatus.Done || order.ExcuteStatus == (int)ExcuteStatus.Sent || order.ExcuteStatus == (int)ExcuteStatus.Return))
-                {
-                    error += "<p>- Đơn hàng này <strong>Chưa hoàn tất</strong>!</p>";
-                }
+                        transportCompany = TransportCompanyController.GetTransportCompanyForOrderList(transportCompanyId);
 
-                if (order.ShippingType == 1 && acc.RoleID != 0)
-                {
-                    error += "<p>- Đơn hàng này <strong>Lấy trực tiếp</strong>. Hãy chuyển sang phương thức khác hoặc nhờ chị Ngọc in phiếu!</p>";
-                }
-
-                if (order.PaymentType == 1 && acc.RoleID != 0)
-                {
-                    error += "<p>- Đơn hàng này <strong>Thanh toán tiền mặt</strong>. Hãy chuyển sang phương thức khác hoặc nhờ chị Ngọc in phiếu!</p>";
-                }
-
-                string address = "";
-                string phone = "";
-                string leader = "";
-                var agent = AgentController.GetByID(Convert.ToInt32(order.AgentID));
-
-                if (agent != null)
-                {
-                    address = agent.AgentAddress;
-                    leader = agent.AgentLeader;
-                    phone = agent.AgentPhone;
-                }
-
-                double TotalOrder = Convert.ToDouble(order.TotalPrice);
-
-                if (order.RefundsGoodsID != null)
-                {
-                    var refund = RefundGoodController.GetByID(Convert.ToInt32(order.RefundsGoodsID));
-                    if (refund != null)
-                    {
-                        TotalOrder = TotalOrder - Convert.ToDouble(refund.TotalPrice);
-                    }
-                    else
-                    {
-                        error += "<p>Không tìm thấy đơn hàng đổi trả " + order.RefundsGoodsID.ToString() + " (có thể đã bị xóa khi làm lại đơn đổi trả). Thêm lại đơn hàng đổi trả nhé!</p>";
-                    }
-                }
-
-                string receivingPhone = String.Empty;
-                var addressTo = String.Empty;
-                var provinceName = String.Empty;
-                var receiverName = String.Empty;
-
-                if (order.DeliveryAddressId.HasValue)
-                {
-                    var deliveryAddress = DeliveryController.getDeliveryAddressById(order.DeliveryAddressId.Value);
-                    var Province = ProvinceController.GetByID(deliveryAddress.ProvinceId);
-                    var District = ProvinceController.GetByID(deliveryAddress.DistrictId);
-                    var Ward = ProvinceController.GetByID(deliveryAddress.WardId);
-
-                    receivingPhone = deliveryAddress.Phone.Substring(0, 4) + "." + deliveryAddress.Phone.Substring(4, 3) + "." + deliveryAddress.Phone.Substring(7, deliveryAddress.Phone.Length - 7);
-                    addressTo = String.Format("{0}, {1}, {2}, {3}", deliveryAddress.Address.ToTitleCase(), Ward.Name, District.Name, Province.Name);
-                    provinceName = Province.Name;
-                    receiverName = deliveryAddress.FullName.ToTitleCase();
-                }
-                else
-                {
-                    var customer = CustomerController.GetByID(order.CustomerID.Value);
-
-                    receivingPhone = order.CustomerPhone.Substring(0, 4) + "." + order.CustomerPhone.Substring(4, 3) + "." + order.CustomerPhone.Substring(7, order.CustomerPhone.Length - 7);
-                    receiverName = order.CustomerName.ToTitleCase();
-                    if (!String.IsNullOrEmpty(customer.CustomerPhone2))
-                        receivingPhone += " - " + customer.CustomerPhone2;
-
-                    addressTo = order.CustomerAddress.ToTitleCase();
-
-                    if (customer.WardId.HasValue && customer.WardId.Value > 0)
-                    {
-                        var Ward = ProvinceController.GetByID(customer.WardId.Value);
-
-                        addressTo += ", " + Ward.Name;
-                    }
-
-                    if (customer.DistrictId.HasValue)
-                    {
-                        var District = ProvinceController.GetByID(customer.DistrictId.Value);
-
-                        addressTo += ", " + District.Name;
-                    }
-
-                    if (customer.ProvinceID.HasValue)
-                    {
-                        var Province = ProvinceController.GetByID(customer.ProvinceID.Value);
-
-                        provinceName = Province.Name;
-                        addressTo += ", " + Province.Name;
-                    }
-                }
-
-                string DeliveryInfo = "";
-                string ShippingFeeInfo = "";
-                string ShipperFeeInfo = "";
-
-                bool cssReplacePhone = false;
-
-                // BƯU ĐIỆN
-                if (order.ShippingType == 2)
-                {
-                    if (!string.IsNullOrEmpty(order.ShippingCode))
-                    {
-                        string PostalDeliveryType = "Thường";
-                        if (order.PostalDeliveryType == 2)
+                        if (transportCompany != null) 
                         {
-                            PostalDeliveryType = "Nhanh";
-                        }
-                        DeliveryInfo = String.Format("<p class='delivery'><strong>Bưu điện - {0}:</strong> {1}</p><p><img src='{2}'></p>", PostalDeliveryType, order.ShippingCode, createBarcode(order.ShippingCode));
-                    }
-                    else
-                    {
-                        error += "<p>- Đơn hàng này <strong>gửi Bưu điện</strong> nhưng <strong>chưa nhập</strong> MÃ VẬN ĐƠN!</p>";
-                    }
+                            var transportSubCompanyID = Convert.ToInt32(order.TransportCompanySubID);
+                            
+                            transportSubCompany = TransportCompanyController.GetReceivePlaceForOrderList(transportCompanyId, transportSubCompanyID);
 
-                    if (order.PaymentType != 3 && acc.RoleID != 0)
-                    {
-                        PrintButton = "<a class='btn btn-black' href='javascript:;' onclick='printError(`Bưu điện`)'>Không in được</a>";
-                    }
-                }
-                // PROSHIP
-                else if (order.ShippingType == 3)
-                {
-                    if (!string.IsNullOrEmpty(order.ShippingCode))
-                    {
-                        DeliveryInfo = String.Format("<p class='delivery'><strong>Proship:</strong> {0}</p><p><img src='{1}'></p>", order.ShippingCode, createBarcode(order.ShippingCode));
-                    }
-                    else
-                    {
-                        error += "<p>- Đơn hàng này <strong>gửi Proship</strong> nhưng <strong>chưa nhập</strong> MÃ VẬN ĐƠN!</p>";
-                    }
-
-                    if (order.PaymentType != 3 && acc.RoleID != 0)
-                    {
-                        PrintButton = "<a class='btn btn-black' href='javascript:;' onclick='printError(`Proship`)'>Không in được</a>";
-                    }
-                }
-                // GỬI XE
-                else if (order.ShippingType == 4)
-                {
-                    var company = TransportCompanyController.GetTransportCompanyForOrderList(Convert.ToInt32(order.TransportCompanyID));
-                    if (company != null)
-                    {
-                        string transportCompany = "";
-                        string transportCompanyPhone = "";
-                        string transportCompanyAddress = "";
-                        string transportCompanyNote = "";
-
-                        transportCompany = "<strong>" + company.CompanyName.ToTitleCase() + "</strong>";
-                        if (company.CompanyPhone != "")
-                        {
-                            transportCompanyPhone = "<span class='transport-info'>(" + company.CompanyPhone + ")</span>";
-                        }
-                        transportCompanyAddress = "<span class='transport-info'>" + company.CompanyAddress.ToTitleCase() + "</span>";
-                        if (company.Note != "")
-                        {
-                            transportCompanyNote = "<span class='transport-info capitalize'> - " + company.Note.ToTitleCase() + "</span>";
-                        }
-
-                        var subID = Convert.ToInt32(order.TransportCompanySubID);
-                        var shipto = TransportCompanyController.GetReceivePlaceForOrderList(company.ID, subID);
-                        if (shipto != null && subID > 0)
-                        {
-                            // Kiểm tra nhà xe trả cước trước
-                            if (shipto.Prepay == true && order.FeeShipping == "0")
-                            {
-                                error += "Chành xe này trả cước trước. Hãy nhập phí vận chuyển vào đơn hàng! Nếu muốn miễn phí cho khách thì trừ phí khác!";
-                            }
-
-                            if (!String.IsNullOrEmpty(provinceName))
-                            {
-                                addressTo = "<span class='phone'>" + shipto.ShipTo.ToTitleCase() + " (" + provinceName + ")</span>";
-                            }
-                            else
-                            {
-                                addressTo = "<span class='phone'>" + shipto.ShipTo.ToTitleCase()+ "</span>";
-                            }
+                            if (transportSubCompany == null)
+                                errorHtml.appendLine("<p>- Đơn hàng này gửi xe <strong>" + transportCompany.CompanyName.ToTitleCase() + "</strong> nhưng <strong>chưa chọn Nơi nhận</strong>!</p>");
+                            else if (transportSubCompany.Prepay == true && order.FeeShipping == "0")
+                                errorHtml.appendLine("Chành xe này trả cước trước. Hãy nhập phí vận chuyển vào đơn hàng! Nếu muốn miễn phí cho khách thì trừ phí khác!")
                         }
                         else
-                        {
-                            error += "<p>- Đơn hàng này gửi xe " + transportCompany + " nhưng <strong>chưa chọn Nơi nhận</strong>!</p>";
-                        }
-
-                        DeliveryInfo = String.Format("<p class='delivery'>Xe: {0} {1} {2}</p><p>{3}</p>", transportCompany, transportCompanyPhone, transportCompanyNote, transportCompanyAddress);
-                    }
-                    else
-                    {
-                        error += "<p>- Đơn hàng này <strong>gửi xe</strong> nhưng <strong>chưa chọn Chành xe</strong> nào!</p>";
-                    }
+                            errorHtml.appendLine("<p>- Đơn hàng này <strong>gửi xe</strong> nhưng <strong>chưa chọn Chành xe</strong> nào!</p>");
+                        
+                        break;
+                    case (int)DeliveryType.DeliverySave:
+                        errorHtml.appendLine("<p>- Đơn hàng này <strong>gửi GHTK</strong> nhưng <strong>chưa nhập</strong> MÃ VẬN ĐƠN!</p>");
+                        
+                        break;
+                    default:
+                        break;
                 }
-                // NHÂN VIÊN GIAO
-                else if (order.ShippingType == 5)
-                {
-                    DeliveryInfo = String.Format("<p class='delivery'>Nhân viên giao</p>");
-                }
-                // GHTK
-                else if (order.ShippingType == 6)
-                {
-                    cssReplacePhone = true;
-
-                    if (!string.IsNullOrEmpty(order.ShippingCode))
-                    {
-                        string[] barcode = order.ShippingCode.Split('.');
-                        string newCode = barcode[barcode.Length - 1];
-                        if (newCode.Length < 9)
-                        {
-                            error += "<p>- MÃ VẬN ĐƠN của GHTK phải có ít nhất 9 số ở cuối!</p>";
-                        }
-                        DeliveryInfo = String.Format("<p class='delivery'><strong>GHTK:</strong> {0}</p>", order.ShippingCode);
-                        DeliveryInfo += String.Format("<p><img class='barcode-image' src='{0}'></p>", createBarcode(newCode));
-                    }
-                    else
-                    {
-                        error += "<p>- Đơn hàng này <strong>gửi GHTK</strong> nhưng <strong>chưa nhập</strong> MÃ VẬN ĐƠN!</p>";
-                    }
-
-                    if (order.PaymentType != 3 && acc.RoleID != 0)
-                    {
-                        PrintButton = "<a class='btn btn-black' href='javascript:;' onclick='printError(`GHTK`)'>Không in được</a>";
-                    }
-                }
-                // VIETTEL
-                else if (order.ShippingType == 7)
-                {
-                    DeliveryInfo = String.Format("<p class='delivery'><strong>Viettel</strong></p>");
-                }
-                // Grab
-                else if (order.ShippingType == 8)
-                {
-                    DeliveryInfo = String.Format("<p class='delivery'><strong>Grab</strong></p>");
-                }
-                // AhaMove
-                else if (order.ShippingType == 9)
-                {
-                    DeliveryInfo = String.Format("<p class='delivery'><strong>AhaMove</strong></p>");
-                }
-                // J&T
-                else if (order.ShippingType == 10)
-                {
-                    cssReplacePhone = true;
-                    DeliveryInfo = String.Format("<p class='delivery'><strong>J&T</strong></p>");
-                }
-                // GHN
-                else if (order.ShippingType == 11)
-                {
-                    cssReplacePhone = true;
-                    DeliveryInfo = String.Format("<p class='delivery'><strong>GHN</strong></p>");
-                }
-
-                // Lấy tiền THU HỘ
-                if (order.PaymentType == 3)
-                {
-                    ShippingFeeInfo = String.Format("<p class='cod'>Thu hộ: {0}</p>", string.Format("{0:N0}", TotalOrder));
-                }
-                else
-                {
-                    ShippingFeeInfo = String.Format("<p class='cod'>Thu hộ: KHÔNG</p>");
-                }
-
-                // Lấy phí nhân viên giao
-                if (order.ShippingType == 5)
-                {
-                    if (Convert.ToDouble(order.FeeShipping) > 0)
-                    {
-                        ShipperFeeInfo = String.Format("<p class='shipping-fee'>Phí ship (đã cộng vào thu hộ): {0}</p>", string.Format("{0:N0}", Convert.ToDouble(order.FeeShipping)));
-                    }
-                    else
-                    {
-                        ShipperFeeInfo = String.Format("<p class='shipping-fee'>Phí ship: không</p>");
-                    }
-                }
-
-
-
-                // Lấy logo ANN
-                string LogoANN = "";
-                if (order.ShippingType != 2 && order.ShippingType != 3 && order.ShippingType != 6)
-                {
-                    LogoANN = String.Format("<img class='img' src='https://ann.com.vn/wp-content/uploads/ANN-logo-3.png'>");
-                }
-
-                // Xử lý phiếu GHTK
-                string cssClass = "";
-                string bodyClass = "";
-                string destination = "";
-                if (order.ShippingType == 6 && !string.IsNullOrEmpty(order.ShippingCode))
-                {
-                    string[] barcode = order.ShippingCode.Split('.');
-                    if (barcode.Length == 6)
-                    {
-                        destination = String.Format("{0}.{1}.{2}.{3}", barcode[1], barcode[2], barcode[3], barcode[4]);
-                    }
-                    else if (barcode.Length == 5)
-                    {
-                        destination = String.Format("{0}.{1}.{2}", barcode[1], barcode[2], barcode[3]);
-                    }
-                    else if (barcode.Length == 4)
-                    {
-                        destination = String.Format("{0}.{1}", barcode[1], barcode[2]);
-                    }
-                    else if (barcode.Length == 3)
-                    {
-                        destination = String.Format("{0}", barcode[1]);
-                    }
-                }
-                if (destination != "")
-                {
-                    bodyClass = "table-ghtk";
-                }
-
-                // HTML in phiếu gửi hàng
-                rowHtml += Environment.NewLine + String.Format("<div class='table {0}'>", bodyClass);
-                rowHtml += Environment.NewLine + String.Format("    <div class='top-left'>");
-                rowHtml += Environment.NewLine + String.Format("        <p>Người gửi: <span class='sender-name'>{0}</span></p>", leader);
-                rowHtml += Environment.NewLine + String.Format("        <p>{0}</p>", phone);
-                rowHtml += Environment.NewLine + String.Format("        <p class='agent-address'>{0}</p>", address);
-                rowHtml += Environment.NewLine + String.Format("    </div>");
-                rowHtml += Environment.NewLine + String.Format("    <div class='bottom-left'>");
-                rowHtml += Environment.NewLine + String.Format("    {0}", ShippingFeeInfo);
-                rowHtml += Environment.NewLine + String.Format("        <p>Nhân viên: {0}</p>", order.CreatedBy);
-                rowHtml += Environment.NewLine + String.Format("        <p><img src='{0}'></p>", createBarcode(order.ID.ToString()));
-                rowHtml += Environment.NewLine + String.Format("        <p>Mã đơn hàng: <strong class='order-id'>{0}</strong></p>", order.ID);
-                rowHtml += Environment.NewLine + String.Format("    </div>");
-                rowHtml += Environment.NewLine + String.Format("    <div class='top-right'>");
-                rowHtml += Environment.NewLine + String.Format("        {0}", LogoANN);
-                rowHtml += Environment.NewLine + String.Format("        {0}", DeliveryInfo);
-                rowHtml += Environment.NewLine + String.Format("        {0}", ShippingFeeInfo);
-                rowHtml += Environment.NewLine + String.Format("        {0}", ShipperFeeInfo);
-                rowHtml += Environment.NewLine + String.Format("    </div>");
-                rowHtml += Environment.NewLine + String.Format("    <div class='bottom-right'>");
-                rowHtml += Environment.NewLine + String.Format("        <p>Người nhận: <span class='receiver-name'>{0}</span></p>", receiverName);
-                rowHtml += Environment.NewLine + String.Format("        <p>Điện thoại: <span class='phone {0}'>{1}</span></p>", cssReplacePhone == true ? "replace-phone" : "" , receivingPhone);
-                rowHtml += Environment.NewLine + String.Format("        <p><span class='address'>{0}</span></p>", addressTo);
-                rowHtml += Environment.NewLine + String.Format("    </div>");
-                if (destination != "")
-                {
-                    rowHtml += Environment.NewLine + String.Format("    <div class='rotated ghtk'>");
-                    rowHtml += Environment.NewLine + String.Format("        {0}", destination);
-                    rowHtml += Environment.NewLine + String.Format("    </div>");
-                    cssClass = "margin-left-ghtk";
-                }
-                rowHtml += Environment.NewLine + String.Format("    <div class='rotated {0}'>", cssClass);
-                rowHtml += Environment.NewLine + String.Format("        ANN.COM.VN");
-                rowHtml += Environment.NewLine + String.Format("    </div>");
-                rowHtml += Environment.NewLine + String.Format("</div>");
-                // Kết thúc HTML in phiếu gửi hàng
-
-                // HTML in phiếu cam kết chính hãng
-                rowHtml += Environment.NewLine + String.Format("<div class='table-note {0}'>", bodyClass);
-                rowHtml += Environment.NewLine + String.Format("<h2>CAM KẾT CHÍNH HÃNG 100%</h2>");
-                rowHtml += Environment.NewLine + String.Format("<p>Quý khách có nhu cầu xác minh hàng thật, vui lòng liên hệ hotline: 0922.474.777 - 0914.615.408</p>");
-                rowHtml += Environment.NewLine + String.Format("<p>Chúng tôi chấp nhận bồi thường gấp 10 lần giá trị đơn hàng, nếu quý khách phát hiện hàng giả!</p>");
-                rowHtml += Environment.NewLine + String.Format("<p>Địa chỉ công ty: 68 Đường C12, Phường 13, Tân Bình, TPHCM</p>");
-                rowHtml += Environment.NewLine + String.Format("<p>Người đại diện: Trần Yến Ngọc</p>");
-                rowHtml += Environment.NewLine + String.Format("</div>");
-                // Kết thúc HTML in phiếu cam kết chính hãng
-
-                // HTML in phiếu hàng dễ vỡ
-                rowHtml += Environment.NewLine + String.Format("<div class='table-fragile-goods {0}'>", bodyClass);
-                rowHtml += Environment.NewLine + String.Format("<h2>HÀNG DỄ VỠ</h2>");
-                rowHtml += Environment.NewLine + String.Format("<h2>XIN NHẸ TAY!</h2>");
-                rowHtml += Environment.NewLine + String.Format("<p>Hãy liên hệ chúng tôi, nếu khách hàng từ chối nhận hàng!</p>");
-                rowHtml += Environment.NewLine + String.Format("<p>CHÂN THÀNH CÁM ƠN!</p>");
-                rowHtml += Environment.NewLine + String.Format("</div>");
-                // Kết thúc HTML in phiếu hàng dễ vỡ
             }
+            else if (order.ShippingType == (int)DeliveryType.DeliverySave)
+            {
+                var lastGhtkCode = order.ShippingCode
+                    .Split('.')
+                    .Where(x => !String.IsNullOrEmpty(x))
+                    .LastOrDefault();
 
-            /// Hiển thị lỗi nếu có
-            if (error != "")
+                if (lastGhtkCode.Length < 9)
+                    errorHtml.appendLine("<p>- MÃ VẬN ĐƠN của GHTK phải có ít nhất 9 số ở cuối!</p>");
+            }
+            #endregion
+
+            #region Đơn đổi trả
+            var refund = (tbl_RefundGoods)null;
+            
+            if (order.RefundsGoodsID != null)
+            {
+                refund = RefundGoodController.GetByID(Convert.ToInt32(order.RefundsGoodsID));
+
+                if (refund == null)
+                    errorHtml.appendLine(String.Format("<p>Không tìm thấy đơn hàng đổi trả {0} (có thể đã bị xóa khi làm lại đơn đổi trả). Thêm lại đơn hàng đổi trả nhé!</p>", order.RefundsGoodsID));
+            }
+            #endregion
+            
+            if (error.Length > 0)
             {
                 ltrShippingNote.Text = "<h1>Lỗi:</h1>" + error;
+                
+                return;
             }
-            else
-            {
-                ltrShippingNote.Text = rowHtml;
-                ltrPrintButton.Text = "<div class='print-it'>";
-                if (!string.IsNullOrEmpty(PrintButton))
-                {
-                    ltrPrintButton.Text += PrintButton;
-                    ltrDisablePrint.Text = "<style type='text/css' media='print'>* { display: none; }</style>";
-                    ltrDisablePrint.Text += "<script type='text/javascript'>jQuery(document).bind('keyup keydown', function(e){ if (e.ctrlKey && e.keyCode == 80){ return false;}});</script>";
-                }
-                else
-                {
-                    ltrPrintButton.Text += "<a class='btn' href='javascript:;' onclick='printIt()'>In phiếu gửi hàng</a>";
-                }
+            #endregion
 
-                if (order.ShippingType == 4)
-                {
-                    ltrPrintButton.Text += "<a class='btn show-transport-info' href='javascript:;' onclick='showTransportInfo()'>Hiện thông tin nhà xe</a>";
-                }
+            // Thông tin địa chỉ gửi
+            var sender = AgentController.GetByID(Convert.ToInt32(order.AgentID));
+            // Thông tin địa chỉ nhận
+            var receiver = _getReceiver(order.CustomerID, order.deliveryAddressId);
+            // Thông tin chành xe
+            var transport = TransportCompanyModel.map(transportCompany, transportSubCompany);
+            // Tổng hợp thông tin đơn giao hàng
+            var data = OrderModel.map(order, refund, sender, receiver, transport)
+            var bodyClass = !String.IsNullOrEmpty(data.destination) ? "table-ghtk" : String.Empty;
 
-                if (order.ShippingType == 3 && order.PaymentType == 3)
-                {
-                    ltrPrintButton.Text += "<a class='btn show-transport-info' href='https://proship.vn/quan-ly-van-don/?isInvoiceFilter=1&generalInfo=" + order.ShippingCode + "' target='_blank'>Kiểm tra thu hộ trên Proship</a>";
-                }
-                ltrPrintButton.Text += "<a class='btn btn-green' href='javascript:;' onclick='printNote()'>In phiếu cam kết</a>";
-                ltrPrintButton.Text += "<a class='btn btn-blue' href='javascript:;' onclick='printFragileGoods()'>In phiếu hàng dễ vỡ</a>";
-                ltrPrintButton.Text += "</div>";
-            }
+            #region Phiếu giao hàng
+            var shippingNote = new StringBuilder();
+
+            // HTML in phiếu gửi hàng
+            shippingNote.appendLine(_createDeliveryInvoiceHtml(order, destination, bodyClass))
+            // HTML in phiếu cam kết chính hãng
+            shippingNote.appendLine(_createDeliveryNoteHtml(bodyClass));
+            // HTML in phiếu hàng dễ vỡ
+            shippingNote.appendLine(_createFragileGoodsNoteHtml(bodyClass));
+
+            ltrShippingNote.Text = shippingNote.ToString();
+            #endregion
+
+            ltrPrintButton.Text = _createButtonHtml(order.paymentMethod, order.deliveryMethod, order.shippingCode, account.RoleID);
         }
     }
 }
