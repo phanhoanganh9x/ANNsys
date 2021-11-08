@@ -29,6 +29,7 @@ namespace IM_PJ.Models.Pages.print_shipping_note
                 paymentMethod = source.PaymentType,
                 deliveryMethod = source.ShippingType,
                 postalDeliveryMethod = source.PostDeliveryType,
+                cod = 0,
                 shopFee = Convert.ToInt32(source.FeeShipping),
                 staff = source.CreatedBy,
                 this.sender = sender,
@@ -36,6 +37,7 @@ namespace IM_PJ.Models.Pages.print_shipping_note
                 this.transport = transport
             }
 
+            // Mã vận đơn
             if (!String.IsNullOrEmpty(source.ShippingCode))
             {
                 order.shippingCode = source.ShippingCode;
@@ -56,6 +58,15 @@ namespace IM_PJ.Models.Pages.print_shipping_note
                     else if (codes.Length == 3)
                         order.destination = String.Format("{0}", codes[1]);
                 }
+            }
+
+            // COD
+            if (order.paymentMethod == (int)PaymentType.CashCollection)
+            {
+                cod += Convert.ToDecimal(source.TotalPrice);
+
+                if (refund != null)
+                    cod -= Convert.ToDecimal(refund.TotalPrice);
             }
         }
         #endregion
