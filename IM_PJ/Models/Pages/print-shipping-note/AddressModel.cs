@@ -1,4 +1,4 @@
-using IM_PJ.Models;
+using MB.Extensions;
 using System;
 using System.Linq;
 
@@ -28,16 +28,18 @@ namespace IM_PJ.Models.Pages.print_shipping_note
                 phone2 = phones.LastOrDefault(),
                 address = source.AgentAddress
             };
+
+            return address;
         }
 
         public static AddressModel map(
             DeliveryAddress source,
-            DeliverySaveAddresses province,
-            DeliverySaveAddresses district,
-            DeliverySaveAddresses ward
+            DeliverySaveAddress province,
+            DeliverySaveAddress district,
+            DeliverySaveAddress ward
         ) {
             var address = new AddressModel() {
-                name = source.FullName.ToTitleCase()
+                name = source.FullName.ToTitleCase(),
                 address = source.Address.ToTitleCase()
             };
 
@@ -45,7 +47,7 @@ namespace IM_PJ.Models.Pages.print_shipping_note
             {
                 address.phone = source.Phone;
 
-                if (source.Phone.Length == 10) 
+                if (source.Phone.Length == 10)
                 {
                     var phone1 = source.Phone.Substring(0, 4);
                     var phone2 = source.Phone.Substring(4, 3);
@@ -57,19 +59,21 @@ namespace IM_PJ.Models.Pages.print_shipping_note
 
             if (province != null)
                 address.provinceName = province.Name;
-            
+
             if (district != null)
                 address.districtName = district.Name;
 
             if (ward != null)
                 address.wardName = ward.Name;
+
+            return address;
         }
 
         public static AddressModel map(
             tbl_Customer source,
-            DeliverySaveAddresses province,
-            DeliverySaveAddresses district,
-            DeliverySaveAddresses ward
+            DeliverySaveAddress province,
+            DeliverySaveAddress district,
+            DeliverySaveAddress ward
         ) {
             var address = new AddressModel() {
                 name = source.CustomerName.ToTitleCase(),
@@ -80,7 +84,7 @@ namespace IM_PJ.Models.Pages.print_shipping_note
             {
                 address.phone = source.CustomerPhone;
 
-                if (source.CustomerPhone.Length == 10) 
+                if (source.CustomerPhone.Length == 10)
                 {
                     var phone1 = source.CustomerPhone.Substring(0, 4);
                     var phone2 = source.CustomerPhone.Substring(4, 3);
@@ -94,7 +98,7 @@ namespace IM_PJ.Models.Pages.print_shipping_note
             {
                 address.phone = source.CustomerPhone2;
 
-                if (source.CustomerPhone2.Length == 10) 
+                if (source.CustomerPhone2.Length == 10)
                 {
                     var phone1 = source.CustomerPhone2.Substring(0, 4);
                     var phone2 = source.CustomerPhone2.Substring(4, 3);
@@ -106,12 +110,14 @@ namespace IM_PJ.Models.Pages.print_shipping_note
 
             if (province != null)
                 address.provinceName = province.Name;
-            
+
             if (district != null)
                 address.districtName = district.Name;
 
             if (ward != null)
                 address.wardName = ward.Name;
+
+            return address;
         }
         #endregion
     }

@@ -1,11 +1,12 @@
 using System;
+using System.Linq;
 
 namespace IM_PJ.Models.Pages.print_shipping_note
 {
     public class OrderModel
     {
         public string code { get; set; }
-        public int status { get; set; }        
+        public int status { get; set; }
         public int paymentMethod { get; set;}
         public int deliveryMethod { get; set; }
         public int postalDeliveryMethod { get; set;}
@@ -20,22 +21,27 @@ namespace IM_PJ.Models.Pages.print_shipping_note
         public TransportCompanyModel transport { get; set; }
 
         #region Mapper
-        public static OrderModel map(tbl_Order source, tbl_RefundGoods refund, AddressModel sender, AddressModel receiver, TransportCompanyModel transport)
-        {
+        public static OrderModel map(
+            tbl_Order source,
+            tbl_RefundGoods refund,
+            AddressModel sender,
+            AddressModel receiver,
+            TransportCompanyModel transport
+        ) {
             var order = new OrderModel()
             {
                 code = source.ID.ToString(),
-                status = source.ExcuteStatus,
-                paymentMethod = source.PaymentType,
-                deliveryMethod = source.ShippingType,
-                postalDeliveryMethod = source.PostDeliveryType,
+                status = source.ExcuteStatus.HasValue ? source.ExcuteStatus.Value : (int)ExcuteStatus.Doing,
+                paymentMethod = source.PaymentType.HasValue ? source.PaymentType.Value : (int)PaymentType.Cash,
+                deliveryMethod = source.ShippingType.HasValue ? source.ShippingType.Value : (int)DeliveryType.Face,
+                postalDeliveryMethod = source.PostalDeliveryType.HasValue ? source.PostalDeliveryType.Value : 0,
                 cod = 0,
                 shopFee = Convert.ToInt32(source.FeeShipping),
                 staff = source.CreatedBy,
-                this.sender = sender,
-                this.receiver = receiver,
-                this.transport = transport
-            }
+                sender = sender,
+                receiver = receiver,
+                transport = transport
+            };
 
             // Mã vận đơn
             if (!String.IsNullOrEmpty(source.ShippingCode))
@@ -44,18 +50,18 @@ namespace IM_PJ.Models.Pages.print_shipping_note
 
                 if (order.deliveryMethod == (int)DeliveryType.DeliverySave)
                 {
-                    var codes = order.ShippingCode
+                    var codes = order.shippingCode
                         .Split('.')
                         .Where(x => !String.IsNullOrEmpty(x))
                         .ToList();
-                        
-                    if (codes.Length == 6)
+
+                    if (codes.Count == 6)
                         order.destination = String.Format("{0}.{1}.{2}.{3}", codes[1], codes[2], codes[3], codes[4]);
-                    else if (codes.Length == 5)
+                    else if (codes.Count == 5)
                         order.destination = String.Format("{0}.{1}.{2}", codes[1], codes[2], codes[3]);
-                    else if (codes.Length == 4)
+                    else if (codes.Count == 4)
                         order.destination = String.Format("{0}.{1}", codes[1], codes[2]);
-                    else if (codes.Length == 3)
+                    else if (codes.Count == 3)
                         order.destination = String.Format("{0}", codes[1]);
                 }
             }
@@ -63,11 +69,13 @@ namespace IM_PJ.Models.Pages.print_shipping_note
             // COD
             if (order.paymentMethod == (int)PaymentType.CashCollection)
             {
-                cod += Convert.ToDecimal(source.TotalPrice);
+                order.cod += Convert.ToDecimal(source.TotalPrice);
 
                 if (refund != null)
-                    cod -= Convert.ToDecimal(refund.TotalPrice);
+                    order.cod -= Convert.ToDecimal(refund.TotalPrice);
             }
+
+            return order;
         }
         #endregion
     }

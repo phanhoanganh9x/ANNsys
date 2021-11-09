@@ -1,4 +1,4 @@
-using System;
+using MB.Extensions;
 
 namespace IM_PJ.Models.Pages.print_shipping_note
 {
@@ -15,17 +15,17 @@ namespace IM_PJ.Models.Pages.print_shipping_note
         {
             if (source == null || transportSub == null)
                 return null;
-                
+
             var transport = new TransportCompanyModel()
             {
                 name = source.CompanyName.ToTitleCase(),
                 phone = source.CompanyPhone,
                 address = source.CompanyAddress.ToTitleCase(),
-                transportSub = transportSub.ShipTo.ToTitleCase(),
+                shipTo = transportSub.ShipTo.ToTitleCase(),
                 note = source.Note.ToTitleCase()
             };
 
-            return transport; 
+            return transport;
         }
         #endregion
     }
