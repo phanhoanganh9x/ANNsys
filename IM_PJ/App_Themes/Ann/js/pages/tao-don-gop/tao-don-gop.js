@@ -6,11 +6,6 @@ const PaymentStatusEnum = {
     "Waitting": 1 // Chư thanh toán
 }
 
-const DeliveryMethodEnum = {
-    "Face": 1,
-    "GHTK": 6
-}
-
 let loading = false;
 let stringFormat = new StringFormat();
 let controller = new GroupOrderController();
