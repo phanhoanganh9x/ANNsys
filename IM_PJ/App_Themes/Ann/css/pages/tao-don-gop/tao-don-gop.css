@@ -1,0 +1,60 @@
+﻿.btn-add {
+    padding-top: 15px;
+    height: 46.2px;
+}
+
+table > thead > tr > th.col-index {
+    width: 3%
+}
+
+table > thead > tr > th.col-order-id {
+    width: 10%
+}
+
+table > thead > tr > th.col-customer {
+    width: 15%
+}
+
+table > thead > tr > th.col-quatity {
+    width: 7%
+}
+
+table > thead > tr > th.col-order-status {
+    width: 10%
+}
+
+table > thead > tr > th.col-payment-method {
+    width: 10%
+}
+
+table > thead > tr > th.col-delivery-method {
+    width: 10%
+}
+
+table > thead > tr > th.col-total-price {
+    width: 10%
+}
+
+table > thead > tr > th.col-staff {
+    width: 10%
+}
+
+table > thead > tr > th.col-created-date {
+    width: 10%
+}
+
+table > thead > tr > th.col-done-date {
+    width: 10%
+}
+
+table > thead > tr > th.col-btn {
+    width: 5%
+}
+
+.table > tbody > tr:nth-of-type(n) td {
+    background-color: #fff;
+}
+
+.table > tbody > tr.error > td {
+    border-top: none;
+}
