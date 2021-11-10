@@ -201,12 +201,12 @@ function _createOrderHtml(index, data) {
     html += '    <br>' + data.customer.name;
     html += '    <br>' + data.customer.phone;
     html += '    </td>';
-    html += '    <td>' + UtilsService.formatNumber(data.quantity) + '</td>';
+    html += '    <td>' + UtilsService.formatThousands(data.quantity, ',') + '</td>';
     html += '    <td><span class="bg-order-status order-status-' + data.status.key + '">' + data.status.value + '</span></td>';
     html += '    <td><span class="bg-payment-status bg-payment-status-' + data.paymentStatus.key + '">' + data.paymentStatus.value + '</span></td>';
     html += '    <td><span class="bg-payment-method bg-payment-method-' + data.paymentMethod.key + '">' + data.paymentMethod.value + '</span></td>';
     html += '    <td><span class="bg-delivery-method bg-delivery-method-' + data.deliveryMethod.key + '">' + data.deliveryMethod.value + '</span></td>';
-    html += '    <td>' + UtilsService.formatNumber(data.totalPrice) + '</td>';
+    html += '    <td>' + UtilsService.formatThousands(data.totalPrice, ',') + '</td>';
     html += '    <td>' + data.staff + '</td>';
     html += '    <td>';
     html += '        <strong>' + stringFormat.datetimeToString(data.createdDate, 'dd/MM') + '</strong>';

@@ -1,0 +1,475 @@
+﻿const DeliveryMethodEnum = {
+    "PostOffice": 2,
+    "Proship": 3,
+    "DeliverySave": 6,
+    "JtExpress": 10
+}
+let strFormat = new StringFormat();
+let controller = new DeliveryManagerController();
+
+$(document).ready(function() {
+    _initQueryParams();
+    _initDeliveryMethods();
+    _initGroupOrderTable();
+})
+
+//#region Private
+function _initQueryParams() {
+    let search = window.location.search;
+
+    controller.setFilterByQueryParameters(search);
+}
+
+function _initDeliveryMethods() {
+    let $deliveryMethod = $("#ddlDeliveryMethod");
+
+    // Cài đặt giá trị ban đầu
+    $deliveryMethod .val(null).trigger('change');
+
+    if (controller.filter.deliveryMethod)
+        controller.getDeliveryMethod()
+            .then(function (response) {
+                let newOption = new Option(response.value, response.key, false, false);
+
+                $deliveryMethod.find("option").remove();
+                $deliveryMethod.append(newOption).trigger('change');
+            })
+            .catch(function (e) {
+                console.log(e);
+            });
+
+    // Cài đặt API
+    $deliveryMethod.select2({
+        placeholder: 'Kiểu giao hàng',
+        minimumResultsForSearch: Infinity,
+        ajax: {
+            method: 'GET',
+            url: '/api/v1/delivery/methods/select2?orderTypeId=1&hasPlaceHolder=true',
+        },
+        width: '100%'
+    });
+}
+
+function _loadSpanReport() {
+    let $spanReport = $("[id$='spanReport']");
+    let spanReport = "";
+
+    if (controller.pagination.totalCount > 0)
+    {
+        spanReport += "(";
+        spanReport += UtilsService.formatThousands(controller.pagination.totalCount, ',');
+        spanReport += " đơn gộp";
+        spanReport += ")";
+    }
+
+    $spanReport.html(spanReport);
+}
+
+function _initGroupOrderTable() {
+    HoldOn.open();
+
+    controller.getDeliveries()
+        .then(function (response) {
+            controller.lossMoney = response.lossMoney;
+            controller.data = response.data
+            controller.pagination = response.pagination;
+
+            _loadSpanReport();
+            _loadPagination();
+            _loadDeliveryTable();
+
+            HoldOn.close();
+        })
+        .catch(function (e) {
+            console.log(e);
+            HoldOn.close();
+        });
+}
+
+function _updateFilter() {
+    // Tìm kiếm theo mã đơn hàng hoặc mã vận đơn (Chỉ áp dụng với đơn hàng shop ANN)
+    let $search = $("[id$='_txtSearch']");
+
+    if ($search.val())
+        controller.filter.search = $search.val();
+    else
+        controller.filter.search = null;
+
+    // Tìm theo trạng thái giao hàng
+    let $status = $("[id$='_ddlStatus']");
+
+    if ($status.val() != "0")
+        controller.filter.status = parseInt($status.val());
+    else
+        controller.filter.status = null;
+
+    // Tìm kiếm loại giao hàng
+    let $deliveryMethod = $("#ddlDeliveryMethod");
+
+    if ($deliveryMethod.val() != "0")
+        controller.filter.deliveryMethod = parseInt($deliveryMethod.val());
+    else
+        controller.filter.deliveryMethod = null;
+
+    // Khoảng thời gian
+    let $fromDate = $("[id$='_dpFromDate']");
+    let $toDate = $("[id$='_dpToDate']");
+
+    if ($fromDate.val()) {
+        let date = $fromDate.val().substring(0,10);
+        let time = $fromDate.val().substring(11, 16).replace(/-/g, ':');
+        let strDate = date + ' ' + time;
+
+        controller.filter.fromDate = strFormat.datetimeToString(strDate, 'MM/dd/yyyy HH:mm');
+    }
+    else {
+        controller.filter.fromDate = '12/15/2019 00:00';
+    }
+
+    if ($toDate.val()) {
+        let date = $toDate.val().substring(0,10);
+        let time = $toDate.val().substring(11, 16).replace(/-/g, ':');
+        let strDate = date + ' ' + time;
+
+        controller.filter.toDate = strFormat.datetimeToString(strDate, 'MM/dd/yyyy HH:mm');
+    }
+    else {
+        controller.filter.toDate = strFormat.datetimeToString(new Date(), 'MM/dd/yyyy HH:mm')
+    }
+}
+
+function _replaceUrl() {
+    let title = document.title;
+    let url = window.location.pathname;
+    let queryParam = controller.generateQueryParams();
+
+    if (queryParam)
+        url += '?' + queryParam
+
+    window.history.replaceState({}, title, url);
+}
+
+function _createPaginationHTML(pagination, pageNumberDisplay) {
+    let html = "";
+
+    // Trường hợp chỉ có một trang
+    if (pagination.totalPages == 0)
+        return html;
+
+    let start = 0;
+    let end = 0;
+
+    if (pagination.totalPages < pageNumberDisplay) {
+        start = 1;
+        end = pagination.totalPages;
+    }
+    else {
+        if (pagination.page <= Math.ceil(pageNumberDisplay / 2.0)) {
+            start = 1;
+            end = pageNumberDisplay;
+        }
+        else if (pagination.page > pagination.totalPages - Math.ceil(pageNumberDisplay / 2.0)) {
+            start = pagination.totalPages - pageNumberDisplay + 1;
+            end = pagination.totalPages;
+        }
+        else {
+            start = pagination.page - Math.ceil(pageNumberDisplay / 2.0);
+            end = start + pageNumberDisplay - 1;
+        }
+    }
+
+    html += "<ul>";
+
+    if (pagination.previousPage == 'Yes') {
+        html += "<li><a title='Trang đầu' href='javascript:;' onclick='onClickPagination(1)'>Trang đầu</a></li>";
+        html += "<li><a title='Trang trước' href='javascript:;' onclick='onClickPagination(" + (pagination.page - 1).toString() + ")'>Trang trước</a></li>";
+
+        if (start > Math.ceil(length / 2.0))
+            html += "<li><a href='javascript:;'>&hellip;</a></li>";
+    }
+
+    for (var page = start; page <= end; page++)
+        if (pagination.page == page)
+            html += "<li class='current'><a>" + page + "</a></li>";
+        else
+            html += "<li><a href='javascript:;' onclick='onClickPagination(" + page + ")'>" + page + "</a></li>";
+
+    if (pagination.nextPage == 'Yes') {
+        if (end < pagination.totalPages - Math.ceil(length / 2.0))
+            html += "<li><a href='javascript:;'>&hellip;</a></li>";
+
+        html += "<li><a title='Trang sau' href='javascript:;' onclick='onClickPagination(" + (pagination.page + 1).toString() + ")'>Trang sau</a></li>";
+        html += "<li><a title='Trang cuối' href='javascript:;' onclick='onClickPagination(" + pagination.totalPages + ")'>Trang cuối</a></li>";
+    }
+
+    html += "</ul>";
+
+    return html;
+}
+
+function _loadPagination() {
+    let pageNumberDisplay = 6;
+    let $pagination = $(".pagination");
+    let html = "";
+
+    if (controller.pagination.totalPages > 1)
+        html = _createPaginationHTML(controller.pagination, pageNumberDisplay);
+
+    $pagination.each(function (element) {
+        element.innerHTML = html;
+    });
+}
+
+function _createReportTableHTML(data) {
+    let html = "";
+
+    html += "<thead>";
+    html += "    <tr>";
+    html += "        <th class='col-code'>Mã</th>";
+    html += "        <th class='col-cutomer'>Khách hàng</th>";
+    html += "        <th class='col-quantity'>Mua</th>";
+    html += "        <th class='col-status'>Xử lý</th>";
+    html += "        <th class='col-payment-status'>Thanh toán</th>";
+    html += "        <th class='col-payment-method'>Kiểu thanh toán</th>";
+    html += "        <th class='col-delivery-method'>Giao hàng</th>";
+    html += "        <th class='col-price'>Tiền</th>";
+    html += "        <th class='col-created-date'>Ngày tạo</th>";
+    html += "        <th class='col-btn'></th>";
+    html += "    </tr>";
+    html += "</thead>";
+    html += "<tbody>";
+
+    if (data.length == 0)
+        html += "    <tr class='row-info'><td colspan='10'>Không tìm thấy đơn gộp...</td></tr>";
+    else
+        data.forEach(function (order) {
+            try {
+                //#region Thông tin chính của đơn hàng
+                html += "    <tr class='row-data'>";
+                // Mã hóa đơn
+                html += "        <td data-title='Mã đơn'>" + order.code + "</td>";
+                // Khách hàng
+                html += "        <td data-title='Khách hàng'>";
+                html += "            <strong>" + order.customer.nick + "</strong>";
+                html += "            <br>" + order.customer.name;
+                html += "            <br>" + order.customer.phone;
+                html += "        </td>";
+                // Số lượng mua
+                html += "        <td data-title='Số lượng mua'>" + UtilsService.formatThousands(order.quantity, ',') + "</td>";
+                // Trạng thái đơn
+                html += "        <td data-title='Trạng thái đơn'>";
+                html += "             <span class='bg-order-status bg-order-status-" + String(order.status.key) + "'>" + item.status.value + "</span>";
+                html += "        </td>";
+                // Trạng thái thanh toán
+                html += "        <td data-title='Trạng thái thanh toán'>";
+                html += "             <span class='bg-payment-status bg-payment-status-" + String(order.paymentStatus.key) + "'>" + order.paymentStatus.value + "</span>";
+                html += "        </td>";
+                // Phương thức thanh toán
+                html += "        <td data-title='Phương thức thanh toán'>";
+                html += "             <span class='bg-payment-method bg-payment-method-" + String(order.paymentMethod.key) + "'>" + order.paymentMethod.value + "</span>";
+                html += "        </td>";
+                // Phương thức vận chuyển
+                html += "        <td data-title='Phương thức vận chuyển'>";
+                html += "             <span class='bg-delivery-method bg-delivery-method-" + String(order.deliveryMethod.key) + "'>" + order.deliveryMethod.value + "</span>";
+                html += "        </td>";
+                // Tổng tiền
+                html += "        <td data-title='Tổng tiền'>" + UtilsService.formatThousands(order.price, ',') + "</td>";
+                // Ngày khởi tạo
+                html += "        <td data-title='Ngày khởi tạo'>";
+                html += "            " + strFormat.datetimeToString(order.createdDate, 'dd/MM/yyyy HH:mm');
+                html += "        </td>";
+                html += "        <td rowspan='2'>"
+                //#region Button về giao hàng (Tạo đơn giao hàng, in phiếu giao hàng)
+                switch (order.deliveryMethod.key) {
+                    case DeliveryMethodEnum.JtExpress:
+                        if (!order.shippingCode)
+                        {
+                            html += "           <a href='/dang-ky-jt?groupCode=" + order.code + "' target='_blank' ";
+                            html += "              title='Tạo đơn JT Express' ";
+                            html += "              class='btn primary-btn btn-jt h45-btn' ";
+                            html += "           >";
+                            html += "               <i class='fa fa-upload' aria-hidden='true'></i>";
+                            html += "           </a>";
+
+                        }
+                        else {
+                            html += "           <a href='/print-jt-express?groupCode=" + order.code + "' target='_blank' ";
+                            html += "              title='In phiếu gửi hàng' ";
+                            html += "              class='btn primary-btn btn-red h45-btn' ";
+                            html += "           >";
+                            html += "               <i class='fa fa-file-text-o' aria-hidden='true'></i>";
+                            html += "           </a>";
+                        }   
+
+                        break;
+                    case DeliveryMethodEnum.PostOffice:
+                        if (!order.shippingCode)
+                            break;
+                    case DeliveryMethodEnum.Proship:
+                        if (!order.shippingCode)
+                            break;
+                    case DeliveryMethodEnum.DeliverySave:
+                        if (!order.shippingCode)
+                        {
+                            html += "           <a href='/dang-ky-ghtk?groupCode=" + order.code + "' target='_blank' ";
+                            html += "              title='Tạo đơn GHTK' ";
+                            html += "              class='btn primary-btn btn-ghtk h45-btn' ";
+                            html += "           >";
+                            html += "               <i class='fa fa-upload' aria-hidden='true'></i>";
+                            html += "           </a>";
+
+                            break;
+                        };
+                    default:
+                        html += "           <a href='/print-shipping-note?groupCode=" + order.code + "' target='_blank' ";
+                        html += "              title='In phiếu gửi hàng' ";
+                        html += "              class='btn primary-btn btn-red h45-btn' ";
+                        html += "           >";
+                        html += "               <i class='fa fa-file-text-o' aria-hidden='true'></i>";
+                        html += "           </a>";
+                        
+                        break;
+                }
+                //#endregion
+                html += "        </td>"
+                html += "    </tr>";
+                //#endregion
+
+                //#region Thông tin phụ đơn hàng
+                html += "    <tr class='row-info'>";
+                html += "        <td></td>";
+                html += "        <td colspan='8'>";
+                //#region Đổi trả
+                if (order.refundAmount > 0)
+                {
+                    html += "            <span class='order-info'>";
+                    html += "                <strong>Đổi trả:</strong> " + UtilsService.formatThousands(order.refundAmount * -1, '');
+                    html += "            </span>";
+                }
+                //#endregion
+                //#region Chiết khấu
+                if (order.discount > 0)
+                {
+                    html += "            <span class='order-info'>";
+                    html += "                <strong>Chiết khấu:</strong> " + UtilsService.formatThousands(order.discount * -1, ',');
+                    html += "            </span>";
+                }
+                //#endregion
+                //#region Phí khác
+                if (order.otherFees != 0)
+                {
+                    html += "            <span class='order-info'>";
+                    html += "                <strong>Phí khác:</strong> " + UtilsService.formatThousands(order.otherFees, ',');
+                    html += "            </span>";
+                }
+                //#endregion
+                //#region Mã vận đơn
+                if (order.shippingCode)
+                {
+                    html += "            <span class='order-info'>";
+                    html += "                <strong>Vận đơn:</strong> " + order.shippingCode;
+                    html += "            </span>";
+                }
+                //#endregion
+                //#region Phí giao hàng
+                if (order.shippingFee > 0)
+                {
+                    html += "            <span class='order-info'>";
+                    html += "                <strong>Ship:</strong> " + UtilsService.formatThousands(order.shippingFee, ',');
+                    html += "            </span>";
+                }
+                //#endregion
+                //#region Coupon
+                if (order.couponValue > 0)
+                {
+                    html += "            <span class='order-info'>";
+                    html += "                <strong>Coupon:</strong> " + UtilsService.formatThousands(order.couponValue, ',');
+                    html += "            </span>";
+                }
+                //#endregion
+                html += "        </td>";
+                html += "    </tr>";
+                //#endregion
+            } catch (e) {
+                console.log(item);
+                console.log(e);
+                return false;
+            }
+        });
+
+    html += "<tbody>";
+
+    return html;
+}
+
+function _loadDeliveryTable() {
+    let $tbDelivery = $("#tbGroupOrder");
+    let html = _createReportTableHTML(controller.data);
+
+    $tbDelivery.html(html);
+}
+//#endregion
+
+//#region Public
+function onKeyUpSearch(event) {
+    if (event.key == 'Enter') {
+        let $code = $("[id$='_txtSearch']");
+        
+        $codeDOM.val($code.val().trim());
+
+        onClickSearch();
+    }
+}
+
+function onChangeOrderType(value) {
+    controller.filter.orderType = parseInt(value);
+    controller.filter.deliveryMethod = null;
+    _replaceUrl();
+    _initDeliveryMethods();
+}
+
+function onClickSearch() {
+    HoldOn.open();
+    controller.pagination.page = 1;
+    _updateFilter();
+    _replaceUrl();
+
+    controller.getDeliveries()
+        .then(function (response) {
+            HoldOn.close();
+            controller.lossMoney = response.lossMoney;
+            controller.data = response.data
+            controller.pagination = response.pagination;
+
+            _loadSpanReport();
+            _loadPagination();
+            _loadDeliveryTable();
+        })
+        .catch(function (e) {
+            console.log(e);
+            HoldOn.close();
+        });
+};
+
+function onClickPagination(page) {
+    HoldOn.open();
+    controller.pagination.page = page;
+    _replaceUrl();
+
+    controller.getDeliveries()
+        .then(function (response) {
+            HoldOn.close();
+            controller.lossMoney = response.lossMoney;
+            controller.data = response.data
+            controller.pagination = response.pagination;
+
+            _loadSpanReport();
+            _loadPagination();
+            _loadDeliveryTable();
+        })
+        .catch(function (e) {
+            console.log(e);
+            HoldOn.close();
+        });
+}
+//#endregion
