@@ -591,7 +591,12 @@ namespace IM_PJ
                 refund = RefundGoodController.GetByID(Convert.ToInt32(order.RefundsGoodsID));
 
                 if (refund == null)
-                    errorHtml.AppendLine(String.Format("<p>Không tìm thấy đơn hàng đổi trả {0} (có thể đã bị xóa khi làm lại đơn đổi trả). Thêm lại đơn hàng đổi trả nhé!</p>", order.RefundsGoodsID));
+                    errorHtml.AppendLine(String.Concat(
+                        "<p>",
+                        String.Format("Không tìm thấy đơn hàng đổi trả {0} (có thể đã bị xóa khi làm lại đơn đổi trả). ", refund.ID),
+                        "Thêm lại đơn hàng đổi trả nhé!",
+                        "</p>"
+                    ));
             }
             #endregion
 

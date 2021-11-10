@@ -96,3 +96,16 @@ ALTER COLUMN [Cod] [money] NOT NULL
 
 ALTER TABLE [dbo].[GroupOrder]
 ALTER COLUMN [Weight] [float] NOT NULL
+
+ALTER TABLE [dbo].[GroupOrder]
+ADD [TransportId] [int] NULL
+
+ALTER TABLE [dbo].[GroupOrder]
+ADD [TransportBranchId] [int] NULL
+
+ALTER TABLE [dbo].[GroupOrder]  WITH CHECK ADD  CONSTRAINT [FK_GroupOrder_Transport] FOREIGN KEY([TransportId], [TransportBranchId])
+REFERENCES [dbo].[tbl_TransportCompany] ([ID], [SubID])
+GO
+
+ALTER TABLE [dbo].[GroupOrder] CHECK CONSTRAINT [FK_GroupOrder_Transport]
+GO
