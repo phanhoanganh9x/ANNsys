@@ -30,6 +30,7 @@ namespace IM_PJ
                 if (acc.RoleID != 0)
                     Response.Redirect("/trang-chu");
 
+                hdfStaff.Value = acc.Username;
                 _initPage();
             }
         }
@@ -84,14 +85,6 @@ namespace IM_PJ
 
             if (!String.IsNullOrEmpty(code))
                 txtSearch.Text = HttpUtility.UrlDecode(code);
-        }
-
-        private void _initOrderType()
-        {
-            var orderType = Request.QueryString["orderType"];
-
-            if (!String.IsNullOrEmpty(orderType))
-                ddlOrderType.SelectedValue = orderType;
         }
 
         /// <summary>

@@ -54,11 +54,3 @@ table > thead > tr > th.col-done-date {
 table > thead > tr > th.col-btn {
     width: 4%
 }
-
-.table > tbody > tr:nth-of-type(n) td {
-    background-color: #fff;
-}
-
-.table > tbody > tr.error > td {
-    border-top: none;
-}

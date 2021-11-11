@@ -73,6 +73,10 @@
             </div>
         </div>
 
+        <%-- Hidden Field --%>
+        <asp:HiddenField ID="hdfStaff" runat="server"/>
+
+        <%-- Javascript --%>
         <script type="text/javascript" src="/App_Themes/Ann/js/utils/string-format.js?v=202111091752"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=202111091752"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/services/quan-ly-don-gop/quan-ly-don-gop-service.js?v=202111091752"></script>

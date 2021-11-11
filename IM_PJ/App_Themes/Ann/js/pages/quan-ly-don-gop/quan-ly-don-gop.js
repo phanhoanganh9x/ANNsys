@@ -1,11 +1,15 @@
-﻿const DeliveryMethodEnum = {
+﻿const OrderStatusEnum = {
+    "Done": 2,
+}
+
+const DeliveryMethodEnum = {
     "PostOffice": 2,
     "Proship": 3,
     "DeliverySave": 6,
     "JtExpress": 10
 }
 let strFormat = new StringFormat();
-let controller = new DeliveryManagerController();
+let controller = new GroupOrderManagerController();
 
 document.addEventListener("DOMContentLoaded", function (event) {
     _initQueryParams();
@@ -15,9 +19,12 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
 //#region Private
 function _initQueryParams() {
+    let hdfStaffDom = document.querySelector("[id$='_hdfStaff']");
     let search = window.location.search;
 
+    controller.staff = hdfStaffDom.value;
     controller.setFilterByQueryParameters(search);
+
 }
 
 function _initDeliveryMethods() {
@@ -68,7 +75,7 @@ function _loadSpanReport() {
 function _initGroupOrderTable() {
     HoldOn.open();
 
-    controller.getDeliveries()
+    controller.getGroupOrders()
         .then(function (response) {
             controller.lossMoney = response.lossMoney;
             controller.data = response.data
@@ -89,7 +96,7 @@ function _initGroupOrderTable() {
 function _updateFilter() {
     // Tìm kiếm theo mã đơn hàng hoặc mã vận đơn (Chỉ áp dụng với đơn hàng shop ANN)
     let searchDom = document.querySelector("[id$='_txtSearch']");
-    
+
     searchDom.value = searchDom.value.trim();
 
     if (searchDom.value)
@@ -234,7 +241,7 @@ function _createReportTableHTML(data) {
     html += "        <th class='col-payment-status'>Thanh toán</th>";
     html += "        <th class='col-payment-method'>Kiểu thanh toán</th>";
     html += "        <th class='col-delivery-method'>Giao hàng</th>";
-    html += "        <th class='col-price'>Tiền</th>";
+    html += "        <th class='col-total-price'>Tiền</th>";
     html += "        <th class='col-created-date'>Ngày tạo</th>";
     html += "        <th class='col-btn'></th>";
     html += "    </tr>";
@@ -247,12 +254,16 @@ function _createReportTableHTML(data) {
         data.forEach(function (order) {
             try {
                 //#region Thông tin chính của đơn hàng
-                html += "    <tr class='row-data'>";
+                html += "    <tr class='row-data' data-group-code='" + order.code +"'>";
                 // Mã hóa đơn
-                html += "        <td data-title='Mã đơn'>" + order.code + "</td>";
+                html += "        <td data-title='Mã đơn'><strong>" + order.code + "</strong></td>";
                 // Khách hàng
                 html += "        <td data-title='Khách hàng'>";
-                html += "            <strong>" + order.customer.nick + "</strong>";
+                html += "            <a class='col-customer-name-link' ";
+                html += "               href='/danh-sach-don-hang?&searchtype=1&textsearch=" + order.customer.phone + "' target='_blank' ";
+                html += "            >";
+                html += "                " + order.customer.nick;
+                html += "            </a>";
                 html += "            <br>" + order.customer.name;
                 html += "            <br>" + order.customer.phone;
                 html += "        </td>";
@@ -260,7 +271,7 @@ function _createReportTableHTML(data) {
                 html += "        <td data-title='Số lượng mua'>" + UtilsService.formatThousands(order.quantity, ',') + "</td>";
                 // Trạng thái đơn
                 html += "        <td data-title='Trạng thái đơn'>";
-                html += "             <span class='bg-order-status bg-order-status-" + String(order.status.key) + "'>" + item.status.value + "</span>";
+                html += "             <span class='bg-order-status bg-order-status-" + String(order.status.key) + "'>" + order.status.value + "</span>";
                 html += "        </td>";
                 // Trạng thái thanh toán
                 html += "        <td data-title='Trạng thái thanh toán'>";
@@ -301,7 +312,7 @@ function _createReportTableHTML(data) {
                             html += "           >";
                             html += "               <i class='fa fa-file-text-o' aria-hidden='true'></i>";
                             html += "           </a>";
-                        }   
+                        }
 
                         break;
                     case DeliveryMethodEnum.PostOffice:
@@ -323,23 +334,49 @@ function _createReportTableHTML(data) {
                             break;
                         };
                     default:
+                        //#region In phiếu gửi hàng
                         html += "           <a href='/print-shipping-note?groupCode=" + order.code + "' target='_blank' ";
                         html += "              title='In phiếu gửi hàng' ";
                         html += "              class='btn primary-btn btn-red h45-btn' ";
                         html += "           >";
                         html += "               <i class='fa fa-file-text-o' aria-hidden='true'></i>";
                         html += "           </a>";
-                        
+                        //#endregion
+
                         break;
                 }
                 //#endregion
+
+                //#region Hủy gộp đơn
+                if (order.status.key == OrderStatusEnum.Done) {
+                    html += '           <a href="javascript:;"';
+                    html += '              title="Huỷ gộp đơn"';
+                    html += '              class="btn primary-btn btn-red h45-btn"';
+                    html += '              onclick="onClickGroupOrderRemoval(`' + order.code + '`)"';
+                    html += '           >';
+                    html += '               <i class="fa fa-times" aria-hidden="true"></i>';
+                    html += '           </a>';
+                }
+                //#endregion
+
                 html += "        </td>"
                 html += "    </tr>";
                 //#endregion
 
                 //#region Thông tin phụ đơn hàng
-                html += "    <tr class='row-info'>";
-                html += "        <td></td>";
+                html += "    <tr class='row-info' data-group-code='" + order.code + "'>";
+                html += "        <td colspan='2'>";
+                //#region Danh sách đơn gộp
+                html += "            <span class='order-id'>";
+                html += "                <strong>Đơn hàng:</strong> "
+                order.orderIds.forEach(function (id, index) {
+                    if (index != 0)
+                        html += ", "
+                    html += "<a href='/thong-tin-don-hang?id=" + String(id) + "' target='_blank'>" + String(id) + "</a>";
+                });
+                html += "            </span>"
+                //#endregion
+                html += "        </td>";
                 html += "        <td colspan='8'>";
                 //#region Đổi trả
                 if (order.refundAmount > 0)
@@ -393,7 +430,7 @@ function _createReportTableHTML(data) {
                 html += "    </tr>";
                 //#endregion
             } catch (e) {
-                console.log(item);
+                console.log(order);
                 console.log(e);
                 return false;
             }
@@ -408,7 +445,7 @@ function _loadDeliveryTable() {
     let tbDeliveryDom = document.querySelector("#tbGroupOrder");
     let html = _createReportTableHTML(controller.data);
 
-    tbDeliveryDom.innerHTM = html;
+    tbDeliveryDom.innerHTML = html;
 }
 //#endregion
 
@@ -420,20 +457,13 @@ function onKeyUpSearch(e) {
     }
 }
 
-function onChangeOrderType(value) {
-    controller.filter.orderType = parseInt(value);
-    controller.filter.deliveryMethod = null;
-    _replaceUrl();
-    _initDeliveryMethods();
-}
-
 function onClickSearch() {
     HoldOn.open();
     controller.pagination.page = 1;
     _updateFilter();
     _replaceUrl();
 
-    controller.getDeliveries()
+    controller.getGroupOrders()
         .then(function (response) {
             HoldOn.close();
             controller.lossMoney = response.lossMoney;
@@ -450,15 +480,60 @@ function onClickSearch() {
         });
 };
 
+function onClickGroupOrderRemoval(groupCode) {
+    swal({
+        title: 'Thông báo',
+        text: 'Bạn muốn xóa đơn gộp #' + groupCode + ' này không?',
+        type: 'warning',
+        showCancelButton: true,
+        cancelButtonText: "Để xem lại",
+        confirmButtonText: "Tiếp tục",
+        html: true,
+    },
+    function (confirm) {
+        if (confirm) {
+            HoldOn.open();
+
+            controller.cancelGroupOrder(groupCode)
+                .then(function (response) {
+                    HoldOn.close();
+
+                    if (controller.data.length == 1)
+                        controller.pagination.page -= 1;
+
+                    if (controller.pagination.page < 1)
+                        controller.pagination.page = 1;
+
+                    onClickPagination(controller.pagination.page);
+                })
+                .catch(function (e) {
+                    console.log(e);
+                    HoldOn.close();
+
+                    let message = null;
+
+                    if (e.responseJSON)
+                        message = e.responseJSON.message;
+                    else
+                        message = e.message || null;
+
+                    if (!message)
+                        message = "Đã có lỗi trong quá trình hủy đơn gộp";
+
+                    alert(message);
+                });
+        }
+    });
+}
+
 function onClickPagination(page) {
     HoldOn.open();
     controller.pagination.page = page;
     _replaceUrl();
 
-    controller.getDeliveries()
+    controller.getGroupOrders()
         .then(function (response) {
             HoldOn.close();
-            controller.lossMoney = response.lossMoney;
             controller.data = response.data
             controller.pagination = response.pagination;
 

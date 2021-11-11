@@ -22,9 +22,13 @@ function _initStaff() {
 }
 
 function _checkValidation(data) {
+    let message = '';
+
+    message += 'Đơn hàng <strong>#<a href="thong-tin-don-hang?id="' + String(data.id) + '" target="_blank">' + String(data.id) + '</a></strong>';
+
     //#region Kiểm tra trạng thái đơn hàng
     if (data.status.key != OrderStatusEnum.Done) {
-        let message = 'Yêu cầu đơn hàng phải <strong>hoàn tất</strong>';
+        message += '<br>Lỗi: Không phải là đơn <strong>hoàn tất</strong>';
 
         swal({
             title: 'Error',
@@ -40,7 +44,7 @@ function _checkValidation(data) {
 
     //#region Kiểm tra trạng thái thanh toán
     if (data.status.key == PaymentStatusEnum.Waitting) {
-        let message = 'Yêu cầu đơn hàng phải <strong>thanh toán</strong>';
+        message += '<br>Lỗi: Đơn hàng chưa <strong>thanh toán</strong>';
 
         swal({
             title: 'Error',
@@ -54,13 +58,29 @@ function _checkValidation(data) {
     }
     //#endregion
 
+    //#region Kiểm tra mã vận đơn
+    if (data.shippingCode) {
+        message += '<br>Lỗi: Đơn đã đăng ký vận đơn';
+
+        swal({
+            title: 'Error',
+            text: message,
+            type: 'error',
+            showCloseButton: true,
+            html: true,
+        });
+
+        return false;
+    }
+    //#endreigon
+
     // Trường hợp là đơn hàng đầu tiên
     if (controller.orders.length == 0)
         return true;
 
     //#region Kiểm tra khách hàng
     if (controller.customer.id != data.customer.id) {
-        let message = 'Đơn hàng #' + String(data.id) + ' có không cùng khách hàng với các đơn hàng trong bảng';
+        message += '<br>Lỗi: Khách hàng khác với các đơn hàng trong bảng';
 
         swal({
             title: 'Error',
@@ -76,7 +96,7 @@ function _checkValidation(data) {
 
     //#region Kiểm tra trạng thái thanh toán
     if (controller.paymentStatus.key != data.paymentStatus.key) {
-        let message = 'Đơn hàng #' + String(data.id) + ' có trạng thái thanh toán <strong>' + data.paymentStatus.value + '</strong> không đồng nhất với các đơn hàng trong bảng';
+        message += '<br>Lỗi: Trạng thái thanh toán <strong>' + data.paymentStatus.value + '</strong> không đồng nhất với các đơn hàng trong bảng';
 
         swal({
             title: 'Error',
@@ -92,7 +112,7 @@ function _checkValidation(data) {
 
     //#region Kiểm tra phương thức thanh toán
     if (controller.paymentMethod.key != data.paymentMethod.key) {
-        let message = 'Đơn hàng #' + String(data.id) + ' có phương thức thanh toán <strong>' + data.paymentMethod.value + '</strong> không đồng nhất với các đơn hàng trong bảng';
+        message += '<br>Lỗi: Phương thức thanh toán <strong>' + data.paymentMethod.value + '</strong> không đồng nhất với các đơn hàng trong bảng';
 
         swal({
             title: 'Error',
@@ -108,7 +128,7 @@ function _checkValidation(data) {
 
     //#region Kiểm tra phương thức giao hàng
     if (controller.deliveryMethod.key != data.deliveryMethod.key) {
-        let message = 'Đơn hàng #' + String(data.id) + ' có phương thức giao hàng <strong>' + data.deliveryMethod.value + '</strong> không đồng nhất với các đơn hàng trong bảng';
+        message += '<br>Lỗi: Phương thức giao hàng <strong>' + data.deliveryMethod.value + '</strong> không đồng nhất với các đơn hàng trong bảng';
 
         swal({
             title: 'Error',
@@ -124,7 +144,7 @@ function _checkValidation(data) {
 
     //#region Kiểm tra địa chỉ nhận hàng
     if (controller.deliveryAddress.id != data.deliveryAddress.id) {
-        let message = 'Đơn hàng #' + String(data.id) + ' có địa chỉ nhận hàng không đồng nhất với các đơn hàng trong bảng';
+        message += '<br>Lỗi: Địa chỉ nhận hàng không đồng nhất với các đơn hàng trong bảng';
 
         swal({
             title: 'Error',

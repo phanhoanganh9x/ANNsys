@@ -67,4 +67,24 @@
             });
         });
     };
+
+    cancelGroupOrder(groupCode, staff) {
+        let url = this.api + '/group-order/' + groupCode + '/cancel';
+
+        return new Promise((reslove, reject) => {
+            $.ajax({
+                method: 'POST',
+                url: url,
+                contentType: 'application/json; charset=utf-8',
+                dataType: "json",
+                data: JSON.stringify({ "staff": staff }),
+                success: (response) => {
+                    reslove(response);
+                },
+                error: err => {
+                    reject(err);
+                }
+            });
+        });
+    }
 }

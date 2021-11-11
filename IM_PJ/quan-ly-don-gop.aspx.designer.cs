@@ -22,6 +22,15 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.TextBox txtSearch;
 
         /// <summary>
+        /// ddlStatus control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlStatus;
+
+        /// <summary>
         /// dpFromDate control.
         /// </summary>
         /// <remarks>
@@ -40,12 +49,12 @@ namespace IM_PJ {
         protected global::Telerik.Web.UI.RadDateTimePicker dpToDate;
 
         /// <summary>
-        /// ddlStatus control.
+        /// hdfStaff control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlStatus;
+        protected global::System.Web.UI.WebControls.HiddenField hdfStaff;
     }
 }

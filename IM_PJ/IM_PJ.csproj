@@ -354,6 +354,7 @@
     <Content Include="App_Themes\Ann\css\pages\quan-ly-don-giao-hang\quan-ly-don-giao-hang.css" />
     <Content Include="App_Themes\Ann\css\pages\danh-sach-don-hang\danh-sach-don-hang.css" />
     <Content Include="App_Themes\Ann\css\pages\danh-sach-khach-giam-gia\danh-sach-khach-giam-gia.css" />
+    <Content Include="App_Themes\Ann\css\pages\quan-ly-don-gop\quan-ly-don-gop.css" />
     <Content Include="App_Themes\Ann\css\pages\tao-don-gop\tao-don-gop.css" />
     <Content Include="App_Themes\Ann\css\pages\them-moi-giam-gia\them-moi-giam-gia.css" />
     <Content Include="App_Themes\Ann\css\pages\danh-sach-don-ghtk\danh-sach-don-ghtk.css" />
@@ -413,6 +414,7 @@
     <Content Include="App_Themes\Ann\js\controllers\dang-ky-gui-di\dang-ky-gui-di-controller.js" />
     <Content Include="App_Themes\Ann\js\controllers\quan-ly-don-giao-hang\quan-ly-don-giao-hang-controller.js" />
     <Content Include="App_Themes\Ann\js\controllers\danh-sach-don-ghtk\danh-sach-don-ghtk-controller.js" />
+    <Content Include="App_Themes\Ann\js\controllers\quan-ly-don-gop\quan-ly-don-gop-controller.js" />
     <Content Include="App_Themes\Ann\js\controllers\tao-don-gop\tao-don-gop-controller.js" />
     <Content Include="App_Themes\Ann\js\controllers\thong-ke-ghtk\thong-ke-ghtk-controller.js" />
     <Content Include="App_Themes\Ann\js\controllers\thong-tin-don-dat-hang\thong-tin-don-dat-hang-controller.js" />
@@ -443,6 +445,7 @@
     <Content Include="App_Themes\Ann\js\pages\quan-ly-don-giao-hang\quan-ly-don-giao-hang.js" />
     <Content Include="App_Themes\Ann\js\pages\dang-ky-jt\dang-ky-jt.js" />
     <Content Include="App_Themes\Ann\js\pages\danh-sach-don-ghtk\danh-sach-don-ghtk.js" />
+    <Content Include="App_Themes\Ann\js\pages\quan-ly-don-gop\quan-ly-don-gop.js" />
     <Content Include="App_Themes\Ann\js\pages\tao-don-gop\tao-don-gop.js" />
     <Content Include="App_Themes\Ann\js\pages\thong-ke-ghtk\thong-ke-ghtk.js" />
     <Content Include="App_Themes\Ann\js\pages\thong-tin-don-dat-hang\thong-tin-don-dat-hang.js" />
@@ -459,6 +462,7 @@
     <Content Include="App_Themes\Ann\js\services\dang-ky-gui-di\dang-ky-gui-di-service.js" />
     <Content Include="App_Themes\Ann\js\services\quan-ly-don-giao-hang\quan-ly-don-giao-hang-service.js" />
     <Content Include="App_Themes\Ann\js\services\danh-sach-don-ghtk\danh-sach-don-ghtk-service.js" />
+    <Content Include="App_Themes\Ann\js\services\quan-ly-don-gop\quan-ly-don-gop-service.js" />
     <Content Include="App_Themes\Ann\js\services\tao-don-gop\tao-don-gop-service.js" />
     <Content Include="App_Themes\Ann\js\services\thong-ke-ghtk\thong-ke-ghtk-service.js" />
     <Content Include="App_Themes\Ann\js\services\thong-tin-don-dat-hang\thong-tin-don-dat-hang-service.js" />
@@ -582,6 +586,7 @@
     <Content Include="print-jt-express.aspx" />
     <Content Include="quan-ly-don-giao-hang.aspx" />
     <Content Include="print-order-image-english.aspx" />
+    <Content Include="quan-ly-don-gop.aspx" />
     <Content Include="SQL\01CREATE_TABLE_DeliveryAddress.sql" />
     <Content Include="SQL\01CREATE_TABLE_DeliveryManager.sql" />
     <Content Include="SQL\01CREATE_TABLE_DeliveryMethod.sql" />
@@ -1230,6 +1235,7 @@
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Pages\danh-sach-chuyen-khoan\KeyValueModel.cs" />
+    <Compile Include="Models\Pages\quan-ly-don-gop\KeyValueModel.cs" />
     <Compile Include="Models\Pages\danh-sach-don-hang\KeyValueModel.cs" />
     <Compile Include="Models\Pages\print-jt-express\OrderAddressResponseModel.cs" />
     <Compile Include="Models\Pages\print-jt-express\OrderItemResponseModel.cs" />
@@ -1475,6 +1481,13 @@
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="quan-ly-don-gop.aspx.cs">
+      <DependentUpon>quan-ly-don-gop.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="quan-ly-don-gop.aspx.designer.cs">
+      <DependentUpon>quan-ly-don-gop.aspx</DependentUpon>
     </Compile>
     <Compile Include="tai-khoan-app.aspx.cs">
       <DependentUpon>tai-khoan-app.aspx</DependentUpon>

@@ -1,5 +1,6 @@
 ﻿class GroupOrderManagerController {
     constructor() {
+        this.staff = null;
         this.filter = {
             search: null,
             status: null,
@@ -11,7 +12,7 @@
         this.pagination = {
             nextPage: 'No',
             page: 1,
-            pageSize: 30,
+            pageSize: 2,
             previousPage: 'No',
             totalCount: 0,
             totalPages: 1,
@@ -104,5 +105,9 @@
 
     getGroupOrders() {
         return this._service.getGroupOrders(this.filter, this.pagination);
+    }
+
+    cancelGroupOrder(groupCode) {
+        return this._service.cancelGroupOrder(groupCode, this.staff);
     }
 }
