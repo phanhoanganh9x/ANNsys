@@ -27,6 +27,9 @@ namespace IM_PJ
                 if (acc == null)
                     Response.Redirect("/dang-nhap");
 
+                if (acc.RoleID != 0)
+                    Response.Redirect("/trang-chu");
+
                 _initPage();
             }
         }

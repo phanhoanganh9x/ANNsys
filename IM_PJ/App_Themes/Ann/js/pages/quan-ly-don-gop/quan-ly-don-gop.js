@@ -7,11 +7,11 @@
 let strFormat = new StringFormat();
 let controller = new DeliveryManagerController();
 
-$(document).ready(function() {
+document.addEventListener("DOMContentLoaded", function (event) {
     _initQueryParams();
     _initDeliveryMethods();
     _initGroupOrderTable();
-})
+});
 
 //#region Private
 function _initQueryParams() {
@@ -51,18 +51,18 @@ function _initDeliveryMethods() {
 }
 
 function _loadSpanReport() {
-    let $spanReport = $("[id$='spanReport']");
-    let spanReport = "";
+    let spanReportDom = document.querySelector("[id$='spanReport']");
+    let message = "";
 
     if (controller.pagination.totalCount > 0)
     {
-        spanReport += "(";
-        spanReport += UtilsService.formatThousands(controller.pagination.totalCount, ',');
-        spanReport += " đơn gộp";
-        spanReport += ")";
+        message += "(";
+        message += UtilsService.formatThousands(controller.pagination.totalCount, ',');
+        message += " đơn gộp";
+        message += ")";
     }
 
-    $spanReport.html(spanReport);
+    spanReportDom.innerHTML = message;
 }
 
 function _initGroupOrderTable() {
@@ -88,18 +88,20 @@ function _initGroupOrderTable() {
 
 function _updateFilter() {
     // Tìm kiếm theo mã đơn hàng hoặc mã vận đơn (Chỉ áp dụng với đơn hàng shop ANN)
-    let $search = $("[id$='_txtSearch']");
+    let searchDom = document.querySelector("[id$='_txtSearch']");
+    
+    searchDom.value = searchDom.value.trim();
 
-    if ($search.val())
-        controller.filter.search = $search.val();
+    if (searchDom.value)
+        controller.filter.search = searchDom.value;
     else
         controller.filter.search = null;
 
     // Tìm theo trạng thái giao hàng
-    let $status = $("[id$='_ddlStatus']");
+    let statusDom = document.querySelector("[id$='_ddlStatus']");
 
-    if ($status.val() != "0")
-        controller.filter.status = parseInt($status.val());
+    if (statusDom.value != "0")
+        controller.filter.status = parseInt(statusDom.value);
     else
         controller.filter.status = null;
 
@@ -112,12 +114,12 @@ function _updateFilter() {
         controller.filter.deliveryMethod = null;
 
     // Khoảng thời gian
-    let $fromDate = $("[id$='_dpFromDate']");
-    let $toDate = $("[id$='_dpToDate']");
+    let fromDateDom = document.querySelector("[id$='_dpFromDate']");
+    let toDateDom = document.querySelector("[id$='_dpToDate']");
 
-    if ($fromDate.val()) {
-        let date = $fromDate.val().substring(0,10);
-        let time = $fromDate.val().substring(11, 16).replace(/-/g, ':');
+    if (fromDateDom.value) {
+        let date = fromDateDom.value.substring(0,10);
+        let time = fromDateDom.value.substring(11, 16).replace(/-/g, ':');
         let strDate = date + ' ' + time;
 
         controller.filter.fromDate = strFormat.datetimeToString(strDate, 'MM/dd/yyyy HH:mm');
@@ -126,9 +128,9 @@ function _updateFilter() {
         controller.filter.fromDate = '12/15/2019 00:00';
     }
 
-    if ($toDate.val()) {
-        let date = $toDate.val().substring(0,10);
-        let time = $toDate.val().substring(11, 16).replace(/-/g, ':');
+    if (toDateDom.value) {
+        let date = toDateDom.value.substring(0,10);
+        let time = toDateDom.value.substring(11, 16).replace(/-/g, ':');
         let strDate = date + ' ' + time;
 
         controller.filter.toDate = strFormat.datetimeToString(strDate, 'MM/dd/yyyy HH:mm');
@@ -209,13 +211,13 @@ function _createPaginationHTML(pagination, pageNumberDisplay) {
 
 function _loadPagination() {
     let pageNumberDisplay = 6;
-    let $pagination = $(".pagination");
+    let paginationDom = document.querySelectorAll(".pagination");
     let html = "";
 
     if (controller.pagination.totalPages > 1)
         html = _createPaginationHTML(controller.pagination, pageNumberDisplay);
 
-    $pagination.each(function (element) {
+    paginationDom.forEach(function (element) {
         element.innerHTML = html;
     });
 }
@@ -270,7 +272,7 @@ function _createReportTableHTML(data) {
                 html += "        </td>";
                 // Phương thức vận chuyển
                 html += "        <td data-title='Phương thức vận chuyển'>";
-                html += "             <span class='bg-delivery-method bg-delivery-method-" + String(order.deliveryMethod.key) + "'>" + order.deliveryMethod.value + "</span>";
+                html += "             <span class='bg-delivery-type bg-delivery-type-" + String(order.deliveryMethod.key) + "'>" + order.deliveryMethod.value + "</span>";
                 html += "        </td>";
                 // Tổng tiền
                 html += "        <td data-title='Tổng tiền'>" + UtilsService.formatThousands(order.price, ',') + "</td>";
@@ -403,21 +405,18 @@ function _createReportTableHTML(data) {
 }
 
 function _loadDeliveryTable() {
-    let $tbDelivery = $("#tbGroupOrder");
+    let tbDeliveryDom = document.querySelector("#tbGroupOrder");
     let html = _createReportTableHTML(controller.data);
 
-    $tbDelivery.html(html);
+    tbDeliveryDom.innerHTM = html;
 }
 //#endregion
 
 //#region Public
-function onKeyUpSearch(event) {
-    if (event.key == 'Enter') {
-        let $code = $("[id$='_txtSearch']");
-        
-        $codeDOM.val($code.val().trim());
-
+function onKeyUpSearch(e) {
+    if (e.key == 'Enter') {
         onClickSearch();
+        e.preventDefault();
     }
 }
 
