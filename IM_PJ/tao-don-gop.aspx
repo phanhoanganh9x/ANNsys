@@ -17,9 +17,7 @@
                             <div class="row">
                                 <div class="col-md-5">
                                     <div class="form-group">
-                                        <div class="input-group">
-                                            <asp:TextBox ID="txtCode" CssClass="form-control input-code" runat="server" placeholder="Mã đơn hàng" autocomplete="off" onKeyDown="onKeyDownCode(event)"></asp:TextBox>
-                                        </div>
+                                        <asp:TextBox ID="txtCode" CssClass="form-control input-code" runat="server" placeholder="Mã đơn hàng" autocomplete="off" onKeyDown="onKeyDownCode(event)"></asp:TextBox>
                                     </div>
                                 </div>
                                 <div class="col-md-1">

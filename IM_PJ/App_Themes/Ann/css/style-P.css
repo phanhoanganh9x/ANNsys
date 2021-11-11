@@ -1,4 +1,64 @@
-﻿.bg-delivery-status {
+﻿/* Trạng thái thanh toán */
+.bg-payment-status {
+    color: #fff;
+    display: inline-block;
+    padding: 5px 6px;
+    white-space: nowrap;
+    font-size: 12px;
+    border-radius: 6px;
+}
+
+/* Chưa thanh toán */
+.bg-payment-status-1 {
+    background: #2A2A2A;
+}
+
+/* Thanh toán thiếu */
+.bg-payment-status-2 {
+    background: #F44336;
+}
+
+/* Đã thanh toán */
+.bg-payment-status-3 {
+    background: #73a724;
+}
+
+/* Đã duyệt */
+.bg-payment-status-4 {
+    background: #67809f;
+}
+
+/* Phương thức thanh toán */
+.bg-payment-method {
+    color: #fff;
+    display: inline-block;
+    padding: 5px 6px;
+    white-space: nowrap;
+    font-size: 12px;
+    border-radius: 6px;
+}
+
+/* Tiền mặt */
+.bg-payment-method-1 {
+    background: #2A2A2A;
+}
+
+/* Chuyển khoản*/
+.bg-payment-method-2 {
+    background: #F44336
+}
+
+/* Thu hộ */
+.bg-payment-method-3 {
+    background: #ffba00;
+}
+
+/* Công nợ */
+.bg-payment-method-4 {
+    background: #F44336
+}
+
+.bg-delivery-status {
     color: #fff;
     display: inline-block;
     padding: 5px 6px;

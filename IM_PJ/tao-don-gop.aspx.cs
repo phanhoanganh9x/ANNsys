@@ -29,7 +29,9 @@ namespace IM_PJ
 
                 if (acc == null)
                     Response.Redirect("/dang-nhap");
-                    
+                else if (acc.RoleID != 0)
+                    Response.Redirect("/trang-chu");
+
                 hdfStaff.Value = userName;
             }
         }

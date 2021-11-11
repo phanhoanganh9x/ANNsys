@@ -10,22 +10,22 @@ let loading = false;
 let stringFormat = new StringFormat();
 let controller = new GroupOrderController();
 
-$(document).ready(function() {
+document.addEventListener("DOMContentLoaded", function (event) {
     _initStaff();
 });
 
 //#region Private
 function _initStaff() {
-    let $hdfStaff = $("[id$='_hdfStaff']");
+    let hdfStaffDom = document.querySelector("[id$='_hdfStaff']");
 
-    controller.setStaff($hdfStaff.val());
+    controller.setStaff(hdfStaffDom.value);
 }
 
 function _checkValidation(data) {
     //#region Kiểm tra trạng thái đơn hàng
     if (data.status.key != OrderStatusEnum.Done) {
         let message = 'Yêu cầu đơn hàng phải <strong>hoàn tất</strong>';
-        
+
         swal({
             title: 'Error',
             text: message,
@@ -41,7 +41,7 @@ function _checkValidation(data) {
     //#region Kiểm tra trạng thái thanh toán
     if (data.status.key == PaymentStatusEnum.Waitting) {
         let message = 'Yêu cầu đơn hàng phải <strong>thanh toán</strong>';
-        
+
         swal({
             title: 'Error',
             text: message,
@@ -61,7 +61,7 @@ function _checkValidation(data) {
     //#region Kiểm tra khách hàng
     if (controller.customer.id != data.customer.id) {
         let message = 'Đơn hàng #' + String(data.id) + ' có không cùng khách hàng với các đơn hàng trong bảng';
-        
+
         swal({
             title: 'Error',
             text: message,
@@ -77,7 +77,7 @@ function _checkValidation(data) {
     //#region Kiểm tra trạng thái thanh toán
     if (controller.paymentStatus.key != data.paymentStatus.key) {
         let message = 'Đơn hàng #' + String(data.id) + ' có trạng thái thanh toán <strong>' + data.paymentStatus.value + '</strong> không đồng nhất với các đơn hàng trong bảng';
-        
+
         swal({
             title: 'Error',
             text: message,
@@ -93,7 +93,7 @@ function _checkValidation(data) {
     //#region Kiểm tra phương thức thanh toán
     if (controller.paymentMethod.key != data.paymentMethod.key) {
         let message = 'Đơn hàng #' + String(data.id) + ' có phương thức thanh toán <strong>' + data.paymentMethod.value + '</strong> không đồng nhất với các đơn hàng trong bảng';
-        
+
         swal({
             title: 'Error',
             text: message,
@@ -109,7 +109,7 @@ function _checkValidation(data) {
     //#region Kiểm tra phương thức giao hàng
     if (controller.deliveryMethod.key != data.deliveryMethod.key) {
         let message = 'Đơn hàng #' + String(data.id) + ' có phương thức giao hàng <strong>' + data.deliveryMethod.value + '</strong> không đồng nhất với các đơn hàng trong bảng';
-        
+
         swal({
             title: 'Error',
             text: message,
@@ -125,7 +125,7 @@ function _checkValidation(data) {
     //#region Kiểm tra địa chỉ nhận hàng
     if (controller.deliveryAddress.id != data.deliveryAddress.id) {
         let message = 'Đơn hàng #' + String(data.id) + ' có địa chỉ nhận hàng không đồng nhất với các đơn hàng trong bảng';
-        
+
         swal({
             title: 'Error',
             text: message,
@@ -137,21 +137,21 @@ function _checkValidation(data) {
         return false;
     }
     //#endregion
-        
+
     return true;
 }
 
 function _handleCode() {
-    let $txtCode = $("[id$='_txtCode']");
+    let txtCodeDom = document.querySelector("[id$='_txtCode']");
 
     HoldOn.open();
-    controller.getOrderBasic($txtCode.val())
+    controller.getOrderBasic(txtCodeDom.value)
         .then(function (response) {
             HoldOn.close();
 
             if (!response) {
-                let message = 'Mã đơn hàng #' + String(orderId) + ' không tồn tại trong hệ thống';
-                
+                let message = 'Mã đơn hàng #' + txtCodeDom + ' không tồn tại trong hệ thống';
+
                 swal({
                     title: 'Error',
                     text: message,
@@ -159,7 +159,7 @@ function _handleCode() {
                     showCloseButton: true,
                     html: true,
                 });
-                
+
                 return;
             }
 
@@ -171,18 +171,28 @@ function _handleCode() {
             controller.addOrder(response);
 
             // Clear mã đơn hàng
-            $txtCode.val('');
+            txtCodeDom.value = '';
 
             // Cập nhật hiển thị button submit
             _updateDisplaySubmit();
         })
         .catch(function (err) {
             HoldOn.close();
-            $txtCode.focus();
+            txtCodeDom.focus();
+
+            let message = null;
+
+            if (err.responseJSON)
+                message = err.responseJSON.message;
+            else
+                message = err.message || null;
+
+            if (!message)
+                message = "Đã có lỗi trong quá trình xứ lý mã đơn hàng";
 
             swal({
                 title: 'Error',
-                text: err.responseJSON.message,
+                text: message,
                 type: 'error',
                 showCloseButton: true,
                 html: true,
@@ -202,10 +212,10 @@ function _createOrderHtml(index, data) {
     html += '    <br>' + data.customer.phone;
     html += '    </td>';
     html += '    <td>' + UtilsService.formatThousands(data.quantity, ',') + '</td>';
-    html += '    <td><span class="bg-order-status order-status-' + data.status.key + '">' + data.status.value + '</span></td>';
+    html += '    <td><span class="bg-order-status bg-order-status-' + data.status.key + '">' + data.status.value + '</span></td>';
     html += '    <td><span class="bg-payment-status bg-payment-status-' + data.paymentStatus.key + '">' + data.paymentStatus.value + '</span></td>';
     html += '    <td><span class="bg-payment-method bg-payment-method-' + data.paymentMethod.key + '">' + data.paymentMethod.value + '</span></td>';
-    html += '    <td><span class="bg-delivery-method bg-delivery-method-' + data.deliveryMethod.key + '">' + data.deliveryMethod.value + '</span></td>';
+    html += '    <td><span class="bg-delivery-type bg-delivery-type-' + data.deliveryMethod.key + '">' + data.deliveryMethod.value + '</span></td>';
     html += '    <td>' + UtilsService.formatThousands(data.totalPrice, ',') + '</td>';
     html += '    <td>' + data.staff + '</td>';
     html += '    <td>';
@@ -220,7 +230,7 @@ function _createOrderHtml(index, data) {
     html += '        <a href="javascript:;"';
     html += '           title="Xóa"';
     html += '           class="btn primary-btn btn-red h45-btn"';
-    html += '           onclick="onClickOrderRemoval(' + data.id+ ',)"';
+    html += '           onclick="onClickOrderRemoval(' + String(data.id) + ')"';
     html += '        >';
     html += '            <i class="fa fa-times" aria-hidden="true"></i>';
     html += '        </a>';
@@ -231,59 +241,57 @@ function _createOrderHtml(index, data) {
 }
 
 function _addOrder(data) {
-    let $tbodyOrder = $("#tbody-order");
-    let index = $tbodyOrder.find("tr").length + 1;
+    let tbodyOrderDom = document.querySelector("#tbody-order");
+    let index = tbodyOrderDom.querySelectorAll("tr").length + 1;
     let newRowHtml = _createOrderHtml(index, data);
 
-    $tbodyOrder.html(newRowHtml + $tbodyOrder.html());
+    tbodyOrderDom.innerHTML = newRowHtml + tbodyOrderDom.innerHTML;
 }
 
 function _removeOrder(orderId) {
-    let $tbBody = $("tbody-order")
-    let $row = $tbBody.find("[data-id='" + orderId + "']");
+    let tbodyOrderDom = document.querySelector("#tbody-order");
+    let rowDom = tbodyOrderDom.querySelectorAll("[data-id='" + orderId + "']");
 
-    $row.each(function (index, element) { element.remove(); });
+    rowDom.forEach(function (element) { element.remove(); });
     controller.removeOrder(orderId);
 }
 
 // Cập nhật lại giá trị index của table
 function _updateIndexColumn() {
-    let $row = $("tbody-order").find("tr");
+    let rowDom = document.querySelector("#tbody-order").querySelectorAll("tr");
 
-    $row.each(function(index, element) {
-        element.innerHTML = String($row.length - index);
+    rowDom.forEach(function (element, index) {
+        let indexDom = element.querySelector("td");
+
+        indexDom.innerHTML = String(rowDom.length - index);
     })
 }
 
 // Cập nhật trạng thái ẩn hiển của button submit
 function _updateDisplaySubmit() {
-    let $btnSubmit = $("#btnSubmit");
+    let btnSubmitDom = document.querySelector("#btnSubmit");
 
-    if (controller.orders.length > 0)
-        $btnSubmit.removeClass('hidden');
+    if (controller.orders.length > 1)
+        btnSubmitDom.classList.remove('hidden');
     else
-        $btnSubmit.addClass('hidden');
+        btnSubmitDom.classList.add('hidden');
 }
 //#endregion
 
 //#region Public
-function onKeyDownCode(event) {
-    if (event.key == 'Enter') {
-        let $txtCode = $("[id$='_txtCode']");
-        
-        $txtCode.val($txtCode.val().trim());
-
-        if ($txtCode.val())
-            _handleCode();
+function onKeyDownCode(e) {
+    if (e.key == 'Enter') {
+        onClickOrderAddition();
+        e.preventDefault();
     }
 }
 
 function onClickOrderAddition() {
-    let $txtCode = $("[id$='_txtCode']");
-        
-    $txtCode.val($txtCode.val().trim());
+    let txtCodeDom = document.querySelector("[id$='_txtCode']");
 
-    if ($txtCode.val())
+    txtCodeDom.value = txtCodeDom.value.trim();
+
+    if (txtCodeDom.value)
         _handleCode();
 }
 
@@ -318,6 +326,16 @@ function submitGroupOrder() {
         })
         .catch(function (err) {
             HoldOn.close();
+
+            let message = null;
+
+            if (err.responseJSON)
+                message = err.responseJSON.message;
+            else
+                message = err.message || null;
+
+            if (!message)
+                message = "Đã có lỗi trong quá trình tạo đơn gộp";
 
             swal({
                 title: 'Error',

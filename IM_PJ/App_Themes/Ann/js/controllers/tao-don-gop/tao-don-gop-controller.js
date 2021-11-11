@@ -21,6 +21,7 @@
             this.paymentMethod = order.paymentMethod;
             this.deliveryMethod = order.deliveryMethod;
             this.deliveryAddress = order.deliveryAddress;
+            this.customer = order.customer;
         }
 
         this.orders.push(order);

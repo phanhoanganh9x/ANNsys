@@ -11,7 +11,7 @@
     <meta name="robots" content="noindex, nofollow">
     <link href="/App_Themes/Ann/css/style.css?v=17052020" rel="stylesheet" media="all">
     <link href="/App_Themes/NewUI/js/select2/select2.css" rel="stylesheet" />
-    <link href="/App_Themes/Ann/css/style-P.css?v=17052020" rel="stylesheet" media="all">
+    <link href="/App_Themes/Ann/css/style-P.css?v=202111111211" rel="stylesheet" media="all">
     <link href="/App_Themes/NewUI/js/sweet/sweet-alert.css" rel="stylesheet" />
     <link href="/App_Themes/Ann/css/HoldOn.css?v=17052020" rel="stylesheet" type="text/css" />
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -70,7 +70,7 @@
         }
 
         /* Add Animation */
-        .modal-image-product-content, #caption {  
+        .modal-image-product-content, #caption {
           -webkit-animation-name: zoom;
           -webkit-animation-duration: 0.6s;
           animation-name: zoom;
@@ -78,12 +78,12 @@
         }
 
         @-webkit-keyframes zoom {
-          from {-webkit-transform:scale(0)} 
+          from {-webkit-transform:scale(0)}
           to {-webkit-transform:scale(1)}
         }
 
         @keyframes zoom {
-          from {transform:scale(0)} 
+          from {transform:scale(0)}
           to {transform:scale(1)}
         }
 
