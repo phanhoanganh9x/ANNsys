@@ -6,6 +6,10 @@ const PaymentStatusEnum = {
     "Waitting": 1 // Chư thanh toán
 }
 
+const DeliveryMethodEnum = {
+    "Transport": 4 // Chành xe
+}
+
 let loading = false;
 let stringFormat = new StringFormat();
 let controller = new GroupOrderController();
@@ -72,6 +76,36 @@ function _checkValidation(data) {
 
         return false;
     }
+    else if (data.deliveryMethod == DeliveryMethodEnum.Transport)
+    {
+        if (!data.transport)
+        {
+            message += '<br>Lỗi: Đơn hàng chưa chọn chành xe';
+
+            swal({
+                title: 'Error',
+                text: message,
+                type: 'error',
+                showCloseButton: true,
+                html: true,
+            });
+
+            return false;
+        }
+        else if (!data.transport.branch) {
+            message += '<br>Lỗi: Đơn hàng chưa chọn nơi tới của chành xe <strong>' + data.transport.name + '</strong>';
+
+            swal({
+                title: 'Error',
+                text: message,
+                type: 'error',
+                showCloseButton: true,
+                html: true,
+            });
+
+            return false;
+        }
+    }
     //#endreigon
 
     // Trường hợp là đơn hàng đầu tiên
@@ -126,6 +160,22 @@ function _checkValidation(data) {
     }
     //#endregion
 
+    //#region Kiểm tra địa chỉ nhận hàng
+    if (controller.deliveryAddress.id != data.deliveryAddress.id) {
+        message += '<br>Lỗi: Địa chỉ nhận hàng không đồng nhất với các đơn hàng trong bảng';
+
+        swal({
+            title: 'Error',
+            text: message,
+            type: 'error',
+            showCloseButton: true,
+            html: true,
+        });
+
+        return false;
+    }
+    //#endregion
+
     //#region Kiểm tra phương thức giao hàng
     if (controller.deliveryMethod.key != data.deliveryMethod.key) {
         message += '<br>Lỗi: Phương thức giao hàng <strong>' + data.deliveryMethod.value + '</strong> không đồng nhất với các đơn hàng trong bảng';
@@ -142,20 +192,35 @@ function _checkValidation(data) {
     }
     //#endregion
 
-    //#region Kiểm tra địa chỉ nhận hàng
-    if (controller.deliveryAddress.id != data.deliveryAddress.id) {
-        message += '<br>Lỗi: Địa chỉ nhận hàng không đồng nhất với các đơn hàng trong bảng';
+    //#region Kiểm tra chành xe
+    if (controller.deliveryMethod.key == DeliveryMethodEnum.Transport) {
+        if (controller.transport.id != data.transport.id) {
+            message += '<br>Lỗi: Chành xe <strong>' + data.transport.name + '</strong> không đồng nhất với các đơn hàng trong bảng';
 
-        swal({
-            title: 'Error',
-            text: message,
-            type: 'error',
-            showCloseButton: true,
-            html: true,
-        });
+            swal({
+                title: 'Error',
+                text: message,
+                type: 'error',
+                showCloseButton: true,
+                html: true,
+            });
 
-        return false;
-    }
+            return false;
+        }
+        else if (controller.transport.branch.id != data.transport.branch.id) {
+            message += '<br>Lỗi: Nơi nhận <strong>' + data.branch.address + '</strong> không đồng nhất với các đơn hàng trong bảng';
+
+            swal({
+                title: 'Error',
+                text: message,
+                type: 'error',
+                showCloseButton: true,
+                html: true,
+            });
+
+            return false;
+        }
+    } 
     //#endregion
 
     return true;
@@ -223,13 +288,14 @@ function _handleCode() {
 function _createOrderHtml(index, data) {
     let html = '';
 
-    html += '<tr data-id="' + String(data.id) + '">';
+    //#region Dòng thông tin đơn hàng
+    html += '<tr class="row-data" data-id="' + String(data.id) + '">';
     html += '    <td>' + String(index) + '</td>';
     html += '    <td><strong>' + String(data.id) + '</strong></td>';
     html += '    <td>';
-    html += '    <strong>' + data.customer.nick + '</strong>';
-    html += '    <br>' + data.customer.name;
-    html += '    <br>' + data.customer.phone;
+    html += '        <strong>' + data.customer.nick + '</strong>';
+    html += '        <br>' + data.customer.name;
+    html += '        <br>' + data.customer.phone;
     html += '    </td>';
     html += '    <td>' + UtilsService.formatThousands(data.quantity, ',') + '</td>';
     html += '    <td><span class="bg-order-status bg-order-status-' + data.status.key + '">' + data.status.value + '</span></td>';
@@ -246,7 +312,7 @@ function _createOrderHtml(index, data) {
     html += '        <strong>' + stringFormat.datetimeToString(data.doneDate, 'dd/MM') + '</strong>';
     html += '        <br>' + stringFormat.datetimeToString(data.doneDate, 'HH:mm');
     html += '    </td>';
-    html += '    <td>';
+    html += '    <td rowspan="2">';
     html += '        <a href="javascript:;"';
     html += '           title="Xóa"';
     html += '           class="btn primary-btn btn-red h45-btn"';
@@ -256,6 +322,56 @@ function _createOrderHtml(index, data) {
     html += '        </a>';
     html += '    </td>';
     html += '</tr>';
+    //#endregion
+
+    //#region Dòng chú thích
+    html += '<tr class="row-info" data-id="' + String(data.id) + '">';
+    html += '    <td>';
+    html += '    </td>';
+    html += '    <td colspan="11">';
+    //#region Đổi trả
+    if (data.refundAmount > 0)
+    {
+        html += "        <span class='order-info'>";
+        html += "            <strong>Đổi trả:</strong> " + UtilsService.formatThousands(data.refundAmount * -1, '');
+        html += "        </span>";
+    }
+    //#endregion
+    //#region Chiết khấu
+    if (data.discount > 0)
+    {
+        html += "        <span class='order-info'>";
+        html += "            <strong>Chiết khấu:</strong> " + UtilsService.formatThousands(data.discount * -1, ',');
+        html += "        </span>";
+    }
+    //#endregion
+    //#region Phí khác
+    if (data.otherFees && data.otherFees.length > 0)
+    {
+        html += "        <span class='order-info'>";
+        html += "            <strong>Phí khác:</strong> " + UtilsService.formatThousands(data.totalFees - data.shippingFee, ',');
+        html += "        </span>";
+    }
+    //#endregion
+    //#region Phí giao hàng
+    if (data.shippingFee > 0)
+    {
+        html += "        <span class='order-info'>";
+        html += "            <strong>Ship:</strong> " + UtilsService.formatThousands(data.shippingFee, ',');
+        html += "        </span>";
+    }
+    //#endregion
+    //#region Coupon
+    if (data.couponValue > 0)
+    {
+        html += "        <span class='order-info'>";
+        html += "            <strong>Coupon:</strong> " + UtilsService.formatThousands(data.couponValue, ',');
+        html += "        </span>";
+    }
+    //#endregion
+    html += '    </td>';
+    html += '</tr>';
+    //#endregion
 
     return html;
 }

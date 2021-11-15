@@ -9,7 +9,7 @@ const PaymentMethodEnum = {
 
 let _feeShipment, // Dùng để lấy trạng thái trước của radio Shipment
     _fee,
-    _feeShop,
+    _shopFee,
     _order,
     _weight_min,
     _product,
@@ -41,15 +41,15 @@ function _initParameterLocal() {
     // Fee Ship
     _feeShipment = 1;
     _fee = 0;
-    _feeShop = 0;
+    _shopFee = 0;
 
     // payment Type
-    _paymentType = PaymentMethodEnum.Cash;
+    _paymentMethod = PaymentMethodEnum.Cash;
 
     // Order
     _order = {
-        id: null,
         groupCode: null,
+        id: null,
         pick_name: null,
         pick_money: 0,
         pick_address_id: null,
@@ -115,7 +115,7 @@ function _initReceiverAddress() {
             delay: 500,
             method: 'GET',
             url: '/api/v1/delivery-save/provinces/select2',
-            data: (params) => {
+            data: function (params) {
                 var query = {
                     page: params.page || 1
                 }
@@ -137,7 +137,7 @@ function _initReceiverAddress() {
 
 function _onChangeReceiverAddress() {
     // // Danh sách tỉnh / thành phố
-    $('#ddlProvince').on('select2:select', (e) => {
+    $('#ddlProvince').on('select2:select', function (e) {
         let data = e.params.data;
 
         // Cập nhật order
@@ -153,7 +153,7 @@ function _onChangeReceiverAddress() {
     });
 
     // Danh sách quận / huyện
-    $('#ddlDistrict').on('select2:select', (e) => {
+    $('#ddlDistrict').on('select2:select', function (e) {
         let data = e.params.data;
 
         // Cập nhật order
@@ -169,7 +169,7 @@ function _onChangeReceiverAddress() {
     })
 
     // Danh sách phường / xã
-    $('#ddlWard').on('select2:select', (e) => {
+    $('#ddlWard').on('select2:select', function (e) {
         let data = e.params.data;
 
         // Cập nhật order
@@ -306,7 +306,7 @@ function _initTableProduct() {
         width: '100%'
     });
 
-    $('#ddlProduct').on('select2:select', (e) => {
+    $('#ddlProduct').on('select2:select', function (e) {
         let data = e.params.data;
         _product.name = data.text;
         _calculateFee();
@@ -372,19 +372,20 @@ function _initNote() {
  * @param customer Thông tin người nhận hàng
  */
  function _initDeliveryAddress(customer) {
-    // name
-    $("#name").val(customer.name).trigger('change');
     // tel
     $("#tel").val(customer.phone).trigger('change');
+    // name
+    $("#name").val(customer.name).trigger('change');
+    // address
+    $("#address").val(customer.address).trigger('change');
 
     //#region Danh sách tỉnh / thành
     if (customer.province) {
-        _order.province_id = customer.province.key;
-        _order.province = customer.province.value;
-
-        let newOption = new Option(_order.province, _order.province_id, false, false);
+        let newOption = new Option(customer.province, customer.province_id, false, false);
 
         $('#ddlProvince').append(newOption).trigger('change');
+        _order.province_id = customer.province.key;
+        _order.province = customer.province.value;
 
         // Danh sách quận / huyện
         _disabledDDLDistrict(false);
@@ -393,57 +394,32 @@ function _initNote() {
 
     //#region Danh sách quận / huyện
     if (customer.province && customer.district) {
-        _order.district_id = customer.district.key;
-        _order.district = customer.district.value;
-
-        let newOption = new Option(_order.district, _order.district_id, false, false);
         let $ddlDistrict = $('#ddlDistrict');
-        
+        let newOption = new Option(customer.district, customer.district_id, false, false);
+
         $ddlDistrict.removeAttr('disabled');
         $ddlDistrict.removeAttr('readonly');
         $ddlDistrict.append(newOption).trigger('change');
+        _order.district_id = customer.district.key;
+        _order.district = customer.district.value;
 
         // Danh sách phường / xã
         _disabledDDLWard(false);
     }
     //#endregion
 
-    // Danh sách quận / huyện
+    //#region Danh sách quận / huyện
     if (customer.province && customer.district && customer.ward) {
-        _order.ward_id = customer.ward.key;
-        _order.ward = customer.ward.value;
-
-        let newOption = new Option(_order.ward, _order.ward_id, false, false);
         let $ddlWard = $('#ddlWard');
-        
+        let newOption = new Option(customer.ward, customer.ward_id, false, false);
+
         $ddlWard.removeAttr('disabled');
         $ddlWard.removeAttr('readonly');
         $ddlWard.append(newOption).trigger('change');
+        _order.ward_id = customer.ward.key;
+        _order.ward = customer.ward.value;
     }
-
-    // address
-    $("#address").val(customer.address).trigger('change');
-}
-
-/**
- * Cài đặt thông tin đơn hàng
- * @param order Thông tin đơn hàng
- */
- function _initOrderInfo(order) {
-    // Mã đơn hàng
-    _order.id = order.id;
-    $("#client_id").val(_order.id);
-
-    // Trạng thái đơn hàng
-    if (order.status == OrderStatusEnum.Done) {
-        let $btnRegister = $("#btnRegister");
-        
-        $btnRegister.removeAttr("disabled");
-        $btnRegister.html('<i class="fa fa-upload" aria-hidden="true"></i> Đồng bộ đơn hàng (F3)');
-    }
-
-    // Hình thức thanh toán
-    _paymentType = order.paymentMethod;
+    //#endregion
 }
 
 /**
@@ -464,42 +440,60 @@ function _initNote() {
     }
 
     // Hình thức thanh toán
-    _paymentType = groupOrder.paymentMethod;
+    _paymentMethod = groupOrder.paymentMethod;
+}
+
+/**
+ * Cài đặt thông tin đơn hàng
+ * @param order Thông tin đơn hàng
+ */
+ function _initOrderInfo(order) {
+    // Mã đơn hàng
+    _order.id = order.id;
+    $("#client_id").val(_order.id);
+
+    // Trạng thái đơn hàng
+    if (order.status == OrderStatusEnum.Done) {
+        let $btnRegister = $("#btnRegister");
+        
+        $btnRegister.removeAttr("disabled");
+        $btnRegister.html('<i class="fa fa-upload" aria-hidden="true"></i> Đồng bộ đơn hàng (F3)');
+    }
+
+    // Hình thức thanh toán
+    _paymentMethod = order.paymentMethod;
 }
 
 /**
  * Cài đặt thông tin trọng lượng đơn hàng và trọng lượng tối thiểu
- * @param data Dữ liệu phản hồi từ API lấy thông tin đăng ký GHTK
+ * @param order Dữ liệu phản hồi từ API lấy thông tin đăng ký GHTK
  */
-function _initWeight(data) {
-    if (data.weightMin)
-        _weight_min = parseFloat(data.weightMin);
-
-    if (data.weight > 0 && weight == 0)
-        $("#weight").val(data.weight).trigger('blur');
+function _initWeight(order) {
+    if (order.weight > 0)
+        $("#weight").val(order.weight).trigger('blur');
 }
 
 /**
  * Cài đặt giá trị của đơn hàng và số tiền thu hộ
- * @param data Dữ liệu phản hồi từ API lấy thông tin đăng ký GHTK
+ * @param order Dữ liệu phản hồi từ API lấy thông tin đăng ký GHTK
  */
-function _initOrderValue(data) {
+function _initOrderValue(order) {
     // Giá trị của đơn hàng
-    _order.value = data.price;
+    _order.value = order.price;
 
     // Tiền thu hộ
-    $("#pick_money").val(_formatThousand(data.cod));
-    _order.pick_money = data.cod - data.shopFee; // trừ phí ship của shop để tính lại ở phía dưới
+    $("#pick_money").val(_formatThousand(order.cod));
+    _order.pick_money = order.cod - order.shopFee; // trừ phí ship của shop để tính lại ở phía dưới
 
     // Có phí trong đơn hàng
-    if (data.shopFee) {
-        _feeShop = data.shopFee;
+    if (order.shopFee) {
+        _shopFee = order.shopFee;
 
         $("#divFeeShop").show();
-        $("#labelFeeShop").html(_formatThousand(_feeShop));
+        $("#labelFeeShop").html(_formatThousand(_shopFee));
         $("#fee_entered").prop('checked', true).trigger('change');
 
-        if (_paymentType != PaymentMethodEnum.CashCollection) {
+        if (_paymentMethod != PaymentMethodEnum.CashCollection) {
             let $shopFee = $("#feeship_shop");
 
             $shopFee.attr("disabled", true);
@@ -511,7 +505,7 @@ function _initOrderValue(data) {
 
         let $shopFee = $("#feeship_shop");
 
-        if (_paymentType != PaymentMethodEnum.CashCollection) {
+        if (_paymentMethod != PaymentMethodEnum.CashCollection) {
             $shopFee.attr("disabled", true);
             $shopFee.hide();
             $shopFee.parent().hide();
@@ -521,6 +515,51 @@ function _initOrderValue(data) {
             $shopFee.prop('checked', true).trigger('change');
         }
     }
+}
+
+/**
+ * Lấy thông tin đơn hàng gộp để đăng ký GHTK
+ * @param groupOrderCode Mã đơn hàng gộp shop ANN
+ */
+ function _initGroupOrder(groupOrderCode) {
+    let titleAlert = "Lấy thông tin đơn hàng gộp";
+
+    $.ajax({
+        method: 'GET',
+        url: "/api/v1/group-order/" + groupOrderCode + "/delivery-save",
+        beforeSend: function () {
+            HoldOn.open();
+        },
+        success: function (response) {
+            HoldOn.close();
+
+            let data = response;
+
+            // Thông tin người nhận
+            if (data.customer)
+                _initDeliveryAddress(data.customer);
+
+            // Thông tin về đơn hàng gộp
+            if (data.groupOrder) 
+                _initGroupOrderInfo(data.groupOrder);              
+
+            // Trọng lượng đơn hàng
+            _initWeight(data)
+
+            // Giá trị đơn hàng và tiền thu hộ
+            _initOrderValue(data);
+            
+            // Chú thích đơn hàng
+            if (data.note)
+                $("#note").val(data.note).trigger('change');
+        },
+        error: function (xhr) {
+            HoldOn.close();
+
+            return _alterError(titleAlert, xhr.responseJSON)
+              .then(function () { window.location.href = "/danh-sach-don-hang"; });
+        }
+    });
 }
 
 /**
@@ -563,99 +602,64 @@ function _initOrder(orderId) {
             HoldOn.close();
 
             return _alterError(titleAlert, xhr.responseJSON)
-              .then(() => {
-                  window.location.href = "/danh-sach-don-hang";
-              });
-        }
-    });
-}
-
-/**
- * Lấy thông tin đơn hàng gộp để đăng ký GHTK
- * @param groupOrderCode Mã đơn hàng gộp shop ANN
- */
-function _initGroupOrder(groupOrderCode) {
-    let titleAlert = "Lấy thông tin đơn hàng gộp";
-
-    $.ajax({
-        method: 'GET',
-        url: "/api/v1/group-order/" + groupOrderCode + "/delivery-save",
-        beforeSend: function () {
-            HoldOn.open();
-        },
-        success: function (response) {
-            HoldOn.close();
-
-            let data = response;
-
-            // Thông tin người nhận
-            if (data.customer)
-                _initDeliveryAddress(data.customer);
-
-            // Thông tin về đơn hàng gộp
-            if (data.groupOrder) 
-                _initGroupOrderInfo(data.groupOrder);              
-
-            // Trọng lượng đơn hàng
-            _initWeight(data)
-
-            // Giá trị đơn hàng và tiền thu hộ
-            _initOrderValue(data);
-            
-            // Chú thích đơn hàng
-            if (data.note)
-                $("#note").val(data.note).trigger('change');
-        },
-        error: function (xhr) {
-            HoldOn.close();
-
-            return _alterError(titleAlert, xhr.responseJSON)
-              .then(() => {
-                  window.location.href = "/danh-sach-don-hang";
-              });
+              .then(function () { window.location.href = "/danh-sach-don-hang"; });
         }
     });
 }
 
 function _initPage() {
-    // Lấy thông tin query parameter
-    let urlParams = new URLSearchParams(window.location.search);
-
     //#region Cài đặt trọng lượng mặc định cho sản phẩm
     let weight = +urlParams.get('weight') || _weight_min;
     
     if (weight > 0)
         $("#weight").val(weight).trigger('blur');
     //#endregion
-    
-    let orderId = +urlParams.get('orderID') || 0;
-    let groupOrderCode = urlParams.get('groupOrderCode').trim() || null;
-    
+
+    //#region Lấy thông tin query parameter
+    let urlParams = new URLSearchParams(window.location.search);
+    let orderId = 0;
+    let groupOrderCode = '';
+
+    if (urlParams.get('orderID')) 
+        orderId =  +urlParams.get('orderID') || 0;
+
+    if (urlParams.get('groupOrderCode'))
+        groupOrderCode = urlParams.get('groupOrderCode').trim();
+    //#endregion
+
+    //#region Kiểm tra thông tin query parameter
     if (!orderId && !groupOrderCode) {
         swal({
             title: "Lỗi",
-            text: "Không tìm thấy mã đơn hàng 'orderId' và mã đơn hàng gộp 'groupOrderCode'",
+            text: "Không tìm thấy mã đơn hàng và mã đơn hàng gộp",
             icon: "error",
         })
-        .then(() => {
-            window.location.href = "/danh-sach-don-hang";
-        });
+        .then(function () { window.location.href = "/danh-sach-don-hang"; });
+
+        return;
+    } else if (orderId && groupOrderCode) {
+        swal({
+            title: "Lỗi",
+            text: "Query parameter sai. Vì có cùng lúc mã đơn hàng và mã đơn hàng gộp",
+            icon: "error",
+        })
+        .then(function () { window.location.href = "/danh-sach-don-hang"; });
+
+        return;
     }
-    else {
-        if (orderId && groupOrderCode)
-            swal({
-                title: "Lỗi",
-                text: "Query parameter sai. Vì có cùng lúc mã đơn hàng 'orderId' và mã đơn hàng gộp 'groupOrderCode'",
-                icon: "error",
-            })
-            .then(() => {
-                window.location.href = "/danh-sach-don-hang";
-            });
-        else if (orderId)
-            _initOrder(orderId);
-        else
-            _initGroupOrder(groupOrderCode);
+    //#endregion
+
+    //#region Tải trang
+    if (groupOrderCode) {
+        _initGroupOrder(groupOrderCode);
+        return;
     }
+
+    if (orderId) {
+        _initOrder(orderId);
+        return;
+    }
+    //#endregion
 }
 
 function _onChangeShipment(shipment) {
@@ -738,7 +742,7 @@ function _checkSubmit() {
             text: "Số điện thoại khách hàng chưa nhập",
             icon: "error",
         })
-          .then(() => { $('#tel').focus(); });
+          .then(function () { $('#tel').focus(); });
 
     if (!_order.province)
         return swal({
@@ -746,35 +750,35 @@ function _checkSubmit() {
             text: "Địa chỉ tỉnh/thành khách hàng chưa chọn",
             icon: "error",
         })
-          .then(() => { $("#ddlProvince").select2('open'); });
+          .then(function () { $("#ddlProvince").select2('open'); });
     if (_order.province && !_order.district)
         return swal({
             title: titleAlert,
             text: "Địa chỉ quận/huyện khách hàng chưa chọn",
             icon: "error",
         })
-          .then(() => { $("#ddlDistrict").select2('open'); });
+          .then(function () { $("#ddlDistrict").select2('open'); });
     if (_order.province && _order.district && !_order.ward)
         return swal({
             title: titleAlert,
             text: "Địa chỉ phường/xã khách hàng chưa chọn",
             icon: "error",
         })
-          .then(() => { $("#ddlDistrict").select2('open'); });
+          .then(function () { $("#ddlDistrict").select2('open'); });
     if (!_order.address)
         return swal({
             title: titleAlert,
             text: "Địa chỉ khách hàng chưa nhập",
             icon: "error",
         })
-          .then(() => { $('#address').focus(); });
+          .then(function () { $('#address').focus(); });
     if (!_product.name)
         return swal({
             title: titleAlert,
             text: "Chưa chọn loại sản phẩm",
             icon: "error",
         })
-          .then(() => { $("#ddlProduct").select2('open'); });
+          .then(function () { $("#ddlProduct").select2('open'); });
 
     let ship_GHTK = parseFloat($("#feeship").text().replace(/,/g, ''));
     let insurance_GHTK = parseFloat($("#insuranceFee").text().replace(/,/g, ''));
@@ -867,14 +871,14 @@ function _calculateFee() {
                         }
                         else if (_feeShipment == 2) {
                             // thu hộ
-                            if (_paymentType == 3) {
-                                _order.pick_money = _order.pick_money - _feeShop;
+                            if (_paymentMethod == 3) {
+                                _order.pick_money = _order.pick_money - _shopFee;
                             }
                             else {
                                 _order.pick_money = 0;
                             }
 
-                            _order.value = _order.value - _feeShop;
+                            _order.value = _order.value - _shopFee;
                         }
 
                         _fee = data.fee.fee;
@@ -882,7 +886,7 @@ function _calculateFee() {
                         // Phí GHTK
                         $fee.html(_formatThousand(_fee));
 
-                        if (_fee != _feeShop) {
+                        if (_fee != _shopFee) {
                             $divFee.removeClass("hide");
 
                             $labelShopFeeTitle.text("Phí nhân viên tính");
@@ -923,14 +927,14 @@ function _calculateMoney() {
     }
     else if (feeShipment == 2) {
         // thu hộ
-        if (_paymentType == 3) {
-            _order.pick_money = _order.pick_money + _feeShop;
+        if (_paymentMethod == 3) {
+            _order.pick_money = _order.pick_money + _shopFee;
         }
             // chuyển khoản || tiền mặt || công nợ
         else {
             _order.pick_money = 0;
         }
-        _order.value = _order.value + _feeShop;
+        _order.value = _order.value + _shopFee;
     }
 
     _feeShipment = feeShipment;
@@ -954,16 +958,17 @@ function _alertInvoicePrint(ghtkCode) {
         },
         dangerMode: true,
     })
-    .then((confirm) => {
+    .then(function (confirm) {
         let url = "";
 
         if (confirm) {
             url += "/print-shipping-note?";
 
+            if (_order.groupCode)
+                url += "groupCode" + _order.groupCode;
+
             if (_order.id)
                 url += "id=" + _order.id;
-            else
-                url += "groupCode" + _order.groupCode;
         }
         else
             url += "https://khachhang.giaohangtietkiem.vn/khachhang?code=" + ghtkCode;

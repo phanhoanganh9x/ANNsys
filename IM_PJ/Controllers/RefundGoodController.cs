@@ -238,6 +238,7 @@ namespace IM_PJ.Controllers
                     return null;
             }
         }
+
         public static tbl_RefundGoods GetByIDAndAgentID(int ID, int AgentID)
         {
             using (var dbe = new inventorymanagementEntities())
@@ -246,6 +247,25 @@ namespace IM_PJ.Controllers
                 if (las != null)
                     return las;
                 else return null;
+            }
+        }
+
+        public static List<tbl_RefundGoods> GetByGroupOrderCode(string groupOrderCode)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var refunds = con.tbl_RefundGoods
+                    .Join(
+                        con.tbl_Order
+                            .Where(x => x.GroupCode == groupOrderCode)
+                            .Where(x => x.RefundGoodsID.HasValue),
+                        r => r.ID,
+                        o => o.RefundGoodsID,
+                        (r, o) => r
+                    )
+                    .ToList();
+
+                return refunds;
             }
         }
 

@@ -3,8 +3,9 @@
         this.staff = null;
         this.paymentStatus = null;
         this.paymentMethod = null;
-        this.deliveryMethod = null;
         this.deliveryAddress = null;
+        this.deliveryMethod = null;
+        this.transport = null;
         this.customer = null;
         this.orders = [];
 
@@ -19,8 +20,9 @@
         if (this.orders.length == 0) {
             this.paymentStatus = order.paymentStatus;
             this.paymentMethod = order.paymentMethod;
-            this.deliveryMethod = order.deliveryMethod;
             this.deliveryAddress = order.deliveryAddress;
+            this.deliveryMethod = order.deliveryMethod;
+            this.transport = order.transport;
             this.customer = order.customer;
         }
 
