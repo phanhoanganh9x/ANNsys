@@ -38,5 +38,9 @@ namespace IM_PJ.Models
         public string WPZaloCosmetics { get; set; }
         public string WPFBClothes { get; set; }
         public string WPFBCosmetics { get; set; }
+        public string WPHotlineClothes { get; set; }
+        public string WPHotlineCosmetics { get; set; }
+        public string WPImageClothes { get; set; }
+        public string WPImageCosmetics { get; set; }
     }
 }

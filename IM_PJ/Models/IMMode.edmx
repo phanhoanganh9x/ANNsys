@@ -992,6 +992,10 @@
           <Property Name="WPZaloCosmetics" Type="nvarchar(max)" />
           <Property Name="WPFBClothes" Type="nvarchar(max)" />
           <Property Name="WPFBCosmetics" Type="nvarchar(max)" />
+          <Property Name="WPHotlineClothes" Type="nvarchar(max)" />
+          <Property Name="WPHotlineCosmetics" Type="nvarchar(max)" />
+          <Property Name="WPImageClothes" Type="nvarchar(max)" />
+          <Property Name="WPImageCosmetics" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="tbl_Customer">
           <Key>
@@ -3156,6 +3160,10 @@
           <Property Name="WPZaloCosmetics" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="WPFBClothes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="WPFBCosmetics" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="WPHotlineClothes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="WPHotlineCosmetics" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="WPImageClothes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="WPImageCosmetics" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_Customer">
           <Key>
@@ -5328,6 +5336,10 @@
           <EntitySetMapping Name="tbl_Config">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Config">
               <MappingFragment StoreEntitySet="tbl_Config">
+                <ScalarProperty Name="WPImageCosmetics" ColumnName="WPImageCosmetics" />
+                <ScalarProperty Name="WPImageClothes" ColumnName="WPImageClothes" />
+                <ScalarProperty Name="WPHotlineCosmetics" ColumnName="WPHotlineCosmetics" />
+                <ScalarProperty Name="WPHotlineClothes" ColumnName="WPHotlineClothes" />
                 <ScalarProperty Name="WPFBCosmetics" ColumnName="WPFBCosmetics" />
                 <ScalarProperty Name="WPFBClothes" ColumnName="WPFBClothes" />
                 <ScalarProperty Name="WPZaloCosmetics" ColumnName="WPZaloCosmetics" />

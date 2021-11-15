@@ -29,7 +29,11 @@ namespace IM_PJ.Controllers
             string WPZaloClothes,
             string WPZaloCosmetics,
             string WPFBClothes,
-            string WPFBCosmetics
+            string WPFBCosmetics,
+            string WPHotlineClothes,
+            string WPHotlineCosmetics,
+            string WPImageClothes,
+            string WPImageCosmetics
             )
         {
             using (var dbe = new inventorymanagementEntities())
@@ -56,6 +60,10 @@ namespace IM_PJ.Controllers
                     ui.WPNewsCosmetics = WPNewsCosmetics;
                     ui.WPZaloClothes = WPZaloClothes;
                     ui.WPZaloCosmetics = WPZaloCosmetics;
+                    ui.WPHotlineClothes = WPHotlineClothes;
+                    ui.WPHotlineCosmetics = WPHotlineCosmetics;
+                    ui.WPImageClothes = WPImageClothes;
+                    ui.WPImageCosmetics = WPImageCosmetics;
 
                     int kq = dbe.SaveChanges();
                     return kq.ToString();
