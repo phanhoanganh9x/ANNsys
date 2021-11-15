@@ -42,5 +42,15 @@ namespace IM_PJ.Models
         public string WPHotlineCosmetics { get; set; }
         public string WPImageClothes { get; set; }
         public string WPImageCosmetics { get; set; }
+        public string WPNewsLixi { get; set; }
+        public string WPHotlineLixi { get; set; }
+        public string WPZaloLixi { get; set; }
+        public string WPCategoryCosmetics { get; set; }
+        public string WPCategoryPerfume { get; set; }
+        public string WPVideoClothes { get; set; }
+        public string WPVideoCosmetics { get; set; }
+        public string WPBannerTop { get; set; }
+        public string WPBannerProduct { get; set; }
+        public string WPTime { get; set; }
     }
 }

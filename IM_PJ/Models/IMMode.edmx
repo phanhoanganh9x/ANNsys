@@ -996,6 +996,16 @@
           <Property Name="WPHotlineCosmetics" Type="nvarchar(max)" />
           <Property Name="WPImageClothes" Type="nvarchar(max)" />
           <Property Name="WPImageCosmetics" Type="nvarchar(max)" />
+          <Property Name="WPNewsLixi" Type="nvarchar(max)" />
+          <Property Name="WPHotlineLixi" Type="nvarchar(max)" />
+          <Property Name="WPZaloLixi" Type="nvarchar(max)" />
+          <Property Name="WPCategoryCosmetics" Type="nvarchar(max)" />
+          <Property Name="WPCategoryPerfume" Type="nvarchar(max)" />
+          <Property Name="WPVideoClothes" Type="nvarchar(max)" />
+          <Property Name="WPVideoCosmetics" Type="nvarchar(max)" />
+          <Property Name="WPBannerTop" Type="nvarchar(max)" />
+          <Property Name="WPBannerProduct" Type="nvarchar(max)" />
+          <Property Name="WPTime" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="tbl_Customer">
           <Key>
@@ -3164,6 +3174,16 @@
           <Property Name="WPHotlineCosmetics" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="WPImageClothes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="WPImageCosmetics" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="WPNewsLixi" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="WPHotlineLixi" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="WPZaloLixi" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="WPCategoryCosmetics" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="WPCategoryPerfume" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="WPVideoClothes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="WPVideoCosmetics" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="WPBannerTop" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="WPBannerProduct" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="WPTime" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_Customer">
           <Key>
@@ -4130,7 +4150,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="inventorymanagementEntities1" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="inventorymanagementEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Banks" EntityType="Self.Bank" />
           <EntitySet Name="BankAccounts" EntityType="Self.BankAccount" />
           <EntitySet Name="BankTransfers" EntityType="Self.BankTransfer" />
@@ -4320,7 +4340,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="inventorymanagementModelStoreContainer" CdmEntityContainer="inventorymanagementEntities1">
+        <EntityContainerMapping StorageEntityContainer="inventorymanagementModelStoreContainer" CdmEntityContainer="inventorymanagementEntities">
           <EntitySetMapping Name="Banks">
             <EntityTypeMapping TypeName="inventorymanagementModel.Bank">
               <MappingFragment StoreEntitySet="Bank">
@@ -5336,6 +5356,16 @@
           <EntitySetMapping Name="tbl_Config">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Config">
               <MappingFragment StoreEntitySet="tbl_Config">
+                <ScalarProperty Name="WPTime" ColumnName="WPTime" />
+                <ScalarProperty Name="WPBannerProduct" ColumnName="WPBannerProduct" />
+                <ScalarProperty Name="WPBannerTop" ColumnName="WPBannerTop" />
+                <ScalarProperty Name="WPVideoCosmetics" ColumnName="WPVideoCosmetics" />
+                <ScalarProperty Name="WPVideoClothes" ColumnName="WPVideoClothes" />
+                <ScalarProperty Name="WPCategoryPerfume" ColumnName="WPCategoryPerfume" />
+                <ScalarProperty Name="WPCategoryCosmetics" ColumnName="WPCategoryCosmetics" />
+                <ScalarProperty Name="WPZaloLixi" ColumnName="WPZaloLixi" />
+                <ScalarProperty Name="WPHotlineLixi" ColumnName="WPHotlineLixi" />
+                <ScalarProperty Name="WPNewsLixi" ColumnName="WPNewsLixi" />
                 <ScalarProperty Name="WPImageCosmetics" ColumnName="WPImageCosmetics" />
                 <ScalarProperty Name="WPImageClothes" ColumnName="WPImageClothes" />
                 <ScalarProperty Name="WPHotlineCosmetics" ColumnName="WPHotlineCosmetics" />

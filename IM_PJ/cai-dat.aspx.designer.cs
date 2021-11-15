@@ -166,6 +166,33 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.TextBox txtWPNewsCosmetics;
         
         /// <summary>
+        /// txtWPNewsLixi control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtWPNewsLixi;
+        
+        /// <summary>
+        /// txtWPCategoryCosmetics control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtWPCategoryCosmetics;
+        
+        /// <summary>
+        /// txtWPCategoryPerfume control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtWPCategoryPerfume;
+        
+        /// <summary>
         /// txtWPImageClothes control.
         /// </summary>
         /// <remarks>
@@ -184,6 +211,42 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.TextBox txtWPImageCosmetics;
         
         /// <summary>
+        /// txtWPVideoClothes control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtWPVideoClothes;
+        
+        /// <summary>
+        /// txtWPVideoCosmetics control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtWPVideoCosmetics;
+        
+        /// <summary>
+        /// txtWPBannerTop control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtWPBannerTop;
+        
+        /// <summary>
+        /// txtWPBannerProduct control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtWPBannerProduct;
+        
+        /// <summary>
         /// txtWPZaloClothes control.
         /// </summary>
         /// <remarks>
@@ -200,6 +263,15 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtWPZaloCosmetics;
+        
+        /// <summary>
+        /// txtWPZaloLixi control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtWPZaloLixi;
         
         /// <summary>
         /// txtWPFBClothes control.
@@ -236,6 +308,24 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtWPHotlineCosmetics;
+        
+        /// <summary>
+        /// txtWPHotlineLixi control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtWPHotlineLixi;
+        
+        /// <summary>
+        /// txtWPTime control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtWPTime;
         
         /// <summary>
         /// btnLogin control.
