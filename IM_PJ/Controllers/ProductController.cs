@@ -923,7 +923,7 @@ namespace IM_PJ.Controllers
             #region Khai báo biến phân trang
             sql.AppendLine(String.Empty);
             sql.AppendLine("    DECLARE");
-            sql.AppendLine("        @totalCount int = 0;");
+            sql.AppendLine("        @totalCount int = 0");
             sql.AppendLine(String.Format("    ,   @pageSize int = {0}", page.pageSize));
             sql.AppendLine(String.Format("    ,   @currentPage int = {0}", page.currentPage));
             sql.AppendLine("    ,   @totalPages int = 0");
@@ -1080,7 +1080,7 @@ namespace IM_PJ.Controllers
             if (!string.IsNullOrEmpty(filter.search))
             {
                 filter.search = filter.search.ToUpper();
-                
+
                 var letters = filter.search
                     .Split(' ')
                     .Where(x => !String.IsNullOrEmpty(x))
@@ -1127,7 +1127,7 @@ namespace IM_PJ.Controllers
             {
                 DateTime fromdate = DateTime.Today;
                 DateTime todate = DateTime.Now;
-                
+
                 switch (filter.productDate)
                 {
                     case "today":
@@ -1210,9 +1210,9 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("            SELECT");
                 sql.AppendLine("                NULL AS DUMMY");
                 sql.AppendLine("            FROM");
-                sql.AppendLine("                #Category");
+                sql.AppendLine("                #Category AS C");
                 sql.AppendLine("            WHERE");
-                sql.AppendLine("                PRD.ID = PRD.CategoryID");
+                sql.AppendLine("                C.ID = PRD.CategoryID");
                 sql.AppendLine("        )");
             }
             #endregion
