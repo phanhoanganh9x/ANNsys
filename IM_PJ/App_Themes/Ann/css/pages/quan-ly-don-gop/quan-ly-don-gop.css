@@ -49,3 +49,7 @@ table > thead > tr > th.col-btn {
 .table > tbody > tr:nth-of-type(4n+2) td {
    background-color: #f8f8f8;
 }
+
+.table > tbody > tr.row-data > td:last-child .btn {
+    margin-bottom: 5px;
+}

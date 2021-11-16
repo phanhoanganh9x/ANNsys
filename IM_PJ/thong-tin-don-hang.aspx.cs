@@ -734,15 +734,18 @@ namespace IM_PJ
                     ltrPrint.Text += "<a href='javascript:;' onclick='copyInvoiceURL(" + ID + ", " + order.CustomerID + ")' class='btn primary-btn btn-violet fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-files-o' aria-hidden='true'></i> Link hóa đơn</a>";
 
                     #region GHTK
-                    if (String.IsNullOrEmpty(order.ShippingCode) && order.ExcuteStatus == (int)ExcuteStatus.Done && order.ShippingType == (int)DeliveryType.DeliverySave)
-                        ltrPrint.Text += "<a target='_blank' href='/dang-ky-ghtk?orderID=" + ID + "' class='btn primary-btn btn-ghtk fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-upload' aria-hidden='true'></i> Đẩy đơn GHTK</a>";
-
-                    if (order.ShippingType == (int)DeliveryType.DeliverySave && !String.IsNullOrEmpty(order.ShippingCode))
+                    if (order.ExcuteStatus == (int)ExcuteStatus.Done && order.ShippingType == (int)DeliveryType.DeliverySave)
                     {
-                        ltrPrint.Text += "<a id='btnShowGhtk' target='_blank' href='https://khachhang.giaohangtietkiem.vn/khachhang?code=" + order.ShippingCode + "' class='btn primary-btn btn-ghtk fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-upload' aria-hidden='true'></i> Tra cứu GHTK</a>";
+                        if (String.IsNullOrEmpty(order.ShippingCode) && String.IsNullOrEmpty(order.GroupCode))
+                            ltrPrint.Text += "<a target='_blank' href='/dang-ky-ghtk?orderID=" + ID + "' class='btn primary-btn btn-ghtk fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-upload' aria-hidden='true'></i> Đẩy đơn GHTK</a>";
 
-                        if (order.ExcuteStatus == (int)ExcuteStatus.Done)
-                            ltrPrint.Text += "<a id='btnCancelGhtk' href='javascript:;' onclick='cancelGhtk(" + ID + ", `" + order.ShippingCode + "`)' class='btn primary-btn btn-red fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-trash' aria-hidden='true'></i> Hủy đơn GHTK</a>";
+                        if (!String.IsNullOrEmpty(order.ShippingCode))
+                        {
+                            ltrPrint.Text += "<a id='btnShowGhtk' target='_blank' href='https://khachhang.giaohangtietkiem.vn/khachhang?code=" + order.ShippingCode + "' class='btn primary-btn btn-ghtk fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-upload' aria-hidden='true'></i> Tra cứu GHTK</a>";
+
+                            if (String.IsNullOrEmpty(order.GroupCode))
+                                ltrPrint.Text += "<a id='btnCancelGhtk' href='javascript:;' onclick='cancelGhtk(" + ID + ", `" + order.ShippingCode + "`)' class='btn primary-btn btn-red fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-trash' aria-hidden='true'></i> Hủy đơn GHTK</a>";
+                        }
                     }
                     #endregion
 
@@ -752,14 +755,18 @@ namespace IM_PJ
                     #endregion
 
                     #region J&T Express
-                    if (String.IsNullOrEmpty(order.ShippingCode) && order.ExcuteStatus == (int)ExcuteStatus.Done && order.ShippingType == (int)DeliveryType.JT)
-                        ltrPrint.Text += "<a target='_blank' href='/dang-ky-jt?orderID=" + ID + "' class='btn primary-btn btn-ghtk fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-upload' aria-hidden='true'></i> Đẩy đơn J&T</a>";
-
-                    if (order.ShippingType == (int)DeliveryType.JT && !String.IsNullOrEmpty(order.ShippingCode))
+                    if (order.ExcuteStatus == (int)ExcuteStatus.Done && order.ShippingType == (int)DeliveryType.JT)
                     {
-                        ltrPrint.Text += "<a id='btnShowJtExpress' target='_blank' href='https://vip.jtexpress.vn/#/service/expressTrack?id=" + order.ShippingCode + "' class='btn primary-btn btn-jt fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-upload' aria-hidden='true'></i> Tra cứu J&T</a>";
-                        if (order.ExcuteStatus == (int)ExcuteStatus.Done)
-                            ltrPrint.Text += "<a id='btnCancelJtExpress' href='javascript:;' onclick='cancelJtExpress(" + ID + ", `" + order.ShippingCode + "`)' class='btn primary-btn btn-red fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-trash' aria-hidden='true'></i> Hủy đơn J&T</a>";
+                        if (String.IsNullOrEmpty(order.ShippingCode) && String.IsNullOrEmpty(order.GroupCode))
+                            ltrPrint.Text += "<a target='_blank' href='/dang-ky-jt?orderID=" + ID + "' class='btn primary-btn btn-ghtk fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-upload' aria-hidden='true'></i> Đẩy đơn J&T</a>";
+
+                        if (!String.IsNullOrEmpty(order.ShippingCode))
+                        {
+                            ltrPrint.Text += "<a id='btnShowJtExpress' target='_blank' href='https://vip.jtexpress.vn/#/service/expressTrack?id=" + order.ShippingCode + "' class='btn primary-btn btn-jt fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-upload' aria-hidden='true'></i> Tra cứu J&T</a>";
+
+                            if (String.IsNullOrEmpty(order.GroupCode))
+                                ltrPrint.Text += "<a id='btnCancelJtExpress' href='javascript:;' onclick='cancelJtExpress(" + ID + ", `" + order.ShippingCode + "`)' class='btn primary-btn btn-red fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-trash' aria-hidden='true'></i> Hủy đơn J&T</a>";
+                        }
                     }
                     #endregion
 

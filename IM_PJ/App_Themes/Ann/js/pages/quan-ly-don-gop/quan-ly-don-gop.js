@@ -308,9 +308,16 @@ function _createReportTableHTML(data) {
                         else {
                             html += "           <a href='/print-jt-express?groupCode=" + order.code + "' target='_blank' ";
                             html += "              title='In phiếu gửi hàng' ";
-                            html += "              class='btn primary-btn btn-red h45-btn' ";
+                            html += "              class='btn primary-btn btn-blue h45-btn' ";
                             html += "           >";
                             html += "               <i class='fa fa-file-text-o' aria-hidden='true'></i>";
+                            html += "           </a>";
+                            html += "           <a href='javascript:;'";
+                            html += "              title='Hủy đơn JT Express' ";
+                            html += "              class='btn primary-btn btn-red h45-btn' ";
+                            html += '              onclick="cancelJtExpress(`' + order.shippingCode + '`, `' + order.code + '`)"';
+                            html += "           >";
+                            html += "               <i class='fa fa-trash' aria-hidden='true'></i>";
                             html += "           </a>";
                         }
 
@@ -332,12 +339,21 @@ function _createReportTableHTML(data) {
                             html += "           </a>";
 
                             break;
-                        };
+                        }
+                        else {
+                            html += "           <a href='javascript:;'";
+                            html += "              title='Hủy đơn JT Express' ";
+                            html += "              class='btn primary-btn btn-red h45-btn' ";
+                            html += '              onclick="cancelGhtk(`' + order.shippingCode + '`, `' + order.code + '`)"';
+                            html += "           >";
+                            html += "               <i class='fa fa-trash' aria-hidden='true'></i>";
+                            html += "           </a>";
+                        }
                     default:
                         //#region In phiếu gửi hàng
                         html += "           <a href='/print-shipping-note?groupCode=" + order.code + "' target='_blank' ";
                         html += "              title='In phiếu gửi hàng' ";
-                        html += "              class='btn primary-btn btn-red h45-btn' ";
+                        html += "              class='btn primary-btn btn-blue h45-btn' ";
                         html += "           >";
                         html += "               <i class='fa fa-file-text-o' aria-hidden='true'></i>";
                         html += "           </a>";
@@ -351,8 +367,8 @@ function _createReportTableHTML(data) {
                 if (order.status.key == OrderStatusEnum.Done) {
                     html += '           <a href="javascript:;"';
                     html += '              title="Huỷ gộp đơn"';
-                    html += '              class="btn primary-btn btn-red h45-btn"';
-                    html += '              onclick="onClickGroupOrderRemoval(`' + order.code + '`)"';
+                    html += '              class="btn primary-btn btn-yellow h45-btn"';
+                    html += '              onclick="cancelGroupOrder(`' + order.code + '`)"';
                     html += '           >';
                     html += '               <i class="fa fa-times" aria-hidden="true"></i>';
                     html += '           </a>';
@@ -480,7 +496,7 @@ function onClickSearch() {
         });
 };
 
-function onClickGroupOrderRemoval(groupCode) {
+function cancelGroupOrder(groupCode) {
     swal({
         title: 'Thông báo',
         text: 'Bạn muốn xóa đơn gộp #' + groupCode + ' này không?',
@@ -522,6 +538,114 @@ function onClickGroupOrderRemoval(groupCode) {
 
                     alert(message);
                 });
+        }
+    });
+}
+
+function cancelJtExpress(code, groupCode) {
+    let titleAlert = "Hủy đơn J&T Express";
+
+    $.ajax({
+        method: 'POST',
+        contentType: 'application/json',
+        dataType: "json",
+        data: JSON.stringify({ groupOrderCode: groupCode }),
+        url: "/api/v1/jt-express/order/" + code + "/cancel",
+        beforeSend: function () {
+            HoldOn.open();
+        },
+        success: (data, textStatus, xhr) => {
+            HoldOn.close();
+
+            if (xhr.status == 200 && data) {
+                if (data.success)
+                    return swal({
+                        title: titleAlert,
+                        text: "Hủy thành công!<br>Đơn J&T Express '<strong>" + code + "</strong>'",
+                        icon: "success",
+                    }, function (isConfirm) {
+                        onClickPagination(controller.pagination.page);
+                    });
+                else
+                    return _alterError(titleAlert, data);
+
+            } else
+                return _alterError(titleAlert, data);
+        },
+        error: (xhr, textStatus, error) => {
+            HoldOn.close();
+
+            return _alterError(titleAlert, xhr.responseJSON);
+        }
+    });
+}
+
+function cancelGhtk(code, groupCode) {
+    let titleAlert = "Hủy đơn GHTK";
+
+    $.ajax({
+        method: 'POST',
+        contentType: 'application/json',
+        dataType: "json",
+        data: JSON.stringify({ groupOrderCode: groupCode }),
+        url: "/api/v1/delivery-save/order/" + code + "/cancel",
+        beforeSend: function () {
+            HoldOn.open();
+        },
+        success: (data, textStatus, xhr) => {
+            HoldOn.close();
+
+            if (xhr.status == 200 && data) {
+                return swal({
+                    title: titleAlert,
+                    text: "Hủy thành công!<br>Đơn GHTK '<strong>" + code + "</strong>'",
+                    icon: "success",
+                }, function (isConfirm) {
+                    onClickPagination(controller.pagination.page);
+                });
+            } else {
+                return _alterError(titleAlert);
+            }
+        },
+        error: (xhr, textStatus, error) => {
+            HoldOn.close();
+
+            return _alterError(titleAlert);
+        }
+    });
+}
+
+function cancelGhtk(code, groupCode) {
+    let titleAlert = "Hủy đơn GHTK";
+
+    $.ajax({
+        method: 'POST',
+        contentType: 'application/json',
+        dataType: "json",
+        data: JSON.stringify({ groupOrderCode: groupCode }),
+        url: "/api/v1/delivery-save/order/" + code + "/cancel",
+        beforeSend: function () {
+            HoldOn.open();
+        },
+        success: (data, textStatus, xhr) => {
+            HoldOn.close();
+
+            if (xhr.status == 200 && data) {
+                return swal({
+                    title: titleAlert,
+                    text: "Hủy thành công!<br>Đơn GHTK '<strong>" + code + "</strong>'",
+                    icon: "success",
+                }, function (isConfirm) {
+                    onClickPagination(controller.pagination.page);
+                });
+            } else {
+                return _alterError(titleAlert);
+            }
+        },
+        error: (xhr, textStatus, error) => {
+            HoldOn.close();
+
+            return _alterError(titleAlert);
         }
     });
 }

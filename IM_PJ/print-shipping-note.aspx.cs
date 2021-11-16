@@ -49,7 +49,7 @@ namespace IM_PJ
         {
             message = String.Empty;
 
-            if (status != (int)ExcuteStatus.Done || status != (int)ExcuteStatus.Sent)
+            if (!(status == (int)ExcuteStatus.Done || status == (int)ExcuteStatus.Sent))
                 message += "<p>- Đơn hàng này <strong>Chưa hoàn tất</strong>!</p>";
 
             return String.IsNullOrEmpty(message);

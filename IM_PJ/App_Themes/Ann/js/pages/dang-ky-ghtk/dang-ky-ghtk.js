@@ -381,7 +381,7 @@ function _initNote() {
 
     //#region Danh sách tỉnh / thành
     if (customer.province) {
-        let newOption = new Option(customer.province, customer.province_id, false, false);
+        let newOption = new Option(customer.province.value, customer.province.key, false, false);
 
         $('#ddlProvince').append(newOption).trigger('change');
         _order.province_id = customer.province.key;
@@ -395,7 +395,7 @@ function _initNote() {
     //#region Danh sách quận / huyện
     if (customer.province && customer.district) {
         let $ddlDistrict = $('#ddlDistrict');
-        let newOption = new Option(customer.district, customer.district_id, false, false);
+        let newOption = new Option(customer.district.value, customer.district.key, false, false);
 
         $ddlDistrict.removeAttr('disabled');
         $ddlDistrict.removeAttr('readonly');
@@ -411,7 +411,7 @@ function _initNote() {
     //#region Danh sách quận / huyện
     if (customer.province && customer.district && customer.ward) {
         let $ddlWard = $('#ddlWard');
-        let newOption = new Option(customer.ward, customer.ward_id, false, false);
+        let newOption = new Option(customer.ward.value, customer.ward.key, false, false);
 
         $ddlWard.removeAttr('disabled');
         $ddlWard.removeAttr('readonly');
@@ -423,74 +423,52 @@ function _initNote() {
 }
 
 /**
- * Cài đặt thông tin đơn hàng gộp
- * @param groupOrder Thông tin đơn hàng gộp
- */
- function _initGroupOrderInfo(groupOrder) {
-    // Mã đơn hàng
-    _order.groupCode = groupOrder.groupCode;
-    $("#client_id").val(_order.groupCode);
-
-    // Trạng thái đơn hàng
-    if (groupOrder.status == OrderStatusEnum.Done) {
-        let $btnRegister = $("#btnRegister");
-        
-        $btnRegister.removeAttr("disabled");
-        $btnRegister.html('<i class="fa fa-upload" aria-hidden="true"></i> Đồng bộ đơn hàng (F3)');
-    }
-
-    // Hình thức thanh toán
-    _paymentMethod = groupOrder.paymentMethod;
-}
-
-/**
  * Cài đặt thông tin đơn hàng
  * @param order Thông tin đơn hàng
  */
  function _initOrderInfo(order) {
-    // Mã đơn hàng
-    _order.id = order.id;
-    $("#client_id").val(_order.id);
+     // Mã đơn hàng gộp
+     if (order.groupCode)
+     {
+         _order.groupCode = order.groupCode;
+         $("#client_id").val(_order.groupCode);
+     }
+
+     // Mã đơn hàng
+     if (order.id)
+     {
+         _order.id = order.id;
+         $("#client_id").val(_order.id);
+     }
 
     // Trạng thái đơn hàng
     if (order.status == OrderStatusEnum.Done) {
         let $btnRegister = $("#btnRegister");
-        
+
         $btnRegister.removeAttr("disabled");
         $btnRegister.html('<i class="fa fa-upload" aria-hidden="true"></i> Đồng bộ đơn hàng (F3)');
     }
 
     // Hình thức thanh toán
     _paymentMethod = order.paymentMethod;
-}
 
-/**
- * Cài đặt thông tin trọng lượng đơn hàng và trọng lượng tối thiểu
- * @param order Dữ liệu phản hồi từ API lấy thông tin đăng ký GHTK
- */
-function _initWeight(order) {
+    // Trọng lượng đơn hàng
     if (order.weight > 0)
         $("#weight").val(order.weight).trigger('blur');
-}
 
-/**
- * Cài đặt giá trị của đơn hàng và số tiền thu hộ
- * @param order Dữ liệu phản hồi từ API lấy thông tin đăng ký GHTK
- */
-function _initOrderValue(order) {
-    // Giá trị của đơn hàng
+     // Giá trị của đơn hàng
     _order.value = order.price;
 
-    // Tiền thu hộ
-    $("#pick_money").val(_formatThousand(order.cod));
-    _order.pick_money = order.cod - order.shopFee; // trừ phí ship của shop để tính lại ở phía dưới
+     // Tiền thu hộ
+    $("#pick_money").val(UtilsService.formatThousands(order.cod, ','));
+    _order.pick_money = order.cod - order.fee; // trừ phí ship của shop để tính lại ở phía dưới
 
-    // Có phí trong đơn hàng
-    if (order.shopFee) {
-        _shopFee = order.shopFee;
+     // Có phí trong đơn hàng
+    if (order.fee) {
+        _shopFee = order.fee;
 
         $("#divFeeShop").show();
-        $("#labelFeeShop").html(_formatThousand(_shopFee));
+        $("#labelFeeShop").html(UtilsService.formatThousands(_shopFee, ','));
         $("#fee_entered").prop('checked', true).trigger('change');
 
         if (_paymentMethod != PaymentMethodEnum.CashCollection) {
@@ -539,16 +517,9 @@ function _initOrderValue(order) {
             if (data.customer)
                 _initDeliveryAddress(data.customer);
 
-            // Thông tin về đơn hàng gộp
-            if (data.groupOrder) 
-                _initGroupOrderInfo(data.groupOrder);              
+            if (data.order)
+                _initOrderInfo(data.order);
 
-            // Trọng lượng đơn hàng
-            _initWeight(data)
-
-            // Giá trị đơn hàng và tiền thu hộ
-            _initOrderValue(data);
-            
             // Chú thích đơn hàng
             if (data.note)
                 $("#note").val(data.note).trigger('change');
@@ -564,7 +535,7 @@ function _initOrderValue(order) {
 
 /**
  * Lấy thông tin đơn hàng để đăng ký GHTK
- * @param orderId ID đơn hàng shop ANN 
+ * @param orderId ID đơn hàng shop ANN
  */
 function _initOrder(orderId) {
     let titleAlert = "Lấy thông tin đơn hàng";
@@ -584,16 +555,9 @@ function _initOrder(orderId) {
             if (data.customer)
                 _initDeliveryAddress(data.customer);
 
-            // Thông tin về đơn hàng
-            if (data.order) 
-                _initOrderInfo(data.order);              
+            if (data.order)
+                _initOrderInfo(data.order);
 
-            // Trọng lượng đơn hàng
-            _initWeight(data)
-
-            // Giá trị đơn hàng và tiền thu hộ
-            _initOrderValue(data);
-            
             // Chú thích đơn hàng
             if (data.note)
                 $("#note").val(data.note).trigger('change');
@@ -608,23 +572,24 @@ function _initOrder(orderId) {
 }
 
 function _initPage() {
+    let urlParams = new URLSearchParams(window.location.search);
+
     //#region Cài đặt trọng lượng mặc định cho sản phẩm
     let weight = +urlParams.get('weight') || _weight_min;
-    
+
     if (weight > 0)
         $("#weight").val(weight).trigger('blur');
     //#endregion
 
     //#region Lấy thông tin query parameter
-    let urlParams = new URLSearchParams(window.location.search);
     let orderId = 0;
     let groupOrderCode = '';
 
-    if (urlParams.get('orderID')) 
+    if (urlParams.get('orderID'))
         orderId =  +urlParams.get('orderID') || 0;
 
-    if (urlParams.get('groupOrderCode'))
-        groupOrderCode = urlParams.get('groupOrderCode').trim();
+    if (urlParams.get('groupCode'))
+        groupOrderCode = urlParams.get('groupCode').trim();
     //#endregion
 
     //#region Kiểm tra thông tin query parameter
@@ -884,7 +849,7 @@ function _calculateFee() {
                         _fee = data.fee.fee;
 
                         // Phí GHTK
-                        $fee.html(_formatThousand(_fee));
+                        $fee.html(UtilsService.formatThousands(_fee, ','));
 
                         if (_fee != _shopFee) {
                             $divFee.removeClass("hide");
@@ -938,7 +903,7 @@ function _calculateMoney() {
     }
 
     _feeShipment = feeShipment;
-    $pick_money.val(_formatThousand(_order.pick_money));
+    $pick_money.val(UtilsService.formatThousands(_order.pick_money, ','));
 }
 
 /**
@@ -946,7 +911,7 @@ function _calculateMoney() {
  * Trường hợp không đồng ý sẽ chuyển tới trang web GHTK với mã đơn đã tạo
  * @param ghtkCode Mã đơn GHTK
  */
-function _alertInvoicePrint(ghtkCode) {
+function _alertInvoicePrint(titleAlert, ghtkCode) {
     swal({
         title: titleAlert,
         text: "Đồng bộ thành công",
@@ -965,7 +930,7 @@ function _alertInvoicePrint(ghtkCode) {
             url += "/print-shipping-note?";
 
             if (_order.groupCode)
-                url += "groupCode" + _order.groupCode;
+                url += "groupCode=" + _order.groupCode;
 
             if (_order.id)
                 url += "id=" + _order.id;
@@ -979,13 +944,19 @@ function _alertInvoicePrint(ghtkCode) {
 
 function _submit() {
     let titleAlert = "Đồng bộ đơn hàng GHTK";
-    let chooseShopFee =  _feeShipment == 2; // Trường hợp chọn phí nhân viên tính
+    let chooseShopFee = _feeShipment == 2; // Trường hợp chọn phí nhân viên tính
+    let parameters = {
+        products: [_product],
+        order: _order,
+        shopFee: _shopFee,
+        chooseShopFee: chooseShopFee
+    };
 
     $.ajax({
         method: 'POST',
         contentType: 'application/json',
         dataType: "json",
-        data: JSON.stringify({ products: [_product], order: _order, chooseShopFee: chooseShopFee }),
+        data: JSON.stringify(parameters),
         url: "/api/v1/delivery-save/order/register",
         beforeSend: function () {
             HoldOn.open();
@@ -995,7 +966,7 @@ function _submit() {
 
             if (xhr.status == 200 && data) {
                 if (data.success)
-                    _alertInvoicePrint(data.order.label);
+                    _alertInvoicePrint(titleAlert, data.order.label);
                 else
                     _alterError(titleAlert, { message: data.message });
             } else {
@@ -1027,12 +998,6 @@ function _alterError(title, responseJSON) {
         text: message,
         icon: "error",
     });
-}
-
-function _formatThousand(value) {
-    nfObject = new Intl.NumberFormat('en-US');
-
-    return nfObject.format(value);
 }
 
 function _disabledDDLDistrict(disabled) {
