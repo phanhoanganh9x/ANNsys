@@ -104,11 +104,11 @@ namespace IM_PJ
         /// <param name="message">Thông báo lỗi</param>
         /// <returns></returns>
         private bool _checkDeliveryMethod(
-            int deliveryMethod, 
-            int role, 
+            int deliveryMethod,
+            int role,
             string shippingCode,
-            tbl_TransportCompany transport, 
-            tbl_TransportCompany transportBranch, 
+            tbl_TransportCompany transport,
+            tbl_TransportCompany transportBranch,
             decimal fee,
             ref string message
         ) {
@@ -138,7 +138,7 @@ namespace IM_PJ
                         if (transport != null)
                         {
                             if (transportBranch == null)
-                                message += "<p>- Đơn hàng này gửi xe <strong>" + transport.CompanyName.ToTitleCase() + "</strong> nhưng <strong>chưa chọn Nơi nhận</strong>!</p>");
+                                message += "<p>- Đơn hàng này gửi xe <strong>" + transport.CompanyName.ToTitleCase() + "</strong> nhưng <strong>chưa chọn Nơi nhận</strong>!</p>";
                             else if (transportBranch.Prepay == true && fee == 0)
                             {
                                 message += "<p>";
@@ -186,7 +186,7 @@ namespace IM_PJ
             message = String.Empty;
 
             if (!refunds.Any())
-                missedIds = refundIds;
+                missedIds = (List<int>)refundIds;
             else if (refundIds.Count != refunds.Count)
                 missedIds = refundIds.Where(x => !refunds.Where(y => y.ID == x).Any()).ToList();
 
@@ -195,7 +195,7 @@ namespace IM_PJ
                 message += "<p>";
                 message += "Không tìm thấy đơn hàng đổi trả ";
                 message += String.Join(", ", missedIds.Select(x => String.Concat("#", x)).ToList());
-                message += " (có thể đã bị xóa khi làm lại đơn đổi trả). ");
+                message += " (có thể đã bị xóa khi làm lại đơn đổi trả). ";
                 message += "Thêm lại đơn hàng đổi trả nhé!";
                 message += "</p>";
             }
@@ -210,7 +210,7 @@ namespace IM_PJ
         /// <param name="refund">Thông tin đơn đổi trả</param>
         /// <param name="message">Thông báo lỗi</param>
         /// <returns></returns>
-        private bool _checkRefund(int refundId, tbl_RefundGoods refund, ref string message)
+        private bool _checkRefund(int refundId, ref tbl_RefundGoods refund, ref string message)
         {
             refund = RefundGoodController.GetByID(refundId);
             message = String.Empty;
@@ -227,7 +227,22 @@ namespace IM_PJ
             return String.IsNullOrEmpty(message);
         }
 
-        private bool _checkGroupOrder(GroupOrder groupOrder, int role, ref error) 
+        /// <summary>
+        /// Kiểm tra thông tin đơn gộp
+        /// </summary>
+        /// <param name="groupOrder">Thông tin đơn gộp</param>
+        /// <param name="role">Role người thực hiện in hóa đơn giao hàng</param>
+        /// <param name="transport">Trả về thông tin chành xe (nếu có)</param>
+        /// <param name="transportBranch">Trả về thông tin chành xe nhận hàng (nếu có)</param>
+        /// <param name="error">Lấy thông tin lỗi</param>
+        /// <returns></returns>
+        private bool _checkGroupOrder(
+            GroupOrder groupOrder,
+            int role,
+            ref tbl_TransportCompany transport,
+            ref tbl_TransportCompany transportBranch,
+            ref StringBuilder error
+        )
         {
             var message = String.Empty;
 
@@ -238,46 +253,99 @@ namespace IM_PJ
                 error.AppendLine(message);
 
             // Kiểm tra trạng thái thanh toán
-            if (!_checkStatus(groupOrder.PaymentStatusId, ref message)
+            if (!_checkPaymentStatus(groupOrder.PaymentStatusId, ref message))
                 error.AppendLine(message);
 
             // Kiểm tra hình thức thanh toán
-            if (!_checkPaymentMethod(groupOrder.PaymentMethodId, role, ref message)
+            if (!_checkPaymentMethod(groupOrder.PaymentMethodId, role, ref message))
                 error.AppendLine(message);
 
             #region Kiểm tra hình thức lấy hàng
-            var transport = (tbl_TransportCompany)null;
-            var transportBranch = (tbl_TransportCompany)null;
-
             if (String.IsNullOrEmpty(groupOrder.ShippingCode) && groupOrder.DeliveryMethodId == (int)DeliveryType.TransferStation)
             {
                 if (groupOrder.TransportId.HasValue)
                     transport = TransportCompanyController.GetTransportCompanyForOrderList(groupOrder.TransportId.Value);
-                
+
                 if (transport != null && groupOrder.TransportBranchId.HasValue)
                     transportBranch = TransportCompanyController.GetReceivePlaceForOrderList(transport.ID, groupOrder.TransportBranchId.Value);
             }
 
-            if (_checkDeliveryMethod(groupOrder.DeliveryMethodId, role, groupOrder.ShippingCode, transportCompany, transportBranch, ref message))
+            if (!_checkDeliveryMethod(groupOrder.DeliveryMethodId, role, groupOrder.ShippingCode, transport, transportBranch, groupOrder.ShippingFee, ref message))
                 error.AppendLine(message);
             #endregion
 
             #region Đơn đổi trả
-            var refundIds = GroupOrderController.getRefundIds(groupOrderCode.Code);
-            var refunds = new List<tbl_RefundGoods>();
+            var refundIds = GroupOrderController.getRefundIds(groupOrder.Code);
 
             if (refundIds.Any())
             {
-                refunds = RefundGoodController.GetByGroupOrderCode(groupOrderCode.code);
+                var refunds = RefundGoodController.GetByGroupOrderCode(groupOrder.Code);
 
                 if (!_checkRefunds(refundIds, refunds, ref message))
                     error.AppendLine(message);
             }
             #endregion
 
-            return error.Length == 0
+            return error.Length == 0;
         }
-        #endregion 
+
+        /// <summary>
+        /// Kiểm tra thông tin đơn
+        /// </summary>
+        /// <param name="order">Thông tin đơn</param>
+        /// <param name="role">Role người thực hiện in hóa đơn giao hàng</param>
+        /// <param name="transport">Trả về thông tin chành xe (nếu có)</param>
+        /// <param name="transportBranch">Trả về thông tin chành xe nhận hàng (nếu có)</param>
+        /// <param name="error">Lấy thông tin lỗi</param>
+        /// <returns></returns>
+        private bool _checkOrder(
+            tbl_Order order,
+            int role,
+            ref tbl_RefundGoods refund,
+            ref tbl_TransportCompany transport,
+            ref tbl_TransportCompany transportBranch,
+            ref StringBuilder error
+        )
+        {
+            var message = String.Empty;
+
+            error.Clear();
+
+            // Kiểm tra trạng thái đơn hàng
+            if (!_checkStatus(order.ExcuteStatus.Value, ref message))
+                error.AppendLine(message);
+
+            // Kiểm tra trạng thái thanh toán
+            if (!_checkPaymentStatus(order.PaymentStatus.Value, ref message))
+                error.AppendLine(message);
+
+            // Kiểm tra hình thức thanh toán
+            if (!_checkPaymentMethod(order.PaymentType.Value, role, ref message))
+                error.AppendLine(message);
+
+            #region Kiểm tra hình thức lấy hàng
+            if (String.IsNullOrEmpty(order.ShippingCode) && order.ShippingType.Value == (int)DeliveryType.TransferStation)
+            {
+                if (order.TransportCompanyID.HasValue && order.TransportCompanyID > 0)
+                    transport = TransportCompanyController.GetTransportCompanyForOrderList(order.TransportCompanyID.Value);
+
+                if (transport != null && order.TransportCompanySubID.HasValue && order.TransportCompanySubID > 0)
+                    transportBranch = TransportCompanyController.GetReceivePlaceForOrderList(transport.ID, order.TransportCompanySubID.Value);
+            }
+
+            if (!_checkDeliveryMethod(order.ShippingType.Value, role, order.ShippingCode, transport, transportBranch, Convert.ToDecimal(order.FeeShipping), ref message))
+                error.AppendLine(message);
+            #endregion
+
+            #region Đơn đổi trả
+            if (order.RefundsGoodsID.HasValue)
+                if (!_checkRefund(order.RefundsGoodsID.Value, ref refund, ref message))
+                    error.AppendLine(message);
+            #endregion
+
+            return error.Length == 0;
+        }
+        #endregion
 
         /// <summary>
         /// Lấy thông tin địa chỉ nhận hàng
@@ -731,122 +799,56 @@ namespace IM_PJ
         }
         #endregion
 
-        private void _initGroupOrder(GroupOrder groupOrder, int role)
+        /// <summary>
+        /// Lấy thông tin dữ liệu đơn gộp
+        /// </summary>
+        /// <param name="groupOrder">Thông tin đơn hàng gộp</param>
+        /// <param name="refunds">Danh sách đơn đổi trả</param>
+        /// <param name="transportCompany">Thông tin chành xe</param>
+        /// <param name="transportBranchCompany">Thông tin chành xe nhận</param>
+        /// <returns></returns>
+        private OrderModel _getGroupOrder(
+            GroupOrder groupOrder,
+            tbl_TransportCompany transportCompany,
+            tbl_TransportCompany transportBranchCompany
+        )
         {
-            #region Kiểm tra thông tin đơn hàng
-            
-            
-            #endregion
-        
             // Thông tin địa chỉ gửi
             var sender = AgentController.GetByID(1); // Hardcode: 1 - ANN Shop
             // Thông tin địa chỉ nhận
             var receiver = _getReceiver(groupOrder.CustomerId, groupOrder.DeliveryAddressId);
             // Thông tin chành xe
-            var transport = TransportCompanyModel.map(transportCompany, transportSubCompany);
+            var transport = TransportCompanyModel.map(transportCompany, transportBranchCompany);
             // Tổng hợp thông tin đơn giao hàng
-            var data = OrderModel.map(groupOrder, refunds, AddressModel.map(sender), receiver, transport);
-            
+            var data = OrderModel.map(groupOrder, AddressModel.map(sender), receiver, transport);
 
-            
+            return data;
         }
 
-        private void _initOrder(TblOrder order, init role) {
-            // Kiểm tra trạng thái đơn hàng
-            if (_checkStatus(groupOrder.OrderStatusId, ref message))
-                errorHtml.AppendLine(message);
+        /// <summary>
+        /// Lấy thông tin đơn hàng
+        /// </summary>
+        /// <param name="order">Thông tin đơn hàng</param>
+        /// <param name="refund">Thông tin đơn hàng đổi trả</param>
+        /// <param name="transportCompany">Thông tin chành xe</param>
+        /// <param name="transportBranchCompany">Thông tin chành xe nhận</param>
+        /// <returns></returns>
+        private OrderModel _getOrder(
+            tbl_Order order,
+            tbl_RefundGoods refund,
+            tbl_TransportCompany transportCompany,
+            tbl_TransportCompany transportBranchCompany
+        ) {
+            // Thông tin địa chỉ gửi
+            var sender = AgentController.GetByID(order.AgentID.Value); // Hardcode: 1 - ANN Shop
+            // Thông tin địa chỉ nhận
+            var receiver = _getReceiver(order.CustomerID.Value, order.DeliveryAddressId);
+            // Thông tin chành xe
+            var transport = TransportCompanyModel.map(transportCompany, transportBranchCompany);
+            // Tổng hợp thông tin đơn giao hàng
+            var data = OrderModel.map(order, refund, AddressModel.map(sender), receiver, transport);
 
-            // Kiểm tra trạng thái thanh toán
-            if (order.PaymentStatus == (int)PaymentStatus.Waitting)
-                errorHtml.AppendLine("<p>- Đơn hàng này <strong>Chưa thanh toán</strong>!</p>");
-
-            // Kiểm tra hình thức thanh toán
-            if (order.PaymentType == (int)PaymentType.Cash && acc.RoleID != 0)
-                errorHtml.AppendLine("<p>- Đơn hàng này <strong>Thanh toán tiền mặt</strong>. Hãy chuyển sang phương thức khác hoặc nhờ chị Ngọc in phiếu!</p>");
-
-            #region Kiểm tra hình thức lấy hàng
-            var transportCompany = (tbl_TransportCompany)null;
-            var transportSubCompany = (tbl_TransportCompany)null;
-
-            if (order.ShippingType == (int)DeliveryType.Face && acc.RoleID != 0)
-                errorHtml.AppendLine("<p>- Đơn hàng này <strong>Lấy trực tiếp</strong>. Hãy chuyển sang phương thức khác hoặc nhờ chị Ngọc in phiếu!</p>");
-
-            if (String.IsNullOrEmpty(order.ShippingCode))
-            {
-                switch (order.ShippingType)
-                {
-                    case (int)DeliveryType.PostOffice:
-                        errorHtml.AppendLine("<p>- Đơn hàng này <strong>gửi Bưu điện</strong> nhưng <strong>chưa nhập</strong> MÃ VẬN ĐƠN!</p>");
-
-                        break;
-                    case (int)DeliveryType.Proship:
-                        errorHtml.AppendLine("<p>- Đơn hàng này <strong>gửi Proship</strong> nhưng <strong>chưa nhập</strong> MÃ VẬN ĐƠN!</p>");
-
-                        break;
-                    case (int)DeliveryType.TransferStation:
-                        var transportCompanyId = Convert.ToInt32(order.TransportCompanyID);
-
-                        transportCompany = TransportCompanyController.GetTransportCompanyForOrderList(transportCompanyId);
-
-                        if (transportCompany != null)
-                        {
-                            var transportSubCompanyID = Convert.ToInt32(order.TransportCompanySubID);
-
-                            transportSubCompany = TransportCompanyController.GetReceivePlaceForOrderList(transportCompanyId, transportSubCompanyID);
-
-                            if (transportSubCompany == null)
-                                errorHtml.AppendLine("<p>- Đơn hàng này gửi xe <strong>" + transportCompany.CompanyName.ToTitleCase() + "</strong> nhưng <strong>chưa chọn Nơi nhận</strong>!</p>");
-                            else if (transportSubCompany.Prepay == true && order.FeeShipping == "0")
-                                errorHtml.AppendLine("Chành xe này trả cước trước. Hãy nhập phí vận chuyển vào đơn hàng! Nếu muốn miễn phí cho khách thì trừ phí khác!");
-                        }
-                        else
-                            errorHtml.AppendLine("<p>- Đơn hàng này <strong>gửi xe</strong> nhưng <strong>chưa chọn Chành xe</strong> nào!</p>");
-
-                        break;
-                    case (int)DeliveryType.DeliverySave:
-                        errorHtml.AppendLine("<p>- Đơn hàng này <strong>gửi GHTK</strong> nhưng <strong>chưa nhập</strong> MÃ VẬN ĐƠN!</p>");
-
-                        break;
-                    default:
-                        break;
-                }
-            }
-            else if (order.ShippingType == (int)DeliveryType.DeliverySave)
-            {
-                var lastGhtkCode = order.ShippingCode
-                    .Split('.')
-                    .Where(x => !String.IsNullOrEmpty(x))
-                    .LastOrDefault();
-
-                if (lastGhtkCode.Length < 9)
-                    errorHtml.AppendLine("<p>- MÃ VẬN ĐƠN của GHTK phải có ít nhất 9 số ở cuối!</p>");
-            }
-            #endregion
-
-            #region Đơn đổi trả
-            var refund = (tbl_RefundGoods)null;
-
-            if (order.RefundsGoodsID != null)
-            {
-                refund = RefundGoodController.GetByID(Convert.ToInt32(order.RefundsGoodsID));
-
-                if (refund == null)
-                    errorHtml.AppendLine(String.Concat(
-                        "<p>",
-                        String.Format("Không tìm thấy đơn hàng đổi trả {0} (có thể đã bị xóa khi làm lại đơn đổi trả). ", refund.ID),
-                        "Thêm lại đơn hàng đổi trả nhé!",
-                        "</p>"
-                    ));
-            }
-            #endregion
-
-            if (errorHtml.Length > 0)
-            {
-                ltrShippingNote.Text = "<h1>Lỗi:</h1>" + errorHtml.ToString();
-
-                return;
-            }
-            #endregion
+            return data;
         }
 
         /// <summary>
@@ -856,7 +858,7 @@ namespace IM_PJ
         {
             #region Kiểm tra query parameter
             #region Kiểm tra giá trị truyền
-            var groupOrderCode = Request.QueryString["groupCode"].ToString();
+            var groupOrderCode = Request.QueryString["groupCode"];
             var orderId = Request.QueryString["id"].ToInt(0);
 
             if (String.IsNullOrEmpty(groupOrderCode) && orderId == 0)
@@ -864,7 +866,7 @@ namespace IM_PJ
                 ltrShippingNote.Text = "Không tìm thấy mã đơn hàng gộp hoặc ID đơn hàng";
                 return;
             }
-            
+
             if (!String.IsNullOrEmpty(groupOrderCode) && orderId > 0)
             {
                 ltrShippingNote.Text = "Đang truyền cùng lúc mã đơn hàng gộp và ID đơn hàng";
@@ -900,7 +902,7 @@ namespace IM_PJ
                     ltrShippingNote.Text = String.Format("Đơn hàng #{0} không tồn tại trong hệ thống", orderId);;
                     return;
                 }
-            }   
+            }
             #endregion
             #endregion
 
@@ -909,14 +911,34 @@ namespace IM_PJ
             var acc = AccountController.GetByUsername(username);
             #endregion
 
+            #region Lấy dữ liệu phiếu giao hàng
+            var transport = (tbl_TransportCompany)null;
+            var transportBranch = (tbl_TransportCompany)null;
+            var data = (OrderModel)null;
+            var errorHtml = new StringBuilder();
 
+            if (groupOrder != null)
+                if (_checkGroupOrder(groupOrder, acc.RoleID.Value, ref transport, ref transportBranch, ref errorHtml))
+                    data = _getGroupOrder(groupOrder, transport, transportBranch);
+
+            if (order != null)
+            {
+                var refund = (tbl_RefundGoods)null;
+
+                if (_checkOrder(order, acc.RoleID.Value, ref refund, ref transport, ref transportBranch, ref errorHtml))
+                    data = _getOrder(order, refund, transport, transportBranch);
+            }
+            #endregion
+
+            #region Trường hợp thông tin lỗi
             if (errorHtml.Length > 0)
             {
                 ltrShippingNote.Text = "<h1>Lỗi:</h1>" + errorHtml.ToString();
 
                 return;
             }
-            
+            #endregion
+
             #region Phiếu giao hàng
             var bodyClass = !String.IsNullOrEmpty(data.destination) ? "table-ghtk" : String.Empty;
             var shippingNote = new StringBuilder();

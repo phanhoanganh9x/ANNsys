@@ -258,9 +258,9 @@ namespace IM_PJ.Controllers
                     .Join(
                         con.tbl_Order
                             .Where(x => x.GroupCode == groupOrderCode)
-                            .Where(x => x.RefundGoodsID.HasValue),
+                            .Where(x => x.RefundsGoodsID.HasValue),
                         r => r.ID,
-                        o => o.RefundGoodsID,
+                        o => o.RefundsGoodsID,
                         (r, o) => r
                     )
                     .ToList();
@@ -614,7 +614,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("        tbl_Product AS PRD");
             sql.AppendLine("    LEFT JOIN tbl_ProductVariable AS PDV");
             sql.AppendLine("        ON PRD.ID = PDV.ProductID");
-            
+
             #region Lọc sản phẩm
             // Danh mục
             if (CategoryID > 0)
@@ -660,7 +660,7 @@ namespace IM_PJ.Controllers
             if (!String.IsNullOrEmpty(CreatedBy))
                 sql.AppendLine(String.Format("        AND Ord.CreatedBy = '{0}'", CreatedBy));
             #endregion
-            
+
             sql.AppendLine("    ;");
             #endregion
 

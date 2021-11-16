@@ -399,6 +399,28 @@
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <EntityType Name="GroupOrder">
+          <Key>
+            <PropertyRef Name="Code" />
+          </Key>
+          <Property Name="Code" Type="nvarchar" MaxLength="6" Nullable="false" />
+          <Property Name="CustomerId" Type="int" Nullable="false" />
+          <Property Name="DeliveryAddressId" Type="bigint" Nullable="false" />
+          <Property Name="OrderStatusId" Type="int" Nullable="false" />
+          <Property Name="PaymentStatusId" Type="int" Nullable="false" />
+          <Property Name="PaymentMethodId" Type="int" Nullable="false" />
+          <Property Name="DeliveryMethodId" Type="int" Nullable="false" />
+          <Property Name="ShippingCode" Type="nvarchar" MaxLength="100" />
+          <Property Name="ShippingFee" Type="money" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+          <Property Name="Weight" Type="float" Nullable="false" />
+          <Property Name="Cod" Type="money" Nullable="false" />
+          <Property Name="TransportId" Type="int" />
+          <Property Name="TransportBranchId" Type="int" />
+        </EntityType>
         <EntityType Name="JtExpressAddress">
           <Key>
             <PropertyRef Name="Id" />
@@ -1208,6 +1230,7 @@
           <Property Name="Avatar" Type="nvarchar(max)" />
           <Property Name="DeliveryAddressId" Type="bigint" />
           <Property Name="Timestamp" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="GroupCode" Type="nvarchar" MaxLength="6" />
         </EntityType>
         <EntityType Name="tbl_OrderDetail">
           <Key>
@@ -1805,6 +1828,68 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_GroupOrder_DeliveryAddress">
+          <End Role="DeliveryAddress" Type="Self.DeliveryAddress" Multiplicity="1" />
+          <End Role="GroupOrder" Type="Self.GroupOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DeliveryAddress">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GroupOrder">
+              <PropertyRef Name="DeliveryAddressId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GroupOrder_DeliveryMethod">
+          <End Role="DeliveryMethod" Type="Self.DeliveryMethod" Multiplicity="1" />
+          <End Role="GroupOrder" Type="Self.GroupOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DeliveryMethod">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GroupOrder">
+              <PropertyRef Name="DeliveryMethodId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GroupOrder_OrderStatus">
+          <End Role="OrderStatus" Type="Self.OrderStatus" Multiplicity="1" />
+          <End Role="GroupOrder" Type="Self.GroupOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OrderStatus">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GroupOrder">
+              <PropertyRef Name="OrderStatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GroupOrder_tbl_Customer">
+          <End Role="tbl_Customer" Type="Self.tbl_Customer" Multiplicity="1" />
+          <End Role="GroupOrder" Type="Self.GroupOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Customer">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GroupOrder">
+              <PropertyRef Name="CustomerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GroupOrder_Transport">
+          <End Role="tbl_TransportCompany" Type="Self.tbl_TransportCompany" Multiplicity="0..1" />
+          <End Role="GroupOrder" Type="Self.GroupOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_TransportCompany">
+              <PropertyRef Name="ID" />
+              <PropertyRef Name="SubID" />
+            </Principal>
+            <Dependent Role="GroupOrder">
+              <PropertyRef Name="TransportId" />
+              <PropertyRef Name="TransportBranchId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_JtExpressOrder_tbl_Order">
           <End Role="tbl_Order" Type="Self.tbl_Order" Multiplicity="1" />
           <End Role="JtExpressOrder" Type="Self.JtExpressOrder" Multiplicity="*" />
@@ -1937,6 +2022,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_tbl_Order_GroupOrder">
+          <End Role="GroupOrder" Type="Self.GroupOrder" Multiplicity="0..1" />
+          <End Role="tbl_Order" Type="Self.tbl_Order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GroupOrder">
+              <PropertyRef Name="Code" />
+            </Principal>
+            <Dependent Role="tbl_Order">
+              <PropertyRef Name="GroupCode" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ViewOrder_PreOrder">
           <End Role="PreOrder" Type="Self.PreOrder" Multiplicity="0..1" />
           <End Role="ViewOrder" Type="Self.ViewOrder" Multiplicity="*" />
@@ -1986,6 +2083,7 @@
           <EntitySet Name="Fee" EntityType="Self.Fee" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FeeType" EntityType="Self.FeeType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GroupNotifyPromotion" EntityType="Self.GroupNotifyPromotion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GroupOrder" EntityType="Self.GroupOrder" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="JtExpressAddress" EntityType="Self.JtExpressAddress" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="JtExpressOrder" EntityType="Self.JtExpressOrder" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="JtExpressReason" EntityType="Self.JtExpressReason" Schema="dbo" store:Type="Tables" />
@@ -2093,6 +2191,26 @@
             <End Role="tbl_Order" EntitySet="tbl_Order" />
             <End Role="DeliverySaveNotification" EntitySet="DeliverySaveNotification" />
           </AssociationSet>
+          <AssociationSet Name="FK_GroupOrder_DeliveryAddress" Association="Self.FK_GroupOrder_DeliveryAddress">
+            <End Role="DeliveryAddress" EntitySet="DeliveryAddress" />
+            <End Role="GroupOrder" EntitySet="GroupOrder" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GroupOrder_DeliveryMethod" Association="Self.FK_GroupOrder_DeliveryMethod">
+            <End Role="DeliveryMethod" EntitySet="DeliveryMethod" />
+            <End Role="GroupOrder" EntitySet="GroupOrder" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GroupOrder_OrderStatus" Association="Self.FK_GroupOrder_OrderStatus">
+            <End Role="OrderStatus" EntitySet="OrderStatus" />
+            <End Role="GroupOrder" EntitySet="GroupOrder" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GroupOrder_tbl_Customer" Association="Self.FK_GroupOrder_tbl_Customer">
+            <End Role="tbl_Customer" EntitySet="tbl_Customer" />
+            <End Role="GroupOrder" EntitySet="GroupOrder" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GroupOrder_Transport" Association="Self.FK_GroupOrder_Transport">
+            <End Role="tbl_TransportCompany" EntitySet="tbl_TransportCompany" />
+            <End Role="GroupOrder" EntitySet="GroupOrder" />
+          </AssociationSet>
           <AssociationSet Name="FK_JtExpressOrder_tbl_Order" Association="Self.FK_JtExpressOrder_tbl_Order">
             <End Role="tbl_Order" EntitySet="tbl_Order" />
             <End Role="JtExpressOrder" EntitySet="JtExpressOrder" />
@@ -2135,6 +2253,10 @@
           </AssociationSet>
           <AssociationSet Name="FK_tbl_Order_DeliveryAddress" Association="Self.FK_tbl_Order_DeliveryAddress">
             <End Role="DeliveryAddress" EntitySet="DeliveryAddress" />
+            <End Role="tbl_Order" EntitySet="tbl_Order" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Order_GroupOrder" Association="Self.FK_tbl_Order_GroupOrder">
+            <End Role="GroupOrder" EntitySet="GroupOrder" />
             <End Role="tbl_Order" EntitySet="tbl_Order" />
           </AssociationSet>
           <AssociationSet Name="FK_ViewOrder_PreOrder" Association="Self.FK_ViewOrder_PreOrder">
@@ -2350,6 +2472,7 @@
           <NavigationProperty Name="DeliverySaveAddress2" Relationship="Self.FK_DeliveryAddress_Ward" FromRole="DeliveryAddress" ToRole="DeliverySaveAddress" />
           <NavigationProperty Name="PreOrders" Relationship="Self.FK_PreOrder_DeliveryAddress" FromRole="DeliveryAddress" ToRole="PreOrder" />
           <NavigationProperty Name="tbl_Order" Relationship="Self.FK_tbl_Order_DeliveryAddress" FromRole="DeliveryAddress" ToRole="tbl_Order" />
+          <NavigationProperty Name="GroupOrders" Relationship="inventorymanagementModel.FK_GroupOrder_DeliveryAddress" FromRole="DeliveryAddress" ToRole="GroupOrder" />
         </EntityType>
         <EntityType Name="DeliveryManager">
           <Key>
@@ -2384,6 +2507,7 @@
           <Property Name="Shopee" Type="Boolean" Nullable="false" />
           <Property Name="Lazada" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="DeliveryManagers" Relationship="Self.FK_DeliveryManager_DeliveryMethod" FromRole="DeliveryMethod" ToRole="DeliveryManager" />
+          <NavigationProperty Name="GroupOrders" Relationship="inventorymanagementModel.FK_GroupOrder_DeliveryMethod" FromRole="DeliveryMethod" ToRole="GroupOrder" />
         </EntityType>
         <EntityType Name="DeliveryPostOffice">
           <Key>
@@ -2713,6 +2837,7 @@
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="DeliveryManagers" Relationship="Self.FK_DeliveryManager_OrderStatus" FromRole="OrderStatus" ToRole="DeliveryManager" />
+          <NavigationProperty Name="GroupOrders" Relationship="inventorymanagementModel.FK_GroupOrder_OrderStatus" FromRole="OrderStatu" ToRole="GroupOrder" />
         </EntityType>
         <EntityType Name="OrderType">
           <Key>
@@ -3218,6 +3343,7 @@
           <Property Name="DistrictId" Type="Int32" />
           <Property Name="WardId" Type="Int32" />
           <Property Name="SendSMSIntroApp" Type="Int32" />
+          <NavigationProperty Name="GroupOrders" Relationship="inventorymanagementModel.FK_GroupOrder_tbl_Customer" FromRole="tbl_Customer" ToRole="GroupOrder" />
         </EntityType>
         <EntityType Name="tbl_CustomerLevel">
           <Key>
@@ -3390,6 +3516,8 @@
           <NavigationProperty Name="DeliverySaveNotifications" Relationship="Self.FK_DeliverySaveNotification_tbl_Order" FromRole="tbl_Order" ToRole="DeliverySaveNotification" />
           <NavigationProperty Name="JtExpressOrders" Relationship="Self.FK_JtExpressOrder_tbl_Order" FromRole="tbl_Order" ToRole="JtExpressOrder" />
           <NavigationProperty Name="ViewOrders" Relationship="Self.FK_ViewOrder_tbl_Order" FromRole="tbl_Order" ToRole="ViewOrder" />
+          <Property Name="GroupCode" Type="String" MaxLength="6" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="GroupOrder" Relationship="inventorymanagementModel.FK_tbl_Order_GroupOrder" FromRole="tbl_Order" ToRole="GroupOrder" />
         </EntityType>
         <EntityType Name="tbl_OrderDetail">
           <Key>
@@ -3737,6 +3865,7 @@
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Int32" />
+          <NavigationProperty Name="GroupOrders" Relationship="inventorymanagementModel.FK_GroupOrder_Transport" FromRole="tbl_TransportCompany" ToRole="GroupOrder" />
         </EntityType>
         <EntityType Name="tbl_Variable">
           <Key>
@@ -4334,7 +4463,134 @@
             <End Role="tbl_Order" EntitySet="tbl_Order" />
             <End Role="ViewOrder" EntitySet="ViewOrders" />
           </AssociationSet>
+          <EntitySet Name="GroupOrders" EntityType="inventorymanagementModel.GroupOrder" />
+          <AssociationSet Name="FK_GroupOrder_DeliveryAddress" Association="inventorymanagementModel.FK_GroupOrder_DeliveryAddress">
+            <End Role="DeliveryAddress" EntitySet="DeliveryAddresses" />
+            <End Role="GroupOrder" EntitySet="GroupOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GroupOrder_DeliveryMethod" Association="inventorymanagementModel.FK_GroupOrder_DeliveryMethod">
+            <End Role="DeliveryMethod" EntitySet="DeliveryMethods" />
+            <End Role="GroupOrder" EntitySet="GroupOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GroupOrder_OrderStatus" Association="inventorymanagementModel.FK_GroupOrder_OrderStatus">
+            <End Role="OrderStatu" EntitySet="OrderStatus" />
+            <End Role="GroupOrder" EntitySet="GroupOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GroupOrder_tbl_Customer" Association="inventorymanagementModel.FK_GroupOrder_tbl_Customer">
+            <End Role="tbl_Customer" EntitySet="tbl_Customer" />
+            <End Role="GroupOrder" EntitySet="GroupOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GroupOrder_Transport" Association="inventorymanagementModel.FK_GroupOrder_Transport">
+            <End Role="tbl_TransportCompany" EntitySet="tbl_TransportCompany" />
+            <End Role="GroupOrder" EntitySet="GroupOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Order_GroupOrder" Association="inventorymanagementModel.FK_tbl_Order_GroupOrder">
+            <End Role="GroupOrder" EntitySet="GroupOrders" />
+            <End Role="tbl_Order" EntitySet="tbl_Order" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="GroupOrder">
+          <Key>
+            <PropertyRef Name="Code" />
+          </Key>
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="6" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerId" Type="Int32" Nullable="false" />
+          <Property Name="DeliveryAddressId" Type="Int64" Nullable="false" />
+          <Property Name="OrderStatusId" Type="Int32" Nullable="false" />
+          <Property Name="PaymentStatusId" Type="Int32" Nullable="false" />
+          <Property Name="PaymentMethodId" Type="Int32" Nullable="false" />
+          <Property Name="DeliveryMethodId" Type="Int32" Nullable="false" />
+          <Property Name="ShippingCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ShippingFee" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Weight" Type="Double" Nullable="false" />
+          <Property Name="Cod" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="TransportId" Type="Int32" />
+          <Property Name="TransportBranchId" Type="Int32" />
+          <NavigationProperty Name="DeliveryAddress" Relationship="inventorymanagementModel.FK_GroupOrder_DeliveryAddress" FromRole="GroupOrder" ToRole="DeliveryAddress" />
+          <NavigationProperty Name="DeliveryMethod" Relationship="inventorymanagementModel.FK_GroupOrder_DeliveryMethod" FromRole="GroupOrder" ToRole="DeliveryMethod" />
+          <NavigationProperty Name="OrderStatu" Relationship="inventorymanagementModel.FK_GroupOrder_OrderStatus" FromRole="GroupOrder" ToRole="OrderStatu" />
+          <NavigationProperty Name="tbl_Customer" Relationship="inventorymanagementModel.FK_GroupOrder_tbl_Customer" FromRole="GroupOrder" ToRole="tbl_Customer" />
+          <NavigationProperty Name="tbl_TransportCompany" Relationship="inventorymanagementModel.FK_GroupOrder_Transport" FromRole="GroupOrder" ToRole="tbl_TransportCompany" />
+          <NavigationProperty Name="tbl_Order" Relationship="inventorymanagementModel.FK_tbl_Order_GroupOrder" FromRole="GroupOrder" ToRole="tbl_Order" />
+        </EntityType>
+        <Association Name="FK_GroupOrder_DeliveryAddress">
+          <End Type="inventorymanagementModel.DeliveryAddress" Role="DeliveryAddress" Multiplicity="1" />
+          <End Type="inventorymanagementModel.GroupOrder" Role="GroupOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DeliveryAddress">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GroupOrder">
+              <PropertyRef Name="DeliveryAddressId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GroupOrder_DeliveryMethod">
+          <End Type="inventorymanagementModel.DeliveryMethod" Role="DeliveryMethod" Multiplicity="1" />
+          <End Type="inventorymanagementModel.GroupOrder" Role="GroupOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DeliveryMethod">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GroupOrder">
+              <PropertyRef Name="DeliveryMethodId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GroupOrder_OrderStatus">
+          <End Type="inventorymanagementModel.OrderStatu" Role="OrderStatu" Multiplicity="1" />
+          <End Type="inventorymanagementModel.GroupOrder" Role="GroupOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OrderStatu">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GroupOrder">
+              <PropertyRef Name="OrderStatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GroupOrder_tbl_Customer">
+          <End Type="inventorymanagementModel.tbl_Customer" Role="tbl_Customer" Multiplicity="1" />
+          <End Type="inventorymanagementModel.GroupOrder" Role="GroupOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Customer">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GroupOrder">
+              <PropertyRef Name="CustomerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GroupOrder_Transport">
+          <End Type="inventorymanagementModel.tbl_TransportCompany" Role="tbl_TransportCompany" Multiplicity="0..1" />
+          <End Type="inventorymanagementModel.GroupOrder" Role="GroupOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_TransportCompany">
+              <PropertyRef Name="ID" />
+              <PropertyRef Name="SubID" />
+            </Principal>
+            <Dependent Role="GroupOrder">
+              <PropertyRef Name="TransportId" />
+              <PropertyRef Name="TransportBranchId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Order_GroupOrder">
+          <End Type="inventorymanagementModel.GroupOrder" Role="GroupOrder" Multiplicity="0..1" />
+          <End Type="inventorymanagementModel.tbl_Order" Role="tbl_Order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GroupOrder">
+              <PropertyRef Name="Code" />
+            </Principal>
+            <Dependent Role="tbl_Order">
+              <PropertyRef Name="GroupCode" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -5555,6 +5811,7 @@
           <EntitySetMapping Name="tbl_Order">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Order">
               <MappingFragment StoreEntitySet="tbl_Order">
+                <ScalarProperty Name="GroupCode" ColumnName="GroupCode" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="AgentID" ColumnName="AgentID" />
                 <ScalarProperty Name="OrderType" ColumnName="OrderType" />
@@ -6119,6 +6376,29 @@
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GroupOrders">
+            <EntityTypeMapping TypeName="inventorymanagementModel.GroupOrder">
+              <MappingFragment StoreEntitySet="GroupOrder">
+                <ScalarProperty Name="TransportBranchId" ColumnName="TransportBranchId" />
+                <ScalarProperty Name="TransportId" ColumnName="TransportId" />
+                <ScalarProperty Name="Cod" ColumnName="Cod" />
+                <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ShippingFee" ColumnName="ShippingFee" />
+                <ScalarProperty Name="ShippingCode" ColumnName="ShippingCode" />
+                <ScalarProperty Name="DeliveryMethodId" ColumnName="DeliveryMethodId" />
+                <ScalarProperty Name="PaymentMethodId" ColumnName="PaymentMethodId" />
+                <ScalarProperty Name="PaymentStatusId" ColumnName="PaymentStatusId" />
+                <ScalarProperty Name="OrderStatusId" ColumnName="OrderStatusId" />
+                <ScalarProperty Name="DeliveryAddressId" ColumnName="DeliveryAddressId" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

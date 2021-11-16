@@ -1086,6 +1086,7 @@
     <Compile Include="chuyen-kho.aspx.designer.cs">
       <DependentUpon>chuyen-kho.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Controllers\GroupOrderController.cs" />
     <Compile Include="Controllers\CurrencyController.cs" />
     <Compile Include="dang-ky-chuyen-hoan.aspx.cs">
       <DependentUpon>dang-ky-chuyen-hoan.aspx</DependentUpon>
@@ -1187,6 +1188,9 @@
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\GroupNotifyPromotion.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GroupOrder.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\IMMode.Context.cs">

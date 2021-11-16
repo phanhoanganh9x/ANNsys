@@ -122,6 +122,13 @@
         <AssociationConnector Association="inventorymanagementModel.FK_ProductVideo_tbl_Product" ManuallyRouted="false" />
         <AssociationConnector Association="inventorymanagementModel.FK_ProductVideo_Video" ManuallyRouted="false" />
         <AssociationConnector Association="inventorymanagementModel.FK_ViewOrder_tbl_Order" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="inventorymanagementModel.GroupOrder" Width="1.5" PointX="33" PointY="18.625" />
+        <AssociationConnector Association="inventorymanagementModel.FK_GroupOrder_DeliveryAddress" />
+        <AssociationConnector Association="inventorymanagementModel.FK_GroupOrder_DeliveryMethod" />
+        <AssociationConnector Association="inventorymanagementModel.FK_GroupOrder_OrderStatus" />
+        <AssociationConnector Association="inventorymanagementModel.FK_GroupOrder_tbl_Customer" />
+        <AssociationConnector Association="inventorymanagementModel.FK_GroupOrder_Transport" />
+        <AssociationConnector Association="inventorymanagementModel.FK_tbl_Order_GroupOrder" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -109,3 +109,6 @@ GO
 
 ALTER TABLE [dbo].[GroupOrder] CHECK CONSTRAINT [FK_GroupOrder_Transport]
 GO
+
+ALTER TABLE [dbo].[GroupOrder]
+ADD [PostalDeliveryMethodId] [int] NULL

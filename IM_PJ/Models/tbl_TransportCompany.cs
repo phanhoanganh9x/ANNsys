@@ -14,6 +14,12 @@ namespace IM_PJ.Models
     
     public partial class tbl_TransportCompany
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public tbl_TransportCompany()
+        {
+            this.GroupOrders = new HashSet<GroupOrder>();
+        }
+    
         public int ID { get; set; }
         public int SubID { get; set; }
         public string CompanyName { get; set; }
@@ -29,5 +35,8 @@ namespace IM_PJ.Models
         public Nullable<System.DateTime> ModifiedDate { get; set; }
         public string ModifiedBy { get; set; }
         public Nullable<int> Status { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GroupOrder> GroupOrders { get; set; }
     }
 }
