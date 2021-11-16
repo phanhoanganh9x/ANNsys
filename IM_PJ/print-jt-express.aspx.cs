@@ -38,44 +38,10 @@ namespace IM_PJ
         }
 
         #region Private
-        private OrderResponseModel _getJtOrder(int orderId, string code)
+        private OrderResponseModel _getJtOrder(string code)
         {
             #region Khởi tạo API
-            var api = String.Format("http://ann-shop-dotnet-core.com/api/v1/jt-express/order/{0}?orderId={1}", code, orderId);
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create(api);
-
-            httpWebRequest.Method = "GET";
-            #endregion
-
-            try
-            {
-                // Thực thi API
-                var response = (HttpWebResponse)httpWebRequest.GetResponse();
-
-                if (response.StatusCode != HttpStatusCode.OK)
-                    return null;
-
-                using (var reader = new StreamReader(response.GetResponseStream()))
-                {
-                    var jtOrder = JsonConvert.DeserializeObject<OrderResponseModel>(reader.ReadToEnd());
-
-                    return jtOrder;
-                }
-            }
-            catch (WebException we)
-            {
-                throw we;
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
-
-        private OrderResponseModel _getJtOrder(string groupCode, string code)
-        {
-            #region Khởi tạo API
-            var api = String.Format("http://ann-shop-dotnet-core.com/api/v1/jt-express/order/{0}?groupCode={1}", code, groupCode);
+            var api = String.Format("http://ann-shop-dotnet-core.com/api/v1/jt-express/order/{0}", code);
             var httpWebRequest = (HttpWebRequest)WebRequest.Create(api);
 
             httpWebRequest.Method = "GET";
@@ -260,10 +226,13 @@ namespace IM_PJ
         {
             // Mã vận đơn
             ltJtCode.Text = data.code;
-            // Barcode 
+            // Barcode
             ltBarcode.Text = "<img class='barcode-img' src='" + createBarcode(data.code) + "' />";
             // Mã đơn khách đặt tại shop
-            ltOrderIdHeader.Text = data.orderId.ToString();
+            if (!String.IsNullOrEmpty(data.groupOrderCode))
+                ltOrderIdHeader.Text = data.groupOrderCode;
+            if (data.orderId.HasValue)
+                ltOrderIdHeader.Text = data.orderId.Value.ToString();
             // Ngày gửi hàng
             ltSentDate.Text = String.Format("{0:yyyy-MM-dd HH:mm:ss}", data.sentDate);
             // Tên người gửi (chủ shop)
@@ -303,24 +272,33 @@ namespace IM_PJ
 
         private void _loadData()
         {
-            var orderId = 0;
+            #region Kiểm tra query parameter
             var code = String.Empty;
-
-            if (!String.IsNullOrEmpty(Request.QueryString["id"]))
-                orderId = Convert.ToInt32(Request.QueryString["id"]);
 
             if (!String.IsNullOrEmpty(Request.QueryString["code"]))
                 code = Request.QueryString["code"];
 
-            if (orderId > 0 && !String.IsNullOrEmpty(code))
-            {
-                var jtOrder = _getJtOrder(orderId, code);
+            // Trường hợp không có mã vận đơn
+            if (String.IsNullOrEmpty(code))
+                return;
+            #endregion
 
-                if (jtOrder != null)
-                    _loadInvoice(jtOrder);
-                else
-                    PJUtils.ShowMessageBoxSwAlertError("Không lấy được thông tin J&T Express của đơn hàng", "e", true, "/danh-sach-don-hang", Page);
+            #region Lấy thông tin đơn JT Express
+            var jtOrder = _getJtOrder(code);
+
+            if (jtOrder == null)
+            {
+                var message = "Không lấy được thông tin J&T Express của đơn hàng";
+                var url = "/danh-sach-don-hang";
+
+                PJUtils.ShowMessageBoxSwAlertError(message, "e", true, url, Page);
+
+                return;
             }
+            #endregion
+
+            // Thể hiện thông tin phiếu giao hàng JT Express
+            _loadInvoice(jtOrder);
         }
         #endregion
     }

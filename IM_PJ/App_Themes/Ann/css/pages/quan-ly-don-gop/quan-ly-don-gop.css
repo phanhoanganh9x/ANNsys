@@ -3,14 +3,14 @@ table > thead > tr > th.col-code {
 }
 
 table > thead > tr > th.col-customer {
-    width: 18%
+    width: 20%
 }
 
-table > thead > tr > th.col-quatity {
-    width: 10%
+table > thead > tr > th.col-quantity {
+    width: 8%
 }
 
-table > thead > tr > th.col-order-status {
+table > thead > tr > th.col-status {
     width: 10%
 }
 

@@ -259,7 +259,7 @@ function _initDeliveryAddress(customer) {
     // name
     $("#name").val(customer.name).trigger('change');
     // address
-    $("#address").val(ustomer.address).trigger('change');
+    $("#address").val(customer.address).trigger('change');
 
     //#region Danh sách tỉnh / thành
     if (customer.province) {
@@ -272,7 +272,7 @@ function _initDeliveryAddress(customer) {
         _disabledDDLDistrict(false);
     }
     //#endregion
-    
+
     //#region Danh sách quận / huyện
     if (customer.province && customer.district) {
         let $ddlDistrict = $('#ddlDistrict');
@@ -291,85 +291,63 @@ function _initDeliveryAddress(customer) {
     //#region Danh sách quận / huyện
     if (customer.province && customer.district && customer.ward) {
         let $ddlWard = $('#ddlWard');
-        let newOption = new Option(data.customer.ward, data.customer.ward, false, false);
-        
+        let newOption = new Option(customer.ward, customer.ward, false, false);
+
         $ddlWard.removeAttr('disabled');
         $ddlWard.removeAttr('readonly');
         $ddlWard.append(newOption).trigger('change');
-        _order.customer.ward = data.customer.ward;
+        _order.customer.ward = customer.ward;
     }
     //#endregion
-}
-
-/**
- * Cài đặt thông tin đơn hàng gộp
- * @param groupOrder Thông tin đơn hàng gộp
- */
- function _initGroupOrderInfo(groupOrder) {
-    // Mã đơn hàng
-    _order.groupCode = groupOrder.groupCode;
-    $("#client_id").val(_order.groupCode);
-
-    // Trạng thái đơn hàng
-    if (groupOrder.status == OrderStatusEnum.Done) {
-        let $btnRegister = $("#btnRegister");
-        
-        $btnRegister.removeAttr("disabled");
-        $btnRegister.html('<i class="fa fa-upload" aria-hidden="true"></i> Đồng bộ đơn hàng (F3)');
-    }
-
-    // Hình thức thanh toán
-    _paymentMethod = groupOrder.paymentMethod;
 }
 
 /**
  * Cài đặt thông tin đơn hàng
  * @param order Thông tin đơn hàng
  */
- function _initOrderInfo(order) {
+function _initOrderInfo(order) {
+    // Mã đơn hàng gộp
+    if (order.groupCode)
+    {
+        _order.groupOrderCode = order.groupCode;
+        $("#client_id").val(_order.groupOrderCode);
+    }
+
     // Mã đơn hàng
-    _order.id = order.id;
-    $("#client_id").val(_order.id);
+    if (order.id)
+    {
+        _order.orderId = order.id;
+        $("#client_id").val(_order.orderId);
+    }
 
     // Trạng thái đơn hàng
     if (order.status == OrderStatusEnum.Done) {
         let $btnRegister = $("#btnRegister");
-        
+
         $btnRegister.removeAttr("disabled");
         $btnRegister.html('<i class="fa fa-upload" aria-hidden="true"></i> Đồng bộ đơn hàng (F3)');
     }
 
     // Hình thức thanh toán
     _paymentMethod = order.paymentMethod;
-}
 
-/**
- * Cài đặt thông tin trọng lượng đơn hàng và trọng lượng tối thiểu
- * @param order Dữ liệu phản hồi từ API lấy thông tin đăng ký GHTK
- */
- function _initWeight(order) {
+    // Trọng lượng đơn hàng
     if (order.weight > 0)
         $("#weight").val(order.weight).trigger('blur');
-}
 
-/**
- * Cài đặt giá trị của đơn hàng và số tiền thu hộ
- * @param order Dữ liệu phản hồi từ API lấy thông tin đăng ký GHTK
- */
- function _initOrderValue(order) {
     // Giá trị của đơn hàng
     _order.price = order.price;
 
     // Tiền thu hộ
-    $("#cod").val(_formatThousand(order.cod));
-    _order.cod = order.cod - order.shopFee; // trừ phí ship của shop để tính lại ở phía dưới
+    $("#cod").val(UtilsService.formatThousands(order.cod, ','));
+    _order.cod = order.cod - order.fee; // trừ phí ship của shop để tính lại ở phía dưới
 
     // Có phí trong đơn hàng
-    if (order.shopFee) {
-        _shopFee = order.shopFee;
+    if (order.fee) {
+        _shopFee = order.fee;
 
         $("#divFeeShop").show();
-        $("#labelFeeShop").html(_formatThousand(_shopFee));
+        $("#labelFeeShop").html(UtilsService.formatThousands(_shopFee, ','));
         $("#fee_entered").prop('checked', true).trigger('change');
 
         if (_paymentMethod != PaymentMethodEnum.CashCollection) {
@@ -400,12 +378,12 @@ function _initDeliveryAddress(customer) {
  * Lấy thông tin đơn hàng gộp để đăng ký GHTK
  * @param groupOrderCode Mã đơn hàng gộp shop ANN
  */
- function _initGroupOrder(groupOrderCode) {
+function _initGroupOrder(groupCode) {
     let titleAlert = "Lấy thông tin đơn hàng gộp";
 
     $.ajax({
         method: 'GET',
-        url: "/api/v1/group-order/" + groupOrderCode + "/jt-express",
+        url: "/api/v1/group-order/" + groupCode + "/jt-express",
         beforeSend: function () {
             HoldOn.open();
         },
@@ -418,16 +396,9 @@ function _initDeliveryAddress(customer) {
             if (data.customer)
                 _initDeliveryAddress(data.customer);
 
-            // Thông tin về đơn hàng gộp
-            if (data.groupOrder) 
-                _initGroupOrderInfo(data.groupOrder);              
+            if (data.order)
+                _initOrderInfo(data.order);
 
-            // Trọng lượng đơn hàng
-            _initWeight(data)
-
-            // Giá trị đơn hàng và tiền thu hộ
-            _initOrderValue(data);
-            
             // Chú thích đơn hàng
             if (data.note)
                 $("#note").val(data.note).trigger('change');
@@ -443,14 +414,14 @@ function _initDeliveryAddress(customer) {
 
 /**
  * Lấy thông tin đơn hàng để đăng ký GHTK
- * @param orderId ID đơn hàng shop ANN 
+ * @param orderId ID đơn hàng shop ANN
  */
- function _initOrder(orderId) {
+function _initOrder(id) {
     let titleAlert = "Lấy thông tin đơn hàng";
 
     $.ajax({
         method: 'GET',
-        url: "/api/v1/order/" + orderId + "/jt-express",
+        url: "/api/v1/order/" + id + "/jt-express",
         beforeSend: function () {
             HoldOn.open();
         },
@@ -463,16 +434,9 @@ function _initDeliveryAddress(customer) {
             if (data.customer)
                 _initDeliveryAddress(data.customer);
 
-            // Thông tin về đơn hàng
-            if (data.order) 
-                _initOrderInfo(data.order);              
+            if (data.order)
+                _initOrderInfo(data.order);
 
-            // Trọng lượng đơn hàng
-            _initWeight(data)
-
-            // Giá trị đơn hàng và tiền thu hộ
-            _initOrderValue(data);
-            
             // Chú thích đơn hàng
             if (data.note)
                 $("#note").val(data.note).trigger('change');
@@ -487,9 +451,11 @@ function _initDeliveryAddress(customer) {
 }
 
 function _initPage() {
+    let urlParams = new URLSearchParams(window.location.search);
+
     //#region Cài đặt trọng lượng mặc định cho sản phẩm
     let weight = +urlParams.get('weight') || _weight_min;
-    
+
     if (weight > 0)
         $("#weight").val(weight).trigger('blur');
     //#endregion
@@ -498,15 +464,14 @@ function _initPage() {
     $("#pick_address").val('133 Đường C12');
 
     //#region Lấy thông tin query parameter
-    let urlParams = new URLSearchParams(window.location.search);
     let orderId = 0;
     let groupOrderCode = '';
 
-    if (urlParams.get('orderID')) 
+    if (urlParams.get('orderID'))
         orderId =  +urlParams.get('orderID') || 0;
 
-    if (urlParams.get('groupOrderCode'))
-        groupOrderCode = urlParams.get('groupOrderCode').trim();
+    if (urlParams.get('groupCode'))
+        groupOrderCode = urlParams.get('groupCode').trim();
     //#endregion
 
     //#region Kiểm tra thông tin query parameter
@@ -676,7 +641,7 @@ function _calculateFee() {
 
                         // Phí J&T Express
                         _fee = newFee;
-                        $fee.html(_formatThousand(_fee));
+                        $fee.html(UtilsService.formatThousands(_fee, ','));
 
                         if (_fee != _shopFee) {
                             $divFee.removeClass("hide");
@@ -742,9 +707,9 @@ function _calculateMoney() {
     if (_paymentMethod == PaymentMethodEnum.CashCollection)
     {
         _order.cod = _order.price;
-        $cod.val(_formatThousand(_order.price));
+        $cod.val(UtilsService.formatThousands(_order.price, ','));
     }
-    else 
+    else
     {
         _order.cod = 0;
         $cod.val(0);
@@ -753,6 +718,8 @@ function _calculateMoney() {
 
 function _submit() {
     let titleAlert = "Đồng bộ J&T Express";
+
+    _order.shopFee = _shopFee;
 
     $.ajax({
         method: 'POST',
@@ -779,8 +746,7 @@ function _submit() {
                     }, function (confirm) {
                         if (confirm) {
                             sweetAlert.close();
-                            let code = response.data.code;
-                            window.location.href = "/print-jt-express?code=" + code;
+                            window.location.href = "/print-jt-express?code=" + response.data.code;
                         }
                         else {
                             window.close();
@@ -815,12 +781,6 @@ function _alterError(title, responseJSON) {
         type: "error",
         html: true
     });
-}
-
-function _formatThousand(value) {
-    nfObject = new Intl.NumberFormat('en-US');
-
-    return nfObject.format(value);
 }
 
 function _disabledDDLDistrict(disabled) {

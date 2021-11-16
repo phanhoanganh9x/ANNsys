@@ -303,14 +303,8 @@ function _createReportTableHTML(data) {
                             html += "           >";
                             html += "               <i class='fa fa-upload' aria-hidden='true'></i>";
                             html += "           </a>";
-
                         }
                         else {
-                            html += "           <a href='/print-jt-express?groupCode=" + order.code + "' target='_blank' ";
-                            html += "              title='In phiếu gửi hàng' ";
-                            html += "              class='btn primary-btn btn-blue h45-btn' ";
-                            html += "           >";
-                            html += "               <i class='fa fa-file-text-o' aria-hidden='true'></i>";
                             html += "           </a>";
                             html += "           <a href='javascript:;'";
                             html += "              title='Hủy đơn JT Express' ";
@@ -319,6 +313,11 @@ function _createReportTableHTML(data) {
                             html += "           >";
                             html += "               <i class='fa fa-trash' aria-hidden='true'></i>";
                             html += "           </a>";
+                            html += "           <a href='/print-jt-express?code=" + order.shippingCode + "' target='_blank' ";
+                            html += "              title='In phiếu gửi hàng' ";
+                            html += "              class='btn primary-btn btn-blue h45-btn' ";
+                            html += "           >";
+                            html += "               <i class='fa fa-file-text-o' aria-hidden='true'></i>";
                         }
 
                         break;

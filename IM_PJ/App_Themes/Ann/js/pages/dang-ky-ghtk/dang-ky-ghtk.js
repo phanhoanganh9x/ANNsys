@@ -499,12 +499,12 @@ function _initNote() {
  * Lấy thông tin đơn hàng gộp để đăng ký GHTK
  * @param groupOrderCode Mã đơn hàng gộp shop ANN
  */
- function _initGroupOrder(groupOrderCode) {
+function _initGroupOrder(groupCode) {
     let titleAlert = "Lấy thông tin đơn hàng gộp";
 
     $.ajax({
         method: 'GET',
-        url: "/api/v1/group-order/" + groupOrderCode + "/delivery-save",
+        url: "/api/v1/group-order/" + groupCode + "/delivery-save",
         beforeSend: function () {
             HoldOn.open();
         },
@@ -537,12 +537,12 @@ function _initNote() {
  * Lấy thông tin đơn hàng để đăng ký GHTK
  * @param orderId ID đơn hàng shop ANN
  */
-function _initOrder(orderId) {
+function _initOrder(id) {
     let titleAlert = "Lấy thông tin đơn hàng";
 
     $.ajax({
         method: 'GET',
-        url: "/api/v1/order/" + orderId + "/delivery-save",
+        url: "/api/v1/order/" + id + "/delivery-save",
         beforeSend: function () {
             HoldOn.open();
         },

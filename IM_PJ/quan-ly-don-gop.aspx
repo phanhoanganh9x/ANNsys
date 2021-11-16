@@ -5,7 +5,7 @@
     <script src="/Scripts/moment.min.js"></script>
     <script src="/Scripts/moment-with-locales.min.js"></script>
     <script src="/Scripts/bootstrap-datetimepicker.min.js"></script>
-    <link rel="stylesheet" href="App_Themes/Ann/css/pages/quan-ly-don-gop/quan-ly-don-gop.css?v=202111091752" />
+    <link rel="stylesheet" href="App_Themes/Ann/css/pages/quan-ly-don-gop/quan-ly-don-gop.css?v=202111161836" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
@@ -77,10 +77,10 @@
         <asp:HiddenField ID="hdfStaff" runat="server"/>
 
         <%-- Javascript --%>
-        <script type="text/javascript" src="/App_Themes/Ann/js/utils/string-format.js?v=202111091752"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=202111091752"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/services/quan-ly-don-gop/quan-ly-don-gop-service.js?v=202111091752"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/controllers/quan-ly-don-gop/quan-ly-don-gop-controller.js?v=202111091752"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/pages/quan-ly-don-gop/quan-ly-don-gop.js?v=202111091752"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/utils/string-format.js?v=202111161836"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=202111161836"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/services/quan-ly-don-gop/quan-ly-don-gop-service.js?v=202111161836"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/controllers/quan-ly-don-gop/quan-ly-don-gop-controller.js?v=202111161836"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/pages/quan-ly-don-gop/quan-ly-don-gop.js?v=202111161836"></script>
     </main>
 </asp:Content>
