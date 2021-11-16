@@ -922,10 +922,12 @@ namespace IM_PJ.Controllers
             sql.AppendLine("BEGIN");
             #region Khai báo biến phân trang
             sql.AppendLine(String.Empty);
-            sql.AppendLine("    DECLARE @totalCount int = 0;");
-            sql.AppendLine(String.Format("    DECLARE @pageSize int = {0};", page.pageSize));
-            sql.AppendLine(String.Format("    DECLARE @currentPage int = {0};", page.currentPage));
-            sql.AppendLine("    DECLARE @totalPages int = 0;");
+            sql.AppendLine("    DECLARE");
+            sql.AppendLine("        @totalCount int = 0;");
+            sql.AppendLine(String.Format("    ,   @pageSize int = {0}", page.pageSize));
+            sql.AppendLine(String.Format("    ,   @currentPage int = {0}", page.currentPage));
+            sql.AppendLine("    ,   @totalPages int = 0");
+            sql.AppendLine("    ;");
             #endregion
 
             #region Lấy id category (gồm của category cha and con)
@@ -942,7 +944,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("        FROM");
                 sql.AppendLine("            tbl_Category");
                 sql.AppendLine("        WHERE");
-                sql.AppendLine("            ID = " + filter.category);
+                sql.AppendLine(String.Format("            ID = {0}", filter.category));
                 sql.AppendLine(String.Empty);
                 sql.AppendLine("        UNION ALL");
                 sql.AppendLine(String.Empty);
@@ -971,6 +973,8 @@ namespace IM_PJ.Controllers
             // Filter by color product
             if (!String.IsNullOrEmpty(filter.color))
             {
+                filter.color = filter.color.ToUpper();
+
                 sql.AppendLine(String.Empty);
                 sql.AppendLine("    With VariableValue AS (");
                 sql.AppendLine("        SELECT");
@@ -979,7 +983,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("            tbl_VariableValue");
                 sql.AppendLine("        WHERE");
                 sql.AppendLine("            VariableID = 1");
-                sql.AppendLine(String.Format("            AND LOWER(VariableValue) LIKE N'%{0}%'", filter.color.ToLower()));
+                sql.AppendLine(String.Format("            AND UPPER(VariableValue) = N'{0}'", filter.color));
                 sql.AppendLine("    )");
                 sql.AppendLine("    SELECT");
                 sql.AppendLine("        PVA.ProductID AS ID");
@@ -1007,6 +1011,8 @@ namespace IM_PJ.Controllers
             // Filter by size product
             if (!String.IsNullOrEmpty(filter.size))
             {
+                filter.size = filter.size.ToUpper();
+
                 sql.AppendLine(String.Empty);
                 sql.AppendLine("    With VariableValue AS (");
                 sql.AppendLine("        SELECT");
@@ -1015,7 +1021,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("            tbl_VariableValue");
                 sql.AppendLine("        WHERE");
                 sql.AppendLine("            VariableID = 2");
-                sql.AppendLine(String.Format("            AND  LOWER(VariableValue) LIKE N'%{0}%'", filter.size.ToLower()));
+                sql.AppendLine(String.Format("            AND  UPPER(VariableValue) = N'{0}'", filter.size));
                 sql.AppendLine("    )");
                 sql.AppendLine("    SELECT");
                 sql.AppendLine("        PVA.ProductID AS ID");
@@ -1043,7 +1049,27 @@ namespace IM_PJ.Controllers
             #region Trích xuất dữ liệu chính
             sql.AppendLine(String.Empty);
             sql.AppendLine("    SELECT");
-            sql.AppendLine("        PRD.*");
+            sql.AppendLine("        PRD.CategoryID");
+            sql.AppendLine("    ,   PRD.ProductStyle");
+            sql.AppendLine("    ,   PRD.ID");
+            sql.AppendLine("    ,   PRD.ProductSKU");
+            sql.AppendLine("    ,   PRD.ProductTitle");
+            sql.AppendLine("    ,   PRD.ProductImage");
+            sql.AppendLine("    ,   PRD.ProductImageClean");
+            sql.AppendLine("    ,   PRD.CostOfGood");
+            sql.AppendLine("    ,   PRD.Regular_Price");
+            sql.AppendLine("    ,   PRD.Old_Price");
+            sql.AppendLine("    ,   PRD.Retail_Price");
+            sql.AppendLine("    ,   PRD.Price10");
+            sql.AppendLine("    ,   PRD.BestPrice");
+            sql.AppendLine("    ,   PRD.ProductContent");
+            sql.AppendLine("    ,   PRD.Materials");
+            sql.AppendLine("    ,   PRD.PreOrder");
+            sql.AppendLine("    ,   PRD.ShowHomePage");
+            sql.AppendLine("    ,   PRD.WebPublish");
+            sql.AppendLine("    ,   PRD.WebUpdate");
+            sql.AppendLine("    ,   PRD.IsHidden");
+            sql.AppendLine("    ,   PRD.CreatedDate");
             sql.AppendLine("    INTO #Product");
             sql.AppendLine("    FROM");
             sql.AppendLine("        tbl_Product AS PRD");
@@ -1053,13 +1079,24 @@ namespace IM_PJ.Controllers
             #region Loc theo từ khóa (Tên sản phẩm, SKU, màu)
             if (!string.IsNullOrEmpty(filter.search))
             {
-                sql.AppendLine("        AND (");
-                sql.AppendLine(String.Format("            PRD.ProductSKU like N'%{0}%'", filter.search));
-                sql.AppendLine(String.Format("            OR PRD.ProductTitle like N'%{0}%'", filter.search));
-                sql.AppendLine(String.Format("            OR PRD.UnSignedTitle like N'%{0}%'", filter.search));
-                sql.AppendLine(String.Format("            OR PRD.Materials like N'%{0}%'", filter.search));
-                sql.AppendLine(String.Format("            OR PRD.ProductContent like N'%{0}%'", filter.search));
-                sql.AppendLine("        )");
+                filter.search = filter.search.ToUpper();
+                
+                var letters = filter.search
+                    .Split(' ')
+                    .Where(x => !String.IsNullOrEmpty(x))
+                    .ToList();
+
+                if (letters.Count == 1)
+                    sql.AppendLine(String.Format("        AND UPPER(PRD.ProductSKU) like N'{0}%'", filter.search));
+                else
+                {
+                    sql.AppendLine("        AND (");
+                    sql.AppendLine(String.Format("            UPPER(PRD.CleanName) like N'%{0}%'", filter.search));
+                    sql.AppendLine(String.Format("            OR UPPER(PRD.ProductTitle) like N'%{0}%'", filter.search));
+                    sql.AppendLine(String.Format("            OR UPPER(PRD.UnSignedTitle) like N'%{0}%'", filter.search));
+                    sql.AppendLine(String.Format("            OR UPPER(PRD.Materials) like N'%{0}%'", filter.search));
+                    sql.AppendLine("        )");
+                }
             }
             #endregion
 
@@ -1090,6 +1127,7 @@ namespace IM_PJ.Controllers
             {
                 DateTime fromdate = DateTime.Today;
                 DateTime todate = DateTime.Now;
+                
                 switch (filter.productDate)
                 {
                     case "today":
@@ -1126,6 +1164,8 @@ namespace IM_PJ.Controllers
                         fromdate = DateTime.Today.AddDays(-29);
                         todate = DateTime.Now;
                         break;
+                    default:
+                        break;
                 }
 
                 sql.AppendLine(String.Format("        AND CONVERT(NVARCHAR(10), PRD.CreatedDate, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121)", fromdate, todate));
@@ -1138,17 +1178,13 @@ namespace IM_PJ.Controllers
             #region Lọc sản phẩm theo màu
             if (!String.IsNullOrEmpty(filter.color))
             {
-                sql.AppendLine("        AND (");
-                sql.AppendLine(String.Format("            LOWER(PRD.ProductTitle) like N'%{0}%'", filter.color.ToLower()));
-                sql.AppendLine(String.Format("            OR LOWER(PRD.Color) like N'%{0}%'", filter.color.ToLower()));
-                sql.AppendLine("            OR EXISTS (");
-                sql.AppendLine("                SELECT");
-                sql.AppendLine("                    NULL AS DUMMY");
-                sql.AppendLine("                FROM");
-                sql.AppendLine("                    #ProductColor AS PRC");
-                sql.AppendLine("                WHERE");
-                sql.AppendLine("                    PRD.ID = PRC.ID");
-                sql.AppendLine("            )");
+                sql.AppendLine("        AND EXISTS (");
+                sql.AppendLine("            SELECT");
+                sql.AppendLine("                NULL AS DUMMY");
+                sql.AppendLine("            FROM");
+                sql.AppendLine("                #ProductColor AS PRC");
+                sql.AppendLine("            WHERE");
+                sql.AppendLine("                PRD.ID = PRC.ID");
                 sql.AppendLine("        )");
             }
             #endregion
@@ -1172,18 +1208,18 @@ namespace IM_PJ.Controllers
             {
                 sql.AppendLine("        AND EXISTS(");
                 sql.AppendLine("            SELECT");
-                sql.AppendLine("                    NULL AS DUMMY");
+                sql.AppendLine("                NULL AS DUMMY");
                 sql.AppendLine("            FROM");
-                sql.AppendLine("                    #Category");
+                sql.AppendLine("                #Category");
                 sql.AppendLine("            WHERE");
-                sql.AppendLine("                    ID = PRD.CategoryID");
+                sql.AppendLine("                PRD.ID = PRD.CategoryID");
                 sql.AppendLine("        )");
             }
             #endregion
 
             #region Lọc theo sản phẩm Order
             if (!String.IsNullOrEmpty(filter.preOrder))
-                sql.AppendLine(String.Format("        AND PRD.PreOrder = '{0}'", filter.preOrder));
+                sql.AppendLine(String.Format("        AND PRD.PreOrder = {0}", filter.preOrder));
             #endregion
 
             #region Lọc theo sản phẩm được phép đồng bộ lên KiotViet
@@ -1191,8 +1227,6 @@ namespace IM_PJ.Controllers
                 sql.AppendLine(String.Format("        AND PRD.SyncKiotViet = {0}", filter.syncKiotViet.Value ? 1 : 0));
             #endregion
 
-            sql.AppendLine("    ORDER BY");
-            sql.AppendLine("         PRD.ID");
             sql.AppendLine("    ;");
             sql.AppendLine(String.Empty);
             sql.AppendLine("    CREATE INDEX [ID_PROCDUCT] ON #Product([ID] DESC)");
@@ -1464,7 +1498,6 @@ namespace IM_PJ.Controllers
             sql.AppendLine("    ORDER BY");
 
             if (!String.IsNullOrEmpty(filter.orderBy))
-            {
                 switch (filter.orderBy)
                 {
                     case ProductOrderBy.latestOnApp:
@@ -1483,11 +1516,8 @@ namespace IM_PJ.Controllers
                         sql.AppendLine("        PRD.ID DESC");
                         break;
                 }
-            }
             else
-            {
                 sql.AppendLine("        PRD.ID DESC");
-            }
             #endregion
 
             sql.AppendLine("    OFFSET @pageSize * (@currentPage - 1) ROWS");
@@ -1571,37 +1601,6 @@ namespace IM_PJ.Controllers
             sql.AppendLine("        ON CTG.ID = PDP.CategoryID");
             sql.AppendLine("    LEFT JOIN #ProductVideo AS PDV");
             sql.AppendLine("        ON PDP.Id = PDV.ProductId");
-
-            #region Thực hiện sort kết quả
-            sql.AppendLine("    ORDER BY");
-
-            if (!String.IsNullOrEmpty(filter.orderBy))
-            {
-                switch (filter.orderBy)
-                {
-                    case ProductOrderBy.latestOnApp:
-                        sql.AppendLine("        PDP.WebUpdate DESC");
-                        break;
-                    case ProductOrderBy.latestOnSystem:
-                        sql.AppendLine("        PDP.ID DESC");
-                        break;
-                    case ProductOrderBy.stockDesc:
-                        sql.AppendLine("        ISNULL(PRQ.QuantityLeft, 0) DESC");
-                        break;
-                    case ProductOrderBy.stockAsc:
-                        sql.AppendLine("        ISNULL(PRQ.QuantityLeft, 0) ASC");
-                        break;
-                    default:
-                        sql.AppendLine("        PDP.ID DESC");
-                        break;
-                }
-            }
-            else
-            {
-                sql.AppendLine("        PDP.ID DESC");
-            }
-            #endregion
-
             sql.AppendLine("    ;");
             #endregion
 
