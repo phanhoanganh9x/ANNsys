@@ -12,7 +12,7 @@
         this.pagination = {
             nextPage: 'No',
             page: 1,
-            pageSize: 2,
+            pageSize: 30,
             previousPage: 'No',
             totalCount: 0,
             totalPages: 1,
