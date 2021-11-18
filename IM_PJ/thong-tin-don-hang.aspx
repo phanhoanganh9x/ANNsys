@@ -3257,8 +3257,8 @@
                     method: 'POST',
                     contentType: 'application/json',
                     dataType: "json",
-                    data: JSON.stringify({ code: code, orderId: orderId}),
-                    url: "/api/v1/delivery-save/order/cancel",
+                    data: JSON.stringify({ orderId: orderId }),
+                    url: "/api/v1/delivery-save/order/" + code + "/cancel",
                     beforeSend: function () {
                         HoldOn.open();
                     },
@@ -3740,8 +3740,8 @@
                     method: 'POST',
                     contentType: 'application/json',
                     dataType: "json",
-                    data: JSON.stringify({ code: code, orderId: orderId }),
-                    url: "/api/v1/jt-express/order/cancel",
+                    data: JSON.stringify({ orderId: orderId }),
+                    url: "/api/v1/jt-express/order/" + code + "/cancel",
                     beforeSend: function () {
                         HoldOn.open();
                     },

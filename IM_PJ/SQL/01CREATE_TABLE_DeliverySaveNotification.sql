@@ -63,3 +63,20 @@ GO
 
 EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ngày nhân viên hoàn tất đơn hàng' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'DeliverySaveNotification', @level2type=N'COLUMN',@level2name=N'OrderDate'
 GO
+
+-- 2021-10-19: Đối ứng trường hợp đơn hàng nhóm của shop ANN
+ALTER TABLE [dbo].[DeliverySaveNotification]
+DROP CONSTRAINT [PK_DeliverySaveNotification]
+
+ALTER TABLE [dbo].[DeliverySaveNotification]
+ADD CONSTRAINT [PK_DeliverySaveNotification] PRIMARY KEY ([GhtkCode] ASC)
+
+ALTER TABLE [dbo].[DeliverySaveNotification]
+ALTER COLUMN [OrderId] [int] NULL
+
+ALTER TABLE [dbo].[DeliverySaveNotification]
+ADD [GroupOrderCode] [nvarchar](6) NULL
+
+ALTER TABLE [dbo].[DeliverySaveNotification]  WITH CHECK ADD  CONSTRAINT [FK_DeliverySaveNotification_GroupOrder] FOREIGN KEY([GroupOrderCode])
+REFERENCES [dbo].[GroupOrder] ([Code])
+GO

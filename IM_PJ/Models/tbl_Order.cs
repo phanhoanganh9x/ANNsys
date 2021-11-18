@@ -72,6 +72,7 @@ namespace IM_PJ.Models
         public string Avatar { get; set; }
         public Nullable<long> DeliveryAddressId { get; set; }
         public byte[] Timestamp { get; set; }
+        public string GroupCode { get; set; }
     
         public virtual DeliveryAddress DeliveryAddress { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -80,5 +81,6 @@ namespace IM_PJ.Models
         public virtual ICollection<JtExpressOrder> JtExpressOrders { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ViewOrder> ViewOrders { get; set; }
+        public virtual GroupOrder GroupOrder { get; set; }
     }
 }

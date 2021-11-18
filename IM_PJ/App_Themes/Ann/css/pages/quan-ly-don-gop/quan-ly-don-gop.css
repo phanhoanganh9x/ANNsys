@@ -1,0 +1,55 @@
+table > thead > tr > th.col-code {
+    width: 6%
+}
+
+table > thead > tr > th.col-customer {
+    width: 20%
+}
+
+table > thead > tr > th.col-quantity {
+    width: 8%
+}
+
+table > thead > tr > th.col-status {
+    width: 10%
+}
+
+table > thead > tr > th.col-payment-status {
+    width: 10%
+}
+
+table > thead > tr > th.col-payment-method {
+    width: 10%
+}
+
+table > thead > tr > th.col-delivery-method {
+    width: 10%
+}
+
+table > thead > tr > th.col-total-price {
+    width: 8%
+}
+
+table > thead > tr > th.col-created-date {
+    width: 8%
+}
+
+table > thead > tr > th.col-btn {
+    width: 10%
+}
+
+.table > tbody > tr:nth-of-type(2n + 1) td {
+  background-color: #ffffff;
+}
+
+.table > tbody > tr:nth-of-type(4n+1) td {
+   background-color: #f8f8f8;
+}
+
+.table > tbody > tr:nth-of-type(4n+2) td {
+   background-color: #f8f8f8;
+}
+
+.table > tbody > tr.row-data > td:last-child .btn {
+    margin-bottom: 5px;
+}

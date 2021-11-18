@@ -120,5 +120,6 @@ namespace IM_PJ.Models
         public virtual DbSet<ViewOrder> ViewOrders { get; set; }
         public virtual DbSet<WebWordpress> WebWordpresses { get; set; }
         public virtual DbSet<ZaloIndustry> ZaloIndustries { get; set; }
+        public virtual DbSet<GroupOrder> GroupOrders { get; set; }
     }
 }

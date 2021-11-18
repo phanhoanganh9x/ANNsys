@@ -14,6 +14,12 @@ namespace IM_PJ.Models
     
     public partial class tbl_Customer
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public tbl_Customer()
+        {
+            this.GroupOrders = new HashSet<GroupOrder>();
+        }
+    
         public int ID { get; set; }
         public string Nick { get; set; }
         public string CustomerName { get; set; }
@@ -43,5 +49,8 @@ namespace IM_PJ.Models
         public Nullable<int> DistrictId { get; set; }
         public Nullable<int> WardId { get; set; }
         public Nullable<int> SendSMSIntroApp { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GroupOrder> GroupOrders { get; set; }
     }
 }

@@ -56,3 +56,23 @@ GO
 
 ALTER TABLE [dbo].[JtExpressOrder] CHECK CONSTRAINT [FK_JtExpressOrder_tbl_Order]
 GO
+
+-- 2021-10-19: Đối ứng trường hợp đơn hàng nhóm của shop ANN
+ALTER TABLE [dbo].[JtExpressOrder]
+DROP CONSTRAINT [PK_JtExpressOrder]
+
+ALTER TABLE [dbo].[JtExpressOrder]
+ADD CONSTRAINT [PK_JtExpressOrder] PRIMARY KEY ([Code] ASC)
+
+ALTER TABLE [dbo].[JtExpressOrder]
+ALTER COLUMN [OrderId] [int] NULL
+
+ALTER TABLE [dbo].[JtExpressOrder]
+ADD [GroupOrderCode] [nvarchar](6) NULL
+
+ALTER TABLE [dbo].[JtExpressOrder]  WITH CHECK ADD  CONSTRAINT [FK_JtExpressOrder_GroupOrder] FOREIGN KEY([GroupOrderCode])
+REFERENCES [dbo].[GroupOrder] ([Code])
+GO
+
+ALTER TABLE [dbo].[JtExpressOrder] CHECK CONSTRAINT [FK_JtExpressOrder_GroupOrder]
+GO

@@ -1,0 +1,76 @@
+﻿.btn-add {
+    padding-top: 15px;
+    height: 46.2px;
+}
+
+table > thead > tr > th.col-index {
+    width: 3%
+}
+
+table > thead > tr > th.col-order-id {
+    width: 5%
+}
+
+table > thead > tr > th.col-customer {
+    width: 13%
+}
+
+table > thead > tr > th.col-quatity {
+    width: 7%
+}
+
+table > thead > tr > th.col-order-status {
+    width: 8%
+}
+
+table > thead > tr > th.col-payment-status {
+    width: 8%
+}
+
+table > thead > tr > th.col-payment-method {
+    width: 10%
+}
+
+table > thead > tr > th.col-delivery-method {
+    width: 10%
+}
+
+table > thead > tr > th.col-total-price {
+    width: 6%
+}
+
+table > thead > tr > th.col-staff {
+    width: 8%
+}
+
+table > thead > tr > th.col-created-date {
+    width: 9%
+}
+
+table > thead > tr > th.col-done-date {
+    width: 9%
+}
+
+table > thead > tr > th.col-btn {
+    width: 4%
+}
+
+.table > tbody > tr:nth-of-type(2n + 1) td {
+    background-color: #ffffff;
+}
+
+.table > tbody > tr:nth-of-type(4n+1) td {
+    background-color: #f8f8f8;
+}
+
+.table > tbody > tr:nth-of-type(4n+2) td {
+    background-color: #f8f8f8;
+}
+
+.table > tbody > tr.row-info > td {
+    border-top: none
+}
+
+.table > tbody > tr.row-info > td:last-child {
+    border-right: none
+}

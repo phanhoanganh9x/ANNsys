@@ -18,6 +18,7 @@ namespace IM_PJ.Models
         public OrderStatu()
         {
             this.DeliveryManagers = new HashSet<DeliveryManager>();
+            this.GroupOrders = new HashSet<GroupOrder>();
         }
     
         public int Id { get; set; }
@@ -28,5 +29,7 @@ namespace IM_PJ.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DeliveryManager> DeliveryManagers { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GroupOrder> GroupOrders { get; set; }
     }
 }

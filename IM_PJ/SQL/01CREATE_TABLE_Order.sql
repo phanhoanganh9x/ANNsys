@@ -29,3 +29,14 @@ GO
 
 ALTER TABLE [dbo].[tbl_Order] DROP COLUMN [GhtkInsuranceFee]
 GO
+
+
+-- 2021-10-14: Thêm cột mã code gộp đơn
+ALTER TABLE [dbo].[tbl_Order] ADD [GroupCode] NVARCHAR(6) NULL;
+
+ALTER TABLE [dbo].[tbl_Order]  WITH CHECK ADD  CONSTRAINT [FK_tbl_Order_GroupOrder] FOREIGN KEY([GroupCode])
+REFERENCES [dbo].[GroupOrder] ([Code])
+GO
+
+ALTER TABLE [dbo].[tbl_Order] CHECK CONSTRAINT [FK_tbl_Order_GroupOrder]
+GO
