@@ -2,12 +2,17 @@
     "Done": 2, // Đã hoàn tất
 };
 
+const FeeTypeEnum = {
+    "JtExpress": 1, // Phí GHTK
+    "Shop": 2  // Phí nhân viên tính
+}
+
 const PaymentMethodEnum = {
     "Cash": 1,              // Tiền mặt
     "CashCollection": 3,    // Thu hộ
 }
 
-let _feeShipment, // Dùng để lấy trạng thái trước của radio Shipment
+let _feeType, // Dùng để lấy trạng thái trước của radio Shipment
     _fee,
     _shopFee,
     _paymentMethod,
@@ -40,7 +45,7 @@ function _initParameterLocal() {
     _weight_min = 0.3;
 
     // Fee Ship
-    _feeShipment = 2;
+    _feeType = FeeTypeEnum.JtExpress;
     _fee = 0;
     _shopFee = 0;
 
@@ -587,139 +592,131 @@ function _checkSubmit() {
     _submit();
 }
 
-function _calculateFee() {
+function _handleFee(fee) {
     let $divFee = $("#divFee");
     let $fee = $("#feeship");
     let $labelShopFeeTitle = $("#labelShopFeeTitle");
     let $rdShopFee = $("#fee_entered");
 
-    if (!_order.customer.ward) {
-        _fee = 0;
+    switch (_feeType) {
+        case FeeTypeEnum.JtExpress:
+            _order.cod = _order.cod - _fee;
+            _order.price = _order.price - _fee;
 
-        // Phí J&T Express
-        $divFee.addClass("hiden");
-        $fee.html("0");
+            break;
+        case FeeTypeEnum.Shop:
+            _order.cod = _paymentMethod == PaymentMethodEnum.CashCollection
+                ? (_order.cod - _shopFee)
+                : 0;
+            _order.price = _order.price - _shopFee;
 
-        // Phí shop
+            break;
+        default:
+            break;
+    }
+
+    // Phí J&T Express
+    _fee = fee;
+    $fee.html(UtilsService.formatThousands(_fee, ','));
+
+    if (_fee != _shopFee) {
+        $divFee.removeClass("hide");
+
+        $labelShopFeeTitle.text("Phí nhân viên tính");
+        $rdShopFee.parent().show();
+    }
+    else {
+        $divFee.addClass("hide");
+
         $labelShopFeeTitle.text("Phí");
         $rdShopFee.parent().hide();
     }
-    else {
-        let url = "/api/v1/jt-express/fee",
-          query = "";
 
-        if (_order.customer.ward)
-            query += "&ward=" + _order.customer.ward;
-        if (_order.price)
-            query += "&price=" + _order.price.toString();
-        if (_order.cod)
-            query += "&cod=" + _order.cod.toString();
+    // Tính toán lại tiền thu hộ
+    _calculateMoney();
+}
 
-        query += "&weight=" + (+_order.weight || _weight_min);
+function _getJtExpressFee(callback) {
+    let url = "/api/v1/jt-express/fee",
+        query = "";
 
-        if (query)
-            url = url + "?" + query.substring(1);
+    if (_order.customer.ward)
+        query += "&ward=" + _order.customer.ward;
+    if (_order.price)
+        query += "&price=" + _order.price.toString();
+    if (_order.cod)
+        query += "&cod=" + _order.cod.toString();
 
-        let titleAlert = "Tính phí giao hàng";
+    query += "&weight=" + (+_order.weight || _weight_min);
 
-        $.ajax({
-            method: 'GET',
-            url: url,
-            beforeSend: function () {
-                HoldOn.open();
-            },
-            success: function (response, textStatus, xhr) {
-                HoldOn.close();
+    if (query)
+        url = url + "?" + query.substring(1);
 
-                if (xhr.status == 200 && response) {
-                    if (response.success) {
-                        let newFee = response.data.fee;
+    let titleAlert = "Tính phí giao hàng";
 
-                        // Fix bug trường hợp phí thay đổi
-                        if (_feeShipment == 1)
-                            _order.price = _order.price - _fee + newFee;
+    $.ajax({
+        method: 'GET',
+        url: url,
+        beforeSend: function () {
+            HoldOn.open();
+        },
+        success: function (response, textStatus, xhr) {
+            HoldOn.close();
 
-                        // Phí J&T Express
-                        _fee = newFee;
-                        $fee.html(UtilsService.formatThousands(_fee, ','));
-
-                        if (_fee != _shopFee) {
-                            $divFee.removeClass("hide");
-
-                            $labelShopFeeTitle.text("Phí nhân viên tính");
-                            $rdShopFee.parent().show();
-                        }
-                        else {
-                            $divFee.addClass("hide");
-
-                            $labelShopFeeTitle.text("Phí");
-                            $rdShopFee.parent().hide();
-                        }
-
-                        // Tính toán lại tiền thu hộ
-                        _calculateMoney();
-                    }
-                    else {
-                        _alterError(titleAlert, { message: data.message });
-                    }
-                } else {
-                    _alterError(titleAlert);
-                }
-            },
-            error: function () {
-                HoldOn.close();
-
+            if (xhr.status == 200 && response) {
+                if (response.success)
+                    callback(response.data.fee);
+                else
+                    _alterError(titleAlert, { message: data.message });
+            } else {
                 _alterError(titleAlert);
             }
-        });
-    }
+        },
+        error: function () {
+            HoldOn.close();
+
+            _alterError(titleAlert);
+        }
+    });
+}
+
+function _calculateFee() {
+    if (!_order.customer.ward)
+        _handleFee(_shopFee);
+    else
+        _getJtExpressFee(_handleFee);
 }
 
 function _calculateMoney() {
     let $cod = $("#cod");
-    let feeShipment = +$("input:radio[name='feeship']:checked").val() || 2;
+    let feeType = +$("input:radio[name='feeship']:checked").val() || FeeTypeEnum.JtExpress;
 
-    switch (_feeShipment) {
-        case 1:
-            _order.price = _order.price - _fee;
-            break;
-        case 2:
-            _order.price = _order.price - _shopFee;
-            break;
-        default:
-            break;
-    }
-
-    switch (feeShipment) {
-        case 1:
+    switch (feeType) {
+        case FeeTypeEnum.JtExpress:
+            _order.cod = _order.cod + _fee;
             _order.price = _order.price + _fee;
+
             break;
-        case 2:
+        case FeeTypeEnum.Shop:
+            _order.cod = _paymentMethod == PaymentMethodEnum.CashCollection
+                ? (_order.cod + _shopFee)
+                : 0;
             _order.price = _order.price + _shopFee;
+
             break;
         default:
             break;
     }
 
-    _feeShipment = feeShipment;
-    _order.chooseShopFee = _feeShipment == 2;
-
-    if (_paymentMethod == PaymentMethodEnum.CashCollection)
-    {
-        _order.cod = _order.price;
-        $cod.val(UtilsService.formatThousands(_order.price, ','));
-    }
-    else
-    {
-        _order.cod = 0;
-        $cod.val(0);
-    }
+    _feeType = feeType;
+    $cod.val(UtilsService.formatThousands(_order.cod, ','));
 }
 
 function _submit() {
     let titleAlert = "Đồng bộ J&T Express";
 
     _order.shopFee = _shopFee;
+    _order.chooseShopFee = _feeType == FeeTypeEnum.Shop;
 
     $.ajax({
         method: 'POST',

@@ -2,12 +2,17 @@
     "Done": 2, // Đã hoàn tất
 };
 
+const FeeTypeEnum = {
+    "Ghtk": 1, // Phí GHTK
+    "Shop": 2  // Phí nhân viên tính
+}
+
 const PaymentMethodEnum = {
     "Cash": 1, // Tiền mặt
     "CashCollection": 3 // Thu hộ
 }
 
-let _feeShipment, // Dùng để lấy trạng thái trước của radio Shipment
+let _feeType, // Dùng để lấy trạng thái trước của radio Shipment
     _fee,
     _shopFee,
     _order,
@@ -38,8 +43,8 @@ $(document).bind('keydown', function (e) {
 })
 
 function _initParameterLocal() {
-    // Fee Ship
-    _feeShipment = 1;
+    // Fee type
+    _feeType = FeeTypeEnum.Ghtk;
     _fee = 0;
     _shopFee = 0;
 
@@ -456,14 +461,14 @@ function _initNote() {
     if (order.weight > 0)
         $("#weight").val(order.weight).trigger('blur');
 
-     // Giá trị của đơn hàng
+    // Giá trị của đơn hàng
     _order.value = order.price;
 
-     // Tiền thu hộ
+    // Tiền thu hộ
     $("#pick_money").val(UtilsService.formatThousands(order.cod, ','));
     _order.pick_money = order.cod - order.fee; // trừ phí ship của shop để tính lại ở phía dưới
 
-     // Có phí trong đơn hàng
+    // Có phí trong đơn hàng
     if (order.fee) {
         _shopFee = order.fee;
 
@@ -760,149 +765,144 @@ function _checkSubmit() {
     _submit();
 }
 
-function _calculateFee() {
+function _handleFee(fee) {
     let $divFee = $("#divFee");
     let $fee = $("#feeship");
     let $labelShopFeeTitle = $("#labelShopFeeTitle");
     let $rdShopFee = $("#fee_entered");
 
-    if (!_order.pick_province
-        || !_order.pick_district
-        || !_order.province
-        || !_order.district
-        || !_order.ward
-    ) {
-        _fee = 0;
+    switch (_feeType) {
+        case FeeTypeEnum.Ghtk:
+            _order.pick_money = _order.pick_money - _fee;
+            _order.value = _order.value - _fee;
 
-        // Phí GHTK
-        $divFee.addClass("hiden");
-        $fee.html("0");
+            break;
+        case FeeTypeEnum.Shop:
+            _order.pick_money = _paymentMethod == PaymentMethodEnum.CashCollection
+                ? (_order.pick_money - _shopFee)
+                : 0;
+            _order.value = _order.value - _shopFee;
 
-        // Phí shop
+            break;
+        default:
+            break;
+    }
+
+    // Phí GHTK
+    _fee = fee;
+    $fee.html(UtilsService.formatThousands(_fee, ','));
+
+    if (_fee != _shopFee) {
+        $divFee.removeClass("hide");
+
+        $labelShopFeeTitle.text("Phí nhân viên tính");
+        $rdShopFee.parent().show();
+    }
+    else {
+        $divFee.addClass("hide");
+
         $labelShopFeeTitle.text("Phí");
         $rdShopFee.parent().hide();
     }
-    else {
-        let url = "/api/v1/delivery-save/fee",
-          query = "";
 
-        if (_order.pick_address_id)
-            query += "&pick_address_id=" + _order.pick_address_id;
-        if (_order.pick_address)
-            query += "&pick_address=" + _order.pick_address;
-        if (_order.pick_province)
-            query += "&pick_province=" + _order.pick_province;
-        if (_order.pick_district)
-            query += "&pick_district=" + _order.pick_district;
-        if (_order.pick_ward)
-            query += "&pick_ward=" + _order.pick_ward;
-        if (_order.pick_street)
-            query += "&pick_street=" + _order.pick_street;
-        if (_order.address)
-            query += "&address=" + _order.address;
-        if (_order.province)
-            query += "&province=" + _order.province;
-        if (_order.district)
-            query += "&district=" + _order.district;
-        if (_order.ward)
-            query += "&ward=" + _order.ward;
-        if (_order.street)
-            query += "&street=" + _order.street;
-        query += "&weight=" + ((+_product.weight || 0) * 1000);
-        query += "&transport=road";
-        // tính phí có bảo hiểm
-        if ((+_order.value || 0) > 0)
-            query += "&value=" + (+_order.value || 0);
+    // Tính toán lại tiền thu hộ
+    _calculateMoney();
+}
 
-        if (query)
-            url = url + "?" + query.substring(1);
+function _getGhtkFee(callback) {
+    let url = "/api/v1/delivery-save/fee",
+        query = "";
 
-        let titleAlert = "Tính phí giao hàng";
+    if (_order.pick_address_id)
+        query += "&pick_address_id=" + _order.pick_address_id;
+    if (_order.pick_address)
+        query += "&pick_address=" + _order.pick_address;
+    if (_order.pick_province)
+        query += "&pick_province=" + _order.pick_province;
+    if (_order.pick_district)
+        query += "&pick_district=" + _order.pick_district;
+    if (_order.pick_ward)
+        query += "&pick_ward=" + _order.pick_ward;
+    if (_order.pick_street)
+        query += "&pick_street=" + _order.pick_street;
+    if (_order.address)
+        query += "&address=" + _order.address;
+    if (_order.province)
+        query += "&province=" + _order.province;
+    if (_order.district)
+        query += "&district=" + _order.district;
+    if (_order.ward)
+        query += "&ward=" + _order.ward;
+    if (_order.street)
+        query += "&street=" + _order.street;
 
-        $.ajax({
-            method: 'GET',
-            url: url,
-            beforeSend: function () {
-                HoldOn.open();
-            },
-            success: function (data, textStatus, xhr) {
-                HoldOn.close();
+    query += "&weight=" + ((+_product.weight || 0) * 1000);
+    query += "&transport=road";
 
-                if (xhr.status == 200 && data) {
-                    if (data.success) {
-                        if (_feeShipment == 0 || _feeShipment == 1) {
-                            _order.pick_money = _order.pick_money - _fee;
-                            _order.value = _order.value - _fee;
-                        }
-                        else if (_feeShipment == 2) {
-                            // thu hộ
-                            if (_paymentMethod == 3) {
-                                _order.pick_money = _order.pick_money - _shopFee;
-                            }
-                            else {
-                                _order.pick_money = 0;
-                            }
+    // tính phí có bảo hiểm
+    if ((+_order.value || 0) > 0)
+        query += "&value=" + (+_order.value || 0);
 
-                            _order.value = _order.value - _shopFee;
-                        }
+    if (query)
+        url = url + "?" + query.substring(1);
 
-                        _fee = data.fee.fee;
+    let titleAlert = "Tính phí giao hàng";
 
-                        // Phí GHTK
-                        $fee.html(UtilsService.formatThousands(_fee, ','));
+    $.ajax({
+        method: 'GET',
+        url: url,
+        beforeSend: function () {
+            HoldOn.open();
+        },
+        success: function (data, textStatus, xhr) {
+            HoldOn.close();
 
-                        if (_fee != _shopFee) {
-                            $divFee.removeClass("hide");
-
-                            $labelShopFeeTitle.text("Phí nhân viên tính");
-                            $rdShopFee.parent().show();
-                        }
-                        else {
-                            $divFee.addClass("hide");
-
-                            $labelShopFeeTitle.text("Phí");
-                            $rdShopFee.parent().hide();
-                        }
-
-                        _calculateMoney();
-                    }
-                    else {
-                        _alterError(titleAlert, { message: data.message });
-                    }
-                } else {
-                    _alterError(titleAlert);
-                }
-            },
-            error: function () {
-                HoldOn.close();
-
+            if (xhr.status == 200 && data) {
+                if (data.success)
+                    _handleFee(data.fee.fee);
+                else
+                    _alterError(titleAlert, { message: data.message });
+            } else {
                 _alterError(titleAlert);
             }
-        });
-    }
+        },
+        error: function () {
+            HoldOn.close();
+
+            _alterError(titleAlert);
+        }
+    });
+}
+
+function _calculateFee() {
+    if (!_order.pick_province || !_order.pick_district || !_order.province || !_order.district || !_order.ward)
+        _handleFee(_shopFee);
+    else
+        _getGhtkFee(_handleFee);
 }
 
 function _calculateMoney() {
     let $pick_money = $("#pick_money");
-    let feeShipment = +$("input:radio[name='feeship']:checked").val() || 1;
+    let feeType = +$("input:radio[name='feeship']:checked").val() || FeeTypeEnum.Ghtk;
 
-    if (feeShipment == 1) {
-        _order.pick_money = _order.pick_money + _fee;
-        _order.value = _order.value + _fee;
-    }
-    else if (feeShipment == 2) {
-        // thu hộ
-        if (_paymentMethod == 3) {
-            _order.pick_money = _order.pick_money + _shopFee;
-        }
-            // chuyển khoản || tiền mặt || công nợ
-        else {
-            _order.pick_money = 0;
-        }
-        _order.value = _order.value + _shopFee;
+    switch (feeType) {
+        case FeeTypeEnum.Ghtk:
+            _order.pick_money = _order.pick_money + _fee;
+            _order.value = _order.value + _fee;
+
+            break;
+        case FeeTypeEnum.Shop:
+            _order.pick_money = _paymentMethod == PaymentMethodEnum.CashCollection
+            ? (_order.pick_money + _shopFee)
+            : 0;
+            _order.value = _order.value + _shopFee;
+
+            break;
+        default:
+            break;
     }
 
-    _feeShipment = feeShipment;
+    _feeType = feeType;
     $pick_money.val(UtilsService.formatThousands(_order.pick_money, ','));
 }
 
@@ -944,12 +944,11 @@ function _alertInvoicePrint(titleAlert, ghtkCode) {
 
 function _submit() {
     let titleAlert = "Đồng bộ đơn hàng GHTK";
-    let chooseShopFee = _feeShipment == 2; // Trường hợp chọn phí nhân viên tính
     let parameters = {
         products: [_product],
         order: _order,
         shopFee: _shopFee,
-        chooseShopFee: chooseShopFee
+        chooseShopFee: _feeType == FeeTypeEnum.Shop
     };
 
     $.ajax({
