@@ -341,7 +341,7 @@ function _createReportTableHTML(data) {
                         }
                         else {
                             html += "           <a href='javascript:;'";
-                            html += "              title='Hủy đơn JT Express' ";
+                            html += "              title='Hủy đơn GHTK' ";
                             html += "              class='btn primary-btn btn-red h45-btn' ";
                             html += '              onclick="cancelGhtk(`' + order.shippingCode + '`, `' + order.code + '`)"';
                             html += "           >";

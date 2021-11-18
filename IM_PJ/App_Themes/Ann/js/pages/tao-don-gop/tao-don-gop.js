@@ -220,7 +220,7 @@ function _checkValidation(data) {
 
             return false;
         }
-    } 
+    }
     //#endregion
 
     return true;
@@ -475,7 +475,7 @@ function submitGroupOrder() {
 
             swal({
                 title: 'Error',
-                text: err.responseJSON.message,
+                text: message,
                 type: 'error',
                 showCloseButton: true,
                 html: true,
