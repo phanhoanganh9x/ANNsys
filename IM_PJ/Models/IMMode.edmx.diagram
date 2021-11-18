@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="da95fd7b86e44fdfada2776f4a8aa75a" Name="Diagram1">
+      <Diagram DiagramId="da95fd7b86e44fdfada2776f4a8aa75a" Name="Diagram1" ZoomLevel="72">
         <EntityTypeShape EntityType="inventorymanagementModel.Bank" Width="1.5" PointX="0.75" PointY="5.125" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.BankAccount" Width="1.5" PointX="9.75" PointY="10.125" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.BankTransfer" Width="1.5" PointX="12.75" PointY="18.125" IsExpanded="true" />
@@ -21,7 +21,6 @@
         <EntityTypeShape EntityType="inventorymanagementModel.DeliveryMethod" Width="1.5" PointX="7.75" PointY="5.875" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.DeliveryPostOffice" Width="1.5" PointX="17.75" PointY="5.125" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.DeliverySaveAddress" Width="1.5" PointX="0.75" PointY="15.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.DeliverySaveNotification" Width="1.5" PointX="7.5" PointY="20.625" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.DeliverySaveReason" Width="1.5" PointX="5.25" PointY="30.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.DeliverySaveReport" Width="1.5" PointX="18.75" PointY="11.125" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.DeliverySaveStatu" Width="1.5" PointX="5.25" PointY="40.5" IsExpanded="true" />
@@ -30,7 +29,6 @@
         <EntityTypeShape EntityType="inventorymanagementModel.FeeType" Width="1.5" PointX="18.75" PointY="19.125" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.GroupNotifyPromotion" Width="1.5" PointX="18.75" PointY="23.125" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.JtExpressAddress" Width="1.5" PointX="19.75" PointY="5.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.JtExpressOrder" Width="1.5" PointX="7.5" PointY="27" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.JtExpressReason" Width="1.5" PointX="19.75" PointY="8.125" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.Notification" Width="1.5" PointX="13.75" PointY="24.125" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.NotificationCategory" Width="1.5" PointX="20.75" PointY="11.125" IsExpanded="true" />
@@ -71,7 +69,6 @@
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_LinkImnage" Width="1.5" PointX="26.75" PointY="15.125" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_MovePro" Width="1.5" PointX="26.75" PointY="18.125" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_MoveProdDetail" Width="1.5" PointX="26.75" PointY="23.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_Order" Width="1.5" PointX="5.25" PointY="18.5" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_OrderDetail" Width="1.5" PointX="27.75" PointY="29.125" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_OrderReturnGood" Width="1.5" PointX="28.75" PointY="5.125" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_Post" Width="1.5" PointX="28.75" PointY="10.125" IsExpanded="true" />
@@ -105,14 +102,9 @@
         <AssociationConnector Association="inventorymanagementModel.FK_DeliveryAddress_Province" ManuallyRouted="false" />
         <AssociationConnector Association="inventorymanagementModel.FK_DeliveryAddress_Ward" ManuallyRouted="false" />
         <AssociationConnector Association="inventorymanagementModel.FK_PreOrder_DeliveryAddress" ManuallyRouted="false" />
-        <AssociationConnector Association="inventorymanagementModel.FK_tbl_Order_DeliveryAddress" ManuallyRouted="false" />
         <AssociationConnector Association="inventorymanagementModel.FK_DeliveryManager_DeliveryMethod" ManuallyRouted="false" />
         <AssociationConnector Association="inventorymanagementModel.FK_DeliveryManager_OrderStatus" ManuallyRouted="false" />
         <AssociationConnector Association="inventorymanagementModel.FK_DeliveryManager_OrderType" ManuallyRouted="false" />
-        <AssociationConnector Association="inventorymanagementModel.FK_DeliverySaveNotification_DeliverySaveReason" ManuallyRouted="false" />
-        <AssociationConnector Association="inventorymanagementModel.FK_DeliverySaveNotification_DeliverySaveStatus" ManuallyRouted="false" />
-        <AssociationConnector Association="inventorymanagementModel.FK_DeliverySaveNotification_tbl_Order" ManuallyRouted="false" />
-        <AssociationConnector Association="inventorymanagementModel.FK_JtExpressOrder_tbl_Order" ManuallyRouted="false" />
         <AssociationConnector Association="inventorymanagementModel.FK_PostVideo_PostPublic" ManuallyRouted="false" />
         <AssociationConnector Association="inventorymanagementModel.FK_PostVideo_Video" ManuallyRouted="false" />
         <AssociationConnector Association="inventorymanagementModel.FK_PreOrderDetail_PreOrder" ManuallyRouted="false" />
@@ -121,14 +113,24 @@
         <AssociationConnector Association="inventorymanagementModel.FK_PreOrderDetail_ProductVariation" ManuallyRouted="false" />
         <AssociationConnector Association="inventorymanagementModel.FK_ProductVideo_tbl_Product" ManuallyRouted="false" />
         <AssociationConnector Association="inventorymanagementModel.FK_ProductVideo_Video" ManuallyRouted="false" />
-        <AssociationConnector Association="inventorymanagementModel.FK_ViewOrder_tbl_Order" ManuallyRouted="false" />
         <EntityTypeShape EntityType="inventorymanagementModel.GroupOrder" Width="1.5" PointX="33" PointY="18.625" />
         <AssociationConnector Association="inventorymanagementModel.FK_GroupOrder_DeliveryAddress" />
         <AssociationConnector Association="inventorymanagementModel.FK_GroupOrder_DeliveryMethod" />
         <AssociationConnector Association="inventorymanagementModel.FK_GroupOrder_OrderStatus" />
         <AssociationConnector Association="inventorymanagementModel.FK_GroupOrder_tbl_Customer" />
         <AssociationConnector Association="inventorymanagementModel.FK_GroupOrder_Transport" />
+        <EntityTypeShape EntityType="inventorymanagementModel.DeliverySaveNotification" Width="1.5" PointX="37.5" PointY="25.5" />
+        <EntityTypeShape EntityType="inventorymanagementModel.JtExpressOrder" Width="1.5" PointX="37.5" PointY="16.625" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_Order" Width="1.5" PointX="35.25" PointY="13.875" />
+        <AssociationConnector Association="inventorymanagementModel.FK_tbl_Order_DeliveryAddress" />
+        <AssociationConnector Association="inventorymanagementModel.FK_DeliverySaveNotification_DeliverySaveReason" />
+        <AssociationConnector Association="inventorymanagementModel.FK_DeliverySaveNotification_DeliverySaveStatus" />
+        <AssociationConnector Association="inventorymanagementModel.FK_DeliverySaveNotification_GroupOrder" />
+        <AssociationConnector Association="inventorymanagementModel.FK_DeliverySaveNotification_tbl_Order" />
+        <AssociationConnector Association="inventorymanagementModel.FK_JtExpressOrder_GroupOrder" />
         <AssociationConnector Association="inventorymanagementModel.FK_tbl_Order_GroupOrder" />
+        <AssociationConnector Association="inventorymanagementModel.FK_JtExpressOrder_tbl_Order" />
+        <AssociationConnector Association="inventorymanagementModel.FK_ViewOrder_tbl_Order" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

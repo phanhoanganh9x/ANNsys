@@ -45,5 +45,6 @@ namespace IM_PJ.Models
         public Nullable<decimal> ShopFee { get; set; }
         public string Staff { get; set; }
         public int Review { get; set; }
+        public string MaDonHangGopShop { get; set; }
     }
 }

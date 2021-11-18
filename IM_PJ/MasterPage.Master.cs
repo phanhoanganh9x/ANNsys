@@ -43,6 +43,7 @@ namespace IM_PJ
                         ltrMenu.Text = "";
                         ltrMenu.Text += "<li><a href='/trang-chu'><span class='icon-menu icon-home'></span>Trang chủ</a></li>";
                         ltrMenu.Text += "<li><a target='_blank' href='/pos'><span class='icon-menu icon-order'></span>Máy tính tiền</a></li>";
+                        ltrMenu.Text += "<li><a href='/quan-ly-don-gop'><span class='icon-menu icon-order'></span>Đơn gộp</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-don-hang'><span class='icon-menu icon-order'></span>Đơn hàng</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-don-dat-hang'><span class='icon-menu icon-order'></span>Đơn online</a></li>";
                         if (config.ViewAllReports == 1)

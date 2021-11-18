@@ -41,7 +41,6 @@ namespace IM_PJ.Models
         public virtual DbSet<DeliveryMethod> DeliveryMethods { get; set; }
         public virtual DbSet<DeliveryPostOffice> DeliveryPostOffices { get; set; }
         public virtual DbSet<DeliverySaveAddress> DeliverySaveAddresses { get; set; }
-        public virtual DbSet<DeliverySaveNotification> DeliverySaveNotifications { get; set; }
         public virtual DbSet<DeliverySaveReason> DeliverySaveReasons { get; set; }
         public virtual DbSet<DeliverySaveReport> DeliverySaveReports { get; set; }
         public virtual DbSet<DeliverySaveStatu> DeliverySaveStatus { get; set; }
@@ -50,7 +49,6 @@ namespace IM_PJ.Models
         public virtual DbSet<FeeType> FeeTypes { get; set; }
         public virtual DbSet<GroupNotifyPromotion> GroupNotifyPromotions { get; set; }
         public virtual DbSet<JtExpressAddress> JtExpressAddresses { get; set; }
-        public virtual DbSet<JtExpressOrder> JtExpressOrders { get; set; }
         public virtual DbSet<JtExpressReason> JtExpressReasons { get; set; }
         public virtual DbSet<Notification> Notifications { get; set; }
         public virtual DbSet<NotificationCategory> NotificationCategories { get; set; }
@@ -91,7 +89,6 @@ namespace IM_PJ.Models
         public virtual DbSet<tbl_LinkImnage> tbl_LinkImnage { get; set; }
         public virtual DbSet<tbl_MovePro> tbl_MovePro { get; set; }
         public virtual DbSet<tbl_MoveProdDetail> tbl_MoveProdDetail { get; set; }
-        public virtual DbSet<tbl_Order> tbl_Order { get; set; }
         public virtual DbSet<tbl_OrderDetail> tbl_OrderDetail { get; set; }
         public virtual DbSet<tbl_OrderReturnGood> tbl_OrderReturnGood { get; set; }
         public virtual DbSet<tbl_Post> tbl_Post { get; set; }
@@ -121,5 +118,8 @@ namespace IM_PJ.Models
         public virtual DbSet<WebWordpress> WebWordpresses { get; set; }
         public virtual DbSet<ZaloIndustry> ZaloIndustries { get; set; }
         public virtual DbSet<GroupOrder> GroupOrders { get; set; }
+        public virtual DbSet<DeliverySaveNotification> DeliverySaveNotifications { get; set; }
+        public virtual DbSet<JtExpressOrder> JtExpressOrders { get; set; }
+        public virtual DbSet<tbl_Order> tbl_Order { get; set; }
     }
 }

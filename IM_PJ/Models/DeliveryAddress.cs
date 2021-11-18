@@ -18,8 +18,8 @@ namespace IM_PJ.Models
         public DeliveryAddress()
         {
             this.PreOrders = new HashSet<PreOrder>();
-            this.tbl_Order = new HashSet<tbl_Order>();
             this.GroupOrders = new HashSet<GroupOrder>();
+            this.tbl_Order = new HashSet<tbl_Order>();
         }
     
         public long Id { get; set; }
@@ -45,8 +45,8 @@ namespace IM_PJ.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PreOrder> PreOrders { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tbl_Order> tbl_Order { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GroupOrder> GroupOrders { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tbl_Order> tbl_Order { get; set; }
     }
 }

@@ -14,7 +14,7 @@ namespace IM_PJ.Models
     
     public partial class JtExpressOrder
     {
-        public int OrderId { get; set; }
+        public Nullable<int> OrderId { get; set; }
         public string Code { get; set; }
         public string SenderName { get; set; }
         public string SenderPhone { get; set; }
@@ -39,7 +39,9 @@ namespace IM_PJ.Models
         public double Weight { get; set; }
         public string Note { get; set; }
         public System.DateTime CreatedDate { get; set; }
+        public string GroupOrderCode { get; set; }
     
+        public virtual GroupOrder GroupOrder { get; set; }
         public virtual tbl_Order tbl_Order { get; set; }
     }
 }

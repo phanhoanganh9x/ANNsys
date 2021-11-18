@@ -15,7 +15,7 @@ namespace IM_PJ.Models
     public partial class DeliveryPostOffice
     {
         public int ID { get; set; }
-        public int OrderID { get; set; }
+        public Nullable<int> OrderID { get; set; }
         public string NumberID { get; set; }
         public string Customer { get; set; }
         public string Phone { get; set; }
@@ -33,5 +33,6 @@ namespace IM_PJ.Models
         public string Staff { get; set; }
         public int Review { get; set; }
         public int OrderStatus { get; set; }
+        public string GroupOrderCode { get; set; }
     }
 }

@@ -15,7 +15,7 @@ namespace IM_PJ.Models
     public partial class DeliverySaveNotification
     {
         public string GhtkCode { get; set; }
-        public int OrderId { get; set; }
+        public Nullable<int> OrderId { get; set; }
         public int StatusId { get; set; }
         public System.DateTime ModifiedDate { get; set; }
         public Nullable<int> ReasonCode { get; set; }
@@ -32,9 +32,11 @@ namespace IM_PJ.Models
         public Nullable<decimal> Fee { get; set; }
         public string Staff { get; set; }
         public System.DateTime CreatedDate { get; set; }
+        public string GroupOrderCode { get; set; }
     
         public virtual DeliverySaveReason DeliverySaveReason { get; set; }
         public virtual DeliverySaveStatu DeliverySaveStatu { get; set; }
+        public virtual GroupOrder GroupOrder { get; set; }
         public virtual tbl_Order tbl_Order { get; set; }
     }
 }

@@ -77,10 +77,10 @@ namespace IM_PJ.Models
         public virtual DeliveryAddress DeliveryAddress { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DeliverySaveNotification> DeliverySaveNotifications { get; set; }
+        public virtual GroupOrder GroupOrder { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<JtExpressOrder> JtExpressOrders { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ViewOrder> ViewOrders { get; set; }
-        public virtual GroupOrder GroupOrder { get; set; }
     }
 }
