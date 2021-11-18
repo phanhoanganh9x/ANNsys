@@ -208,7 +208,7 @@ namespace IM_PJ
                     html.AppendLine("       <a href='javascript:;' title='Download tất cả hình sản phẩm này' class='btn primary-btn h45-btn' onclick='getAllProductImage(`" + item.sku + "`);'><i class='fa fa-file-image-o' aria-hidden='true'></i></a>");
                     if (acc.RoleID == 0)
                     {
-                        html.Append("       <a href='javascript:;' title='Đồng bộ sản phẩm' class='up-product-" + item.productID + " btn primary-btn h45-btn " + (item.showHomePage == 1 ? "" : "hide") + "' onclick='showProductSyncModal(`" + item.sku + "`, " + item.productID + ", " + item.categoryID + ");'><i class='fa fa-refresh' aria-hidden='true'></i></a>");
+                        html.Append("       <a href='javascript:;' title='Đồng bộ sản phẩm' class='up-product-" + item.productID + " btn primary-btn h45-btn " + (item.showHomePage == 1 ? "" : "hide") + "' onclick='showProductSyncModal(`" + item.sku + "`, " + item.productID + ", " + item.categoryID + ", `" + item.title + "`);'><i class='fa fa-refresh' aria-hidden='true'></i></a>");
                     }
                     html.AppendLine("  </td>");
                     html.AppendLine("</tr>");

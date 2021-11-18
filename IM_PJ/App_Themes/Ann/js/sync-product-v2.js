@@ -1,7 +1,7 @@
 ﻿var API = "/api/v1/woocommerce/product/";
 var webList = ["ann.com.vn", "khohangsiann.com", "bosiquanao.net", "quanaogiaxuong.com", "bansithoitrang.net", "panpan.vn", "quanaoxuongmay.com", "annshop.vn", "thoitrangann.com", "nhapsionline.com"];
-var webCosmetics = ["khosimypham.com", "simyphamonline.com", "nguonmypham.com"];
-var cosmeticCategory = [44, 45, 56, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77];
+var webCosmetics = ["khosimypham.com", "simyphamonline.com", "nguonmypham.com", "cungcapsimypham.com", "myphamann.vn"];
+var cosmeticCategory = [44, 45, 56, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 80, 81];
 
 function getWeblist(categoryID) {
     // San pham thuoc danh muc my pham, nuoc hoa, thuc pham chuc nang thi them web my pham vao
@@ -13,14 +13,15 @@ function getWeblist(categoryID) {
         webList = webList.concat(webCosmetics);
     }
 }
-function showProductSyncModal(productSKU, productID, categoryID) {
+function showProductSyncModal(productSKU, productID, categoryID, productTitle) {
     closePopup();
 
     var html = "";
-    html += "<div class='row'><div class='col-md-12'><h2>Đồng bộ sản phẩm " + productSKU + "</h2><br></div></div>";
+    html += "<div class='row'><div class='col-md-12'><h2>" + productSKU + ": " + productTitle.substring(0, 65) + "</h2><br></div></div>";
     html += "<div class='row'>";
     html += "    <div class='col-md-12 item-website' data-web='all' data-product-sku='" + productSKU + "' data-product-id='" + productID + "'>";
     html += "       <span>";
+    html += "        	<a href='javascript:;' class='btn primary-btn btn-green' onclick='getProduct($(this))'><i class='fa fa-cloud-upload' aria-hidden='true'></i> Kiểm tra</a>";
     html += "        	<a href='javascript:;' class='btn primary-btn btn-green' onclick='postProduct($(this), false)'><i class='fa fa-cloud-upload' aria-hidden='true'></i> Đăng</a>";
     var inCosmeticCategory = cosmeticCategory.includes(categoryID);
     if (inCosmeticCategory) {
@@ -49,7 +50,8 @@ function showProductSyncModal(productSKU, productID, categoryID) {
     for (var i = 0; i < webList.length; i++) {
 
         var button = "";
-        button += "<span class='btn-not-found hide'>";
+        button += "<span class='btn-not-found'>";
+        button += "<a href='javascript:;' class='btn primary-btn btn-green' onclick='getProduct($(this))'>Kiểm tra</a>";
         button += "<a href='javascript:;' class='btn primary-btn btn-green' onclick='postProduct($(this), false)'>Đăng</a>";
         var inCosmeticCategory = cosmeticCategory.includes(categoryID);
         if (inCosmeticCategory) {
@@ -73,40 +75,73 @@ function showProductSyncModal(productSKU, productID, categoryID) {
 
         var webItem = "";
         webItem += "<div class='col-md-2 item-name'>" + webList[i] + "</div>";
-        webItem += "<div class='col-md-2 item-status'><span class='bg-yellow'>Đang kết nối web...</span></div>";
+        webItem += "<div class='col-md-2 item-status'></div>";
         webItem += "<div class='col-md-8 item-button'>" + button + "</div>";
 
         $(".web-list").append("<div class='row item-website' data-web='" + webList[i] + "' data-product-sku='" + productSKU + "' data-product-id='" + productID + "' data-web-product-id=''>" + webItem + "</div>");
+    }
+    HoldOn.close();
+}
 
-        getProduct(webList[i], productID);
+function getProduct(obj) {
+    let web = obj.closest(".item-website").attr("data-web");
+    let productSKU = obj.closest(".item-website").attr("data-product-sku");
+
+    if (web == "all") {
+        for (var i = 0; i < webList.length; i++) {
+            ajaxGetProduct(webList[i], productSKU);
+        }
+    }
+    else {
+        ajaxGetProduct(web, productSKU);
     }
 }
 
-function getProduct(web, productID) {
+function ajaxGetProduct(web, productSKU) {
     $.ajax({
         type: "GET",
-        url: API + productID,
+        url: API + productSKU,
         headers: {
             'domain': web,
         },
         async: true,
         datatype: "json",
+        beforeSend: function () {
+            HoldOn.open();
+            $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-yellow'>Đang kiểm tra sản phẩm...</span>");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
+        },
         success: function (data) {
             HoldOn.close();
-
-            if (data.length > 0) {
-                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-blue'>Tìm thấy sản phẩm</span>");
-                $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
-                $("*[data-web='" + web + "']").attr("data-web-product-id", data[0].id);
+            if (xhr.status == 200) {
+                if (data.length > 0) {
+                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-blue'>Tìm thấy sản phẩm</span>");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
+                    $("*[data-web='" + web + "']").attr("data-web-product-id", data[0].id);
+                }
+                else {
+                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-blue'>Không tìm thấy sản phẩm</span>");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").removeClass("hide");
+                }
             }
             else {
-                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-blue'>Chưa tìm thấy sản phẩm</span>");
-                $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").removeClass("hide");
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
             }
         },
-        error: function () {
+        error: function (xhr, textStatus, error) {
             HoldOn.close();
-            $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
+
+            if (xhr.status === 500) {
+                let data = xhr.responseJSON;
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
+            }
+            else if (xhr.status === 400) {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
+            }
+            else {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
+            }
         }
     });
 }

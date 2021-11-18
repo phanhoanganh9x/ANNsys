@@ -217,7 +217,7 @@ namespace IM_PJ
                     html.AppendLine(String.Format("   <td data-title='Ngày chạy và Chú thích'>{0:dd/MM/yyyy}<br/>{1}</td>", item.startDate, item.note));
                     html.AppendLine("   <td data-title='Thao tác' class='update-button'>");
                     if (item.cronJobStatus == (int)CronJobStatus.Continue && !item.isHidden && item.showHomePage == 1)
-                        html.AppendLine("       <a href='javascript:;' title='Đồng bộ sản phẩm' class='up-product-" + item.id + " btn primary-btn h45-btn' onclick='showProductSyncModal(`" + item.sku + "`, " + item.id + ", " + item.categoryID + ");'><i class='fa fa-refresh' aria-hidden='true'></i></a>");
+                        html.AppendLine("       <a href='javascript:;' title='Đồng bộ sản phẩm' class='up-product-" + item.id + " btn primary-btn h45-btn' onclick='showProductSyncModal(`" + item.sku + "`, " + item.id + ", " + item.categoryID + ", `" + item.title + "`);'><i class='fa fa-refresh' aria-hidden='true'></i></a>");
                     html.Append("  </td>");
                     html.AppendLine("</tr>");
                 }

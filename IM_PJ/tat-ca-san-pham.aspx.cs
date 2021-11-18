@@ -1067,7 +1067,7 @@ namespace IM_PJ
                     {
                         html.AppendLine("       <a href='javascript:;' title='Up sản phẩm lên đầu trang' class='btn primary-btn btn-violet h45-btn' data-id='" + item.ID + "' onclick='upTopWebUpdate($(this));'><i class='fa fa-arrow-up' aria-hidden='true'></i></a>");
                         html.AppendLine("       <a target='_blank' href='/thong-tin-san-pham?id=" + item.ID + "' title='Sửa sản phẩm' class='btn btn-blue primary-btn h45-btn'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></a>");
-                        html.AppendLine("       <a href='javascript:;' title='Đồng bộ sản phẩm' class='up-product-" + item.ID + " btn btn-green primary-btn h45-btn " + (item.ShowHomePage == 1 ? "" : "hide") + "' onclick='showProductSyncModal(`" + item.ProductSKU + "`, " + item.ID + ", " + item.CategoryID + ");'><i class='fa fa-refresh' aria-hidden='true'></i></a>");
+                        html.AppendLine("       <a href='javascript:;' title='Đồng bộ sản phẩm' class='up-product-" + item.ID + " btn btn-green primary-btn h45-btn " + (item.ShowHomePage == 1 ? "" : "hide") + "' onclick='showProductSyncModal(`" + item.ProductSKU + "`, " + item.ID + ", " + item.CategoryID + ", `" + item.ProductTitle + "`);'><i class='fa fa-refresh' aria-hidden='true'></i></a>");
                         if (item.TotalProductInstockQuantityLeft > 0)
                         {
                             html.AppendLine("       <a href='javascript:;' title='Xả hết kho' class='liquidation-product-" + item.ID + " btn primary-btn btn-red h45-btn' onclick='liquidateProduct(" + item.CategoryID + ", " + item.ID + ", `" + item.ProductSKU + "`);'><i class='glyphicon glyphicon-trash' aria-hidden='true'></i></a>");

@@ -134,7 +134,7 @@ namespace IM_PJ
                     ltrEdit1.Text += "<a href='/tao-san-pham' class='btn primary-btn fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-file-text-o' aria-hidden='true'></i> Thêm mới</a>";
                     if (p.ShowHomePage == 1)
                     {
-                        ltrEdit1.Text += "<a href='javascript:;' onclick='showProductSyncModal(`" + p.ProductSKU + "`, " + p.ID + ", " + p.CategoryID + ");' class='btn primary-btn not-fullwidth print-invoice-merged'><i class='fa fa-upload' aria-hidden='true'></i> Đồng bộ</a>";
+                        ltrEdit1.Text += "<a href='javascript:;' onclick='showProductSyncModal(`" + p.ProductSKU + "`, " + p.ID + ", " + p.CategoryID + ", `" + p.ProductTitle + "`);' class='btn primary-btn not-fullwidth print-invoice-merged'><i class='fa fa-upload' aria-hidden='true'></i> Đồng bộ</a>";
                     }
                 }
                 ltrEdit1.Text += "<a href='javascript:;' onclick='copyProductInfo(" + p.ID + ")' class='btn primary-btn not-fullwidth print-invoice-merged'><i class='fa fa-files-o'></i> Copy thông tin</a>";
