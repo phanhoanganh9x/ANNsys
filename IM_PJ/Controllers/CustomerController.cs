@@ -162,59 +162,121 @@ namespace IM_PJ.Controllers
                 return null;
             }
         }
+        
+        /// <summary>
+        /// Tìm thông tin khách hàng
+        /// </summary>
+        /// <param name="text">Chuỗi tìm kiếm</param>
+        /// <param name="createdby">Nhân viên</param>
+        /// <returns></returns>
         public static List<CustomerOut> Find(string text, string createdby = "")
         {
-            string textsearch = '"' + text + '"';
-            var list = new List<CustomerOut>();
-            var sql = @"select c.ID, c.CustomerName, c.Nick, c.CustomerPhone, c.CustomerPhone2, c.Zalo, c.Facebook, c.CustomerAddress, c.CreatedBy, c.ProvinceID as Province
-                        from tbl_Customer c
-                         WHERE (CONTAINS(c.CustomerName,'" + textsearch + "')  OR CONTAINS(c.Nick,'" + textsearch + "') OR c.CustomerPhone like '%" + text + "%' OR c.CustomerPhone2 like '%" + text + "%' OR c.CustomerPhoneBackup like '%" + text + "%' OR c.Facebook like '%" + text + "%' OR c.Zalo like '%" + text + "%')";
-            if (createdby != "")
+            #region Khởi tạo SQL
+            var sql = new StringBuilder();
+
+            sql.AppendLine("SELECT");
+            sql.AppendLine("    C.ID");
+            sql.AppendLine(",   C.CustomerName");
+            sql.AppendLine(",   C.Nick");
+            sql.AppendLine(",   C.CustomerPhone");
+            sql.AppendLine(",   C.CustomerPhone2");
+            sql.AppendLine(",   C.Zalo");
+            sql.AppendLine(",   C.Facebook");
+            sql.AppendLine(",   C.CustomerAddress");
+            sql.AppendLine(",   C.ProvinceID as Province");
+            sql.AppendLine(",   C.CreatedBy");
+            sql.AppendLine("FROM");
+            sql.AppendLine("    tbl_Customer AS C");
+            sql.AppendLine("WHERE");
+            sql.AppendLine("    1 = 1");
+
+            // Lọc theo nhân viên quản lý
+            createdby = !String.IsNullOrEmpty(createdby) ? createdby.Trim().ToUpper() : String.Empty;
+
+            if (!String.IsNullOrEmpty(createdby))
+                sql.AppendLine(String.Format("    And UPPER(C.CreatedBy) =  = N'{0}'", ));
+
+            // Lọc theo từ tìm kiếm
+            text = !String.IsNullOrEmpty(text) ? text.Trim().ToUpper() : String.Empty;
+           
+            if (!String.IsNullOrEmpty(text))
             {
-                sql += " And c.CreatedBy = N'" + createdby + "'";
+                var numberReg = new Reg(@"^\d+$");
+
+                if (numberReg.IsMatch(text))
+                {
+                    sql.AppendLine("    And (");
+                    sql.AppendLine(String.Format("        C.CustomerPhone LIKE '%{0}%'", text));
+                    sql.AppendLine(String.Format("        OR C.CustomerPhone2 LIKE '%{0}%'", text));
+                    sql.AppendLine(String.Format("        OR C.CustomerPhoneBackup LIKE '%{0}%'", text));
+                    sql.AppendLine(String.Format("        OR C.Zalo LIKE '%{0}%'", text));
+                    sql.AppendLine("    )")
+                }
+                else {
+                    sql.AppendLine("    And (");
+                    sql.AppendLine(String.Format("        UPPER(C.CustomerName) LIKE N'%{0}%'", text));
+                    sql.AppendLine(String.Format("        OR UPPER(C.Nick) LIKE N'%{0}%'", text));
+                    sql.AppendLine("    )")
+                }
             }
+
+            sql.AppendLine("ORDER BY");
+            sql.AppendLine("    C.ID DESC");
+            #endregion
+
+            #region Thực thi SQL
+            var customers = new List<CustomerOut>();
             var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql);
+            
             while (reader.Read())
             {
-                var entity = new CustomerOut();
+                var item = new CustomerOut();
+
+                // ID khách hàng
                 if (reader["ID"] != DBNull.Value)
-                    entity.ID = reader["ID"].ToString().ToInt(0);
+                    item.ID = reader["ID"].ToString().ToInt(0);
+                // Tên khách hàng
                 if (reader["CustomerName"] != DBNull.Value)
-                    entity.CustomerName = reader["CustomerName"].ToString().ToTitleCase();
+                    item.CustomerName = reader["CustomerName"].ToString().ToTitleCase();
+                // SĐT
                 if (reader["CustomerPhone"] != DBNull.Value)
-                    entity.CustomerPhone = reader["CustomerPhone"].ToString();
+                    item.CustomerPhone = reader["CustomerPhone"].ToString();
+                // SĐT 2
                 if (reader["CustomerPhone2"] != DBNull.Value)
-                    entity.CustomerPhone2 = reader["CustomerPhone2"].ToString();
+                    item.CustomerPhone2 = reader["CustomerPhone2"].ToString();
+                // Nhân viên khởi tạo
                 if (reader["CreatedBy"] != DBNull.Value)
-                    entity.CreatedBy = reader["CreatedBy"].ToString();
+                    item.CreatedBy = reader["CreatedBy"].ToString();
+                // Địa chỉ khách hàng
                 if (reader["CustomerAddress"] != DBNull.Value)
-                    entity.CustomerAddress = reader["CustomerAddress"].ToString().ToTitleCase();
+                    item.CustomerAddress = reader["CustomerAddress"].ToString().ToTitleCase();
+                // Zalo
                 if (reader["Zalo"] != DBNull.Value)
-                    entity.Zalo = reader["Zalo"].ToString();
+                    item.Zalo = reader["Zalo"].ToString();
+                // Facebook
                 if (reader["Facebook"] != DBNull.Value)
-                    entity.Facebook = reader["Facebook"].ToString();
+                    item.Facebook = reader["Facebook"].ToString();
+                // Nick
                 if (reader["Nick"] != DBNull.Value)
-                    entity.Nick = reader["Nick"].ToString().ToTitleCase();
+                    item.Nick = reader["Nick"].ToString().ToTitleCase();
+                // ID tỉnh / thành phố
                 if (reader["Province"] != DBNull.Value)
                 {
                     var provinceID = reader["Province"].ToString().ToInt();
-                    var pro = ProvinceController.GetByID(provinceID);
-                    if (pro != null)
-                    {
-                        entity.Province = pro.Name;
-                    }
-                    else
-                    {
-                        entity.Province = "";
-                    }
-
+                    var province = ProvinceController.GetByID(provinceID);
+                    
+                    item.Province = province != null ? province.Name : String.Empty;
                 }
 
-                list.Add(entity);
+                customers.Add(item);
             }
+
             reader.Close();
-            return list;
+            #endregion
+
+            return customers;
         }
+        
         public static tbl_Customer GetByID(int ID)
         {
             using (var dbe = new inventorymanagementEntities())
