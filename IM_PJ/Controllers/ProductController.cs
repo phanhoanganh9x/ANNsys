@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using WebUI.Business;
 
@@ -967,8 +968,10 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("    INTO #Category");
                 sql.AppendLine("    FROM RecursiveCategory");
                 sql.AppendLine("    ;");
+                sql.AppendLine(String.Empty);
+                sql.AppendLine("    CREATE INDEX [ID_CATEGORY] ON #Category([ID] DESC);");
 
-                existsCategory = true;
+                existsCategories = true;
             }
             #endregion
 
@@ -1093,8 +1096,8 @@ namespace IM_PJ.Controllers
                 {
                     var numberReg = new Regex(@"^\d+$");
                     var skuReg = new Regex(@"^[A-Z]+\d+$");
-                    
-                    if (numberReg.IsMatch(filter.search) || skuReg.IsMach(filter.search))
+
+                    if (numberReg.IsMatch(filter.search) || skuReg.IsMatch(filter.search))
                         sql.AppendLine(String.Format("        AND UPPER(PRD.ProductSKU) like N'{0}%'", filter.search));
                     else
                     {
@@ -1255,6 +1258,7 @@ namespace IM_PJ.Controllers
             var existsStock1 = false;
             var existsStock2 = false;
 
+            #region Lọc theo trạng thái và số lượng kho
             if (filter.stockStatus != 0 || !String.IsNullOrEmpty(filter.quantity))
             {
                 #region Kho 1
@@ -1279,7 +1283,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("    INNER JOIN tbl_StockManager AS STM");
                 sql.AppendLine("        ON PRD.ID = STM.ParentID");
                 sql.AppendLine("    GROUP BY");
-                sql.AppendLine("        PRD.ProductID");
+                sql.AppendLine("        PRD.ID");
                 sql.AppendLine("    ;");
                 sql.AppendLine(String.Empty);
                 sql.AppendLine("    CREATE INDEX [ID_PROCDUCT_STOCK_1] ON #ProductStock1([ProductID] DESC);");
@@ -1312,16 +1316,16 @@ namespace IM_PJ.Controllers
                         sql.AppendLine("    WHERE 1 = 1;");
                         #endregion
                     }
-                    else 
+                    else
                     {
                         #region Lọc thông tin kho 1
                         sql.AppendLine(String.Empty);
                         sql.AppendLine("    DELETE #ProductStock1");
                         sql.AppendLine("    WHERE 1 = 1");
                         if (filter.stockStatus == (int)StockStatus.stocking)
-                            sql.AppendLine("        AND PST1.QuantityLeft <= 0");
+                            sql.AppendLine("        AND QuantityLeft <= 0");
                         else if (filter.stockStatus == (int)StockStatus.stockOut)
-                            sql.AppendLine("        AND PST1.QuantityLeft > 0");
+                            sql.AppendLine("        AND QuantityLeft > 0");
                         sql.AppendLine("    ;");
                         #endregion
 
@@ -1341,7 +1345,7 @@ namespace IM_PJ.Controllers
                 }
                 #endregion
 
-                #region Lọc theo trạng thái và số lượng kho
+                #region số lượng kho
                 if (!String.IsNullOrEmpty(filter.quantity))
                 {
                     #region Lọc thông tin kho 1
@@ -1349,14 +1353,14 @@ namespace IM_PJ.Controllers
                     sql.AppendLine("    DELETE #ProductStock1");
                     sql.AppendLine("    WHERE 1 = 1");
                     if (filter.quantity.Equals("greaterthan"))
-                        sql.AppendLine(String.Format("        AND PST1.QuantityLeft < {0}", filter.quantityFrom));
+                        sql.AppendLine(String.Format("        AND QuantityLeft < {0}", filter.quantityFrom));
                     else if (filter.quantity.Equals("lessthan"))
-                        sql.AppendLine(String.Format("        AND PST1.QuantityLeft > {0}", filter.quantityTo));
+                        sql.AppendLine(String.Format("        AND QuantityLeft > {0}", filter.quantityTo));
                     else if (filter.quantity.Equals("between"))
-                        sql.AppendLine(String.Format("        AND PST1.QuantityLeft < {0} AND PST1.QuantityLeft > {1}", filter.quantityFrom, filter.quantityTo));
+                        sql.AppendLine(String.Format("        AND QuantityLeft < {0} AND QuantityLeft > {1}", filter.quantityFrom, filter.quantityTo));
                     sql.AppendLine("    ;");
                     #endregion
-                    
+
                     #region Lấy sản phẩm theo thông tin kho 1
                     sql.AppendLine(String.Empty);
                     sql.AppendLine("    DELETE #Product");
@@ -1372,6 +1376,7 @@ namespace IM_PJ.Controllers
                 }
                 #endregion
             }
+            #endregion
 
             #region Lọc sản phẩm theo kho
             if (filter.warehouse == 1)
@@ -1400,7 +1405,7 @@ namespace IM_PJ.Controllers
                     sql.AppendLine("    INNER JOIN tbl_StockManager AS STM");
                     sql.AppendLine("        ON PRD.ID = STM.ParentID");
                     sql.AppendLine("    GROUP BY");
-                    sql.AppendLine("        PRD.ProductID");
+                    sql.AppendLine("        PRD.ID");
                     sql.AppendLine("    ;");
                     sql.AppendLine(String.Empty);
                     sql.AppendLine("    CREATE INDEX [ID_PROCDUCT_STOCK_1] ON #ProductStock1([ProductID] DESC);");
@@ -1425,7 +1430,7 @@ namespace IM_PJ.Controllers
                 #region Kho 2
                 sql.AppendLine(String.Empty);
                 sql.AppendLine("    SELECT");
-                sql.AppendLine("        STM.ProductID");
+                sql.AppendLine("        PRD.ID AS ProductID");
                 sql.AppendLine("    ,   SUM(");
                 sql.AppendLine("            CASE");
                 sql.AppendLine("                WHEN ISNULL(STM.Type, 1) = 2 THEN ISNULL(STM.QuantityCurrent, 0) - ISNULL(STM.Quantity, 0)");
@@ -1444,7 +1449,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("    INNER JOIN StockManager2 AS STM");
                 sql.AppendLine("        ON PRD.ID = STM.ProductID");
                 sql.AppendLine("    GROUP BY");
-                sql.AppendLine("        PRD.ProductID");
+                sql.AppendLine("        PRD.ID");
                 sql.AppendLine("    ;");
                 sql.AppendLine(String.Empty);
                 sql.AppendLine("     CREATE INDEX [ID_PROCDUCT_STOCK_2] ON #ProductStock2([ProductID] DESC);");
@@ -1498,7 +1503,6 @@ namespace IM_PJ.Controllers
             }
             #endregion
             #endregion
-            #endregion
 
             #region Tính toán phân trang
             sql.AppendLine(String.Empty);
@@ -1510,7 +1514,100 @@ namespace IM_PJ.Controllers
             sql.AppendLine("    ;");
             #endregion
 
-            #region Lấy sản phẩm đã phân trang
+            #region Thực hiện phân trang
+            #region Lấy thông tin kho
+            var existsStock = false;
+
+            if (filter.orderBy == ProductOrderBy.stockAsc || filter.orderBy == ProductOrderBy.stockDesc)
+            {
+                #region Kho 1
+                if (!existsStock1)
+                {
+                    sql.AppendLine(String.Empty);
+                    sql.AppendLine("    SELECT");
+                    sql.AppendLine("        PRD.ID AS ProductID");
+                    sql.AppendLine("    ,   SUM(");
+                    sql.AppendLine("            CASE");
+                    sql.AppendLine("                WHEN ISNULL(STM.Type, 1) = 2 THEN ISNULL(STM.QuantityCurrent, 0) - ISNULL(STM.Quantity, 0)");
+                    sql.AppendLine("                ELSE ISNULL(STM.QuantityCurrent, 0) + ISNULL(STM.Quantity, 0)");
+                    sql.AppendLine("            END");
+                    sql.AppendLine("         ) AS QuantityLeft");
+                    sql.AppendLine("    ,   MIN(");
+                    sql.AppendLine("            CASE");
+                    sql.AppendLine("                WHEN STM.Status = 14 THEN 1");
+                    sql.AppendLine("                ELSE 0");
+                    sql.AppendLine("            END");
+                    sql.AppendLine("         ) AS Liquidated");
+                    sql.AppendLine("    INTO #ProductStock1");
+                    sql.AppendLine("    FROM");
+                    sql.AppendLine("        #Product AS PRD");
+                    sql.AppendLine("    INNER JOIN tbl_StockManager AS STM");
+                    sql.AppendLine("        ON PRD.ID = STM.ParentID");
+                    sql.AppendLine("    GROUP BY");
+                    sql.AppendLine("        PRD.ID");
+                    sql.AppendLine("    ;");
+                    sql.AppendLine(String.Empty);
+                    sql.AppendLine("    CREATE INDEX [ID_PROCDUCT_STOCK_1] ON #ProductStock1([ProductID] DESC);");
+
+                    existsStock1 = true;
+                }
+                #endregion
+
+                #region Kho 2
+                if (!existsStock2)
+                {
+                    sql.AppendLine(String.Empty);
+                    sql.AppendLine("    SELECT");
+                    sql.AppendLine("        PRD.ID  AS ProductID");
+                    sql.AppendLine("    ,   SUM(");
+                    sql.AppendLine("            CASE");
+                    sql.AppendLine("                WHEN ISNULL(STM.Type, 1) = 2 THEN ISNULL(STM.QuantityCurrent, 0) - ISNULL(STM.Quantity, 0)");
+                    sql.AppendLine("                ELSE ISNULL(STM.QuantityCurrent, 0) + ISNULL(STM.Quantity, 0)");
+                    sql.AppendLine("            END");
+                    sql.AppendLine("         ) AS QuantityLeft");
+                    sql.AppendLine("    ,   MIN(");
+                    sql.AppendLine("            CASE");
+                    sql.AppendLine("                WHEN STM.Status = 14 THEN 1");
+                    sql.AppendLine("                ELSE 0");
+                    sql.AppendLine("            END");
+                    sql.AppendLine("         ) AS Liquidated");
+                    sql.AppendLine("    INTO #ProductStock2");
+                    sql.AppendLine("    FROM");
+                    sql.AppendLine("        #Product AS PRD");
+                    sql.AppendLine("    INNER JOIN StockManager2 AS STM");
+                    sql.AppendLine("        ON PRD.ID = STM.ProductID");
+                    sql.AppendLine("    GROUP BY");
+                    sql.AppendLine("        PRD.ID");
+                    sql.AppendLine("    ;");
+                    sql.AppendLine(String.Empty);
+                    sql.AppendLine("     CREATE INDEX [ID_PROCDUCT_STOCK_2] ON #ProductStock2([ProductID] DESC);");
+
+                    existsStock2 = true;
+                }
+                #endregion
+
+                #region Tính thông tin kho của tất cả sản phẩm
+                sql.AppendLine(String.Empty);
+                sql.AppendLine("    SELECT");
+                sql.AppendLine("         PST1.ProductID");
+                sql.AppendLine("    ,    PST1.QuantityLeft AS QuantityLeft");
+                sql.AppendLine("    ,    (PST1.Liquidated & ISNULL(PST2.Liquidated, 0)) AS Liquidated");
+                sql.AppendLine("    ,    IIF(PST2.ProductID IS NULL, 0, 1) AS HasStock2");
+                sql.AppendLine("    ,    ISNULL(PST2.QuantityLeft, 0) AS QuantityLeft2");
+                sql.AppendLine("    INTO #ProductQuantity");
+                sql.AppendLine("    FROM ");
+                sql.AppendLine("        #ProductStock1 AS PST1");
+                sql.AppendLine("    LEFT JOIN #ProductStock2 AS PST2");
+                sql.AppendLine("        ON PST1.ProductID = PST2.ProductID");
+                sql.AppendLine("    ;");
+                sql.AppendLine(String.Empty);
+                sql.AppendLine("    CREATE INDEX [ID_PROCDUCT_QUANTITY] ON #ProductQuantity([ProductID] DESC);");
+
+                existsStock = true;
+                #endregion
+            }
+            #endregion
+
             sql.AppendLine(String.Empty);
             sql.AppendLine("    SELECT");
             sql.AppendLine("        PRD.*");
@@ -1518,7 +1615,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("    FROM");
             sql.AppendLine("        #Product AS PRD");
 
-            if (!String.IsNullOrEmpty(filter.orderBy) && (filter.orderBy == ProductOrderBy.stockAsc || filter.orderBy == ProductOrderBy.stockDesc))
+            if (filter.orderBy == ProductOrderBy.stockAsc || filter.orderBy == ProductOrderBy.stockDesc)
             {
                 sql.AppendLine("    LEFT JOIN #ProductQuantity AS PRQ");
                 sql.AppendLine("        ON PRD.ID = PRQ.ProductID");
@@ -1553,21 +1650,12 @@ namespace IM_PJ.Controllers
             sql.AppendLine("    OFFSET @pageSize * (@currentPage - 1) ROWS");
             sql.AppendLine("    FETCH NEXT @pageSize ROWS ONLY");
             sql.AppendLine("    ;");
-            sql.AppendLine(String.Empty);
-            sql.AppendLine("    DELETE #ProductQuantity");
-            sql.AppendLine("    WHERE NOT EXISTS (");
-            sql.AppendLine("        SELECT");
-            sql.AppendLine("            NULL AS DUMMY");
-            sql.AppendLine("        FROM");
-            sql.AppendLine("            #ProductPagination AS PDP");
-            sql.AppendLine("        WHERE");
-            sql.AppendLine("           PDP.ID = ProductID");
-            sql.AppendLine("    );");
             #endregion
 
             #region Lấy thông tin danh mục
-            if (!existsCategories) 
+            if (!existsCategories)
             {
+                sql.AppendLine(String.Empty);
                 sql.AppendLine("    SELECT");
                 sql.AppendLine("        CTG.ID");
                 sql.AppendLine("    ,   CTG.CategoryName");
@@ -1585,114 +1673,120 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("            PDP.CategoryID");
                 sql.AppendLine("    ) AS CGF");
                 sql.AppendLine("        ON CTG.ID = CGF.CategoryID");
+                sql.AppendLine(String.Empty);
+                sql.AppendLine("    CREATE INDEX [ID_CATEGORY] ON #Category([ID] DESC);");
             }
             #endregion
 
             #region Lấy thông tin kho
-            #region Kho 1
-            if (!existsStock1)
+            if (!existsStock)
             {
+                #region Kho 1
+                if (!existsStock1)
+                {
+                    sql.AppendLine(String.Empty);
+                    sql.AppendLine("    SELECT");
+                    sql.AppendLine("        PRD.ID AS ProductID");
+                    sql.AppendLine("    ,   SUM(");
+                    sql.AppendLine("            CASE");
+                    sql.AppendLine("                WHEN ISNULL(STM.Type, 1) = 2 THEN ISNULL(STM.QuantityCurrent, 0) - ISNULL(STM.Quantity, 0)");
+                    sql.AppendLine("                ELSE ISNULL(STM.QuantityCurrent, 0) + ISNULL(STM.Quantity, 0)");
+                    sql.AppendLine("            END");
+                    sql.AppendLine("         ) AS QuantityLeft");
+                    sql.AppendLine("    ,   MIN(");
+                    sql.AppendLine("            CASE");
+                    sql.AppendLine("                WHEN STM.Status = 14 THEN 1");
+                    sql.AppendLine("                ELSE 0");
+                    sql.AppendLine("            END");
+                    sql.AppendLine("         ) AS Liquidated");
+                    sql.AppendLine("    INTO #ProductStock1");
+                    sql.AppendLine("    FROM");
+                    sql.AppendLine("        #ProductPagination AS PRD");
+                    sql.AppendLine("    INNER JOIN tbl_StockManager AS STM");
+                    sql.AppendLine("        ON PRD.ID = STM.ParentID");
+                    sql.AppendLine("    GROUP BY");
+                    sql.AppendLine("        PRD.ID");
+                    sql.AppendLine("    ;");
+                    sql.AppendLine(String.Empty);
+                    sql.AppendLine("    CREATE INDEX [ID_PROCDUCT_STOCK_1] ON #ProductStock1([ProductID] DESC);");
+                }
+                else
+                {
+                    sql.AppendLine(String.Empty);
+                    sql.AppendLine("    DELETE #ProductStock1");
+                    sql.AppendLine("    WHERE NOT EXISTS (");
+                    sql.AppendLine("        SELECT");
+                    sql.AppendLine("            NULL AS DUMMY");
+                    sql.AppendLine("        FROM");
+                    sql.AppendLine("            #ProductPagination AS PRD");
+                    sql.AppendLine("        WHERE");
+                    sql.AppendLine("            PRD.ID = ProductID");
+                    sql.AppendLine("    );");
+                }
+                #endregion
+
+                #region Kho 2
+                if (!existsStock2)
+                {
+                    sql.AppendLine(String.Empty);
+                    sql.AppendLine("    SELECT");
+                    sql.AppendLine("        PRD.ID AS ProductID");
+                    sql.AppendLine("    ,   SUM(");
+                    sql.AppendLine("            CASE");
+                    sql.AppendLine("                WHEN ISNULL(STM.Type, 1) = 2 THEN ISNULL(STM.QuantityCurrent, 0) - ISNULL(STM.Quantity, 0)");
+                    sql.AppendLine("                ELSE ISNULL(STM.QuantityCurrent, 0) + ISNULL(STM.Quantity, 0)");
+                    sql.AppendLine("            END");
+                    sql.AppendLine("         ) AS QuantityLeft");
+                    sql.AppendLine("    ,   MIN(");
+                    sql.AppendLine("            CASE");
+                    sql.AppendLine("                WHEN STM.Status = 14 THEN 1");
+                    sql.AppendLine("                ELSE 0");
+                    sql.AppendLine("            END");
+                    sql.AppendLine("         ) AS Liquidated");
+                    sql.AppendLine("    INTO #ProductStock2");
+                    sql.AppendLine("    FROM");
+                    sql.AppendLine("        #ProductPagination AS PRD");
+                    sql.AppendLine("    INNER JOIN StockManager2 AS STM");
+                    sql.AppendLine("        ON PRD.ID = STM.ProductID");
+                    sql.AppendLine("    GROUP BY");
+                    sql.AppendLine("        PRD.ID");
+                    sql.AppendLine("    ;");
+                    sql.AppendLine(String.Empty);
+                    sql.AppendLine("     CREATE INDEX [ID_PROCDUCT_STOCK_2] ON #ProductStock2([ProductID] DESC);");
+                }
+                else
+                {
+                    sql.AppendLine(String.Empty);
+                    sql.AppendLine("    DELETE #ProductStock2");
+                    sql.AppendLine("    WHERE NOT EXISTS (");
+                    sql.AppendLine("        SELECT");
+                    sql.AppendLine("            NULL AS DUMMY");
+                    sql.AppendLine("        FROM");
+                    sql.AppendLine("            #ProductPagination AS PRD");
+                    sql.AppendLine("        WHERE");
+                    sql.AppendLine("            PRD.ID = ProductID");
+                    sql.AppendLine("    );");
+                }
+                #endregion
+
+                #region Tính thông tin kho của tất cả sản phẩm
                 sql.AppendLine(String.Empty);
                 sql.AppendLine("    SELECT");
-                sql.AppendLine("        PRD.ID AS ProductID");
-                sql.AppendLine("    ,   SUM(");
-                sql.AppendLine("            CASE");
-                sql.AppendLine("                WHEN ISNULL(STM.Type, 1) = 2 THEN ISNULL(STM.QuantityCurrent, 0) - ISNULL(STM.Quantity, 0)");
-                sql.AppendLine("                ELSE ISNULL(STM.QuantityCurrent, 0) + ISNULL(STM.Quantity, 0)");
-                sql.AppendLine("            END");
-                sql.AppendLine("         ) AS QuantityLeft");
-                sql.AppendLine("    ,   MIN(");
-                sql.AppendLine("            CASE");
-                sql.AppendLine("                WHEN STM.Status = 14 THEN 1");
-                sql.AppendLine("                ELSE 0");
-                sql.AppendLine("            END");
-                sql.AppendLine("         ) AS Liquidated");
-                sql.AppendLine("    INTO #ProductStock1");
-                sql.AppendLine("    FROM");
-                sql.AppendLine("        #ProductPagination AS PRD");
-                sql.AppendLine("    INNER JOIN tbl_StockManager AS STM");
-                sql.AppendLine("        ON PRD.ID = STM.ParentID");
-                sql.AppendLine("    GROUP BY");
-                sql.AppendLine("        PRD.ProductID");
+                sql.AppendLine("         PST1.ProductID");
+                sql.AppendLine("    ,    PST1.QuantityLeft AS QuantityLeft");
+                sql.AppendLine("    ,    (PST1.Liquidated & ISNULL(PST2.Liquidated, 0)) AS Liquidated");
+                sql.AppendLine("    ,    IIF(PST2.ProductID IS NULL, 0, 1) AS HasStock2");
+                sql.AppendLine("    ,    ISNULL(PST2.QuantityLeft, 0) AS QuantityLeft2");
+                sql.AppendLine("    INTO #ProductQuantity");
+                sql.AppendLine("    FROM ");
+                sql.AppendLine("        #ProductStock1 AS PST1");
+                sql.AppendLine("    LEFT JOIN #ProductStock2 AS PST2");
+                sql.AppendLine("        ON PST1.ProductID = PST2.ProductID");
                 sql.AppendLine("    ;");
                 sql.AppendLine(String.Empty);
-                sql.AppendLine("    CREATE INDEX [ID_PROCDUCT_STOCK_1] ON #ProductStock1([ProductID] DESC);");
+                sql.AppendLine("    CREATE INDEX [ID_PROCDUCT_QUANTITY] ON #ProductQuantity([ProductID] DESC);");
+                #endregion
             }
-            else
-            {
-                sql.AppendLine(String.Empty);
-                sql.AppendLine("    DELETE #ProductStock1");
-                sql.AppendLine("    WHERE NOT EXISTS (");
-                sql.AppendLine("        SELECT");
-                sql.AppendLine("            NULL AS DUMMY");
-                sql.AppendLine("        FROM");
-                sql.AppendLine("            #ProductPagination AS PRD");
-                sql.AppendLine("        WHERE");
-                sql.AppendLine("            PRD.ID = ProductID");
-                sql.AppendLine("    );");
-            }
-            #endregion
-
-            #region Kho 2
-            if (!existsStock2)
-            {
-                sql.AppendLine(String.Empty);
-                sql.AppendLine("    SELECT");
-                sql.AppendLine("        STM.ProductID");
-                sql.AppendLine("    ,   SUM(");
-                sql.AppendLine("            CASE");
-                sql.AppendLine("                WHEN ISNULL(STM.Type, 1) = 2 THEN ISNULL(STM.QuantityCurrent, 0) - ISNULL(STM.Quantity, 0)");
-                sql.AppendLine("                ELSE ISNULL(STM.QuantityCurrent, 0) + ISNULL(STM.Quantity, 0)");
-                sql.AppendLine("            END");
-                sql.AppendLine("         ) AS QuantityLeft");
-                sql.AppendLine("    ,   MIN(");
-                sql.AppendLine("            CASE");
-                sql.AppendLine("                WHEN STM.Status = 14 THEN 1");
-                sql.AppendLine("                ELSE 0");
-                sql.AppendLine("            END");
-                sql.AppendLine("         ) AS Liquidated");
-                sql.AppendLine("    INTO #ProductStock2");
-                sql.AppendLine("    FROM");
-                sql.AppendLine("        #ProductPagination AS PRD");
-                sql.AppendLine("    INNER JOIN StockManager2 AS STM");
-                sql.AppendLine("        ON PRD.ID = STM.ProductID");
-                sql.AppendLine("    GROUP BY");
-                sql.AppendLine("        PRD.ProductID");
-                sql.AppendLine("    ;");
-                sql.AppendLine(String.Empty);
-                sql.AppendLine("     CREATE INDEX [ID_PROCDUCT_STOCK_2] ON #ProductStock2([ProductID] DESC);");
-            }
-            else {
-                sql.AppendLine(String.Empty);
-                sql.AppendLine("    DELETE #ProductStock2");
-                sql.AppendLine("    WHERE NOT EXISTS (");
-                sql.AppendLine("        SELECT");
-                sql.AppendLine("            NULL AS DUMMY");
-                sql.AppendLine("        FROM");
-                sql.AppendLine("            #ProductPagination AS PRD");
-                sql.AppendLine("        WHERE");
-                sql.AppendLine("            PRD.ID = ProductID");
-                sql.AppendLine("    );");
-            }
-            #endregion
-
-            #region Tính thông tin kho của tất cả sản phẩm
-            sql.AppendLine(String.Empty);
-            sql.AppendLine("    SELECT");
-            sql.AppendLine("         PST1.ProductID");
-            sql.AppendLine("    ,    PST1.QuantityLeft AS QuantityLeft");
-            sql.AppendLine("    ,    (PST1.Liquidate | ISNULL(PST2.Liquidate, 0)) AS Liquidated");
-            sql.AppendLine("    ,    IIF(PST2.ProductID IS NULL, 0, 1) AS HasStock2");
-            sql.AppendLine("    ,    ISNULL(PST2.QuantityLeft, 0) AS QuantityLeft2");
-            sql.AppendLine("    INTO #ProductQuantity");
-            sql.AppendLine("    FROM ");
-            sql.AppendLine("        #ProductStock1 AS PST1");
-            sql.AppendLine("    LEFT JOIN ProductStock2 AS PST2");
-            sql.AppendLine("        ON PST1.ProductID = PST2.ProductID");
-            sql.AppendLine("    ;");
-            sql.AppendLine(String.Empty);
-            sql.AppendLine("    CREATE INDEX [ID_PROCDUCT_QUANTITY] ON #ProductQuantity([ProductID] DESC);");
-            #endregion
             #endregion
 
             #region Lấy thông tin video sản phẩm
@@ -1713,6 +1807,8 @@ namespace IM_PJ.Controllers
             sql.AppendLine("    INNER JOIN Video AS VID");
             sql.AppendLine("        ON PDF.VideoId = VID.Id");
             sql.AppendLine("    ;");
+            sql.AppendLine(String.Empty);
+            sql.AppendLine("    CREATE INDEX [ID_PROCDUCT_VIDEO] ON #ProductVideo([ProductId] DESC);");
             #endregion
 
             #region Kết thúc

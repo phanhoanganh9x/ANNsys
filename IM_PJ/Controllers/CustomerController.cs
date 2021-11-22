@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Data.Entity.Validation;
 using System.Data.Entity;
 using IM_PJ.Models.Common;
+using System.Text;
 
 namespace IM_PJ.Controllers
 {
@@ -162,7 +163,7 @@ namespace IM_PJ.Controllers
                 return null;
             }
         }
-        
+
         /// <summary>
         /// Tìm thông tin khách hàng
         /// </summary>
@@ -194,14 +195,14 @@ namespace IM_PJ.Controllers
             createdby = !String.IsNullOrEmpty(createdby) ? createdby.Trim().ToUpper() : String.Empty;
 
             if (!String.IsNullOrEmpty(createdby))
-                sql.AppendLine(String.Format("    And UPPER(C.CreatedBy) =  = N'{0}'", ));
+                sql.AppendLine(String.Format("    And UPPER(C.CreatedBy) =  = N'{0}'", createdby));
 
             // Lọc theo từ tìm kiếm
             text = !String.IsNullOrEmpty(text) ? text.Trim().ToUpper() : String.Empty;
-           
+
             if (!String.IsNullOrEmpty(text))
             {
-                var numberReg = new Reg(@"^\d+$");
+                var numberReg = new Regex(@"^\d+$");
 
                 if (numberReg.IsMatch(text))
                 {
@@ -210,13 +211,13 @@ namespace IM_PJ.Controllers
                     sql.AppendLine(String.Format("        OR C.CustomerPhone2 LIKE '%{0}%'", text));
                     sql.AppendLine(String.Format("        OR C.CustomerPhoneBackup LIKE '%{0}%'", text));
                     sql.AppendLine(String.Format("        OR C.Zalo LIKE '%{0}%'", text));
-                    sql.AppendLine("    )")
+                    sql.AppendLine("    )");
                 }
                 else {
                     sql.AppendLine("    And (");
                     sql.AppendLine(String.Format("        UPPER(C.CustomerName) LIKE N'%{0}%'", text));
                     sql.AppendLine(String.Format("        OR UPPER(C.Nick) LIKE N'%{0}%'", text));
-                    sql.AppendLine("    )")
+                    sql.AppendLine("    )");
                 }
             }
 
@@ -226,8 +227,8 @@ namespace IM_PJ.Controllers
 
             #region Thực thi SQL
             var customers = new List<CustomerOut>();
-            var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql);
-            
+            var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
+
             while (reader.Read())
             {
                 var item = new CustomerOut();
@@ -264,7 +265,7 @@ namespace IM_PJ.Controllers
                 {
                     var provinceID = reader["Province"].ToString().ToInt();
                     var province = ProvinceController.GetByID(provinceID);
-                    
+
                     item.Province = province != null ? province.Name : String.Empty;
                 }
 
@@ -276,7 +277,7 @@ namespace IM_PJ.Controllers
 
             return customers;
         }
-        
+
         public static tbl_Customer GetByID(int ID)
         {
             using (var dbe = new inventorymanagementEntities())
@@ -475,7 +476,7 @@ namespace IM_PJ.Controllers
                     )
                     .SelectMany(
                         x => x.user.DefaultIfEmpty(),
-                        (parent, child) => 
+                        (parent, child) =>
                         {
                             parent.customer.InApp = child != null ? true : false;
 
@@ -809,10 +810,10 @@ namespace IM_PJ.Controllers
                     .Select(x => new RefundInfo()
                     {
                         customerID = x.Key,
-                        refundNoFeeQuantity = x.Sum(s => 
+                        refundNoFeeQuantity = x.Sum(s =>
                             (s.TotalRefundFee == "0" && s.RefundType == 2) ? (s.Quantity.HasValue ? s.Quantity.Value : 0) : 0
                         ),
-                        refundFeeQuantity = x.Sum(s => 
+                        refundFeeQuantity = x.Sum(s =>
                             !(s.TotalRefundFee == "0" && s.RefundType == 2) ? (s.Quantity.HasValue ? s.Quantity.Value : 0) : 0
                         )
                     })
@@ -822,7 +823,7 @@ namespace IM_PJ.Controllers
         }
 
         #endregion
-        
+
         #region Class
         public class CustomerOut
         {
