@@ -1133,6 +1133,7 @@
     <Compile Include="Models\CheckWarehouseDetail.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Common\CustomerResponseModel.cs" />
     <Compile Include="Models\Coupon.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>

@@ -69,8 +69,8 @@ namespace IM_PJ
                 var customer = CustomerController.GetByID(Convert.ToInt32(customerID));
                 if (customer != null)
                 {
-                    var serializer = new JavaScriptSerializer();
-                    var script = "$(document).ready(() => { selectCustomerDetail(" + serializer.Serialize(customer) + "); });";
+                    var customerJson = JsonConvert.SerializeObject(CustomerResponseModel.map(customer));
+                    var script = "$(document).ready(() => { selectCustomerDetail(" + customerJson + "); });";
                     ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "script", script, true);
                     // Fix bug khi truyền dữ liệu customer từ màn hình khách san
                     hdfCustomerID.Value = customer.ID.ToString();

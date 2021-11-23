@@ -106,19 +106,15 @@ namespace IM_PJ
             // Init Price Type List
             hdfFeeType.Value = FeeTypeController.getFeeTypeJSON();
         }
+
         [WebMethod]
         public static string searchCustomerByPhone(string phone)
         {
             var customer = CustomerController.GetByPhone(phone);
             if (customer != null)
-            {
-                JavaScriptSerializer serializer = new JavaScriptSerializer();
-                return serializer.Serialize(customer);
-            }
+                return JsonConvert.SerializeObject(CustomerResponseModel.map(customer));
             else
-            {
                 return null;
-            }
         }
 
         [WebMethod]
