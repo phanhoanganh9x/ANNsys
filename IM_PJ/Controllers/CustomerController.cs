@@ -215,8 +215,12 @@ namespace IM_PJ.Controllers
                 }
                 else {
                     sql.AppendLine("    And (");
-                    sql.AppendLine(String.Format("        UPPER(C.CustomerName) LIKE N'%{0}%'", text));
-                    sql.AppendLine(String.Format("        OR UPPER(C.Nick) LIKE N'%{0}%'", text));
+                    sql.AppendLine(String.Format("        UPPER(C.CustomerName) = N'{0}'", text));
+                    sql.AppendLine(String.Format("        OR UPPER(C.CustomerName) LIKE N'{0} %'", text));
+                    sql.AppendLine(String.Format("        OR UPPER(C.CustomerName) LIKE N'% {0}'", text));
+                    sql.AppendLine(String.Format("        OR UPPER(C.Nick) = N'{0}'", text));
+                    sql.AppendLine(String.Format("        OR UPPER(C.Nick) LIKE N'{0} %'", text));
+                    sql.AppendLine(String.Format("        OR UPPER(C.Nick) LIKE N'% {0}'", text));
                     sql.AppendLine("    )");
                 }
             }
