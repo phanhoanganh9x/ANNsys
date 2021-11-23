@@ -214,14 +214,30 @@ namespace IM_PJ.Controllers
                     sql.AppendLine("    )");
                 }
                 else {
-                    sql.AppendLine("    And (");
-                    sql.AppendLine(String.Format("        UPPER(C.CustomerName) = N'{0}'", text));
-                    sql.AppendLine(String.Format("        OR UPPER(C.CustomerName) LIKE N'{0} %'", text));
-                    sql.AppendLine(String.Format("        OR UPPER(C.CustomerName) LIKE N'% {0}'", text));
-                    sql.AppendLine(String.Format("        OR UPPER(C.Nick) = N'{0}'", text));
-                    sql.AppendLine(String.Format("        OR UPPER(C.Nick) LIKE N'{0} %'", text));
-                    sql.AppendLine(String.Format("        OR UPPER(C.Nick) LIKE N'% {0}'", text));
-                    sql.AppendLine("    )");
+                    var vnReg = new Regex(@"[ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]+");
+
+                    if (vnReg.IsMatch(text))
+                    {
+                        sql.AppendLine("    And (");
+                        sql.AppendLine(String.Format("        UPPER(C.CustomerName) = N'{0}'", text));
+                        sql.AppendLine(String.Format("        OR UPPER(C.CustomerName) LIKE N'{0} %'", text));
+                        sql.AppendLine(String.Format("        OR UPPER(C.CustomerName) LIKE N'% {0}'", text));
+                        sql.AppendLine(String.Format("        OR UPPER(C.Nick) = N'{0}'", text));
+                        sql.AppendLine(String.Format("        OR UPPER(C.Nick) LIKE N'{0} %'", text));
+                        sql.AppendLine(String.Format("        OR UPPER(C.Nick) LIKE N'% {0}'", text));
+                        sql.AppendLine("    )");
+                    }
+                    else
+                    {
+                        sql.AppendLine("    And (");
+                        sql.AppendLine(String.Format("        UPPER(C.UnSignedName) = N'{0}'", text));
+                        sql.AppendLine(String.Format("        OR UPPER(C.UnSignedName) LIKE N'{0} %'", text));
+                        sql.AppendLine(String.Format("        OR UPPER(C.UnSignedName) LIKE N'% {0}'", text));
+                        sql.AppendLine(String.Format("        OR UPPER(C.UnSignedNick) = N'{0}'", text));
+                        sql.AppendLine(String.Format("        OR UPPER(C.UnSignedNick) LIKE N'{0} %'", text));
+                        sql.AppendLine(String.Format("        OR UPPER(C.UnSignedNick) LIKE N'% {0}'", text));
+                        sql.AppendLine("    )");
+                    }
                 }
             }
 
