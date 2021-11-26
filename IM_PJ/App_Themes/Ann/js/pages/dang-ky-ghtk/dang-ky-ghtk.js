@@ -32,6 +32,7 @@ $(document).ready(function () {
     _onChangeReceiverAddress();
     _initShipment();
     _initTableProduct();
+    _initDeliveryMethod();
     _initFee();
     _initNote();
     _initPage();
@@ -86,7 +87,8 @@ function _initParameterLocal() {
         opm: null,
         pick_option: null,
         actual_transfer_method: 'road',
-        transport: 'road'
+        transport: 'road',
+        is_part_deliver: 1
     }
 
     // Product Table
@@ -358,6 +360,16 @@ function _initTableProduct() {
     });
 }
 
+function _initDeliveryMethod() {
+    $('input:checkbox[name="delivery-method"]').change(function () {
+        _order.is_part_deliver = +$(this).val() || 0;
+        _order.note.replace(/^giao hàng 1 phần, /g, '');
+        
+        if (isChecked)
+            _order.note = 'giao hàng 1 phần, ' + _order.note;
+    });
+}
+
 function _initFee() {
     $('input:radio[name="feeship"]').change(function () {
         _calculateFee();
@@ -528,6 +540,9 @@ function _initGroupOrder(groupCode) {
             // Chú thích đơn hàng
             if (data.note)
                 $("#note").val(data.note).trigger('change');
+
+            // Phương thức giao hàng
+            $("#part-delivery").prop('checked', true).trigger('change');
         },
         error: function (xhr) {
             HoldOn.close();
@@ -566,6 +581,9 @@ function _initOrder(id) {
             // Chú thích đơn hàng
             if (data.note)
                 $("#note").val(data.note).trigger('change');
+
+            // Phương thức giao hàng
+            $("#part-delivery").prop('checked', true).trigger('change');
         },
         error: function (xhr) {
             HoldOn.close();
