@@ -361,12 +361,16 @@ function _initTableProduct() {
 }
 
 function _initDeliveryMethod() {
-    $('input:checkbox[name="delivery-method"]').change(function () {
-        _order.is_part_deliver = +$(this).val() || 0;
-        _order.note.replace(/^giao hàng 1 phần, /g, '');
+    $('#part-delivery').change(function () {
+        let $note = $("#note");
+        let note = $note.val().replace(/^giao hàng 1 phần, /g, '');
+
+        _order.is_part_deliver = this.checked ? 1 : 0;
         
-        if (isChecked)
-            _order.note = 'giao hàng 1 phần, ' + _order.note;
+        if (_order.is_part_deliver)
+            note = 'giao hàng 1 phần, ' + note;
+
+        $("#note").val(note).trigger('change');
     });
 }
 

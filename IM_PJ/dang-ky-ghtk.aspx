@@ -139,16 +139,16 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group row">
                                 <div class="col-4 col-xl-4">
                                     <label>Hình thức giao hàng</label>
                                 </div>
                                 <div class="col-8 col-xl-8">
                                     <div class="row">
                                         <div class="col-12 col-xl-12">
-                                            <div class="custom-control custom-radio custom-control-inline">
-                                                <input type="checkbox" id="part-delivery" name="delivery-method" class="custom-control-input" value="1">
-                                                <label class="custom-control-label" for="delivery_method">Giao hàng một phần</label>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" id="part-delivery" class="custom-control-input" value="1">
+                                                <label class="custom-control-label" for="part-delivery">Giao hàng một phần</label>
                                             </div>
                                         </div>
                                     </div>
