@@ -139,6 +139,21 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <div class="form-group row">
+                                <div class="col-4 col-xl-4">
+                                    <label>Hình thức giao hàng</label>
+                                </div>
+                                <div class="col-8 col-xl-8">
+                                    <div class="row">
+                                        <div class="col-12 col-xl-12">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" id="part-delivery" class="custom-control-input" value="1">
+                                                <label class="custom-control-label" for="part-delivery">Giao hàng một phần</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div id="divFee" class="form-group row hide">
                                 <div class="col-4 col-xl-4">
                                     <label>Phí GHTK tính</label>
