@@ -746,26 +746,26 @@ namespace IM_PJ
             var errorPrint = false;
             var printerButtonHtml = "<a class='btn' href='javascript:;' onclick='printIt()'>In phiếu gửi hàng</a>";
 
-            if (order.paymentMethod != (int)PaymentType.CashCollection && accRole != 0)
-            {
-                if (order.deliveryMethod == (int)DeliveryType.PostOffice)
-                {
-                    printerButtonHtml = "<a class='btn btn-black' href='javascript:;' onclick='printError(`Bưu điện`)'>Không in được</a>";
-                    errorPrint = true;
-                }
+            //if (order.paymentMethod != (int)PaymentType.CashCollection && accRole != 0)
+            //{
+            //    if (order.deliveryMethod == (int)DeliveryType.PostOffice)
+            //    {
+            //        printerButtonHtml = "<a class='btn btn-black' href='javascript:;' onclick='printError(`Bưu điện`)'>Không in được</a>";
+            //        errorPrint = true;
+            //    }
 
-                if (order.deliveryMethod == (int)DeliveryType.Proship)
-                {
-                    printerButtonHtml = "<a class='btn btn-black' href='javascript:;' onclick='printError(`Proship`)'>Không in được</a>";
-                    errorPrint = true;
-                }
+            //    if (order.deliveryMethod == (int)DeliveryType.Proship)
+            //    {
+            //        printerButtonHtml = "<a class='btn btn-black' href='javascript:;' onclick='printError(`Proship`)'>Không in được</a>";
+            //        errorPrint = true;
+            //    }
 
-                if (order.deliveryMethod == (int)DeliveryType.DeliverySave)
-                {
-                    printerButtonHtml = "<a class='btn btn-black' href='javascript:;' onclick='printError(`GHTK`)'>Không in được</a>";
-                    errorPrint = true;
-                }
-            }
+            //    if (order.deliveryMethod == (int)DeliveryType.DeliverySave)
+            //    {
+            //        printerButtonHtml = "<a class='btn btn-black' href='javascript:;' onclick='printError(`GHTK`)'>Không in được</a>";
+            //        errorPrint = true;
+            //    }
+            //}
 
             if (errorPrint)
             {
