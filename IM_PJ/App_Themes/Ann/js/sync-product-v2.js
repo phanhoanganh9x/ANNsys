@@ -112,7 +112,7 @@ function ajaxGetProduct(web, productSKU) {
             $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
             $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
         },
-        success: function (data) {
+        success: function (data, textStatus, xhr) {
             HoldOn.close();
             if (xhr.status == 200) {
                 if (data.length > 0) {
@@ -255,6 +255,7 @@ function ajaxUpTopProduct(web, productID) {
                     $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Up lên đầu web thành công</span>");
                     $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
                     $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
+                    $("*[data-web='" + web + "']").attr("data-web-product-id", data.id);
                 }
                 else {
                     $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Up lên đầu web thất bại</span>");
@@ -392,6 +393,7 @@ function ajaxToggleProduct(web, productID, toggle) {
                     $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Đã " + status + " sản phẩm thành công</span>");
                     $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
                     $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
+                    $("*[data-web='" + web + "']").attr("data-web-product-id", data.id);
                 }
                 else {
                     $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Đã " + status + " sản phẩm thất bại</span>");
@@ -468,6 +470,7 @@ function ajaxToggleWhosalePrice(web, productID, toggle, addSKU) {
                         $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Đã " + status + " giá sỉ thành công</span>");
                         $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
                         $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
+                        $("*[data-web='" + web + "']").attr("data-web-product-id", data.id);
                     }
                     else {
                         $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Đã " + status + " giá sỉ thất bại</span>");
@@ -583,6 +586,7 @@ function ajaxUpdateProductSKU(web, oldSKU, newSKU) {
                     $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Cập nhật SKU thành công</span>");
                     $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").removeClass("hide");
                     $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
+                    $("*[data-web='" + web + "']").attr("data-web-product-id", data.id);
                 }
                 else {
                     $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Cập nhật SKU thất bại</span>");
@@ -663,6 +667,7 @@ function ajaxUpdateProductTag(web, productID) {
                     $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Cập nhật tags thành công</span>");
                     $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
                     $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
+                    $("*[data-web='" + web + "']").attr("data-web-product-id", data.id);
                 }
                 else {
                     $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Cập nhật tags thất bại</span>");
@@ -748,6 +753,7 @@ function ajaxUpdatePrice(web, productID, addSKU) {
                         $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Cập nhật giá thành công</span>");
                         $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
                         $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
+                        $("*[data-web='" + web + "']").attr("data-web-product-id", data.id);
                     }
                     else {
                         $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Cập nhật giá thất bại</span>");
