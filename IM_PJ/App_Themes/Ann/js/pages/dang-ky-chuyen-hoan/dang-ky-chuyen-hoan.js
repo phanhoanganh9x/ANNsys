@@ -62,7 +62,7 @@ function _updateDelivery() {
     //#region Thông tin phương thức giao hàng
     let $deliveryMethod = $("#ddlDeliveryMethod");
     let deliveryMethod = {
-        key: parseInt($deliveryMethod.val()),
+        key: +$deliveryMethod.val() || null,
         value: $deliveryMethod.find("option:selected").text()
     };
     //#endregion
