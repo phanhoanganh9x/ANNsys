@@ -137,7 +137,7 @@
         </div>
 
         <script type="text/javascript" src="/App_Themes/Ann/js/utils/string-format.js?v=202109302253"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=18112021"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=28112021"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/services/common/order-service.js?v=202109271901"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/services/danh-sach-don-dat-hang/danh-sach-don-dat-hang-service.js?v=202101051418"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/controllers/danh-sach-don-dat-hang/danh-sach-don-dat-hang-controller.js?v=202101051418"></script>
