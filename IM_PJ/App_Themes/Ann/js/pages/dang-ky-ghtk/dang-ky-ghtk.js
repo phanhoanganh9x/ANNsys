@@ -88,7 +88,7 @@ function _initParameterLocal() {
         pick_option: null,
         actual_transfer_method: 'road',
         transport: 'road',
-        is_part_deliver: 1
+        is_part_deliver: 0
     }
 
     // Product Table
@@ -544,9 +544,6 @@ function _initGroupOrder(groupCode) {
             // Chú thích đơn hàng
             if (data.note)
                 $("#note").val(data.note).trigger('change');
-
-            // Phương thức giao hàng
-            $("#part-delivery").prop('checked', true).trigger('change');
         },
         error: function (xhr) {
             HoldOn.close();
@@ -585,9 +582,6 @@ function _initOrder(id) {
             // Chú thích đơn hàng
             if (data.note)
                 $("#note").val(data.note).trigger('change');
-
-            // Phương thức giao hàng
-            $("#part-delivery").prop('checked', true).trigger('change');
         },
         error: function (xhr) {
             HoldOn.close();
