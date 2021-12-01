@@ -1626,7 +1626,11 @@
                             let $imageCode = $("#<%=txtImageCode.ClientID%>");
                             let imageCode = $imageCode.val() || "";
 
-                            if (imageCode == "")
+                            var cosmeticCategory = [44, 45, 56, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 80, 81];
+                            var categoryID = $("#<%=ddlCategory.ClientID%>").val();
+                            var inCosmeticCategory = cosmeticCategory.includes(parseInt(categoryID));
+
+                            if (imageCode == "" && inCosmeticCategory == false)
                             {
                                 $imageCode.val("CODE: " + sku.toUpperCase());
                                 $imageCode.focus();
