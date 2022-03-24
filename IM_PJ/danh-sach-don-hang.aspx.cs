@@ -593,7 +593,7 @@ namespace IM_PJ
                         }
                         if (item.ShippingType == 6 && !String.IsNullOrEmpty(item.ShippingCode))
                         {
-                            moreInfo = " (<a href='https://khachhang.giaohangtietkiem.vn/khachhang?code=" + item.ShippingCode + "' target='_blank'>Xem</a>)";
+                            moreInfo = " (<a href='https://khachhang.giaohangtietkiem.vn/web/don-hang?customer_created_from=1970-01-01+07:00:00&customer_info=" + item.ShippingCode + "' target='_blank'>Xem</a>)";
                         }
                         html.AppendLine("<span class='order-info'><strong>Vận đơn:</strong> " + item.ShippingCode + moreInfo + "</span>");
                     }

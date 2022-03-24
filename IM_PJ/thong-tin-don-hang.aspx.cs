@@ -741,7 +741,7 @@ namespace IM_PJ
 
                         if (!String.IsNullOrEmpty(order.ShippingCode))
                         {
-                            ltrPrint.Text += "<a id='btnShowGhtk' target='_blank' href='https://khachhang.giaohangtietkiem.vn/khachhang?code=" + order.ShippingCode + "' class='btn primary-btn btn-ghtk fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-upload' aria-hidden='true'></i> Tra cứu GHTK</a>";
+                            ltrPrint.Text += "<a id='btnShowGhtk' target='_blank' href='https://khachhang.giaohangtietkiem.vn/web/don-hang?customer_created_from=1970-01-01+07:00:00&customer_info=" + order.ShippingCode + "' class='btn primary-btn btn-ghtk fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-upload' aria-hidden='true'></i> Tra cứu GHTK</a>";
 
                             if (String.IsNullOrEmpty(order.GroupCode))
                                 ltrPrint.Text += "<a id='btnCancelGhtk' href='javascript:;' onclick='cancelGhtk(" + ID + ", `" + order.ShippingCode + "`)' class='btn primary-btn btn-red fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-trash' aria-hidden='true'></i> Hủy đơn GHTK</a>";

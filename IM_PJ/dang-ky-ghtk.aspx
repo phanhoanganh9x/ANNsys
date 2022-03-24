@@ -244,7 +244,7 @@
             <script src="/App_Themes/Ann/js/HoldOn.js?v=01122021"></script>
 
             <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=202111091752"></script>
-            <script type="text/javascript" src="App_Themes/Ann/js/pages/dang-ky-ghtk/dang-ky-ghtk.js?v=202111301525"></script>
+            <script type="text/javascript" src="App_Themes/Ann/js/pages/dang-ky-ghtk/dang-ky-ghtk.js?v=202203241301"></script>
         </div>
     </form>
 </body>
