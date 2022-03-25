@@ -253,7 +253,7 @@ function _initShipment() {
 
     strNow = now.toISOString().substring(0, 10).replace(/-/g, '/');
 
-    if (hours <= 10 && minutes <= 30) {
+    if (hours < 10 || (hours == 10 && minutes <= 30)) {
         pick_work_shift.push({ id: 1, text: "Sáng nay" });
         pick_work_shift.push({ id: 2, text: "Chiều nay" });
         pick_work_shift.push({ id: 3, text: "Tối nay" });
@@ -261,7 +261,7 @@ function _initShipment() {
         _order.pick_date = strNow;
         _order.pick_work_shift = 1;
     }
-    else if (hours <= 16 && minutes <= 30) {
+    else if (hours < 16 || (hours == 16 && minutes <= 30)) {
         pick_work_shift.push({ id: 1, text: "Chiều nay" });
         pick_work_shift.push({ id: 2, text: "Tối nay" });
         pick_work_shift.push({ id: 3, text: "Sáng mai" });
