@@ -637,7 +637,10 @@
                     var categoryID = $("#<%=ddlCategory.ClientID%>").val();
                     var regularPrice = parseInt($("#<%=pRegular_Price.ClientID%>").val());
                     var cost = 0;
-                    if (categoryID == 17 || categoryID == 18 || categoryID == 19 || categoryID == 47) {
+                    if (categoryID == 17 || categoryID == 18 || categoryID == 19 || categoryID == 21 || categoryID == 20) {
+                        cost = regularPrice - 30000;
+                    }
+                    else if (categoryID == 47) {
                         cost = regularPrice - 25000;
                     }
                     else if (categoryID == 12) {
@@ -645,7 +648,7 @@
                     }
                     else
                     {
-                        cost = regularPrice - 25000;
+                        cost = regularPrice - 30000;
                     }
 
                     $("input.cost-price").val(cost);
@@ -654,21 +657,24 @@
                     var retailPrice = 0;
                     if (regularPrice < 60000)
                     {
-                        retailPrice = regularPrice + 40000;
+                        retailPrice = regularPrice + 50000;
                     }
                     else if (regularPrice >= 60000 && regularPrice < 100000)
                     {
-                        retailPrice = regularPrice + 50000;
+                        retailPrice = regularPrice + 80000;
                     }
                     else if (regularPrice >= 100000 && regularPrice < 140000)
                     {
-                        retailPrice = regularPrice + 60000;
+                        retailPrice = regularPrice + 90000;
                     }
-                    else if (regularPrice >= 140000 && regularPrice < 190000) {
-                        retailPrice = regularPrice + 70000;
+                    else if (regularPrice >= 140000 && regularPrice < 170000) {
+                        retailPrice = regularPrice + 100000;
+                    }
+                    else if (regularPrice >= 170000 && regularPrice < 190000) {
+                        retailPrice = regularPrice + 110000;
                     }
                     else if (regularPrice >= 190000) {
-                        retailPrice = regularPrice + 80000;
+                        retailPrice = regularPrice + 130000;
                     }
 
                     $("#<%=pRetailPrice.ClientID%>").val(retailPrice);
