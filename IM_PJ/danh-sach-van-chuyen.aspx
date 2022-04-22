@@ -503,7 +503,43 @@
             // Danh sách các order đã chọn để in
             var orderChoosed = [];
 
+            function queryParams () {
+                let search = window.location.search;
+                let params = {};
+
+                if (!search) return params;
+
+                search = search.replace(/^\?(&)?/g, '');
+                let splits = search.split('&').filter(function (x) { return x; });
+
+                splits.forEach(function (x) {
+                    let data = x.split('=').filter(function (x) { return x; });
+
+                    if (data.length == 2) {
+                        let key = data[0];
+                        let value = data[1];
+
+                        params[key] = value;
+                    }
+                });
+
+                return params;
+            }
+
             function init() {
+                // Trương hợp search theo đơn thì tự động checked
+                let params = queryParams();
+                let hasOrderId = params.textsearch && params.textsearch.match(/^\d+$/);
+
+                if (hasOrderId) {
+                    changeCheckPrintAll(true);
+
+                    let $search = document.querySelector('[id$="_txtSearchOrder"]');
+
+                    $search.focus();
+                    $search.select();
+                }
+                
                 // Hổ trợ xử lý check or uncheck all print
                 checkPrintAll();
                 // Lấy danh sách order đã chọn
