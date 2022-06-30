@@ -618,10 +618,8 @@ namespace IM_PJ
 
             if (order.deliveryMethod == (int)DeliveryType.TransferStation)
             {
-                if (!String.IsNullOrEmpty(order.receiver.provinceName))
-                    addressHtml = String.Format("<span class='phone'>{0} ({1})</span>", order.transport.shipTo, order.receiver.provinceName);
-                else
-                    addressHtml = String.Format("<span class='phone'>{0}</span>", order.transport.shipTo);
+                // 2022-06-30: Chỉnh sửa - Bỏ ghi tên Tỉnh / Thành phố nơi đến
+                addressHtml = String.Format("<span class='phone'>{0}</span>", order.transport.shipTo);
             }
             else
             {
