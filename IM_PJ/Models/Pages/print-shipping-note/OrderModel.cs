@@ -26,9 +26,9 @@ namespace IM_PJ.Models.Pages.print_shipping_note
         {
             var destination = String.Empty;
             var codes = shippingCode
-                        .Split('.')
-                        .Where(x => !String.IsNullOrEmpty(x))
-                        .ToList();
+                .Split('.')
+                .Where(x => !String.IsNullOrEmpty(x))
+                .ToList();
 
             if (codes.Count == 6)
                 destination = String.Format("{0}.{1}.{2}.{3}", codes[1], codes[2], codes[3], codes[4]);

@@ -22,10 +22,11 @@ namespace IM_PJ.Models.Pages.print_shipping_note
                 .Where(x => !String.IsNullOrEmpty(x))
                 .Select(x => x.Trim())
                 .ToList();
+
             var address = new AddressModel() {
                 name = source.AgentLeader,
                 phone = phones.FirstOrDefault(),
-                phone2 = phones.LastOrDefault(),
+                phone2 = phones.Count > 1 ? phones.ElementAt(1) : null,
                 address = source.AgentAddress
             };
 
