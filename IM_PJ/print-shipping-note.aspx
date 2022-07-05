@@ -179,7 +179,7 @@
         padding: 3px!important;
         margin-top: 0;
     }
-    .rotated {
+    /*.rotated {
         transform: rotate(-90deg);
         width: 72mm;
         position: absolute;
@@ -191,7 +191,7 @@
         border-top: dashed 2px #000;
         padding-top: 0;
         letter-spacing: 6px;
-    }
+    }*/
     .margin-left-ghtk {
         left: 126mm;
     }
@@ -224,14 +224,20 @@
     .order-id {
         font-size: 17px;
     }
+    .destination {
+        font-size: 17px;
+    }
+    table, th, td {
+        border: 1px solid;
+    }
     @media print { 
-        body {
+        /*body {
             -ms-transform:rotate(-90deg);
             -o-transform:rotate(-90deg);
             transform:rotate(-90deg);
             margin-top: 110mm;
             margin-left: 4mm;
-        }
+        }*/
     }
   </style>
     <asp:Literal ID="ltrDisablePrint"  runat="server"></asp:Literal>
@@ -289,8 +295,8 @@
             $(".sweet-alert").hide().empty();
             $(".sweet-overlay").hide().empty();
             replacePhone();
-            window.print();
-            window.close();
+            //window.print();
+            //window.close();
         }
 
         function printNote() {
