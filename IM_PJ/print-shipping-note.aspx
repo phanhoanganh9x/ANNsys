@@ -9,7 +9,7 @@
   <style>
     
     body {
-        font-size: 14px;
+        font-size: 18px;
         font-family: Tahoma,sans-serif;
         margin-left: 0;
         margin-top: 0;
@@ -19,12 +19,18 @@
         margin-top: 4px;
         margin-bottom: 4px;
     }
+    .logo-ghtk {
+        width: 200px;
+        float: left;
+    }
     .table {
         display: block;
-        width: 155mm;
-        height: 72mm;
-        position: relative;
-        border-left: dashed 2px #000;
+        width: 175mm;
+    }
+    .table table, th, td {
+        padding: 15px;
+        border: 1px solid;
+        border-collapse: collapse;
     }
     .table-ghtk {
         width: 175mm;
@@ -34,6 +40,15 @@
     }
     .table-ghtk .bottom-right {
         right: 32mm;
+    }
+    .table-ghtk .destination {
+        text-align: center;
+        font-size: 42px;
+    }
+    .table-ghtk .delivery {
+        text-align: center;
+        font-size: 25px;
+        letter-spacing: 2px;
     }
     .table-note {
         display: block;
@@ -58,6 +73,15 @@
         margin-bottom: 0;
         margin-top: 5px;
         line-height: 1.3em;
+    }
+    .td-logo {
+        float: left;
+        width: 35%;
+    }
+    .td-delivery-info {
+        float: left;
+        width: 65%;
+        text-align: center;
     }
     .top-left {
         position: absolute;
@@ -92,14 +116,11 @@
         width: 90mm;
     }
     .cod {
-        font-size: 18px;
+        font-size: 24px;
         font-weight: bold;
     }
     .address {
         text-transform: capitalize;
-    }
-    .agent-address {
-        font-size: 14px;
     }
     .web {
         text-decoration: underline;
@@ -107,26 +128,40 @@
     .delivery {
         margin-top: 0;
         text-transform: uppercase;
-        font-size: 15px;
+        font-size: 23px;
+    }
+    .shipto {
+        text-transform: uppercase;
+        font-size: 20px;
+    }
+    .sender {
+        margin-top: 10px;
+        margin-bottom: 15px;
+        text-decoration: underline;
+        font-weight: bold;
     }
     .sender-name {
-        font-size: 19px;
+        font-size: 26px;
         text-transform: uppercase;
         font-weight: bold;
     }
+    .receiver {
+        margin-top: 10px;
+        margin-bottom: 15px;
+        text-decoration: underline;
+        font-weight: bold;
+    }
     .receiver-name {
-        font-size: 20px;
+        font-size: 26px;
         text-transform: uppercase;
         font-weight: bold;
     }
     .phone {
-        font-size: 19px;
+        font-size: 22px;
         font-weight: bold;
     }
     .img {
-        margin-top: 5px;
-        margin-bottom: 5px;
-        width: 29%;
+        width: 170px;
     }
     .btn {
         display: inline-block;
@@ -179,6 +214,9 @@
         padding: 3px!important;
         margin-top: 0;
     }
+    .footer {
+        font-size: 16px;
+    }
     /*.rotated {
         transform: rotate(-90deg);
         width: 72mm;
@@ -221,15 +259,7 @@
         width: 65%;
         height: 50%;
     }
-    .order-id {
-        font-size: 17px;
-    }
-    .destination {
-        font-size: 17px;
-    }
-    table, th, td {
-        border: 1px solid;
-    }
+    
     @media print { 
         /*body {
             -ms-transform:rotate(-90deg);
