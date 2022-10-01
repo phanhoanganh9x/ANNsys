@@ -181,7 +181,7 @@
                                     </asp:DropDownList>
                                 </div>
                             </div>
-                            <div class="form-row">
+                            <%--<div class="form-row">
                                 <div class="row-left">
                                     Đồng bộ lên KiotViet
                                 </div>
@@ -191,7 +191,7 @@
                                         <asp:ListItem Value="false">Không</asp:ListItem>
                                     </asp:RadioButtonList>
                                 </div>
-                            </div>
+                            </div>--%>
                             <div class="form-row">
                                 <div class="row-left">
                                     Mã sản phẩm
@@ -1633,7 +1633,7 @@
                 return (!str || /^\s*$/.test(str));
             }
 
-            // #region KiotViet
+            <%--// #region KiotViet
             let _kvUser = "admin";
             let _kvPassword = "0914615407";
             let _retailerName = "iwillgiaminh"
@@ -1693,7 +1693,7 @@
                     }
                 });
             }
-            // #endregion
+            // #endregion--%>
 
             // #region Swal
             function _alterError(title, responseJSON) {

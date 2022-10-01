@@ -1060,8 +1060,8 @@ namespace IM_PJ
                     }
 
                     html.AppendLine("   <td class='update-button'>");
-                    html.AppendLine("       <a href='javascript:;' title='Download tất cả hình sản phẩm này' class='btn primary-btn h45-btn' onclick='getAllProductImage(`" + item.ProductSKU + "`);'><i class='fa fa-file-image-o' aria-hidden='true'></i></a>");
-                    html.AppendLine("       <a target='_blank' href='https://www.facebook.com/search/posts/?q=" + item.ProductSKU + "&filters_rp_author=%7B%22name%22%3A%22author%22%2C%22args%22%3A%22100012594165130%22%7D&filters_rp_chrono_sort=%7B%22name%22%3A%22chronosort%22%2C%22args%22%3A%22%22%7D' title='Tìm trên facebook' class='btn primary-btn btn-black h45-btn'><i class='fa fa-facebook-official' aria-hidden='true'></i></a>");
+                    html.AppendLine("       <a href='javascript:;' title='Tải tất cả hình' class='btn primary-btn h45-btn' onclick='getAllProductImage(`" + item.ProductSKU + "`);'><i class='fa fa-file-image-o' aria-hidden='true'></i></a>");
+                    //html.AppendLine("       <a target='_blank' href='https://www.facebook.com/search/posts/?q=" + item.ProductSKU + "&filters_rp_author=%7B%22name%22%3A%22author%22%2C%22args%22%3A%22100012594165130%22%7D&filters_rp_chrono_sort=%7B%22name%22%3A%22chronosort%22%2C%22args%22%3A%22%22%7D' title='Tìm trên facebook' class='btn primary-btn btn-black h45-btn'><i class='fa fa-facebook-official' aria-hidden='true'></i></a>");
 
                     if (acc.RoleID == 0 || acc.Username == "nhom_zalo502")
                     {
@@ -1077,7 +1077,7 @@ namespace IM_PJ
                             html.AppendLine("       <a href='javascript:;' title='Phục hồi xả kho' class='recover-liquidation-product-" + item.ID + " btn primary-btn btn-green h45-btn' onclick='recoverLiquidatedProduct(" + item.CategoryID + ", " + item.ID + ", `" + item.ProductSKU + "`);'><i class='glyphicon glyphicon-repeat' aria-hidden='true'></i></a>");
                         }
                     }
-                    html.AppendLine("       <a href='javascript:;' title='Download sản phẩm Shopee' class='btn primary-btn h45-btn' onclick='downloadProductShopee(`" + item.ProductSKU + "`);'><i class='fa fa-download' aria-hidden='true'></i> S</a>");
+                    //html.AppendLine("       <a href='javascript:;' title='Download sản phẩm Shopee' class='btn primary-btn h45-btn' onclick='downloadProductShopee(`" + item.ProductSKU + "`);'><i class='fa fa-download' aria-hidden='true'></i> S</a>");
                     html.AppendLine("  </td>");
                     html.AppendLine("</tr>");
                 }

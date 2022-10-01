@@ -67,7 +67,7 @@ namespace IM_PJ
                 ltrEdit1.Text = "";
                 ltrEdit1.Text += "<a href='javascript:;' onclick='copyProductInfo(" + p.ID + ")' class='btn primary-btn margin-right-15px'><i class='fa fa-files-o'></i> Copy</a>";
                 ltrEdit1.Text += "<a href='javascript:;' onclick='getAllProductImage(`" + p.ProductSKU + "`)' class='btn primary-btn margin-right-15px'><i class='fa fa-download'></i> Tải hình</a>";
-                ltrEdit1.Text += "<a href='javascript:;' onclick='postProductKiotViet(`" + p.ProductSKU + "`)' class='btn primary-btn margin-right-15px'><i class='fa fa-arrow-up'></i> Đăng Kiot</a>";
+                //ltrEdit1.Text += "<a href='javascript:;' onclick='postProductKiotViet(`" + p.ProductSKU + "`)' class='btn primary-btn margin-right-15px'><i class='fa fa-arrow-up'></i> Đăng Kiot</a>";
                 ltrEdit1.Text += "<a href='javascript:;' onclick='postProductZaloShop(`" + p.ProductSKU + "`)' class='btn primary-btn margin-right-15px'><i class='fa fa-arrow-up'></i> Đăng Zalo</a>";
                 ltrEdit1.Text += "<a href='javascript:;' onclick='downloadProductZaloShop(`" + p.ProductSKU + "`)' class='btn primary-btn btn-blue margin-right-15px'><i class='fa fa-download'></i> Tải Zalo</a>";
                 ltrEdit1.Text += "<a href='javascript:;' onclick='deleteProductZaloShop(`" + p.ProductSKU + "`)' class='btn primary-btn btn-red margin-right-15px'><i class='fa fa-times' aria-hidden='true'></i> Xóa Zalo</a>";

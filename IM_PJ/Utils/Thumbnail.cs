@@ -28,16 +28,16 @@ namespace IM_PJ.Utils
             switch (size)
             {
                 case Size.Micro:
-                    directory = "85x113/";
+                    directory = "420x420/";
                     break;
                 case Size.Small:
-                    directory = "159x212/";
+                    directory = "420x420/";
                     break;
                 case Size.Normal:
-                    directory = "240x320/";
+                    directory = "420x420/";
                     break;
                 case Size.Large:
-                    directory = "350x467/";
+                    directory = "420x420/";
                     break;
                 case Size.XLarge:
                     directory = "600/";

@@ -180,8 +180,8 @@
         <asp:HiddenField ID="hdfTable" runat="server" />
     </main>
 
-    <script src="/App_Themes/Ann/js/copy-product-info-public.js?v=01122021"></script>
-    <script src="/App_Themes/Ann/js/download-product-image-public.js?v=01122021"></script>
+    <script src="/App_Themes/Ann/js/copy-product-info-public.js?v=02102022"></script>
+    <script src="/App_Themes/Ann/js/download-product-image-public.js?v=02102022"></script>
     <script>
         function postProductZaloShop(productSKU) {
             let titleAlert = "Đồng bộ Zalo Shop";
@@ -217,66 +217,66 @@
             });
         }
 
-        function postProductKiotViet(productSKU) {
-            let titleAlert = "Đồng bộ KiotViet";
+        //function postProductKiotViet(productSKU) {
+        //    let titleAlert = "Đồng bộ KiotViet";
 
-            if (!productSKU)
-                _alterError(titleAlert, { message: "Chưa chọn sản phẩm nào!" });
+        //    if (!productSKU)
+        //        _alterError(titleAlert, { message: "Chưa chọn sản phẩm nào!" });
 
-            let dataJSON = JSON.stringify({ "productSKU": productSKU });
+        //    let dataJSON = JSON.stringify({ "productSKU": productSKU });
 
-            $.ajax({
-                beforeSend: function () {
-                    HoldOn.open();
-                },
-                method: 'POST',
-                contentType: 'application/json',
-                dataType: "json",
-                data: dataJSON,
-                url: "/api/v1/kiotviet/product",
-                success: (response, textStatus, xhr) => {
-                    HoldOn.close();
+        //    $.ajax({
+        //        beforeSend: function () {
+        //            HoldOn.open();
+        //        },
+        //        method: 'POST',
+        //        contentType: 'application/json',
+        //        dataType: "json",
+        //        data: dataJSON,
+        //        url: "/api/v1/kiotviet/product",
+        //        success: (response, textStatus, xhr) => {
+        //            HoldOn.close();
 
-                    if (xhr.status == 200) {
-                        postProductZaloShop(productSKU);
-                    } else {
-                        swal({
-                            title: titleAlert,
-                            text: "Đồng bộ lỗi",
-                            type: "warning",
-                            showCancelButton: true,
-                            confirmButtonColor: "#DD6B55",
-                            confirmButtonText: "Tiếp tục đồng bộ Zalo Shop",
-                            closeOnConfirm: true,
-                            cancelButtonText: "Dừng đồng bộ..",
-                            html: true
-                        }, function (isConfirm) {
-                            if (isConfirm) {
-                                postProductZaloShop(productSKU);
-                            }
-                        });
-                    }
-                },
-                error: (xhr, textStatus, error) => {
-                    HoldOn.close();
-                    swal({
-                        title: titleAlert,
-                        text: xhr.responseJSON.message,
-                        type: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#DD6B55",
-                        confirmButtonText: "Tiếp tục đồng bộ Zalo Shop",
-                        closeOnConfirm: true,
-                        cancelButtonText: "Dừng đồng bộ..",
-                        html: true
-                    }, function (isConfirm) {
-                        if (isConfirm) {
-                            postProductZaloShop(productSKU);
-                        }
-                    });
-                }
-            });
-        }
+        //            if (xhr.status == 200) {
+        //                postProductZaloShop(productSKU);
+        //            } else {
+        //                swal({
+        //                    title: titleAlert,
+        //                    text: "Đồng bộ lỗi",
+        //                    type: "warning",
+        //                    showCancelButton: true,
+        //                    confirmButtonColor: "#DD6B55",
+        //                    confirmButtonText: "Tiếp tục đồng bộ Zalo Shop",
+        //                    closeOnConfirm: true,
+        //                    cancelButtonText: "Dừng đồng bộ..",
+        //                    html: true
+        //                }, function (isConfirm) {
+        //                    if (isConfirm) {
+        //                        postProductZaloShop(productSKU);
+        //                    }
+        //                });
+        //            }
+        //        },
+        //        error: (xhr, textStatus, error) => {
+        //            HoldOn.close();
+        //            swal({
+        //                title: titleAlert,
+        //                text: xhr.responseJSON.message,
+        //                type: "warning",
+        //                showCancelButton: true,
+        //                confirmButtonColor: "#DD6B55",
+        //                confirmButtonText: "Tiếp tục đồng bộ Zalo Shop",
+        //                closeOnConfirm: true,
+        //                cancelButtonText: "Dừng đồng bộ..",
+        //                html: true
+        //            }, function (isConfirm) {
+        //                if (isConfirm) {
+        //                    postProductZaloShop(productSKU);
+        //                }
+        //            });
+        //        }
+        //    });
+        //}
 
         function deleteProductZaloShop(productSKU) {
             let titleAlert = "Xóa sản phẩm Zalo Shop";

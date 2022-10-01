@@ -67,15 +67,6 @@ namespace IM_PJ {
         protected global::System.Web.UI.HtmlControls.HtmlSelect ddlCategory;
         
         /// <summary>
-        /// rdbSyncKiotViet control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList rdbSyncKiotViet;
-        
-        /// <summary>
         /// RequiredFieldValidator1 control.
         /// </summary>
         /// <remarks>

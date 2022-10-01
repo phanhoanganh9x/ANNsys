@@ -886,7 +886,7 @@
                     html += "         <td class='order-item check-column'>";
                     html += "             <input class='check-popup' data-productVariableID='" + item.ProductVariableID + "' type='checkbox' onchange='check($(this))' />";
                     html += "         </td>";
-                    html += "         <td class='image-column'><img src='/uploads/images/85x113/" + item.ProductImage + "'></td>";
+                    html += "         <td class='image-column'><img src='/uploads/images/420x420/" + item.ProductImage + "'></td>";
                     html += "         <td class='name-column'>" + item.ProductTitle + "</td>";
                     html += "         <td class='sku-column key'>" + item.ChildSKU + "</td>";
                     html += "         <td class='variable-column'>" + item.VariableValue.replace(/\|/g, "<br>") + "</td>";

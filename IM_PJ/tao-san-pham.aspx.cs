@@ -455,7 +455,8 @@ namespace IM_PJ
                             }
 
                             int ShowHomePage = 0;
-                            var syncKiotViet = rdbSyncKiotViet.SelectedValue == "true";
+                            //var syncKiotViet = rdbSyncKiotViet.SelectedValue == "true";
+                            var syncKiotViet = false;
                             var prodNew = new tbl_Product()
                             {
                                 CategoryID = cateID,

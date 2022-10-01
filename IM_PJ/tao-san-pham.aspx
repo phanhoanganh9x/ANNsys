@@ -185,7 +185,7 @@
                                     <select id="ddlCategory" date-name="parentID" runat="server" class="form-control slparent" data-level="1" onchange="selectCategory($(this))"></select>
                                 </div>
                             </div>
-                            <div class="form-row">
+                            <%--<div class="form-row">
                                 <div class="row-left">
                                     Đồng bộ lên KiotViet
                                 </div>
@@ -195,7 +195,7 @@
                                         <asp:ListItem Value="false">Không</asp:ListItem>
                                     </asp:RadioButtonList>
                                 </div>
-                            </div>
+                            </div>--%>
                             <div class="form-row">
                                 <div class="row-left">
                                     Mã sản phẩm
@@ -637,10 +637,10 @@
                     var categoryID = $("#<%=ddlCategory.ClientID%>").val();
                     var regularPrice = parseInt($("#<%=pRegular_Price.ClientID%>").val());
                     var cost = 0;
-                    if (categoryID == 17 || categoryID == 18 || categoryID == 19 || categoryID == 21 || categoryID == 20) {
+                    if (categoryID == 17 || categoryID == 19 || categoryID == 21 || categoryID == 20) {
                         cost = regularPrice - 30000;
                     }
-                    else if (categoryID == 47) {
+                    else if (categoryID == 18 || categoryID == 47) {
                         cost = regularPrice - 25000;
                     }
                     else if (categoryID == 12) {
@@ -759,10 +759,10 @@
             });
 
             function redirectTo(ID, SKU) {
-                let $rdbSyncKiotViet = $("#<%=rdbSyncKiotViet.ClientID%>").find("input[type='radio']:checked");
+                <%--let $rdbSyncKiotViet = $("#<%=rdbSyncKiotViet.ClientID%>").find("input[type='radio']:checked");--%>
 
-                if ($rdbSyncKiotViet.val() == 'true')
-                    syncKvProduct(SKU);
+                //if ($rdbSyncKiotViet.val() == 'true')
+                //    syncKvProduct(SKU);
                 window.location.href = "/xem-san-pham?id=" +ID;
             }
 
@@ -1026,7 +1026,7 @@
                     }
                 })
 
-                getKvCategory(+parentID || 0);
+                //getKvCategory(+parentID || 0);
 
                 $.ajax({
                     type: "POST",
@@ -1070,7 +1070,9 @@
                 else if (categoryID == 19) {
                     search = "áo thun nữ";
                 }
-
+                else if (categoryID == 45 || categoryID == 65 || categoryID == 66 || categoryID == 67 || categoryID == 68 || categoryID == 69 || categoryID == 70 || categoryID == 71 || categoryID == 72 || categoryID == 73 || categoryID == 74 || categoryID == 76 || categoryID == 77 || categoryID == 78 || categoryID == 79 || categoryID == 80 || categoryID == 81 || categoryID == 56) {
+                    search = "mỹ phẩm";
+                }
                 if (search != "") {
                     var url = `/tao-san-pham.aspx/GetTagList?tagName=${JSON.stringify(search)}`;
 
@@ -1696,7 +1698,7 @@
                 global.textBoxLoad = textBoxLoad;
             })(window);
 
-            // #region KiotViet
+            <%--// #region KiotViet
             let _kvUser = "admin";
             let _kvPassword = "0914615407";
             let _retailerName = "iwillgiaminh"
@@ -1768,7 +1770,7 @@
                     method: 'POST'
                 });
             }
-            // #endregion
+            // #endregion--%>
 
             // #region Swal
             function _alterError(title, responseJSON) {

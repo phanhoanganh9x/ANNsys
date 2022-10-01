@@ -1,4 +1,8 @@
-﻿/* Trạng thái thanh toán */
+﻿.table > tbody > tr > td {
+  vertical-align: top;
+ }
+
+/* Trạng thái thanh toán */
 .bg-payment-status {
     color: #fff;
     display: inline-block;
@@ -635,6 +639,10 @@ a.bg-button:hover {
     max-height: 400px;
     overflow-x: auto;
 }
+
+.table-popup-product tbody > tr > td {
+    vertical-align: middle!important;
+}
 .table-popup-product .check-column {
     width: 5%;
 }
@@ -654,6 +662,10 @@ a.bg-button:hover {
     width: 16%;
 }
 
+
+.table-return-order tbody > tr > td {
+    vertical-align: middle!important;
+}
 .table-return-order .order-column {
     width: 5%;
 }
@@ -697,6 +709,9 @@ a.bg-button:hover {
 }
 
 
+.table-sale-order tbody > tr > td {
+    vertical-align: middle!important;
+}
 .table-sale-order .order-item {
     width: 5%;
 }
@@ -746,6 +761,7 @@ a.bg-button:hover {
 .table-pos-order tbody > tr > td {
     padding-top: 5px;
     padding-bottom: 5px;
+    vertical-align: middle!important;
 }
 .table-pos-order .image-item {
     width: 10%;
@@ -1097,7 +1113,7 @@ ul.image-gallery li {
     width: 5%;
 }
 .all-product-table .image-column {
-    width: 10%;
+    width: 14%;
 }
 .all-product-table .name-column {
     width: 17%;
@@ -1115,7 +1131,7 @@ ul.image-gallery li {
     width: 5%;
 }
 .all-product-table .stock-column {
-    width: 8%;
+    width: 4%;
 }
 .all-product-table .stock-status-column {
     width: 6%;
