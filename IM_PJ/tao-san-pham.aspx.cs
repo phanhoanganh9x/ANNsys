@@ -548,10 +548,10 @@ namespace IM_PJ
                                     {
                                         file.SaveAs(Server.MapPath(avatarClearPath));
                                         // Thumbnail
-                                        Thumbnail.create(Server.MapPath(avatarClearPath), 85, 113);
-                                        Thumbnail.create(Server.MapPath(avatarClearPath), 159, 212);
-                                        Thumbnail.create(Server.MapPath(avatarClearPath), 240, 320);
-                                        Thumbnail.create(Server.MapPath(avatarClearPath), 350, 467);
+                                        //Thumbnail.create(Server.MapPath(avatarClearPath), 85, 113);
+                                        //Thumbnail.create(Server.MapPath(avatarClearPath), 159, 212);
+                                        //Thumbnail.create(Server.MapPath(avatarClearPath), 240, 320);
+                                        //Thumbnail.create(Server.MapPath(avatarClearPath), 350, 467);
                                         Thumbnail.create(Server.MapPath(avatarClearPath), 420, 420);
                                         Thumbnail.create(Server.MapPath(avatarClearPath), 600, 0);
                                     }
@@ -582,10 +582,10 @@ namespace IM_PJ
                                     #endregion
 
                                     #region Thumbnail
-                                    Thumbnail.create(Server.MapPath(avatarFile), 85, 113);
-                                    Thumbnail.create(Server.MapPath(avatarFile), 159, 212);
-                                    Thumbnail.create(Server.MapPath(avatarFile), 240, 320);
-                                    Thumbnail.create(Server.MapPath(avatarFile), 350, 467);
+                                    //Thumbnail.create(Server.MapPath(avatarFile), 85, 113);
+                                    //Thumbnail.create(Server.MapPath(avatarFile), 159, 212);
+                                    //Thumbnail.create(Server.MapPath(avatarFile), 240, 320);
+                                    //Thumbnail.create(Server.MapPath(avatarFile), 350, 467);
                                     Thumbnail.create(Server.MapPath(avatarFile), 420, 420);
                                     Thumbnail.create(Server.MapPath(avatarFile), 600, 0);
                                     #endregion
@@ -606,10 +606,10 @@ namespace IM_PJ
                                 {
                                     file.SaveAs(Server.MapPath(avatarClearPath));
                                     // Thumbnail
-                                    Thumbnail.create(Server.MapPath(avatarClearPath), 85, 113);
-                                    Thumbnail.create(Server.MapPath(avatarClearPath), 159, 212);
-                                    Thumbnail.create(Server.MapPath(avatarClearPath), 240, 320);
-                                    Thumbnail.create(Server.MapPath(avatarClearPath), 350, 467);
+                                    //Thumbnail.create(Server.MapPath(avatarClearPath), 85, 113);
+                                    //Thumbnail.create(Server.MapPath(avatarClearPath), 159, 212);
+                                    //Thumbnail.create(Server.MapPath(avatarClearPath), 240, 320);
+                                    //Thumbnail.create(Server.MapPath(avatarClearPath), 350, 467);
                                     Thumbnail.create(Server.MapPath(avatarClearPath), 420, 420);
                                     Thumbnail.create(Server.MapPath(avatarClearPath), 600, 0);
                                 }
@@ -645,10 +645,10 @@ namespace IM_PJ
                                         #endregion
 
                                         #region Thumbnail
-                                        Thumbnail.create(Server.MapPath(o), 85, 113);
-                                        Thumbnail.create(Server.MapPath(o), 159, 212);
-                                        Thumbnail.create(Server.MapPath(o), 240, 320);
-                                        Thumbnail.create(Server.MapPath(o), 350, 467);
+                                        //Thumbnail.create(Server.MapPath(o), 85, 113);
+                                        //Thumbnail.create(Server.MapPath(o), 159, 212);
+                                        //Thumbnail.create(Server.MapPath(o), 240, 320);
+                                        //Thumbnail.create(Server.MapPath(o), 350, 467);
                                         Thumbnail.create(Server.MapPath(o), 420, 420);
                                         Thumbnail.create(Server.MapPath(o), 600, 0);
                                         #endregion
@@ -753,10 +753,10 @@ namespace IM_PJ
                                                 #endregion
 
                                                 // Thumbnail
-                                                Thumbnail.create(Server.MapPath(o), 85, 113);
-                                                Thumbnail.create(Server.MapPath(o), 159, 212);
-                                                Thumbnail.create(Server.MapPath(o), 240, 320);
-                                                Thumbnail.create(Server.MapPath(o), 350, 467);
+                                                //Thumbnail.create(Server.MapPath(o), 85, 113);
+                                                //Thumbnail.create(Server.MapPath(o), 159, 212);
+                                                //Thumbnail.create(Server.MapPath(o), 240, 320);
+                                                //Thumbnail.create(Server.MapPath(o), 350, 467);
                                                 Thumbnail.create(Server.MapPath(o), 420, 420);
                                                 Thumbnail.create(Server.MapPath(o), 600, 0);
                                             }

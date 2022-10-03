@@ -485,10 +485,10 @@ namespace IM_PJ
             #endregion
 
             #region Thumbnail
-            Thumbnail.create(filePath, 85, 113);
-            Thumbnail.create(filePath, 159, 212);
-            Thumbnail.create(filePath, 240, 320);
-            Thumbnail.create(filePath, 350, 467);
+            //Thumbnail.create(filePath, 85, 113);
+            //Thumbnail.create(filePath, 159, 212);
+            //Thumbnail.create(filePath, 240, 320);
+            //Thumbnail.create(filePath, 350, 467);
             Thumbnail.create(filePath, 420, 420);
             Thumbnail.create(filePath, 600, 0);
             #endregion
@@ -531,10 +531,10 @@ namespace IM_PJ
             #endregion
 
             #region Thumbnail
-            Thumbnail.create(filePath, 85, 113);
-            Thumbnail.create(filePath, 159, 212);
-            Thumbnail.create(filePath, 240, 320);
-            Thumbnail.create(filePath, 350, 467);
+            //Thumbnail.create(filePath, 85, 113);
+            //Thumbnail.create(filePath, 159, 212);
+            //Thumbnail.create(filePath, 240, 320);
+            //Thumbnail.create(filePath, 350, 467);
             Thumbnail.create(filePath, 420, 420);
             Thumbnail.create(filePath, 600, 0);
             #endregion
@@ -563,10 +563,10 @@ namespace IM_PJ
             uploadedFile.SaveAs(filePath);
 
             // Thumbnail
-            Thumbnail.create(filePath, 85, 113);
-            Thumbnail.create(filePath, 159, 212);
-            Thumbnail.create(filePath, 240, 320);
-            Thumbnail.create(filePath, 350, 467);
+            //Thumbnail.create(filePath, 85, 113);
+            //Thumbnail.create(filePath, 159, 212);
+            //Thumbnail.create(filePath, 240, 320);
+            //Thumbnail.create(filePath, 350, 467);
             Thumbnail.create(filePath, 420, 420);
             Thumbnail.create(filePath, 600, 0);
 
