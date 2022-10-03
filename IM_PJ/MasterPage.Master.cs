@@ -72,8 +72,8 @@ namespace IM_PJ
                         ltrMenu.Text += "<li><a href='/thong-ke-nhap-kho'><span class='icon-menu icon-product'></span>TK nhập kho</a></li>";
                         //ltrMenu.Text += "<li><a href='/tao-phien-kiem-kho'><span class='icon-menu icon-product'></span>Phiên kiểm kho</a></li>";
                         //ltrMenu.Text += "<li><a href='/thong-tin-kiem-kho'><span class='icon-menu icon-product'></span>Xem kiểm kho</a></li>";
-                        //ltrMenu.Text += "<li><a href='/quan-ly-nhap-kho'><span class='icon-menu icon-product'></span>Nhập kho 1</a></li>";
-                        //ltrMenu.Text += "<li><a href='/quan-ly-xuat-kho'><span class='icon-menu icon-product'></span>Xuất kho 1</a></li>";
+                        ltrMenu.Text += "<li><a href='/quan-ly-nhap-kho'><span class='icon-menu icon-product'></span>Nhập kho</a></li>";
+                        ltrMenu.Text += "<li><a href='/quan-ly-xuat-kho'><span class='icon-menu icon-product'></span>Xuất kho</a></li>";
                         //ltrMenu.Text += "<li><a href='/quan-ly-nhap-kho-2'><span class='icon-menu icon-product'></span>Nhập kho 2</a></li>";
                         //ltrMenu.Text += "<li><a href='/quan-ly-xuat-kho-2'><span class='icon-menu icon-product'></span>Xuất kho 2</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-nha-xe'><span class='icon-menu icon-product'></span>Nhà xe</a></li>";
@@ -99,8 +99,8 @@ namespace IM_PJ
                         //ltrMenu.Text += "<li><a href='/nhan-vien-dat-hang' target='_blank'><span class='icon-menu icon-lib'></span>DS đặt hàng</a></li>";
                         //ltrMenu.Text += "<li><a href='/danh-sach-nhap-hang'><span class='icon-menu icon-product'></span>QL đặt hàng</a></li>";
                         ltrMenu.Text += "<li><a href='/thong-ke-nhap-kho'><span class='icon-menu icon-product'></span>TK nhập kho</a></li>";
-                        ltrMenu.Text += "<li><a href='/quan-ly-nhap-kho'><span class='icon-menu icon-product'></span>Nhập kho 1</a></li>";
-                        ltrMenu.Text += "<li><a href='/quan-ly-xuat-kho'><span class='icon-menu icon-product'></span>Xuất kho 1</a></li>";
+                        ltrMenu.Text += "<li><a href='/quan-ly-nhap-kho'><span class='icon-menu icon-product'></span>Nhập kho</a></li>";
+                        ltrMenu.Text += "<li><a href='/quan-ly-xuat-kho'><span class='icon-menu icon-product'></span>Xuất kho</a></li>";
                         //ltrMenu.Text += "<li><a href='/quan-ly-nhap-kho-2'><span class='icon-menu icon-product'></span>Nhập kho 2</a></li>";
                         //ltrMenu.Text += "<li><a href='/quan-ly-xuat-kho-2'><span class='icon-menu icon-product'></span>Xuất kho 2</a></li>";
                         //ltrMenu.Text += "<li><a href='/chuyen-kho'><span class='icon-menu icon-product'></span>Chuyển kho</a></li>";
