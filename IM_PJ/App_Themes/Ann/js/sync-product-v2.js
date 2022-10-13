@@ -65,8 +65,8 @@ function showProductSyncModal(productSKU, productID, categoryID, productTitle) {
         button += "<a href='javascript:;' onclick='editProduct($(this))' class='btn primary-btn btn-black'>Sửa</a>";
         button += "<a href='javascript:;' onclick='updateProductTag($(this))' class='btn primary-btn btn-black'>Thêm tag</a>";
         button += "<a href='javascript:;' onclick='updatePrice($(this))' class='btn primary-btn btn-black'>Sửa giá</a>";
-        button += "<a href='javascript:;' onclick='toggleWhosalePrice($(this), `hide`)' class='btn primary-btn btn-black'>Ẩn giá sỉ</a>";
-        button += "<a href='javascript:;' onclick='toggleWhosalePrice($(this), `show`)' class='btn primary-btn'>Hiện giá sỉ</a>";
+        button += "<a href='javascript:;' onclick='toggleWhosalePrice($(this), `hide`)' class='btn primary-btn btn-black'>Ẩn giá</a>";
+        button += "<a href='javascript:;' onclick='toggleWhosalePrice($(this), `show`)' class='btn primary-btn'>Hiện giá</a>";
         button += "<a href='javascript:;' onclick='updateProductSKU($(this))' class='btn primary-btn btn-black'>Sửa SKU</a>";
         button += "<a href='javascript:;' onclick='toggleProduct($(this), `hide`)' class='btn primary-btn btn-black'>Ẩn</a>";
         button += "<a href='javascript:;' onclick='toggleProduct($(this), `show`)' class='btn primary-btn'>Hiện</a>";
