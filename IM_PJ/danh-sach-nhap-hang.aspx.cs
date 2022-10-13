@@ -328,7 +328,7 @@ namespace IM_PJ
                         subHTML.AppendLine("    <td></td>");
                         subHTML.AppendLine("    <td data-title='Ảnh'>");
                         subHTML.AppendLine("        <a target='_blank' href='/xem-san-pham?sku=" + subItem.sku + "'>");
-                        subHTML.AppendLine("            <img src='/uploads/images/85x113/" + subItem.image + "' style='width: auto'>");
+                        subHTML.AppendLine("            <img src='/uploads/images/420x420/" + subItem.image + "' style='width: auto'>");
                         subHTML.AppendLine("        </a>");
                         subHTML.AppendLine("    </td>");
                         subHTML.AppendLine("    <td data-title='Mã'>" + subItem.sku + "</td>");
