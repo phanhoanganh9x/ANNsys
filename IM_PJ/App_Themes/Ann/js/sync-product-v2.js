@@ -1,7 +1,7 @@
 ﻿var API = "/api/v1/woocommerce/product/";
 var webList = ["ann.com.vn", "khohangsiann.com", "bosiquanao.net", "quanaogiaxuong.com", "bansithoitrang.net", "panpan.vn", "quanaoxuongmay.com", "annshop.vn", "thoitrangann.com", "nhapsionline.com"];
 var webCosmetics = ["khosimypham.com", "simyphamonline.com", "nguonmypham.com", "cungcapsimypham.com", "myphamann.vn"];
-var cosmeticCategory = [44, 45, 56, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 80, 81];
+var cosmeticCategory = [44, 45, 56, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 83];
 
 function getWeblist(categoryID) {
     // San pham thuoc danh muc my pham, nuoc hoa, thuc pham chuc nang thi them web my pham vao
