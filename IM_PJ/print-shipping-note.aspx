@@ -325,8 +325,8 @@
             $(".sweet-alert").hide().empty();
             $(".sweet-overlay").hide().empty();
             replacePhone();
-            //window.print();
-            //window.close();
+            window.print();
+            window.close();
         }
 
         function printNote() {
