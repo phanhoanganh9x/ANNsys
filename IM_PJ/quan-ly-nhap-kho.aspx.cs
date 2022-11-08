@@ -291,9 +291,11 @@ namespace IM_PJ
                         string ProductName = itemValue[6];
                         string ProductImageOrigin = itemValue[7];
                         string ProductVariable = itemValue[8];
-                        var productV = ProductVariableController.GetByID(ID);
+                        var product = ProductController.GetByID(ID);
                         string parentSKU = "";
-                        parentSKU = productV.ParentSKU;
+
+                        if (product != null)
+                            parentSKU = product.ProductSKU;
 
                         if (producttype == 1)
                         {
