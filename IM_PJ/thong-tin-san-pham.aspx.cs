@@ -506,14 +506,44 @@ namespace IM_PJ
         {
             // Upload image
             var folder = Server.MapPath("/uploads/images");
-            var fileName = Slug.ConvertToSlug(Path.GetFileName(httpPostedFile.FileName), isFile: true, extension: ".png");
+
+            #region File Name
+            var fileName = Slug.ConvertToSlug(Path.GetFileName(httpPostedFile.FileName), isFile: true, extension: IMAGE_EXTENSION);
             var filePath = String.Format("{0}/{1}-{2}", folder, productID, fileName);
+            var splits = fileName.Split('-').Where(x => !String.IsNullOrEmpty(x)).ToList();
+            var isProductId = false;
+            var isTime = false;
+
+            if (splits.Count == 2)
+            {
+                isProductId = splits.First() == productID.ToString();
+
+                if (isProductId)
+                    filePath = String.Format("{0}/{1}", folder, fileName);
+            } else if (splits.Count > 2)
+            {
+                var timeRegex = new Regex(@"^([0-2]\d)([0-6]\d)([0-6]\d)(\d\d\d\d)$");
+
+                isProductId = splits.First() == productID.ToString();
+                isTime = timeRegex.IsMatch(splits.ElementAt(1));
+
+                if (isProductId && isTime)
+                    filePath = String.Format("{0}/{1}", folder, fileName);
+            }
 
             if (File.Exists(filePath))
             {
-                fileName = String.Format("{0}-{1}-{2}", productID, DateTime.UtcNow.ToString("HHmmssffff"), fileName);
-                filePath = String.Format("{0}/{1}", folder, fileName);
+                var now = DateTime.Now;
+
+                if (splits.Count == 2 && isProductId)
+                    filePath = String.Format("{0}/{1}-{2}-{3}", folder, productID, now.ToString("HHmmssffff"), splits.Last());
+                else if (splits.Count > 2 && isProductId && isTime)
+                    filePath = String.Format("{0}/{1}-{2}-{3}", folder, productID, now.ToString("HHmmssffff"), String.Join("-", splits.Skip(2).ToArray()));
+                else
+                    filePath = String.Format("{0}/{1}-{2}-{3}", folder, productID, now.ToString("HHmmssffff"), fileName);
             }
+            #endregion
+
 
             httpPostedFile.SaveAs(filePath);
 
@@ -524,9 +554,6 @@ namespace IM_PJ
                 var extension = Path.GetExtension(filePath);
 
                 _drawCode(fileName, txtImageCode.Text.Trim());
-
-                if (extension != IMAGE_EXTENSION)
-                    filePath = filePath.Replace(extension, IMAGE_EXTENSION);
             }
             #endregion
 
