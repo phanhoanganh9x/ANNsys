@@ -131,9 +131,8 @@ function ajaxGetProduct(web, productSKU) {
         },
         error: function (xhr, textStatus, error) {
             HoldOn.close();
-
+            let data = xhr.responseJSON;
             if (xhr.status === 500) {
-                let data = xhr.responseJSON;
                 $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
             }
             else if (xhr.status === 400) {
@@ -202,9 +201,8 @@ function ajaxPostProduct(web, productID, postProduct2) {
         },
         error: function (xhr, textStatus, error) {
             HoldOn.close();
-
+            let data = xhr.responseJSON;
             if (xhr.status === 500) {
-                let data = xhr.responseJSON;
                 $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
             }
             else if (xhr.status === 400) {
@@ -451,47 +449,41 @@ function ajaxToggleWhosalePrice(web, productID, toggle) {
         datatype: "json",
         beforeSend: function () {
             HoldOn.open();
-            if (addSKU == "null") {
-                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-yellow'>Đang " + status + " giá sỉ</span>");
-                $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
-                $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
-            }
+            $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-yellow'>Đang " + status + " giá sỉ</span>");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
         },
         success: function (data, textStatus, xhr) {
             HoldOn.close();
-            if (addSKU == "null") {
-                // Thành công
-                if (xhr.status === 200) {
-                    if (data.length > 0) {
-                        $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Đã " + status + " giá sỉ thành công " + data.length + " sp</span>");
-                        $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
-                        $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
-                        $("*[data-web='" + web + "']").attr("data-web-product-id", data[0].id);
-                    }
-                    else {
-                        $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Đã " + status + " giá sỉ thất bại</span>");
-                        $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").removeClass("hide");
-                        $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
-                    }
+            // Thành công
+            if (xhr.status === 200) {
+                if (data.length > 0) {
+                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Đã " + status + " giá sỉ thành công " + data.length + " sp</span>");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
+                    $("*[data-web='" + web + "']").attr("data-web-product-id", data[0].id);
                 }
                 else {
-                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
+                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Đã " + status + " giá sỉ thất bại</span>");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").removeClass("hide");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
                 }
+            }
+            else {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
             }
         },
         error: function (xhr, textStatus, error) {
             HoldOn.close();
-            if (addSKU == "null") {
-                let data = xhr.responseJSON;
-                if (xhr.status === 500) {
-                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
-                }
-                else if (xhr.status === 400) {
-                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
-                }
-                else {
-                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
-                }
+            let data = xhr.responseJSON;
+            if (xhr.status === 500) {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
+            }
+            else if (xhr.status === 400) {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
+            }
+            else {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
             }
         }
     });

@@ -3,9 +3,9 @@
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script type="text/javascript" src="/App_Themes/Ann/js/search-customer.js?v=202110012121"></script>
-    <script type="text/javascript" src="/App_Themes/Ann/js/search-product.js?v=01122022"></script>
-    <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=01122022"></script>
-    <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=01122022"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/search-product.js?v=03122022"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=03122022"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=03122022"></script>
     <style>
         .panel-post {
             margin-bottom: 20px;
@@ -863,7 +863,7 @@
     </telerik:RadAjaxManager>
     <telerik:RadScriptBlock ID="sc" runat="server">
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-        <script type="text/javascript" src="App_Themes/Ann/js/delivery-address.js?v=01122022"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/delivery-address.js?v=03122022"></script>
         <script type="text/javascript">
             const PaymentMethodEnum = {
                 "Cash": 1,              // Tiền mặt

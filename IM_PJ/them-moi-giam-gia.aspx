@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <link rel="stylesheet" href="App_Themes/Ann/css/pages/them-moi-giam-gia/them-moi-giam-gia.css?v=01122022" />
+    <link rel="stylesheet" href="App_Themes/Ann/css/pages/them-moi-giam-gia/them-moi-giam-gia.css?v=03122022" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
@@ -158,7 +158,7 @@
         </div>
 
         <asp:HiddenField ID="hdfPermittedRead" runat="server" />
-        <script type="text/javascript" src="/App_Themes/Ann/js/controllers/them-moi-giam-gia/them-moi-giam-gia-controller.js?v=01122022"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/pages/them-moi-giam-gia/them-moi-giam-gia.js?v=01122022"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/controllers/them-moi-giam-gia/them-moi-giam-gia-controller.js?v=03122022"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/pages/them-moi-giam-gia/them-moi-giam-gia.js?v=03122022"></script>
     </main>
 </asp:Content>

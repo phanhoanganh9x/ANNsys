@@ -8,10 +8,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=yes">
     <meta name="format-detection" content="telephone=no">
     <meta name="robots" content="noindex, nofollow">
-    <link rel="stylesheet" href="/App_Themes/Ann/css/style.css?v=01122022" media="all">
-    <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=01122022" media="all">
+    <link rel="stylesheet" href="/App_Themes/Ann/css/style.css?v=03122022" media="all">
+    <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=03122022" media="all">
     <link href="/App_Themes/NewUI/js/select2/select2.css" rel="stylesheet" />
-    <link rel="stylesheet" href="/App_Themes/Ann/css/style-sp.css?v=01122022" media="all">
+    <link rel="stylesheet" href="/App_Themes/Ann/css/style-sp.css?v=03122022" media="all">
     <script type="text/javascript" src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
 </head>
 <body>
@@ -127,9 +127,9 @@
             <script src="/App_Themes/Ann/js/bootstrap.min.js"></script>
             <script src="/App_Themes/Ann/js/bootstrap-table/bootstrap-table.js"></script>
             <script src="/App_Themes/NewUI/js/select2/select2.min.js"></script>
-            <script src="/App_Themes/Ann/js/master.js?v=01122022"></script>
-            <script src="/App_Themes/Ann/js/copy-post-info.js?v=01122022"></script>
-            <script src="/App_Themes/Ann/js/download-post-image.js?v=01122022"></script>
+            <script src="/App_Themes/Ann/js/master.js?v=03122022"></script>
+            <script src="/App_Themes/Ann/js/copy-post-info.js?v=03122022"></script>
+            <script src="/App_Themes/Ann/js/download-post-image.js?v=03122022"></script>
 
             <script type="text/javascript">
 
