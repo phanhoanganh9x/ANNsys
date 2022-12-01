@@ -427,19 +427,15 @@ function toggleWhosalePrice(obj, toggle) {
 
     if (web == "all") {
         for (var i = 0; i < webList.length; i++) {
-            ajaxToggleWhosalePrice(webList[i], productID, toggle, "null");
-            ajaxToggleWhosalePrice(webList[i], productID, toggle, "ANN");
-            ajaxToggleWhosalePrice(webList[i], productID, toggle, "MP");
+            ajaxToggleWhosalePrice(webList[i], productID, toggle);
         }
     }
     else {
-        ajaxToggleWhosalePrice(web, productID, toggle, "null");
-        ajaxToggleWhosalePrice(web, productID, toggle, "ANN");
-        ajaxToggleWhosalePrice(web, productID, toggle, "MP");
+        ajaxToggleWhosalePrice(web, productID, toggle);
     }
 }
 
-function ajaxToggleWhosalePrice(web, productID, toggle, addSKU) {
+function ajaxToggleWhosalePrice(web, productID, toggle) {
     let status = "ẩn";
     if (toggle === "show") {
         status = "hiện";
@@ -447,7 +443,7 @@ function ajaxToggleWhosalePrice(web, productID, toggle, addSKU) {
 
     $.ajax({
         type: "POST",
-        url: API + "/toggleWholesalePrice/" + productID + "/" + toggle + "/" + addSKU,
+        url: API + "toggleWholesalePrice/" + productID + "/" + toggle,
         headers: {
             'domain': web,
         },

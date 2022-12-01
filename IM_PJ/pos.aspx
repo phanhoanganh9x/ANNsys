@@ -3,8 +3,8 @@
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script src="/App_Themes/Ann/js/search-customer.js?v=202110131611"></script>
-    <script src="/App_Themes/Ann/js/search-product.js?v=13102022"></script>
-    <script src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=13102022"></script>
+    <script src="/App_Themes/Ann/js/search-product.js?v=01122022"></script>
+    <script src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=01122022"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <style>
@@ -431,7 +431,7 @@
         </AjaxSettings>
     </telerik:RadAjaxManager>
     <telerik:RadScriptBlock ID="sc" runat="server">
-        <script type="text/javascript" src="App_Themes/Ann/js/delivery-address.js?v=13102022"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/delivery-address.js?v=01122022"></script>
         <script type="text/javascript">
             "use strict";
             // #region Private
