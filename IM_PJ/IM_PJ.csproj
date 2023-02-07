@@ -376,6 +376,7 @@
     <Content Include="App_Themes\Ann\fonts\font-awesome-4.7\fonts\fontawesome-webfont.svg" />
     <Content Include="App_Themes\Ann\fonts\SFUIText\font.css" />
     <Content Include="App_Themes\Ann\css\print-invoice.css" />
+    <Content Include="App_Themes\Ann\image\ANN-logo-3.png" />
     <Content Include="App_Themes\Ann\image\bg-login.jpg" />
     <Content Include="App_Themes\Ann\image\close.png" />
     <Content Include="App_Themes\Ann\image\close_button.png" />
@@ -402,9 +403,14 @@
     <Content Include="App_Themes\Ann\image\iconsMenu\student.png" />
     <Content Include="App_Themes\Ann\image\iconsMenu\video-active.png" />
     <Content Include="App_Themes\Ann\image\iconsMenu\video.png" />
+    <Content Include="App_Themes\Ann\image\logo-ahamove.png" />
+    <Content Include="App_Themes\Ann\image\logo-ghn.png" />
+    <Content Include="App_Themes\Ann\image\logo-ghtk.png" />
+    <Content Include="App_Themes\Ann\image\logo-grab.png" />
     <Content Include="App_Themes\Ann\image\logo.png" />
     <Content Include="App_Themes\Ann\image\logo1.png" />
     <Content Include="App_Themes\Ann\image\placeholder.png" />
+    <Content Include="App_Themes\Ann\image\placeholder_loading.png" />
     <Content Include="App_Themes\Ann\js\bootstrap-table\bootstrap-table.css" />
     <Content Include="App_Themes\Ann\js\bootstrap-table\bootstrap-table.js" />
     <Content Include="App_Themes\Ann\js\bootstrap.min.js" />
