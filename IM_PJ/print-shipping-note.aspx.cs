@@ -466,7 +466,7 @@ namespace IM_PJ
             var annLogo = String.Empty;
 
             if (order.deliveryMethod != (int)DeliveryType.PostOffice && order.deliveryMethod != (int)DeliveryType.Proship && order.deliveryMethod != (int)DeliveryType.DeliverySave)
-                annLogo = "<img class='img' src='https://ann.com.vn/wp-content/uploads/ANN-logo-3.png'>";
+                annLogo = "<img class='img' src='uploads/images/ANN-logo-3.png'>";
             #endregion
 
             #region Thông tin giao hàng
