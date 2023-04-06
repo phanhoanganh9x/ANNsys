@@ -94,7 +94,7 @@ namespace IM_PJ
         {
             if (acc != null)
             {
-                if (acc.RoleID == 0 || acc.RoleID == 1 || acc.Username == "nhom_zalo502")
+                if (acc.RoleID == 0 || acc.RoleID == 1 || acc.Username == "baiviet")
                 {
                     ltrAddProduct.Text = "<a href='/tao-san-pham' class='h45-btn btn primary-btn'>Thêm mới</a>";
                 }

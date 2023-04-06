@@ -48,7 +48,7 @@ namespace IM_PJ
                     if (acc != null)
                     {
                         hdfUserRole.Value = acc.RoleID.ToString();
-                        if (acc.RoleID == 0 || acc.RoleID == 1 || acc.Username == "nhom_zalo502")
+                        if (acc.RoleID == 0 || acc.RoleID == 1 || acc.Username == "baiviet")
                         {
                             //LoadSupplier();
                             LoadPDW();
@@ -400,7 +400,7 @@ namespace IM_PJ
             DateTime currentDate = DateTime.Now;
             if (acc != null)
             {
-                if (acc.RoleID == 0 || acc.RoleID == 1 || acc.Username == "nhom_zalo502")
+                if (acc.RoleID == 0 || acc.RoleID == 1 || acc.Username == "baiviet")
                 {
                     int cateID = hdfParentID.Value.ToInt();
                     if (cateID > 0)

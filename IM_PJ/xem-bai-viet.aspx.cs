@@ -51,7 +51,7 @@ namespace IM_PJ
                 {
                     this.Title = String.Format("{0} - Bài viết", p.Title.ToTitleCase());
                     ltrEditTop.Text = "";
-                    if (acc.RoleID == 0 || acc.Username == "nhom_zalo502")
+                    if (acc.RoleID == 0 || acc.Username == "baiviet")
                     {
                         ltrEditTop.Text += "<a href='/sua-bai-viet?id=" + p.ID + "' class='btn primary-btn fw-btn not-fullwidth'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Chỉnh sửa</a>";
                     }

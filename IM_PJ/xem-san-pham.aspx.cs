@@ -128,7 +128,7 @@ namespace IM_PJ
                 ViewState["SKU"] = p.ProductSKU;
 
                 ltrEdit1.Text = "";
-                if (acc.RoleID == 0 || acc.RoleID == 1 || acc.Username == "nhom_zalo502")
+                if (acc.RoleID == 0 || acc.RoleID == 1 || acc.Username == "baiviet")
                 {
                     ltrEdit1.Text += "<a href='/thong-tin-san-pham?id=" + p.ID + "' class='btn primary-btn fw-btn not-fullwidth'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Chỉnh sửa</a>";
                     ltrEdit1.Text += "<a href='/tao-san-pham' class='btn primary-btn fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-file-text-o' aria-hidden='true'></i> Thêm mới</a>";
@@ -140,7 +140,7 @@ namespace IM_PJ
                 ltrEdit1.Text += "<a href='javascript:;' onclick='copyProductInfo(" + p.ID + ")' class='btn primary-btn not-fullwidth print-invoice-merged'><i class='fa fa-files-o'></i> Copy thông tin</a>";
                 ltrEdit1.Text += "<a href='javascript:;' onclick='getAllProductImage(`" + p.ProductSKU + "`);' class='btn primary-btn not-fullwidth print-invoice-merged'><i class='fa fa-cloud-download'></i> Tải tất cả hình ảnh</a>";
 
-                if (acc.RoleID == 0 || acc.Username == "nhom_zalo502")
+                if (acc.RoleID == 0 || acc.Username == "baiviet")
                 {
                     ltrEdit1.Text += "<a href='javascript:;' onclick='deleteProduct(" + p.ID + ");' class='btn primary-btn not-fullwidth print-invoice-merged btn-red'><i class='fa fa-times'></i> Xóa sản phẩm</a>";
                     ltrEdit1.Text += "<a href='javascript:;' data-toggle='modal' data-target='#modalUpdateProductSKU' data-backdrop='static' data-keyboard='false' class='btn primary-btn not-fullwidth print-invoice-merged btn-blue'><i class='fa fa-times'></i> Sửa mã sản phẩm</a>";

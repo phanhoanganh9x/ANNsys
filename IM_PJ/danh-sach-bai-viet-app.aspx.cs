@@ -30,7 +30,7 @@ namespace IM_PJ
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
-                        if (acc.RoleID == 0 || acc.RoleID == 2 || acc.Username == "nhom_zalo502")
+                        if (acc.RoleID == 0 || acc.RoleID == 2 || acc.Username == "baiviet")
                         {
                             LoadData();
                             LoadCreatedBy();
@@ -104,7 +104,7 @@ namespace IM_PJ
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
-                if (acc.RoleID == 0 || acc.Username == "nhom_zalo502")
+                if (acc.RoleID == 0 || acc.Username == "baiviet")
                 {
                     ltrAddPost.Text = "<a href='/tao-bai-viet-app' class='h45-btn btn primary-btn'>Thêm mới</a>";
                 }
@@ -350,13 +350,13 @@ namespace IM_PJ
             html.Append("    <th class='image-column'>Ảnh</th>");
             html.Append("    <th class='name-column'>Tiêu đề</th>");
             html.Append("    <th class='category-column'>Danh mục</th>");
-            if (acc.RoleID == 0 || acc.Username == "nhom_zalo502")
+            if (acc.RoleID == 0 || acc.Username == "baiviet")
             {
                 html.Append("    <th class='stock-status-column'>Trang chủ</th>");
             }
             html.Append("    <th class='date-column'>Người viết</th>");
             html.Append("    <th class='date-column'>Ngày tạo</th>");
-            if (acc.RoleID == 0 || acc.Username == "nhom_zalo502")
+            if (acc.RoleID == 0 || acc.Username == "baiviet")
             {
                 html.Append("    <th class='action-column'></th>");
             }
@@ -388,7 +388,7 @@ namespace IM_PJ
                     html.Append("</td>");
                     html.Append("   <td class='customer-name-link'><a target='_blank' href='/xem-bai-viet-app?id=" + item.ID + "'>" + item.Title + "</a></td>");
                     html.Append("   <td>" + item.CategoryName + "</td>");
-                    if (acc.RoleID == 0 || acc.Username == "nhom_zalo502")
+                    if (acc.RoleID == 0 || acc.Username == "baiviet")
                     {
                         if (item.AtHome == false)
                         {
@@ -402,7 +402,7 @@ namespace IM_PJ
                     html.Append("   <td>" + item.CreatedBy + "</td>");
                     string date = string.Format("{0:dd/MM/yyyy}", item.CreatedDate);
                     html.Append("   <td>" + date + "</td>");
-                    if (acc.RoleID == 0 || acc.Username == "nhom_zalo502")
+                    if (acc.RoleID == 0 || acc.Username == "baiviet")
                     {
                         html.Append("   <td>");
                         html.Append("       <a href='javascript:;' title='Xóa bài này' class='btn primary-btn btn-red h45-btn' onclick='deletePost(" + item.ID + ");'><i class='fa fa-times' aria-hidden='true'></i> Xóa</a>");

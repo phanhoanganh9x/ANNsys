@@ -29,7 +29,7 @@ namespace IM_PJ
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
-                        if (acc.RoleID == 0 || acc.Username == "nhom_zalo502")
+                        if (acc.RoleID == 0 || acc.Username == "baiviet")
                         {
                             LoadData();
                             LoadCreatedBy();
@@ -103,7 +103,7 @@ namespace IM_PJ
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
-                if (acc.RoleID == 0 || acc.Username == "nhom_zalo502")
+                if (acc.RoleID == 0 || acc.Username == "baiviet")
                 {
                     ltrAddPost.Text = "<a href='/tao-bai-viet' class='h45-btn btn primary-btn'>Thêm mới</a>";
                 }
