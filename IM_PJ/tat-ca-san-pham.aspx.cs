@@ -1063,7 +1063,7 @@ namespace IM_PJ
                     html.AppendLine("       <a href='javascript:;' title='Tải tất cả hình' class='btn primary-btn h45-btn' onclick='getAllProductImage(`" + item.ProductSKU + "`);'><i class='fa fa-file-image-o' aria-hidden='true'></i></a>");
                     //html.AppendLine("       <a target='_blank' href='https://www.facebook.com/search/posts/?q=" + item.ProductSKU + "&filters_rp_author=%7B%22name%22%3A%22author%22%2C%22args%22%3A%22100012594165130%22%7D&filters_rp_chrono_sort=%7B%22name%22%3A%22chronosort%22%2C%22args%22%3A%22%22%7D' title='Tìm trên facebook' class='btn primary-btn btn-black h45-btn'><i class='fa fa-facebook-official' aria-hidden='true'></i></a>");
 
-                    if (acc.RoleID == 0 || acc.Username == "nhom_zalo502")
+                    if (acc.RoleID == 0 || acc.Username == "baiviet")
                     {
                         html.AppendLine("       <a href='javascript:;' title='Up sản phẩm lên đầu trang' class='btn primary-btn btn-violet h45-btn' data-id='" + item.ID + "' onclick='upTopWebUpdate($(this));'><i class='fa fa-arrow-up' aria-hidden='true'></i></a>");
                         html.AppendLine("       <a target='_blank' href='/thong-tin-san-pham?id=" + item.ID + "' title='Sửa sản phẩm' class='btn btn-blue primary-btn h45-btn'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></a>");
