@@ -1038,7 +1038,7 @@ namespace IM_PJ
                     html.AppendLine("   <td data-title='Danh mục'>" + item.CategoryName + "</td>");
                     string date = string.Format("<strong>{0:dd/MM/yyyy}</strong><br>{0:HH:mm}", item.CreatedDate);
                     html.AppendLine("   <td data-title='Ngày tạo'>" + date + "</td>");
-                    if (acc.RoleID == 0 || acc.RoleID == 1 || acc.Username == "nhom_zalo502")
+                    if (acc.RoleID == 0 || acc.RoleID == 1 || acc.Username == "baiviet")
                     {
                         if (item.ShowHomePage == 0)
                         {
