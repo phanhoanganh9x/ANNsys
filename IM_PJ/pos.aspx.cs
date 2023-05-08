@@ -630,53 +630,53 @@ namespace IM_PJ
                             #endregion
 
                             #region push notify telegram
-                            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+                            //ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
 
-                            var pushOrder = OrderController.GetByID(ret.ID);
-                            var msg = "<b>" + pushOrder.ID + "</b> - " + DateTime.Now.ToString("dd/MM HH:mm");
-                            msg += "\r\n- <b>TỔNG</b>: " + string.Format("{0:N0}", Convert.ToDouble(pushOrder.TotalPrice));
-                            msg += "\r\n- <b>Số lượng</b>: " + pushOrder.TotalQuantity + " cái";
-                            msg += "\r\n- <b>Thanh toán</b>: Tiền mặt";
-                            msg += "\r\n- <b>Giao hàng</b>: Lấy trực tiếp";
-                            if (pushOrder.DiscountPerProduct > 0)
-                            {
-                                msg += "\r\n- <b>Chiết khấu</b>: -" + string.Format("{0:N0}", Convert.ToDouble(pushOrder.DiscountPerProduct)) + "/cái";
-                            }
-                            if (Convert.ToDouble(pushOrder.FeeShipping) > 0)
-                            {
-                                msg += "\r\n- <b>Phí ship</b>: " + string.Format("{0:N0}", Convert.ToDouble(pushOrder.FeeShipping));
-                            }
-                            if (Convert.ToDouble(pushOrder.CouponValue) > 0)
-                            {
-                                msg += "\r\n- <b>Mã giảm giá</b>: -" + string.Format("{0:N0}", Convert.ToDouble(pushOrder.CouponValue));
-                            }
+                            //var pushOrder = OrderController.GetByID(ret.ID);
+                            //var msg = "<b>" + pushOrder.ID + "</b> - " + DateTime.Now.ToString("dd/MM HH:mm");
+                            //msg += "\r\n- <b>TỔNG</b>: " + string.Format("{0:N0}", Convert.ToDouble(pushOrder.TotalPrice));
+                            //msg += "\r\n- <b>Số lượng</b>: " + pushOrder.TotalQuantity + " cái";
+                            //msg += "\r\n- <b>Thanh toán</b>: Tiền mặt";
+                            //msg += "\r\n- <b>Giao hàng</b>: Lấy trực tiếp";
+                            //if (pushOrder.DiscountPerProduct > 0)
+                            //{
+                            //    msg += "\r\n- <b>Chiết khấu</b>: -" + string.Format("{0:N0}", Convert.ToDouble(pushOrder.DiscountPerProduct)) + "/cái";
+                            //}
+                            //if (Convert.ToDouble(pushOrder.FeeShipping) > 0)
+                            //{
+                            //    msg += "\r\n- <b>Phí ship</b>: " + string.Format("{0:N0}", Convert.ToDouble(pushOrder.FeeShipping));
+                            //}
+                            //if (Convert.ToDouble(pushOrder.CouponValue) > 0)
+                            //{
+                            //    msg += "\r\n- <b>Mã giảm giá</b>: -" + string.Format("{0:N0}", Convert.ToDouble(pushOrder.CouponValue));
+                            //}
 
-                            double totalProfit = Convert.ToDouble(pushOrder.TotalPriceNotDiscount) - Convert.ToDouble(pushOrder.TotalDiscount) - Convert.ToDouble(pushOrder.CouponValue) - Convert.ToDouble(pushOrder.TotalCostOfGood);
-                            double totalRefundProfit = 0;
-                            if (pushOrder.RefundsGoodsID != 0 && pushOrder.RefundsGoodsID != null)
-                            {
-                                var refundOrder = RefundGoodController.GetByID(pushOrder.RefundsGoodsID.Value);
-                                if (refundOrder != null)
-                                {
-                                    msg += "\r\n- <b>Trừ hàng trả</b>: -" + string.Format("{0:N0}", Convert.ToDouble(refundOrder.TotalPrice));
-                                    totalRefundProfit = Convert.ToDouble(refundOrder.TotalPrice) - Convert.ToDouble(refundOrder.TotalCostOfGood);
-                                }
-                            }
-                            msg += "\r\n- <b>Lợi nhuận</b>: " + string.Format("{0:N0}", totalProfit - totalRefundProfit);
-                            msg += "\r\n-------------------------";
-                            msg += "\r\n- <b>Khách hàng</b>: " + pushOrder.CustomerName;
-                            if (customer != null && !string.IsNullOrEmpty(customer.Nick))
-                            {
-                                msg += "\r\n- <b>Nick</b>: " + customer.Nick;
-                            }
-                            msg += "\r\n- <b>Điện thoại</b>: " + pushOrder.CustomerPhone;
-                            msg += "\r\n- <b>Nhân viên</b>: " + pushOrder.CreatedBy;
+                            //double totalProfit = Convert.ToDouble(pushOrder.TotalPriceNotDiscount) - Convert.ToDouble(pushOrder.TotalDiscount) - Convert.ToDouble(pushOrder.CouponValue) - Convert.ToDouble(pushOrder.TotalCostOfGood);
+                            //double totalRefundProfit = 0;
+                            //if (pushOrder.RefundsGoodsID != 0 && pushOrder.RefundsGoodsID != null)
+                            //{
+                            //    var refundOrder = RefundGoodController.GetByID(pushOrder.RefundsGoodsID.Value);
+                            //    if (refundOrder != null)
+                            //    {
+                            //        msg += "\r\n- <b>Trừ hàng trả</b>: -" + string.Format("{0:N0}", Convert.ToDouble(refundOrder.TotalPrice));
+                            //        totalRefundProfit = Convert.ToDouble(refundOrder.TotalPrice) - Convert.ToDouble(refundOrder.TotalCostOfGood);
+                            //    }
+                            //}
+                            //msg += "\r\n- <b>Lợi nhuận</b>: " + string.Format("{0:N0}", totalProfit - totalRefundProfit);
+                            //msg += "\r\n-------------------------";
+                            //msg += "\r\n- <b>Khách hàng</b>: " + pushOrder.CustomerName;
+                            //if (customer != null && !string.IsNullOrEmpty(customer.Nick))
+                            //{
+                            //    msg += "\r\n- <b>Nick</b>: " + customer.Nick;
+                            //}
+                            //msg += "\r\n- <b>Điện thoại</b>: " + pushOrder.CustomerPhone;
+                            //msg += "\r\n- <b>Nhân viên</b>: " + pushOrder.CreatedBy;
 
-                            var chatID = "-1001229080769";
-                            var token = "bot1714400602:AAHlWZhq4IZZ18wCQxVVGA4kuZJQPkb50z0";
-                            var api = "https://api.telegram.org/" + token + "/sendMessage?parse_mode=html&chat_id=" + chatID + "&text=" + HttpUtility.UrlEncode(msg);
-                            WebRequest request = WebRequest.Create(api);
-                            Stream rs = request.GetResponse().GetResponseStream();
+                            //var chatID = "-1001229080769";
+                            //var token = "bot1714400602:AAHlWZhq4IZZ18wCQxVVGA4kuZJQPkb50z0";
+                            //var api = "https://api.telegram.org/" + token + "/sendMessage?parse_mode=html&chat_id=" + chatID + "&text=" + HttpUtility.UrlEncode(msg);
+                            //WebRequest request = WebRequest.Create(api);
+                            //Stream rs = request.GetResponse().GetResponseStream();
                             #endregion
 
                             // Hoàn thành khởi tạo đơn hàng nên gán lại giá trị trang lúc ban đầu
