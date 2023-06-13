@@ -763,7 +763,7 @@ namespace IM_PJ
             html.AppendLine("    <h2>CAM KẾT CHÍNH HÃNG 100%</h2>");
             html.AppendLine("    <p>Quý khách có nhu cầu xác minh hàng thật, vui lòng liên hệ hotline: 0922.474.777 - 0914.615.408</p>");
             html.AppendLine("    <p>Chúng tôi chấp nhận bồi thường gấp 10 lần giá trị đơn hàng, nếu quý khách phát hiện hàng giả!</p>");
-            html.AppendLine("    <p>Địa chỉ công ty: 68 Đường C12, Phường 13, Tân Bình, TPHCM</p>");
+            html.AppendLine("    <p>Địa chỉ công ty: 15 Đông Hưng Thuận 45, Phường Tân Hưng Thuận, Quận 12, TP. HCM</p>");
             html.AppendLine("    <p>Người đại diện: Trần Yến Ngọc</p>");
             html.AppendLine("</div>");
 

@@ -907,7 +907,7 @@ namespace IM_PJ
                         html.AppendLine("<p>⚡⚡ KHO SỈ MỸ PHẨM ANN ⚡⚡</p>\r\n");
                     }
                         
-                    html.AppendLine("<p>🏭 68 Đường C12, P.13, Tân Bình, TP.HCM</p>\r\n");
+                    html.AppendLine("<p>🏭 15 Đông Hưng Thuận 45, Phường Tân Hưng Thuận, Quận 12, TP.HCM</p>\r\n");
                     html.AppendLine("<p>⭐ Web: https://ann.com.vn </p>\r\n");
                 }
                 

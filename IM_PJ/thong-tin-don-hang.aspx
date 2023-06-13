@@ -3179,10 +3179,10 @@
                     weight = $("#<%=txtWeight.ClientID%>").val() || 0,
                     value = parseInt($(".totalpriceorderall").html().replace(/,/g,''))  || 0;
 
-                query += "&pick_address=68 Đường C12";
+                query += "&pick_address=15 Đông Hưng Thuận 45";
                 query += "&pick_province=TP. Hồ Chí Minh";
-                query += "&pick_district=Quận Tân Bình";
-                query += "&pick_ward=Phường 13";
+                query += "&pick_district=Quận 12";
+                query += "&pick_ward=Phường Tân Hưng Thuận";
                 query += "&address=" + address;
                 query += "&province=" + province;
                 query += "&district=" + district;

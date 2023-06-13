@@ -466,7 +466,7 @@ function _initPage() {
     //#endregion
 
     // Cập nhật hiện thị nơi nhận hàng
-    $("#pick_address").val('133 Đường C12');
+    $("#pick_address").val('15 Đông Hưng Thuận 45');
 
     //#region Lấy thông tin query parameter
     let orderId = 0;
