@@ -655,6 +655,43 @@
                 _initVariation();
 
                 _initVideo();
+
+                // TODO: Code temporary
+                $("#<%=pRegular_Price.ClientID%>").blur(function () {
+                    let newPrice = $(this).val();
+
+                    if (!newPrice) return;
+
+                    let $variations = $(".item-var-gen").find(".regularprice");
+
+                    $.each($variations, function () {
+                        $(this).val(newPrice);
+                    });
+                })
+
+                $("#<%=pCostOfGood.ClientID%>").blur(function () {
+                    let newPrice = $(this).val();
+
+                    if (!newPrice) return;
+
+                    let $variations = $(".item-var-gen").find(".costofgood");
+
+                    $.each($variations, function () {
+                        $(this).val(newPrice);
+                    });
+                })
+
+                $("#<%=pRetailPrice.ClientID%>").blur(function () {
+                    let newPrice = $(this).val();
+
+                    if (!newPrice) return;
+
+                    let $variations = $(".item-var-gen").find(".retailprice");
+
+                    $.each($variations, function () {
+                        $(this).val(newPrice);
+                    });
+                })
             });
 
             function _initVariation() {
