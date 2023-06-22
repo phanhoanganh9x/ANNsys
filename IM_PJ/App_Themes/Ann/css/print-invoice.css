@@ -136,12 +136,12 @@ h1.invoice-return {
   width: 25%;
 }
 
+/*
+ * 2023-06-22: Binh-TT
+ * Ẩn chiết khấu
+ */
 .hoadon .table-2 table col.gia {
-  width: 25%;
-}
-
-.hoadon .table-2 table col.chiet-khau {
-  width: 25%;
+  width: 50%;
 }
 
 .hoadon .table-2 table col.tong {
