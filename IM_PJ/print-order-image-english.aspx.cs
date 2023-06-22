@@ -383,8 +383,9 @@ namespace IM_PJ
                 html.AppendLine("                        <col class='image' />");
                 html.AppendLine("                        <col class='name' />");
                 html.AppendLine("                        <col class='quantity' />");
+                // 2023-06-22: Binh-TT
+                // Ẩn chiết khấu
                 html.AppendLine("                        <col class='price' />");
-                html.AppendLine("                        <col class='discount' />");
                 html.AppendLine("                        <col class='subtotal' />");
             }
             else
@@ -392,8 +393,9 @@ namespace IM_PJ
                 html.AppendLine("                        <col class='merger-index' />");
                 html.AppendLine("                        <col class='merger-name' />");
                 html.AppendLine("                        <col class='merger-total-quantity' />");
+                // 2023-06-22: Binh-TT
+                // Ẩn chiết khấu
                 html.AppendLine("                        <col class='merger-total-price' />");
-                html.AppendLine("                        <col class='merger-total-discount' />");
                 html.AppendLine("                        <col class='merger-total' />");
             }
             html.AppendLine("                    </colgroup>");
@@ -404,7 +406,6 @@ namespace IM_PJ
             html.AppendLine("                        <th>Item</th>");
             html.AppendLine("                        <th>Qty</th>");
             html.AppendLine("                        <th>Price</th>");
-            html.AppendLine("                        <th>Discount</th>");
             html.AppendLine("                        <th>Amount</th>");
             html.AppendLine("                    </thead>");
             html.AppendLine("                    <tbody>");
@@ -445,9 +446,9 @@ namespace IM_PJ
                     // Số lượng
                     html.AppendLine(String.Format("                        <td>{0:N0}</td>", item.quantity));
                     // Giá
-                    html.AppendLine(String.Format("                        <td>{0:0.00}</td>", _currencyConversion(item.price, data.currencyRate)));
-                    // Chiết khấu
-                    html.AppendLine(String.Format("                        <td>{0:0.00}</td>", _currencyConversion(item.discount, data.currencyRate)));
+                    // 2023-06-22: Binh-TT
+                    // Ẩn chiết khấu nên "Giá" = "Giá sản phẩm" - "Chiết khấu"
+                    html.AppendLine(String.Format("                        <td>{0:0.00}</td>", _currencyConversion(item.price - item.discount, data.currencyRate)));
                     // html
                     html.AppendLine(String.Format("                        <td>{0:0.00}</td>", _currencyConversion(total, data.currencyRate)));
                     html.AppendLine("                    </tr>");
@@ -470,8 +471,9 @@ namespace IM_PJ
                     html.AppendLine(String.Format("                        <td>{0}</td>", index));
                     html.AppendLine(String.Format("                        <td>{0} {1:0.00}</td>", item.name, _currencyConversion(item.price, data.currencyRate)));
                     html.AppendLine(String.Format("                        <td>{0:N0}</td>", item.totalQuantity));
-                    html.AppendLine(String.Format("                        <td>{0:0.00}</td>", _currencyConversion(item.price * item.totalQuantity, data.currencyRate)));
-                    html.AppendLine(String.Format("                        <td>{0:0.00}</td>", _currencyConversion(item.totalDiscount, data.currencyRate)));
+                    // 2023-06-22: Binh-TT
+                    // Ẩn chiết khấu nên "Giá" = "Giá sản phẩm" - "Chiết khấu"
+                    html.AppendLine(String.Format("                        <td>{0:0.00}</td>", _currencyConversion(item.price - (item.totalDiscount / item.totalQuantity), data.currencyRate)));
                     html.AppendLine(String.Format("                        <td>{0:0.00}</td>", _currencyConversion(item.total, data.currencyRate)));
                     html.AppendLine("                    </tr>");
 
@@ -484,10 +486,10 @@ namespace IM_PJ
             if (pagination.page == pagination.totalPages)
             {
                 var total = 0m;
-                var colspan = 6;
+                var colspan = 5;
 
                 if (data.merger)
-                    colspan = 5;
+                    colspan = 4;
 
                 #region Tổng số lượng
                 html.AppendLine("                    <tr>");
@@ -497,23 +499,12 @@ namespace IM_PJ
                 #endregion
 
                 #region Thành tiền
-                total += data.totalPrice;
+                // 2023-06-22: Binh-TT
+                // Ẩn chiết khấu nên "Thành tiền" = "Tồng tiền sản phẩm" - "Tổng tiền chiết khấu"
+                total += data.totalPrice - data.totalDiscount;
 
                 html.AppendLine("                    <tr>");
                 html.AppendLine(String.Format("                        <td colspan='{0}' class='align-right'>Subtotal</td>", colspan));
-                html.AppendLine(String.Format("                        <td>{0:0.00}</td>", _currencyConversion(data.totalPrice, data.currencyRate)));
-                html.AppendLine("                    </tr>");
-                #endregion
-
-                #region Chiết khấu
-                total -= data.totalDiscount;
-
-                html.AppendLine("                    <tr>");
-                html.AppendLine(String.Format("                        <td colspan='{0}' class='align-right'>Total discount</td>", colspan));
-                html.AppendLine(String.Format("                        <td>-{0:0.00}</td>", _currencyConversion(data.totalDiscount, data.currencyRate)));
-                html.AppendLine("                    </tr>");
-                html.AppendLine("                    <tr>");
-                html.AppendLine(String.Format("                        <td colspan='{0}' class='align-right'>After discount</td>", colspan));
                 html.AppendLine(String.Format("                        <td>{0:0.00}</td>", _currencyConversion(total, data.currencyRate)));
                 html.AppendLine("                    </tr>");
                 #endregion

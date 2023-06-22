@@ -322,15 +322,10 @@ namespace IM_PJ
             {
                 html.AppendLine("            <div class='table-1'>");
 
-                #region Title đơn hàng
+                // Title đơn hàng
+                // 2023-06-22: Binh-TT
+                // Loại bỏ "Lưu ý"
                 html.AppendLine(String.Format("                <h1>XÁC NHẬN ĐƠN HÀNG #{0}</h1>", data.id));
-                html.AppendLine("                <div class='note'>");
-                html.AppendLine("                    <p>- Lưu ý, hình ảnh sản phẩm có thể hiển thị không đúng màu.</p>");
-                html.AppendLine("                    <p>- Quý khách vui lòng kiểm tra thuộc tính sản phẩm (Màu, Size).</p>");
-                html.AppendLine("                    <p>- Nếu có sai sót, quý khách vui lòng thông báo cho nhân viên.</p>");
-                html.AppendLine("                </div>");
-
-                #endregion
 
                 #region Thông tin khách hàng - nhân viên - đơn hàng
                 html.AppendLine("                <table>");
@@ -509,10 +504,10 @@ namespace IM_PJ
             if (pagination.page == pagination.totalPages)
             {
                 var total = 0m;
-                var colspan = 6;
+                var colspan = 5;
 
                 if (data.merger)
-                    colspan = 5;
+                    colspan = 4;
 
                 #region Tổng số lượng
                 html.AppendLine("                    <tr>");

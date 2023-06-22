@@ -174,11 +174,11 @@ h1 {
             }
 
             .print-order-image .table-2 table col.name {
-                width: 30%;
+                width: 38%;
             }
 
             .print-order-image .table-2 table col.quantity {
-                width: 7%;
+                width: 10%;
             }
 
             /*
@@ -186,11 +186,11 @@ h1 {
              * Ẩn chiết khấu
              */
             .print-order-image .table-2 table col.price {
-                width: 28%;
+                width: 15%;
             }
 
             .print-order-image .table-2 table col.subtotal {
-                width: 16%;
+                width: 18%;
             }
 
             .print-order-image .table-2 table col.merger-index {
@@ -198,11 +198,11 @@ h1 {
             }
 
             .print-order-image .table-2 table col.merger-name {
-                width: 38%;
+                width: 44%;
             }
 
             .print-order-image .table-2 table col.merger-total-quantity {
-                width: 8%;
+                width: 10%;
             }
 
             /*
@@ -210,11 +210,11 @@ h1 {
              * Ẩn chiết khấu
              */
             .print-order-image .table-2 table col.merger-total-price {
-                width: 30%;
+                width: 20%;
             }
 
             .print-order-image .table-2 table col.merger-total {
-                width: 18%;
+                width: 20%;
             }
 
             .print-order-image .table-2 table th,

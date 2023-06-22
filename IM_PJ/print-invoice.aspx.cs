@@ -207,7 +207,7 @@ namespace IM_PJ
                             var total = (item.price - item.discount) * item.quantity;
 
                             bodyHtml.AppendLine("<tr>");
-                            bodyHtml.AppendLine("    <td colspan='4'>");
+                            bodyHtml.AppendLine("    <td colspan='3'>");
                             bodyHtml.AppendLine(String.Format("        {0})&ensp;<strong>{1}</strong> - {2}{3}", index, item.sku, saleHtml, name));
                             bodyHtml.AppendLine("    </td>");
                             bodyHtml.AppendLine("</tr>");
@@ -481,6 +481,7 @@ namespace IM_PJ
             #endregion
 
             #region Thành tiền
+            var totalDiscount = Convert.ToDouble(order.TotalDiscount);
             var totalPrice = Convert.ToDouble(order.TotalPriceNotDiscount);
 
             orderHtml.AppendLine("                <tr>");
