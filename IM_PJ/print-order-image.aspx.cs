@@ -405,8 +405,9 @@ namespace IM_PJ
                 html.AppendLine("                        <col class='image' />");
                 html.AppendLine("                        <col class='name' />");
                 html.AppendLine("                        <col class='quantity' />");
+                // 2023-06-22: Binh-TT
+                // Ẩn chiết khấu
                 html.AppendLine("                        <col class='price' />");
-                html.AppendLine("                        <col class='discount' />");
                 html.AppendLine("                        <col class='subtotal' />");
             }
             else
@@ -414,8 +415,9 @@ namespace IM_PJ
                 html.AppendLine("                        <col class='merger-index' />");
                 html.AppendLine("                        <col class='merger-name' />");
                 html.AppendLine("                        <col class='merger-total-quantity' />");
+                // 2023-06-22: Binh-TT
+                // Ẩn chiết khấu
                 html.AppendLine("                        <col class='merger-total-price' />");
-                html.AppendLine("                        <col class='merger-total-discount' />");
                 html.AppendLine("                        <col class='merger-total' />");
             }
             html.AppendLine("                    </colgroup>");
@@ -426,7 +428,6 @@ namespace IM_PJ
             html.AppendLine("                        <th>Sản phẩm</th>");
             html.AppendLine("                        <th>Mua</th>");
             html.AppendLine("                        <th>Giá</th>");
-            html.AppendLine("                        <th>Chiết khấu</th>");
             html.AppendLine("                        <th>Tổng</th>");
             html.AppendLine("                    </thead>");
             html.AppendLine("                    <tbody>");
@@ -467,9 +468,9 @@ namespace IM_PJ
                     // Số lượng
                     html.AppendLine(String.Format("                        <td>{0:N0}</td>", item.quantity));
                     // Giá
-                    html.AppendLine(String.Format("                        <td>{0:N0}</td>", item.price));
-                    // Chiết khấu
-                    html.AppendLine(String.Format("                        <td>{0:N0}</td>", item.discount));
+                    // 2023-06-22: Binh-TT
+                    // Ẩn chiết khấu nên "Giá" = "Giá sản phẩm" - "Chiết khấu"
+                    html.AppendLine(String.Format("                        <td>{0:N0}</td>", item.price - item.discount));
                     // html
                     html.AppendLine(String.Format("                        <td>{0:N0}</td>", total));
                     html.AppendLine("                    </tr>");
@@ -492,8 +493,10 @@ namespace IM_PJ
                     html.AppendLine(String.Format("                        <td>{0}</td>", index));
                     html.AppendLine(String.Format("                        <td>{0} {1:N0}</td>", item.name, item.price));
                     html.AppendLine(String.Format("                        <td>{0:N0}</td>", item.totalQuantity));
-                    html.AppendLine(String.Format("                        <td>{0:N0}</td>", (item.price * item.totalQuantity)));
-                    html.AppendLine(String.Format("                        <td>{0:N0}</td>", item.discount));
+                    // Giá
+                    // 2023-06-22: Binh-TT
+                    // Ẩn chiết khấu nên "Giá" = "Giá sản phẩm" - "Chiết khấu"
+                    html.AppendLine(String.Format("                        <td>{0:N0}</td>", item.price - item.discount));
                     html.AppendLine(String.Format("                        <td>{0:N0}</td>", item.total));
                     html.AppendLine("                    </tr>");
 
@@ -519,23 +522,12 @@ namespace IM_PJ
                 #endregion
 
                 #region Thành tiền
-                total += data.totalPrice;
+                // 2023-06-22: Binh-TT
+                // Ẩn chiết khấu nên "Thành tiền" = "Tồng tiền sản phẩm" - "Tổng tiền chiết khấu"
+                total += data.totalPrice - data.totalDiscount;
 
                 html.AppendLine("                    <tr>");
                 html.AppendLine(String.Format("                        <td colspan='{0}' class='align-right'>Thành tiền</td>", colspan));
-                html.AppendLine(String.Format("                        <td>{0:N0}</td>", data.totalPrice));
-                html.AppendLine("                    </tr>");
-                #endregion
-
-                #region Chiết khấu
-                total -= data.totalDiscount;
-
-                html.AppendLine("                    <tr>");
-                html.AppendLine(String.Format("                        <td colspan='{0}' class='align-right'>Trừ tổng chiết khấu</td>", colspan));
-                html.AppendLine(String.Format("                        <td>-{0:N0}</td>", data.totalDiscount));
-                html.AppendLine("                    </tr>");
-                html.AppendLine("                    <tr>");
-                html.AppendLine(String.Format("                        <td colspan='{0}' class='align-right'>Sau chiết khấu</td>", colspan));
                 html.AppendLine(String.Format("                        <td>{0:N0}</td>", total));
                 html.AppendLine("                    </tr>");
                 #endregion

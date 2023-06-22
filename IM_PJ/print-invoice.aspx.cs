@@ -218,9 +218,9 @@ namespace IM_PJ
                             // SL
                             bodyHtml.AppendLine("    <td>" + item.quantity + "</td>");
                             // Giá
-                            bodyHtml.AppendLine("    <td>" + String.Format("{0:N0}", item.price) + "</td>");
-                            // Chiết khấu
-                            bodyHtml.AppendLine("    <td>" + String.Format("{0:N0}", item.discount) + "</td>");
+                            // 2023-06-22: Binh-TT
+                            // Ẩn chiết khấu nên "Giá" = "Giá sản phẩm" - "Chiết khấu"
+                            bodyHtml.AppendLine("    <td>" + String.Format("{0:N0}", item.price - item.discount) + "</td>");
                             // Tổng
                             bodyHtml.AppendLine("    <td>" + String.Format("{0:N0}", total) + "</td>");
                             bodyHtml.AppendLine("</tr>");
@@ -291,9 +291,9 @@ namespace IM_PJ
                             // Số lượng
                             bodyHtml.AppendLine("    <td>" + item.totalQuantity + "</td>");
                             // Giá
-                            bodyHtml.AppendLine("    <td>" + String.Format("{0:N0}", (item.price * item.totalQuantity)) + "</td>");
-                            // Chiết khấu
-                            bodyHtml.AppendLine("    <td>" + String.Format("{0:N0}", item.discount) + "</td>");
+                            // 2023-06-22: Binh-TT
+                            // Ẩn chiết khấu nên "Giá" = "Giá sản phẩm" - "Chiết khấu"
+                            bodyHtml.AppendLine("    <td>" + String.Format("{0:N0}", (item.price - item.discount)) + "</td>");
                             // Tổng
                             bodyHtml.AppendLine("    <td>" + String.Format("{0:N0}", item.total) + "</td>");
                             bodyHtml.AppendLine("</tr>");
@@ -310,13 +310,11 @@ namespace IM_PJ
                     orderDetailHtml.AppendLine("        <colgroup>");
                     orderDetailHtml.AppendLine("            <col class='soluong' />");
                     orderDetailHtml.AppendLine("            <col class='gia' />");
-                    orderDetailHtml.AppendLine("            <col class='chiet-khau' />");
                     orderDetailHtml.AppendLine("            <col class='tong' />");
                     orderDetailHtml.AppendLine("        </colgroup>");
                     orderDetailHtml.AppendLine("        <thead>");
                     orderDetailHtml.AppendLine("            <th>Số lượng</th>");
                     orderDetailHtml.AppendLine("            <th>Giá</th>");
-                    orderDetailHtml.AppendLine("            <th>Chiết khấu</th>");
                     orderDetailHtml.AppendLine("            <th>Tổng</th>");
                     orderDetailHtml.AppendLine("        </thead>");
                     orderDetailHtml.AppendLine("        <tbody>");
@@ -487,26 +485,10 @@ namespace IM_PJ
 
             orderHtml.AppendLine("                <tr>");
             orderHtml.AppendLine("                    <td colspan='2'>Thành tiền</td>");
-            orderHtml.AppendLine("                    <td>" + String.Format("{0:N0}", totalPrice) + "&nbsp;</td>");
+            // 2023-06-22: Binh-TT
+            // Ẩn chiết khấu nên "Thành tiền" = "Tồng tiền sản phẩm" - "Tổng tiền chiết khấu"
+            orderHtml.AppendLine("                    <td>" + String.Format("{0:N0}", totalPrice - totalDiscount) + "&nbsp;</td>");
             orderHtml.AppendLine("                </tr>");
-            #endregion
-
-            #region Chiết khấu
-            var totalDiscount = 0D;
-
-            if (order.TotalDiscount > 0)
-            {
-                totalDiscount = Convert.ToDouble(order.TotalDiscount);
-
-                orderHtml.AppendLine("                <tr>");
-                orderHtml.AppendLine("                    <td colspan='2'>Trừ tổng chiết khấu</td>");
-                orderHtml.AppendLine("                    <td>-" + String.Format("{0:N0}", totalDiscount) + "&nbsp;</td>");
-                orderHtml.AppendLine("                </tr>");
-                orderHtml.AppendLine("                <tr>");
-                orderHtml.AppendLine("                    <td colspan='2'>Sau chiết khấu</td>");
-                orderHtml.AppendLine("                    <td>" + String.Format("{0:N0}", totalPrice - totalDiscount) + "&nbsp;</td>");
-                orderHtml.AppendLine("                </tr>");
-            }
             #endregion
 
             #region Đơn hàng đổi trả
