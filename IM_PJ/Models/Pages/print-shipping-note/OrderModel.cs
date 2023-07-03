@@ -79,7 +79,7 @@ namespace IM_PJ.Models.Pages.print_shipping_note
 
             // COD
             if (order.paymentMethod == (int)PaymentType.CashCollection)
-                order.cod = source.total;
+                order.cod = order.total;
 
             return order;
         }
@@ -123,7 +123,7 @@ namespace IM_PJ.Models.Pages.print_shipping_note
 
             // COD
             if (order.paymentMethod == (int)PaymentType.CashCollection)
-                order.cod = total;
+                order.cod = order.total;
 
             return order;
         }

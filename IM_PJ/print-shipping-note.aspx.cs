@@ -723,15 +723,17 @@ namespace IM_PJ
                 var cashCollectionHtml = "";
 
                 if (order.paymentMethod == (int)PaymentType.CashCollection)
-                    cashCollectionHtml = String.Format("    <p class='cod'>THU HỘ: {0:N0}đ</p>", order.cod)
-                else {
-                    if (order.deliveryMethod == (int)DeliveryType.Face || order.deliveryMethod == (int)DeliveryType.Grab) {
+                    cashCollectionHtml = String.Format("    <p class='cod'>THU HỘ: {0:N0}đ</p>", order.cod);
+                else
+                {
+                    if (order.deliveryMethod == (int)DeliveryType.Face || order.deliveryMethod == (int)DeliveryType.Grab)
+                    {
                         // Tiền mặt
                         if (order.paymentMethod == (int)PaymentType.Cash)
                             cashCollectionHtml = String.Format("    <p class='cod'>TỔNG TIỀN: {0:N0}đ</p>", order.total);
                         // Chuyển khoản
                         else if (order.paymentMethod == (int)PaymentType.Bank)
-                            cashCollectionHtml = ("    <p class='cod'>TỔNG TIỀN: CHUYỂN KHOẢN</p>");
+                            cashCollectionHtml = ("    <p class='cod'>TỔNG TIỀN:</p><p class='cod'>ĐÃ CHUYỂN KHOẢN</p>");
                     }
                     else
                         cashCollectionHtml = "    <p class='cod'>THU HỘ: KHÔNG</p>";

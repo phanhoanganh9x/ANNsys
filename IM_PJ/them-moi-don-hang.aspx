@@ -575,12 +575,12 @@
              */
             function _checkFace() {
                 let paymentTypeDom = document.body.querySelector("#<%=ddlPaymentType.ClientID%>");
-                let paymentType = parseInt(paymentTypeDom.value ?? '0');
+                let paymentType = paymentTypeDom.value ? parseInt(paymentTypeDom.value) : String(0);
 
                 // Trường hợp "Thu hộ"
                 if (paymentType === PaymentMethodEnum.CashCollection) {
                     let title = "Lạ vậy";
-                    let msg = "Sao <strong>Lấy trực tiếp</strong> mà còn <strong>Thu hộ</strong>?<br><br>Xem lại nha!",
+                    let msg = "Sao <strong>Lấy trực tiếp</strong> mà còn <strong>Thu hộ</strong>?<br><br>Xem lại nha!";
 
                     swal({
                         title,
@@ -590,9 +590,6 @@
                         confirmButtonColor: "#DD6B55",
                         confirmButtonText: "Để em xem lại!!",
                         html: true
-                    }).then(function() {
-                        // Tiền mặt
-                        paymentType.value = String(PaymentMethodEnum.Cash);
                     });
 
                     return false;
@@ -612,12 +609,12 @@
              */
             function _checkGrab() {
                 let paymentTypeDom = document.body.querySelector("#<%=ddlPaymentType.ClientID%>");
-                let paymentType = parseInt(paymentTypeDom.value ?? '0');
+                let paymentType = paymentTypeDom.value ? parseInt(paymentTypeDom.value) : String(0);
 
                 // Trường hợp "Thu hộ"
                 if (paymentType === PaymentMethodEnum.CashCollection) {
                     let title = "Lạ vậy";
-                    let msg = "Sao <strong>Lấy trực tiếp</strong> mà còn <strong>Thu hộ</strong>?<br><br>Xem lại nha!",
+                    let msg = "Sao <strong>Grab</strong> mà còn <strong>Thu hộ</strong>?<br><br>Xem lại nha!";
 
                     swal({
                         title,
@@ -627,9 +624,6 @@
                         confirmButtonColor: "#DD6B55",
                         confirmButtonText: "Để em xem lại!!",
                         html: true
-                    }).then(function() {
-                        // Tiền mặt
-                        paymentType.value = String(PaymentMethodEnum.Cash);
                     });
 
                     return false;
@@ -649,7 +643,7 @@
              */
             function _checkShippingType() {
                 let shippingTypeDom = document.body.querySelector("#<%=ddlShippingType.ClientID%>");
-                let shippingType = parseInt(shippingTypeDom.value ?? '0');
+                let shippingType = shippingTypeDom.value ? parseInt(shippingTypeDom.value) : String(0);
                 let checked = true;
 
                 // Kiểm tra trường hợp "Lấy trực tiếp"
