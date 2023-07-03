@@ -104,6 +104,9 @@
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlCreatedBy" runat="server" CssClass="form-control"></asp:DropDownList>
                                 </div>
+                                <div class="col-md-1 col-xs-6 search-button">
+                                    <a id="exportCsv" class="btn primary-btn h45-btn" href="javascript:;" onclick="onClick_exportCsv()" hidden="hidden"><i class="fa fa-download"></i></a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -207,10 +210,12 @@
             </div>
         </div>
 
+        <asp:HiddenField ID="hdfCSV" runat="server" />
+
         <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=03122022"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/services/danh-sach-don-hang/danh-sach-don-hang-service.js?v=03122022"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/controllers/danh-sach-don-hang/danh-sach-don-hang-controller.js?v=03122022"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-don-hang/danh-sach-don-hang.js?v=03122022"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-don-hang/danh-sach-don-hang.js?v=202307032246"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=03122022"></script>
     </main>
 </asp:Content>

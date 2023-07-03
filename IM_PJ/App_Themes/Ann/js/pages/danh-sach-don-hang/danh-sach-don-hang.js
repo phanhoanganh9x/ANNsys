@@ -2,6 +2,7 @@
 
 document.addEventListener("DOMContentLoaded", function (event) {
     initQuantity();
+    initCsv();
 });
 
 function initQuantity() {
@@ -19,6 +20,19 @@ function initQuantity() {
             divGreaterThanDOM.classList.add("hide");
             divBetweenDOM.classList.remove("hide");
         }
+    }
+}
+
+function initCsv() {
+    let exportCsvDom = document.querySelector("#exportCsv");
+    let csvDataDom = document.querySelector("[id$='_hdfCSV']");
+    let csvData = csvDataDom.value;
+
+    if (csvData) {
+        exportCsvDom.style.display = "initial";
+    }
+    else {
+        exportCsvDom.style.display = "none";
     }
 }
 
@@ -80,3 +94,38 @@ function onClick_spFinishStatusOrder(self, orderID) {
         }
     });
 };
+
+function onClick_exportCsv() {
+    const csvDataDom = document.querySelector("[id$='_hdfCSV']");
+    const csvData = csvDataDom.value;
+
+    if (!csvData) return;
+
+    const now = new Date();
+
+    // Khởi tạo CSV
+    let csvFile = "danh-sach-don-hang";
+    const csvContentType = "data:text/csv;charset=utf-8,";
+
+    // _YYY-MM-DD
+    csvFile += "_" + String(now.getFullYear()) + "-" + String(now.getMonth() + 1) + "-" + String(now.getDate())
+    // _HH-mm-ss
+    csvFile += "-" + String(now.getHours()) + "-" + String(now.getMinutes()) + "-" + String(now.getMilliseconds())
+
+    // Khởi tạo dữ liệu
+    const rows = JSON.parse(csvData);
+    const csvContent = rows.map(e => e.join(",")).join("\n");
+
+    // Khởi tạo DOM link để tải file
+    // https://stackoverflow.com/questions/42462764/javascript-export-csv-encoding-utf-8-issue
+    const universalBOM = "\uFEFF";
+    const encodedUri = encodeURIComponent(universalBOM + csvContent);
+    const link = document.createElement("a");
+
+    link.setAttribute("href", csvContentType + encodedUri);
+    link.setAttribute("download", csvFile + ".csv");
+    document.body.appendChild(link); // Required for FF
+
+    // Thực thi tải file CSV
+    link.click();
+}

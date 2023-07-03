@@ -169,6 +169,7 @@ namespace IM_PJ
                 ddlTransportCompany.DataBind();
             }
         }
+
         public void LoadCreatedBy(tbl_Account acc = null)
         {
             if (acc != null)
@@ -192,6 +193,190 @@ namespace IM_PJ
                 }
             }
         }
+
+        public void _generateCsvData(List<OrderList> data)
+        {
+            var rows = new List<List<string>>();
+
+            #region Dòng thể hiện tên colum
+            var firstRow = new List<string>();
+
+            firstRow.Add("Mã");
+            firstRow.Add("Khách hàng");
+            firstRow.Add("Mua");
+            firstRow.Add("Xử lý");
+            firstRow.Add("Thanh toán");
+            firstRow.Add("Kiểu thanh toán");
+            firstRow.Add("Giao hàng");
+            firstRow.Add("Trạng thái giao");
+            firstRow.Add("Tổng tiền");
+            firstRow.Add("Lợi nhuận");
+            firstRow.Add("Nhân viên");
+            firstRow.Add("Ngày tạo");
+            firstRow.Add("Hoàn tất");
+            firstRow.Add("Đổi trả");
+            firstRow.Add("Chiết khấu");
+            firstRow.Add("Phí khác");
+
+            rows.Add(firstRow);
+            #endregion;
+
+            // Dữ liệu xuất CSV
+            foreach (var item in data)
+            {
+                var row = new List<string>();
+
+                // Mã
+                row.Add(item.ID.ToString());
+                // Khách hàng
+                row.Add(String.Format("{0} ({1})", item.CustomerName, item.Nick));
+                // Mua
+                row.Add(String.Format("{0}", item.Quantity));
+                // Xử lý
+                switch (item.ExcuteStatus)
+                {
+                    case 0:
+                        row.Add("Chờ tiếp nhận");
+                        break;
+                    case 1:
+                        row.Add("Đang xử lý");
+                        break;
+                    case 2:
+                        row.Add("Đã hoàn tất");
+                        break;
+                    case 3:
+                        row.Add("Đã hủy");
+                        break;
+                    case 4:
+                        row.Add("Chuyển hoàn");
+                        break;
+                    case 5:
+                        row.Add("Đã gửi hàng");
+                        break;
+                    default:
+                        break;
+                };
+                // Thanh toán
+                switch (item.PaymentStatus)
+                {
+                    case 1:
+                        row.Add("Chưa thanh toán");
+                        break;
+                    case 2:
+                        row.Add("Thanh toán thiếu");
+                        break;
+                    case 3:
+                        row.Add("Đã thanh toán");
+                        break;
+                    case 4:
+                        row.Add("Đã duyệt");
+                        break;
+                    default:
+                        break;
+                };
+                // Kiểu thanh toán
+                switch (item.PaymentType)
+                {
+                    case 1:
+                        row.Add("Tiền mặt");
+                        break;
+                    case 2:
+                        if (item.TransferStatus.HasValue && item.TransferStatus.Value == 1)
+                            row.Add("Chuyển khoản (Đã nhận tiền)");
+                        else
+                            row.Add("Chuyển khoản");
+                        break;
+                    case 3:
+                        row.Add("Thu hộ");
+                        break;
+                    case 4:
+                        row.Add("Công nợ");
+                        break;
+                    default:
+                        row.Add("Chưa xác định");
+                        break;
+                }
+                // Giao hàng
+                switch (item.ShippingType)
+                {
+                    case 1:
+                        row.Add("Lấy trực tiếp");
+                        break;
+                    case 2:
+                        row.Add("Bưu điện");
+                        break;
+                    case 3:
+                        row.Add("Proship");
+                        break;
+                    case 4:
+                        row.Add("Chuyển xe");
+                        break;
+                    case 5:
+                        row.Add("Nhân viên giao");
+                        break;
+                    case 6:
+                        row.Add("GHTK");
+                        break;
+                    case 7:
+                        row.Add("Viettel");
+                        break;
+                    case 8:
+                        row.Add("Grab");
+                        break;
+                    case 9:
+                        row.Add("AhaMove");
+                        break;
+                    case 10:
+                        row.Add("J&T");
+                        break;
+                    case 11:
+                        row.Add("GHN");
+                        break;
+                    default:
+                        row.Add("Chưa xác định");
+                        break;
+                }
+                // Trạng thái giao
+                if (item.DeliveryStatus.HasValue && item.DeliveryStatus.Value == 1)
+                    row.Add("Đã giao");
+                else
+                    row.Add("");
+                // Tổng tiền
+                row.Add(String.Format("{0}", item.TotalPrice - item.TotalRefund));
+                // Lợi nhuận
+                row.Add(String.Format("{0}", item.TotalProfit));
+                // Nhân viên
+                row.Add(item.CreatedBy);
+                // Ngày tạo
+                row.Add(String.Format("{0:dd/MM/yyyy HH:mm}", item.CreatedDate));
+                // Hoàn tất
+                if (item.ExcuteStatus == (int)ExcuteStatus.Done || item.ExcuteStatus == (int)ExcuteStatus.Sent || item.ExcuteStatus == (int)ExcuteStatus.Return)
+                    row.Add(String.Format("{0:dd/MM/yyyy HH:mm}", item.DateDone));
+                else
+                    row.Add("");
+                // Đổi trả
+                if (item.TotalRefund != 0)
+                    row.Add(String.Format("{0}", item.TotalRefund));
+                else
+                    row.Add("");
+                // Chiết khấu
+                if (item.TotalDiscount != 0)
+                    row.Add(String.Format("{0}", item.TotalDiscount));
+                else
+                    row.Add("");
+                // Phí khác
+                if (item.OtherFeeValue != 0)
+                    row.Add(String.Format("{0}", item.OtherFeeValue));
+                else
+                    row.Add("");
+
+                rows.Add(row);
+            }
+
+            // Cập nhật dữ liệu CSV vào input ẩn
+            hdfCSV.Value = JsonConvert.SerializeObject(rows);
+        }
+
         public void LoadData()
         {
             string username = Request.Cookies["usernameLoginSystem_ANN123"].Value;
@@ -419,6 +604,9 @@ namespace IM_PJ
                 pagingall(rs, page);
 
                 ltrNumberOfOrder.Text = page.totalCount.ToString();
+
+                if (acc.RoleID.HasValue && acc.RoleID == 0)
+                    _generateCsvData(rs);
             }
         }
 
