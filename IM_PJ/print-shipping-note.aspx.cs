@@ -712,31 +712,36 @@ namespace IM_PJ
                 #endregion
 
                 #region Thu hộ
-                /// Đối ứng thể hiện thành tiền
+                /// Đối ứng thể hiện thành tiền ("Lấy trực tiếp", "Grab", "AhaMove")
                 /// 
                 /// Date:   2023-07-03
                 /// Author: Binh-TT
                 /// 
-                /// Trường hợp phương thức thanh toán "Tiền mặt" cho "Lấy trực tiếp", "Grab" thì sẽ hiển thị tiền
-                /// Trường hợp phương thức thanh toán "Chuyển khoản" cho "Lấy trực tiếp", "Grab" thì không hiển thị tiền
-                /// Trường hợp còn lại thì có "Thu hộ" thì sẽ hiển thị
+                /// Trường hợp phương thức thanh toán "Tiền mặt" thì sẽ hiển thị tiền
+                /// Trường hợp phương thức thanh toán "Chuyển khoản" thì không hiển thị tiền
                 var cashCollectionHtml = "";
 
                 if (order.paymentMethod == (int)PaymentType.CashCollection)
                     cashCollectionHtml = String.Format("    <p class='cod'>THU HỘ: {0:N0}đ</p>", order.cod);
                 else
                 {
-                    if (order.deliveryMethod == (int)DeliveryType.Face || order.deliveryMethod == (int)DeliveryType.Grab)
-                    {
-                        // Tiền mặt
-                        if (order.paymentMethod == (int)PaymentType.Cash)
-                            cashCollectionHtml = String.Format("    <p class='cod'>TỔNG TIỀN: {0:N0}đ</p>", order.total);
-                        // Chuyển khoản
-                        else if (order.paymentMethod == (int)PaymentType.Bank)
-                            cashCollectionHtml = ("    <p class='cod'>TỔNG TIỀN:</p><p class='cod'>ĐÃ CHUYỂN KHOẢN</p>");
+                    switch(order.deliveryMethod) {
+                        case (int)DeliveryType.Face:
+                        case (int)DeliveryType.Grab:
+                        case (int)DeliveryType.AhaMove:
+                            // Tiền mặt
+                            if (order.paymentMethod == (int)PaymentType.Cash)
+                                cashCollectionHtml = String.Format("    <p class='cod'>TỔNG TIỀN: {0:N0}đ</p>", order.total);
+                            // Chuyển khoản
+                            else if (order.paymentMethod == (int)PaymentType.Bank)
+                                cashCollectionHtml = ("    <p class='cod'>TỔNG TIỀN:</p><p class='cod'>ĐÃ CHUYỂN KHOẢN</p>");
+
+                            break;
+                        default:
+                            cashCollectionHtml = "    <p class='cod'>THU HỘ: KHÔNG</p>";
+
+                            break;
                     }
-                    else
-                        cashCollectionHtml = "    <p class='cod'>THU HỘ: KHÔNG</p>";
                 }
 
 

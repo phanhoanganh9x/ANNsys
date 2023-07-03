@@ -542,25 +542,29 @@
             "use strict";
 
             const PaymentMethodEnum = {
-                /*
+                /**
                  * 1: Tiền mặt
                  */
                 "Cash": 1,
-                /*
+                /**
                  * 3: Thu hộ
                  */
                 "CashCollection": 3,
             }
 
             const ShippingTypeEnum = {
-                /*
+                /**
                  * 1: Lấy trực tiếp
                  */
                 "Face": 1,
-                /*
+                /**
                  * 8: Grab
                  */
                 "Grab": 8,
+                /**
+                 * 9: AhaMove
+                 */
+                "AhaMove": 9,
             }
 
             // #region Private
@@ -633,6 +637,40 @@
             }
 
             /* ============================================================
+             * Kiểm tra hình thức giao "AhaMove"
+             *
+             * Date:   2023-07-03
+             * Author: Binh-TT
+             *
+             * Ràng buộc đã "AhaMove" thì không cho "Thu hộ"
+             * ============================================================
+             */
+            function _checkAhaMove() {
+                let paymentTypeDom = document.body.querySelector("#<%=ddlPaymentType.ClientID%>");
+                let paymentType = paymentTypeDom.value ? parseInt(paymentTypeDom.value) : String(0);
+
+                // Trường hợp "Thu hộ"
+                if (paymentType === PaymentMethodEnum.CashCollection) {
+                    let title = "Lạ vậy";
+                    let msg = "Sao <strong>AhaMove</strong> mà còn <strong>Thu hộ</strong>?<br><br>Xem lại nha!";
+
+                    swal({
+                        title,
+                        text: msg,
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Để em xem lại!!",
+                        html: true
+                    });
+
+                    return false;
+                }
+
+                return true;
+            }
+
+            /* ============================================================
              * Kiểm tra phương thức giao hàng
              *
              * Date:   2023-07-03
@@ -652,6 +690,9 @@
                 // Kiểm tra trường hợp "Gab"
                 else if (shippingType === ShippingTypeEnum.Grab)
                     checked = _checkGrab();
+                // Kiểm tra trường hợp "AhaMove"
+                else if (shippingType === ShippingTypeEnum.AhaMove)
+                    checked = _checkAhaMove();
 
                 return checked;
             }
