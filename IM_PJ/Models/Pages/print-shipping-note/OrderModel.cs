@@ -13,6 +13,7 @@ namespace IM_PJ.Models.Pages.print_shipping_note
         public int postalDeliveryMethod { get; set;}
         public string shippingCode { get; set; }
         public string destination { get; set;}
+        public decimal total { get; set; }
         public decimal cod { get; set; }
         public decimal shopFee { get; set; }
         public string staff { get; set; }
@@ -73,9 +74,12 @@ namespace IM_PJ.Models.Pages.print_shipping_note
                     order.destination = _createDestination(order.shippingCode);
             }
 
+            // Total
+            order.total = source.Cod;
+
             // COD
             if (order.paymentMethod == (int)PaymentType.CashCollection)
-                order.cod = source.Cod;
+                order.cod = source.total;
 
             return order;
         }
@@ -111,14 +115,15 @@ namespace IM_PJ.Models.Pages.print_shipping_note
                     order.destination = _createDestination(order.shippingCode);
             }
 
+            // Total
+            order.total = Convert.ToDecimal(source.TotalPrice);
+
+            if (refund != null)
+                order.total -= Convert.ToDecimal(refund.TotalPrice);
+
             // COD
             if (order.paymentMethod == (int)PaymentType.CashCollection)
-            {
-                order.cod += Convert.ToDecimal(source.TotalPrice);
-
-                if (refund != null)
-                    order.cod -= Convert.ToDecimal(refund.TotalPrice);
-            }
+                order.cod = total;
 
             return order;
         }

@@ -712,11 +712,35 @@ namespace IM_PJ
                 #endregion
 
                 #region Thu hộ
-                html.AppendLine("    <td width='50%'>");
+                /// Đối ứng thể hiện thành tiền
+                /// 
+                /// Date:   2023-07-03
+                /// Author: Binh-TT
+                /// 
+                /// Trường hợp phương thức thanh toán "Tiền mặt" cho "Lấy trực tiếp", "Grab" thì sẽ hiển thị tiền
+                /// Trường hợp phương thức thanh toán "Chuyển khoản" cho "Lấy trực tiếp", "Grab" thì không hiển thị tiền
+                /// Trường hợp còn lại thì có "Thu hộ" thì sẽ hiển thị
+                var cashCollectionHtml = "";
+
                 if (order.paymentMethod == (int)PaymentType.CashCollection)
-                    html.AppendLine(String.Format("    <p class='cod'>THU HỘ: {0:N0}đ</p></td>", order.cod));
-                else
-                    html.AppendLine("    <p class='cod'>THU HỘ: KHÔNG</p></td>");
+                    cashCollectionHtml = String.Format("    <p class='cod'>THU HỘ: {0:N0}đ</p>", order.cod)
+                else {
+                    if (order.deliveryMethod == (int)DeliveryType.Face || order.deliveryMethod == (int)DeliveryType.Grab) {
+                        // Tiền mặt
+                        if (order.paymentMethod == (int)PaymentType.Cash)
+                            cashCollectionHtml = String.Format("    <p class='cod'>TỔNG TIỀN: {0:N0}đ</p>", order.total);
+                        // Chuyển khoản
+                        else if (order.paymentMethod == (int)PaymentType.Bank)
+                            cashCollectionHtml = ("    <p class='cod'>TỔNG TIỀN: CHUYỂN KHOẢN</p>");
+                    }
+                    else
+                        cashCollectionHtml = "    <p class='cod'>THU HỘ: KHÔNG</p>";
+                }
+
+
+                html.AppendLine("    <td width='50%'>");
+                html.AppendLine(cashCollectionHtml);
+                html.AppendLine("    </td>");
                 #endregion
 
                 html.AppendLine("    </tr>");
