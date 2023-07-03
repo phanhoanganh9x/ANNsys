@@ -866,8 +866,25 @@
         <script type="text/javascript" src="App_Themes/Ann/js/delivery-address.js?v=03122022"></script>
         <script type="text/javascript">
             const PaymentMethodEnum = {
-                "Cash": 1,              // Tiền mặt
-                "CashCollection": 3,    // Thu hộ
+                /*
+                 * 1: Tiền mặt
+                 */
+                "Cash": 1,
+                /*
+                 * 3: Thu hộ
+                 */
+                "CashCollection": 3,
+            }
+
+            const ShippingTypeEnum = {
+                /*
+                 * 1: Lấy trực tiếp
+                 */
+                "Face": 1,
+                /*
+                 * 8: Grab
+                 */
+                "Grab": 8,
             }
 
             // #region Private
@@ -903,11 +920,113 @@
                 return true;
             }
 
+            /* ============================================================
+             * Kiểm tra hình thức "Lấy trực tiếp"
+             *
+             * Date:   2023-07-03
+             * Author: Binh-TT
+             *
+             * Ràng buộc đã "Lấy trực tiếp" thì không cho "Thu hộ"
+             * ============================================================
+             */
+            function _checkFace() {
+                let paymentTypeDom = document.body.querySelector("#<%=ddlPaymentType.ClientID%>");
+                let paymentType = parseInt(paymentTypeDom.value ?? '0');
+
+                // Trường hợp "Thu hộ"
+                if (paymentType === PaymentMethodEnum.CashCollection) {
+                    let title = "Lạ vậy";
+                    let msg = "Sao <strong>Lấy trực tiếp</strong> mà còn <strong>Thu hộ</strong>?<br><br>Xem lại nha!",
+
+                    swal({
+                        title,
+                        text: msg,
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Để em xem lại!!",
+                        html: true
+                    }).then(function() {
+                        // Tiền mặt
+                        paymentType.value = String(PaymentMethodEnum.Cash);
+                    });
+
+                    return false;
+                }
+
+                return true;
+            }
+
+            /* ============================================================
+             * Kiểm tra hình thức giao "Grab"
+             *
+             * Date:   2023-07-03
+             * Author: Binh-TT
+             *
+             * Ràng buộc đã "Grab" thì không cho "Thu hộ"
+             * ============================================================
+             */
+            function _checkGrab() {
+                let paymentTypeDom = document.body.querySelector("#<%=ddlPaymentType.ClientID%>");
+                let paymentType = parseInt(paymentTypeDom.value ?? '0');
+
+                // Trường hợp "Thu hộ"
+                if (paymentType === PaymentMethodEnum.CashCollection) {
+                    let title = "Lạ vậy";
+                    let msg = "Sao <strong>Lấy trực tiếp</strong> mà còn <strong>Thu hộ</strong>?<br><br>Xem lại nha!",
+
+                    swal({
+                        title,
+                        text: msg,
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Để em xem lại!!",
+                        html: true
+                    }).then(function() {
+                        // Tiền mặt
+                        paymentType.value = String(PaymentMethodEnum.Cash);
+                    });
+
+                    return false;
+                }
+
+                return true;
+            }
+
+            /* ============================================================
+             * Kiểm tra phương thức giao hàng
+             *
+             * Date:   2023-07-03
+             * Author: Binh-TT
+             *
+             * Ràng buộc "Lấy trực tiếp", "Gab" thì không có "Thu hộ"
+             * ============================================================
+             */
+            function _checkShippingType() {
+                let shippingTypeDom = document.body.querySelector("#<%=ddlShippingType.ClientID%>");
+                let shippingType = parseInt(shippingTypeDom.value ?? '0');
+                let checked = true;
+
+                // Kiểm tra trường hợp "Lấy trực tiếp"
+                if (shippingType === ShippingTypeEnum.Face)
+                    checked = _checkFace();
+                // Kiểm tra trường hợp "Gab"
+                else if (shippingType === ShippingTypeEnum.Grab)
+                    checked = _checkGrab();
+
+                return checked;
+            }
+
             function _checkValidation() {
                 if (!_checkCustomerValidation())
                     return false;
 
                 if (!checkDeliveryAddressValidation())
+                    return false;
+
+                // Kiểm tra phương thức giao hàng
+                if (!_checkShippingType())
                     return false;
 
                 return true;
