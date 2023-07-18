@@ -30,7 +30,7 @@ namespace IM_PJ
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
-                        if (acc.RoleID == 0 || acc.Username == "baiviet")
+                        if (acc.RoleID == 0 || acc.Username == "baiviet" || acc.RoleID == 2)
                         {
                             LoadCategory();
                             LoadData();

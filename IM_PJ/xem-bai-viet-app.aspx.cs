@@ -63,7 +63,7 @@ namespace IM_PJ
                     }
                     this.Title = String.Format("{0} - Bài viết App", p.Title.ToTitleCase());
                     ltrEditTop.Text = "";
-                    if (acc.RoleID == 0 || acc.Username == "baiviet")
+                    if (acc.RoleID == 0 || acc.Username == "baiviet" || acc.RoleID == 2)
                     {
                         ltrEditTop.Text += "<a href='javascript:;' onclick='copyPostInfo(" + p.ID + ");' class='btn primary-btn not-fullwidth'><i class='fa fa-files-o'></i> Copy</a>";
                         ltrEditTop.Text += "<a href='javascript:;' onclick='getAllPostImage(" + p.ID + ");' class='btn primary-btn not-fullwidth print-invoice-merged'><i class='fa fa-cloud-download'></i> Tải hình</a>";
