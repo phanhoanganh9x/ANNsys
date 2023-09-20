@@ -212,10 +212,10 @@
 
         <asp:HiddenField ID="hdfCSV" runat="server" />
 
-        <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=03122022"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/services/danh-sach-don-hang/danh-sach-don-hang-service.js?v=03122022"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/controllers/danh-sach-don-hang/danh-sach-don-hang-controller.js?v=03122022"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=20092023"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/services/danh-sach-don-hang/danh-sach-don-hang-service.js?v=20092023"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/controllers/danh-sach-don-hang/danh-sach-don-hang-controller.js?v=20092023"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-don-hang/danh-sach-don-hang.js?v=202307032246"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=03122022"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=20092023"></script>
     </main>
 </asp:Content>
