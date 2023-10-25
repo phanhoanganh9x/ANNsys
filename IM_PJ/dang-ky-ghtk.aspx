@@ -18,7 +18,7 @@
     <!-- Add Select2 library -->
     <!-- https://select2.org/getting-started/installation -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="/App_Themes/Ann/css/HoldOn.css?v=03122022" rel="stylesheet" type="text/css" />
+    <link href="/App_Themes/Ann/css/HoldOn.css?v=20092023" rel="stylesheet" type="text/css" />
     <link type="text/css" rel="stylesheet" href="App_Themes/Ann/css/pages/dang-ky-ghtk/dang-ky-ghtk.css?v=202106081515" />
 
     <title>Tạo đơn GHTK</title>
@@ -241,7 +241,7 @@
             <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
             <!-- Select2 -->
             <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
-            <script src="/App_Themes/Ann/js/HoldOn.js?v=03122022"></script>
+            <script src="/App_Themes/Ann/js/HoldOn.js?v=20092023"></script>
 
             <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=202111091752"></script>
             <script type="text/javascript" src="App_Themes/Ann/js/pages/dang-ky-ghtk/dang-ky-ghtk.js?v=202203251058"></script>

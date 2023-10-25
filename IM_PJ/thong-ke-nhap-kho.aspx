@@ -305,9 +305,9 @@
             </div>
         </div>
 
-        <script src="/App_Themes/Ann/js/copy-product-info.js?v=03122022"></script>
-        <script src="/App_Themes/Ann/js/sync-product-v2.js?v=03122022"></script>
-        <script src="/App_Themes/Ann/js/download-product-image.js?v=03122022"></script>
+        <script src="/App_Themes/Ann/js/copy-product-info.js?v=20092023"></script>
+        <script src="/App_Themes/Ann/js/sync-product-v2.js?v=20092023"></script>
+        <script src="/App_Themes/Ann/js/download-product-image.js?v=20092023"></script>
 
         <script type="text/javascript">
             $("#<%=txtSearchProduct.ClientID%>").keyup(function (e) {
