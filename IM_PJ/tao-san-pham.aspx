@@ -381,6 +381,14 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
+                                    Giá chót
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox type="number" min="0" autocomplete="off" ID="pLastPrice" runat="server" CssClass="form-control" placeholder="Giá chót"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
                                     Tags
                                 </div>
                                 <div class="row-right">

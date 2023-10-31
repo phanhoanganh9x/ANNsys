@@ -25,5 +25,6 @@ namespace IM_PJ.Models
         public System.DateTime CreatedDate { get; set; }
         public System.DateTime ModifiedDate { get; set; }
         public int ViewStatus { get; set; }
+        public Nullable<bool> Active { get; set; }
     }
 }

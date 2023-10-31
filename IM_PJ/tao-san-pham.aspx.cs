@@ -437,6 +437,9 @@ namespace IM_PJ
                             double Retail_Price = Convert.ToDouble(pRetailPrice.Text);
                             double Price10 = String.IsNullOrEmpty(pPrice10.Text) ? 0 : Convert.ToDouble(pPrice10.Text);
                             double BestPrice = String.IsNullOrEmpty(pBestPrice.Text) ? 0 : Convert.ToDouble(pBestPrice.Text);
+                            /// 2023-10-31: BinhTT
+                            /// Thêm giá chót
+                            var lastPrice = String.IsNullOrEmpty(pLastPrice.Text) ? 0D : Convert.ToDouble(pLastPrice.Text);
                             int supplierID = 0;
                             string supplierName = "";
                             string mainColor = ddlColor.SelectedValue.Trim();
@@ -489,7 +492,10 @@ namespace IM_PJ
                                 ShortDescription = shortDescription,
                                 Price10 = Price10,
                                 BestPrice = BestPrice,
-                                CleanName = CleanName
+                                CleanName = CleanName,
+                                /// 2023-10-31: BinhTT
+                                /// Thêm giá chót
+                                LastPrice = lastPrice
                             };
 
                             string kq = ProductController.Insert(prodNew);
