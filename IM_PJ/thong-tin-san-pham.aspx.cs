@@ -269,6 +269,9 @@ namespace IM_PJ
             pPrice10.Text = product.Price10.ToString();
             // Giá thùng
             pBestPrice.Text = product.BestPrice.ToString();
+            /// 2023-10-31: BinhTT
+            /// Thêm giá chót
+            pLastPrice.Text = product.LastPrice.ToString();
             // Ảnh đại diện
             if (product.ProductImage != null)
             {
@@ -681,6 +684,9 @@ namespace IM_PJ
             updatedData.Price10 = String.IsNullOrEmpty(pPrice10.Text) ? 0 : Convert.ToDouble(pPrice10.Text);
             // Giá thùng
             updatedData.BestPrice = String.IsNullOrEmpty(pBestPrice.Text) ? 0 : Convert.ToDouble(pBestPrice.Text);
+            /// 2023-10-31: BinhTT
+            /// Thêm giá chót
+            updatedData.LastPrice = String.IsNullOrEmpty(pLastPrice.Text) ? 0 : Convert.ToDecimal(pLastPrice.Text);
             // Ảnh đại diện
             if (uploadProductImage.UploadedFiles.Count > 0)
             {

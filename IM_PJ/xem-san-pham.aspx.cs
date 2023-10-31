@@ -189,6 +189,9 @@ namespace IM_PJ
                 lbRegularPrice.Text = string.Format("{0:N0}", p.Regular_Price);
                 lbPrice10.Text = string.Format("{0:N0}", p.Price10);
                 lbBestPrice.Text = string.Format("{0:N0}", p.BestPrice);
+                /// 2023-10-31: BinhTT
+                /// Thêm giá chót
+                lbLastPrice.Text = string.Format("{0:N0}", p.LastPrice);
                 lbCostOfGood.Text = "";
                 if (acc.RoleID == 0)
                 {

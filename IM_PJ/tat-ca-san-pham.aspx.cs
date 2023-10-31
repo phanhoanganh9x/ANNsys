@@ -801,6 +801,13 @@ namespace IM_PJ
                     html.AppendLine("<p>📌 Giá sỉ thùng: " + (product.BestPrice).ToString() + "</p>\r\n");
                 }
 
+                /// 2023-10-31: BinhTT
+                /// Thêm giá chót
+                if (product.LastPrice > 0 && product.LastPrice < product.BestPrice)
+                {
+                    html.AppendLine("<p>📌 Giá chót: " + (product.LastPrice).ToString() + "</p>\r\n");
+                }
+
                 html.AppendLine("<p>📌 Giá lẻ: " + (product.Retail_Price).ToString() + "</p>\r\n");
 
                 if (!cosmetics.Contains(category.Slug))
