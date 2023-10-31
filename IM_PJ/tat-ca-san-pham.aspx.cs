@@ -606,7 +606,7 @@ namespace IM_PJ
 
                 }
             }
-            
+
         }
         [WebMethod]
         public static string updateWebPublish(int id, bool value)
@@ -891,7 +891,7 @@ namespace IM_PJ
                             stringVariable = vari[y].VariableName;
                         }
                     }
-                    
+
                     html.AppendLine(Variable);
                 }
 
@@ -913,11 +913,11 @@ namespace IM_PJ
                     {
                         html.AppendLine("<p>⚡⚡ KHO SỈ MỸ PHẨM ANN ⚡⚡</p>\r\n");
                     }
-                        
+
                     html.AppendLine("<p>🏭 15 Đông Hưng Thuận 45, Phường Tân Hưng Thuận, Quận 12, TP.HCM</p>\r\n");
                     html.AppendLine("<p>⭐ Web: https://ann.com.vn </p>\r\n");
                 }
-                
+
             }
 
             return html.ToString();
@@ -1004,9 +1004,11 @@ namespace IM_PJ
                         html.AppendLine("       <p class='p-paterials'><strong>Giá sỉ thùng:</strong> " + string.Format("{0:N0}", item.BestPrice) + "<p>");
                     }
 
-                    if (item.LastPrice > 0 && item.LastPrice < item.Price10)
+                    /// 2023-10-31: BinhTT
+                    /// Thêm giá chót
+                    if (item.LastPrice > 0 && item.LastPrice < item.BestPrice)
                     {
-                        html.AppendLine("       <p class='p-paterials'><strong>Giá sỉ thùng:</strong> " + string.Format("{0:N0}", item.LastPrice) + "<p>");
+                        html.AppendLine("       <p class='p-paterials'><strong>Giá chót:</strong> " + string.Format("{0:N0}", item.LastPrice) + "<p>");
                     }
 
                     if (item.RetailPrice > 0 && item.RetailPrice > item.RegularPrice)
@@ -1185,7 +1187,7 @@ namespace IM_PJ
             {
                 startPageNumbersFrom = 1;
 
-                //As page numbers are starting at one, output an even number of pages.  
+                //As page numbers are starting at one, output an even number of pages.
                 stopPageNumbersAt = pagesToOutput;
             }
 
@@ -1204,7 +1206,7 @@ namespace IM_PJ
             }
             /******************End: Xác định startPageNumbersFrom & stopPageNumbersAt**********************/
 
-            //Các dấu ... chỉ những trang phía trước  
+            //Các dấu ... chỉ những trang phía trước
             if (startPageNumbersFrom > 1)
             {
                 output.Append("<li><a href=\"" + string.Format(GetPageUrl(currentPage - 1, pageUrl), startPageNumbersFrom - 1) + "\">&hellip;</a></li>");
@@ -1223,7 +1225,7 @@ namespace IM_PJ
                 }
             }
 
-            //Các dấu ... chỉ những trang tiếp theo  
+            //Các dấu ... chỉ những trang tiếp theo
             if (stopPageNumbersAt < pageCount)
             {
                 output.Append("<li><a href=\"" + string.Format(pageUrl, stopPageNumbersAt + 1) + "\">&hellip;</a></li>");
