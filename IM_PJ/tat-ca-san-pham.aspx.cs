@@ -805,7 +805,7 @@ namespace IM_PJ
                 /// Thêm giá chót
                 if (product.LastPrice > 0 && product.LastPrice < product.BestPrice)
                 {
-                    html.AppendLine("<p>📌 Giá chót: " + (product.LastPrice).ToString() + "</p>\r\n");
+                    html.AppendLine("<p>📌 Giá chót: " + Convert.ToDouble(product.LastPrice).ToString() + "</p>\r\n");
                 }
 
                 html.AppendLine("<p>📌 Giá lẻ: " + (product.Retail_Price).ToString() + "</p>\r\n");
@@ -1002,6 +1002,11 @@ namespace IM_PJ
                     if (item.BestPrice > 0 && item.BestPrice < item.Price10)
                     {
                         html.AppendLine("       <p class='p-paterials'><strong>Giá sỉ thùng:</strong> " + string.Format("{0:N0}", item.BestPrice) + "<p>");
+                    }
+
+                    if (item.LastPrice > 0 && item.LastPrice < item.Price10)
+                    {
+                        html.AppendLine("       <p class='p-paterials'><strong>Giá sỉ thùng:</strong> " + string.Format("{0:N0}", item.LastPrice) + "<p>");
                     }
 
                     if (item.RetailPrice > 0 && item.RetailPrice > item.RegularPrice)

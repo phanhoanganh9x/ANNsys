@@ -70,6 +70,9 @@ namespace IM_PJ.Controllers
                 ui.ShortDescription = product.ShortDescription;
                 ui.Price10 = product.Price10;
                 ui.BestPrice = product.BestPrice;
+                /// 2023-10-31: BinhTT
+                /// Thêm giá chót
+                ui.LastPrice = product.LastPrice;
                 ui.CleanName = product.CleanName;
 
                 dbe.tbl_Product.Add(ui);
@@ -117,6 +120,9 @@ namespace IM_PJ.Controllers
                     ui.ShortDescription = product.ShortDescription;
                     ui.Price10 = product.Price10;
                     ui.BestPrice = product.BestPrice;
+                    /// 2023-10-31: BinhTT
+                    /// Thêm giá chót
+                    ui.LastPrice = product.LastPrice;
                     ui.FeaturedImage = String.IsNullOrEmpty(product.FeaturedImage) ? null : product.FeaturedImage;
                     ui.CleanName = product.CleanName;
 
@@ -1068,6 +1074,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("    ,   PRD.Retail_Price");
             sql.AppendLine("    ,   PRD.Price10");
             sql.AppendLine("    ,   PRD.BestPrice");
+            sql.AppendLine("    ,   PRD.LastPrice");
             sql.AppendLine("    ,   PRD.ProductContent");
             sql.AppendLine("    ,   PRD.Materials");
             sql.AppendLine("    ,   PRD.PreOrder");
@@ -1978,6 +1985,10 @@ namespace IM_PJ.Controllers
                 // Giá bán triết khấu 1 thùng
                 if (reader["BestPrice"] != DBNull.Value)
                     row.BestPrice = Convert.ToDouble(reader["BestPrice"].ToString());
+                /// 2023-10-31: BinhTT
+                /// Thêm giá chót
+                if (reader["LastPrice"] != DBNull.Value)
+                    row.LastPrice = Convert.ToDouble(reader["LastPrice"].ToString());
 
                 data.Add(row);
             }
@@ -3417,6 +3428,9 @@ namespace IM_PJ.Controllers
             public double Price10 { get; set; }
             public double BestPrice { get; set; }
             public string CategorySlug { get; set; }
+            /// 2023-10-31: BinhTT
+            /// Thêm giá chót
+            public double LastPrice { get; set; }
 
         }
 

@@ -158,6 +158,14 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
+                                    Giá chót
+                                </div>
+                                <div class="row-right">
+                                    <asp:Label ID="lbLastPrice" runat="server" CssClass="form-control"></asp:Label>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
                                     Giá vốn
                                 </div>
                                 <div class="row-right">

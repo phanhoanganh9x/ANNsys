@@ -439,7 +439,7 @@ namespace IM_PJ
                             double BestPrice = String.IsNullOrEmpty(pBestPrice.Text) ? 0 : Convert.ToDouble(pBestPrice.Text);
                             /// 2023-10-31: BinhTT
                             /// Thêm giá chót
-                            var lastPrice = = String.IsNullOrEmpty(pLastPrice.Text) ? 0M : Convert.ToDecimal(pLastPrice.Text);
+                            var lastPrice = String.IsNullOrEmpty(pLastPrice.Text) ? 0D : Convert.ToDouble(pLastPrice.Text);
                             int supplierID = 0;
                             string supplierName = "";
                             string mainColor = ddlColor.SelectedValue.Trim();

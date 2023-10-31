@@ -1037,8 +1037,8 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Nick" Type="nvarchar(max)" />
-          <Property Name="CustomerName" Type="nvarchar(max)" />
+          <Property Name="Nick" Type="nvarchar" MaxLength="100" />
+          <Property Name="CustomerName" Type="nvarchar" MaxLength="100" />
           <Property Name="CustomerPhone" Type="nvarchar" MaxLength="15" />
           <Property Name="CustomerAddress" Type="nvarchar(max)" />
           <Property Name="CustomerEmail" Type="nvarchar(max)" />
@@ -1060,8 +1060,8 @@
           <Property Name="TransportCompanySubID" Type="int" />
           <Property Name="CustomerPhone2" Type="nvarchar" MaxLength="15" />
           <Property Name="CustomerPhoneBackup" Type="nvarchar" MaxLength="15" />
-          <Property Name="UnSignedNick" Type="varchar" MaxLength="255" />
-          <Property Name="UnSignedName" Type="varchar" MaxLength="255" />
+          <Property Name="UnSignedNick" Type="nvarchar" MaxLength="100" />
+          <Property Name="UnSignedName" Type="nvarchar" MaxLength="100" />
           <Property Name="DistrictId" Type="int" />
           <Property Name="WardId" Type="int" />
           <Property Name="SendSMSIntroApp" Type="int" />
@@ -1325,7 +1325,7 @@
           <Property Name="ProductOldID" Type="int" />
           <Property Name="ProductTitle" Type="nvarchar(max)" />
           <Property Name="ProductContent" Type="nvarchar(max)" />
-          <Property Name="ProductSKU" Type="nvarchar(max)" />
+          <Property Name="ProductSKU" Type="nvarchar" MaxLength="50" />
           <Property Name="ProductStock" Type="float" />
           <Property Name="StockStatus" Type="int" />
           <Property Name="ManageStock" Type="bit" />
@@ -1362,6 +1362,7 @@
           <Property Name="ShopeeDescription" Type="nvarchar(max)" />
           <Property Name="CleanName" Type="nvarchar(max)" />
           <Property Name="FeaturedImage" Type="nvarchar(max)" />
+          <Property Name="LastPrice" Type="float" />
         </EntityType>
         <EntityType Name="tbl_ProductImage">
           <Key>
@@ -1648,6 +1649,7 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
           <Property Name="ViewStatus" Type="int" Nullable="false" />
+          <Property Name="Active" Type="bit" />
         </EntityType>
         <EntityType Name="UserNotifyPromotion">
           <Key>
@@ -3293,8 +3295,8 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Nick" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CustomerName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Nick" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="CustomerPhone" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
           <Property Name="CustomerAddress" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CustomerEmail" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -3316,8 +3318,8 @@
           <Property Name="TransportCompanySubID" Type="Int32" />
           <Property Name="CustomerPhone2" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
           <Property Name="CustomerPhoneBackup" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="UnSignedNick" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="UnSignedName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="UnSignedNick" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="UnSignedName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="DistrictId" Type="Int32" />
           <Property Name="WardId" Type="Int32" />
           <Property Name="SendSMSIntroApp" Type="Int32" />
@@ -3526,7 +3528,7 @@
           <Property Name="ProductOldID" Type="Int32" />
           <Property Name="ProductTitle" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ProductContent" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ProductSKU" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ProductSKU" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ProductStock" Type="Double" />
           <Property Name="StockStatus" Type="Int32" />
           <Property Name="ManageStock" Type="Boolean" />
@@ -3565,6 +3567,7 @@
           <Property Name="FeaturedImage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="PreOrderDetails" Relationship="Self.FK_PreOrderDetail_Product" FromRole="tbl_Product" ToRole="PreOrderDetail" />
           <NavigationProperty Name="ProductVideos" Relationship="Self.FK_ProductVideo_tbl_Product" FromRole="tbl_Product" ToRole="ProductVideo" />
+          <Property Name="LastPrice" Type="Double" />
         </EntityType>
         <EntityType Name="tbl_ProductImage">
           <Key>
@@ -3853,6 +3856,7 @@
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ViewStatus" Type="Int32" Nullable="false" />
+          <Property Name="Active" Type="Boolean" />
         </EntityType>
         <EntityType Name="UserNotifyPromotion">
           <Key>
@@ -5918,6 +5922,7 @@
           <EntitySetMapping Name="tbl_Product">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Product">
               <MappingFragment StoreEntitySet="tbl_Product">
+                <ScalarProperty Name="LastPrice" ColumnName="LastPrice" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
                 <ScalarProperty Name="ProductOldID" ColumnName="ProductOldID" />
@@ -6251,6 +6256,7 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="inventorymanagementModel.User">
               <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="Active" ColumnName="Active" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Phone" ColumnName="Phone" />
                 <ScalarProperty Name="Password" ColumnName="Password" />

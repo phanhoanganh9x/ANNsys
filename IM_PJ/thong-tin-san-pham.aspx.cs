@@ -686,7 +686,7 @@ namespace IM_PJ
             updatedData.BestPrice = String.IsNullOrEmpty(pBestPrice.Text) ? 0 : Convert.ToDouble(pBestPrice.Text);
             /// 2023-10-31: BinhTT
             /// Thêm giá chót
-            updatedData.LastPrice = String.IsNullOrEmpty(pLastPrice.Text) ? 0 : Convert.ToDecimal(pLastPrice.Text);
+            updatedData.LastPrice = String.IsNullOrEmpty(pLastPrice.Text) ? 0 : Convert.ToDouble(pLastPrice.Text);
             // Ảnh đại diện
             if (uploadProductImage.UploadedFiles.Count > 0)
             {
