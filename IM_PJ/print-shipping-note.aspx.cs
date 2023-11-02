@@ -444,12 +444,12 @@ namespace IM_PJ
             var html = new StringBuilder();
 
             html.AppendLine(String.Format("    <p>Tên: <span class='sender-name'>{0}</span></p>", sender.name));
-            
+
             if (!String.IsNullOrEmpty(sender.phone2))
                 html.AppendLine(String.Format("    <p>Điện thoại: {0} - {1}</p>", sender.phone, sender.phone2));
             else
                 html.AppendLine(String.Format("    <p>Điện thoại: {0}</p>", sender.phone));
-            
+
             html.AppendLine(String.Format("    <p>Địa chỉ: {0}</p>", sender.address));
 
             return html.ToString();
@@ -565,7 +565,7 @@ namespace IM_PJ
             // Thông tin giao hàng
             if (deliveryInfo.Length > 0)
                 html.AppendLine(String.Format("    {0}", deliveryInfo.ToString()));
-            
+
             // Phí nhân viên giao
             if (!String.IsNullOrEmpty(shopFeeInfo))
                 html.AppendLine(String.Format("    {0}", shopFeeInfo));
@@ -713,10 +713,10 @@ namespace IM_PJ
 
                 #region Thu hộ
                 /// Đối ứng thể hiện thành tiền ("Lấy trực tiếp", "Grab", "AhaMove")
-                /// 
+                ///
                 /// Date:   2023-07-03
                 /// Author: Binh-TT
-                /// 
+                ///
                 /// Trường hợp phương thức thanh toán "Tiền mặt" thì sẽ hiển thị tiền
                 /// Trường hợp phương thức thanh toán "Chuyển khoản" thì không hiển thị tiền
                 var cashCollectionHtml = "";
@@ -770,10 +770,10 @@ namespace IM_PJ
                 html.AppendLine("  </tbody>");
                 html.AppendLine("  </table>");
 
-                
-                
+
+
                 //html.AppendLine(_createOrderHtml(order));
-                
+
                 //html.AppendLine(_createLabelHtml(order.destination));
             }
             html.AppendLine("</div>");
@@ -908,7 +908,7 @@ namespace IM_PJ
               .Where(x => !String.IsNullOrEmpty(x))
               .LastOrDefault();
 
-           
+
             html.AppendLine("    <tr>");
             html.AppendLine("    <td width='50%'>");
             html.AppendLine(String.Format("    <p class='destination'><strong>{0}</strong></p>", order.destination));
@@ -924,7 +924,9 @@ namespace IM_PJ
             #region Mã vạch đơn shop
             html.AppendLine("    <td width='50%'>");
             html.AppendLine(String.Format("      <p>MÃ ĐƠN KH: <strong>{0}</strong></p>", order.code));
-            html.AppendLine(String.Format("      <p><img src='{0}'></p>", _createBarcode(order.code)));
+            // 2023-11-03: BinhTT
+            // GHTK yêu cầu không tao barcode mã đơn hàng của shop
+            //html.AppendLine(String.Format("      <p><img src='{0}'></p>", _createBarcode(order.code)));
             html.AppendLine("    </td>");
             #endregion
             #region Thu hộ
@@ -954,7 +956,7 @@ namespace IM_PJ
             #region Người nhận
             html.AppendLine(String.Format("    <tr><td colspan='2'><p class='receiver'>NGƯỜI NHẬN HÀNG:</p><p>Tên: <span class='receiver-name'>{0}</span></p>", order.receiver.name));
             html.AppendLine(String.Format("    <p>Điện thoại: <span class='phone replace-phone'>{0}</span></p>", order.receiver.phone));
-            
+
             #region Địa chỉ
             var address = order.receiver.address;
 
@@ -1034,7 +1036,7 @@ namespace IM_PJ
             var transport = TransportCompanyModel.map(transportCompany, transportBranchCompany);
             // Tổng hợp thông tin đơn giao hàng
             var data = OrderModel.map(order, refund, AddressModel.map(sender), receiver, transport);
-            
+
             return data;
         }
 
