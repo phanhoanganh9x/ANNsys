@@ -352,8 +352,9 @@ namespace IM_PJ
         /// </summary>
         /// <param name="customerId"></param>
         /// <param name="deliveryAddressId"></param>
+        /// <param name="deliveryMethodId"></param>
         /// <returns></returns>
-        private AddressModel _getReceiver(int customerId, long? deliveryAddressId)
+        private AddressModel _getReceiver(int customerId, long? deliveryAddressId, int deliveryMethodId)
         {
             var province = (DeliverySaveAddress)null;
             var district = (DeliverySaveAddress)null;
@@ -368,7 +369,7 @@ namespace IM_PJ
                 district = ProvinceController.GetByID(deliveryAddress.DistrictId);
                 ward = ProvinceController.GetByID(deliveryAddress.WardId);
 
-                return AddressModel.map(deliveryAddress, province, district, ward);
+                return AddressModel.map(deliveryAddress, province, district, ward, deliveryMethodId);
             }
             #endregion
 
@@ -382,7 +383,7 @@ namespace IM_PJ
             ward = customer.WardId.HasValue && customer.WardId.Value > 0
                 ? ProvinceController.GetByID(customer.WardId.Value) : null;
 
-            return AddressModel.map(customer, province, district, ward);
+            return AddressModel.map(customer, province, district, ward, deliveryMethodId);
             #endregion
         }
 
@@ -997,7 +998,7 @@ namespace IM_PJ
             // Thông tin địa chỉ gửi
             var sender = AgentController.GetByID(1); // Hardcode: 1 - ANN Shop
             // Thông tin địa chỉ nhận
-            var receiver = _getReceiver(groupOrder.CustomerId, groupOrder.DeliveryAddressId);
+            var receiver = _getReceiver(groupOrder.CustomerId, groupOrder.DeliveryAddressId, groupOrder.DeliveryMethodId);
             // Thông tin chành xe
             var transport = TransportCompanyModel.map(transportCompany, transportBranchCompany);
             // Tổng hợp thông tin đơn giao hàng
@@ -1031,7 +1032,7 @@ namespace IM_PJ
             }
 
             // Thông tin địa chỉ nhận
-            var receiver = _getReceiver(order.CustomerID.Value, order.DeliveryAddressId);
+            var receiver = _getReceiver(order.CustomerID.Value, order.DeliveryAddressId, order.ShippingType ?? (int)DeliveryType.Face);
             // Thông tin chành xe
             var transport = TransportCompanyModel.map(transportCompany, transportBranchCompany);
             // Tổng hợp thông tin đơn giao hàng

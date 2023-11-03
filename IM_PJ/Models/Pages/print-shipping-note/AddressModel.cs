@@ -37,7 +37,8 @@ namespace IM_PJ.Models.Pages.print_shipping_note
             DeliveryAddress source,
             DeliverySaveAddress province,
             DeliverySaveAddress district,
-            DeliverySaveAddress ward
+            DeliverySaveAddress ward,
+            int deliveryMethodId
         ) {
             var address = new AddressModel() {
                 name = source.FullName.ToTitleCase(),
@@ -51,10 +52,15 @@ namespace IM_PJ.Models.Pages.print_shipping_note
                 if (source.Phone.Length == 10)
                 {
                     var phone1 = source.Phone.Substring(0, 4);
-                    var phone2 = source.Phone.Substring(4, 3);
                     var phone3 = source.Phone.Substring(7);
 
-                    address.phone = String.Format("{0}.{1}.{2}", phone1, phone2, phone3);
+                    if (deliveryMethodId == (int)DeliveryType.DeliverySave)
+                        address.phone = String.Format("{0}***{2}", phone1, phone3);
+                    else {
+                        var phone2 = source.Phone.Substring(4, 3);
+
+                        address.phone = String.Format("{0}.{1}.{2}", phone1, phone2, phone3);
+                    }
                 }
             }
 
@@ -74,7 +80,8 @@ namespace IM_PJ.Models.Pages.print_shipping_note
             tbl_Customer source,
             DeliverySaveAddress province,
             DeliverySaveAddress district,
-            DeliverySaveAddress ward
+            DeliverySaveAddress ward,
+            int deliveryMethodId
         ) {
             var address = new AddressModel() {
                 name = source.CustomerName.ToTitleCase(),
@@ -102,10 +109,15 @@ namespace IM_PJ.Models.Pages.print_shipping_note
                 if (source.CustomerPhone2.Length == 10)
                 {
                     var phone1 = source.CustomerPhone2.Substring(0, 4);
-                    var phone2 = source.CustomerPhone2.Substring(4, 3);
                     var phone3 = source.CustomerPhone2.Substring(7);
 
-                    address.phone2 = String.Format("{0}.{1}.{2}", phone1, phone2, phone3);
+                    if (deliveryMethodId == (int)DeliveryType.DeliverySave)
+                        address.phone = String.Format("{0}***{2}", phone1, phone3);
+                    else {
+                        var phone2 = source.Phone.Substring(4, 3);
+
+                        address.phone = String.Format("{0}.{1}.{2}", phone1, phone2, phone3);
+                    }
                 }
             }
 
