@@ -50,6 +50,9 @@
         font-size: 25px;
         letter-spacing: 2px;
     }
+    .table-ghtk .delivery > img {
+        width: 100%;
+    }
     .table-note {
         display: block;
         width: 200mm;

@@ -936,8 +936,10 @@ namespace IM_PJ
 
             // 2023-11-08: BinhTT
             // GHTK yêu cầu barcode mã vận đơn nằm trên 1 dòng
+            html.AppendLine("    <td colspan='2'>");
             html.AppendLine(String.Format("      <p class='delivery'><img src='{0}'></p>", _createBarcode(ghtkCode)));
             html.AppendLine(String.Format("      <p class='delivery'>{0}</p>", ghtkCode));
+            html.AppendLine("    </td>");
 
             #region Mã vạch đơn shop
             // 2023-11-08: BinhTT
