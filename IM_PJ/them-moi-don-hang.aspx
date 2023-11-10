@@ -230,6 +230,7 @@
                                     <a href="javascript:;" class="btn link-btn" id="payall" style="background-color: #f87703; float: right" title="Hoàn tất đơn hàng" onclick="payAll()"><i class="fa fa-floppy-o"></i> Xác nhận</a>
                                     <asp:Button ID="btnOrder" runat="server" OnClick="btnOrder_Click" Style="display: none" />
                                     <a href="javascript:;" class="btn link-btn" style="background-color: #ffad00; float: right;" title="Nhập đơn hàng đổi trả" onclick="searchReturnOrder()"><i class="fa fa-refresh"></i> Đổi trả</a>
+                                    <a href="#priceModal" class="btn link-btn" style="background-color: #5cb85c; float: right;" title="Nhập nhanh giá bán" data-toggle="modal" data-backdrop='static'><i class="fa fa-bolt"></i> Nhập nhanh giá bán</a>
                                     <a id="feeNewStatic" href="#feeModal" class="btn link-btn" style="background-color: #607D8B; float: right;" title="Thêm phí khác vào đơn hàng" data-toggle="modal" data-backdrop='static'><i class="fa fa-plus"></i> Thêm phí khác</a>
                                     <a href="javascript:;" class="btn link-btn" style="background-color: #F44336; float: right;" title="Xóa tất cả sản phẩm" onclick="deleteProduct()"><i class="fa fa-times" aria-hidden="true"></i> Làm lại</a>
                                 </div>
@@ -246,6 +247,7 @@
                                 <div class="post-table-links clear row">
                                     <a href="javascript:;" class="btn link-btn" style="background-color: #f87703; float: right" title="Hoàn tất đơn hàng" onclick="payAll()"><i class="fa fa-floppy-o"></i> Xác nhận</a>
                                     <a href="javascript:;" class="btn link-btn" style="background-color: #ffad00; float: right;" title="Nhập đơn hàng đổi trả" onclick="searchReturnOrder()"><i class="fa fa-refresh"></i> Đổi trả</a>
+                                    <a href="#priceModal" class="btn link-btn" style="background-color: #5cb85c;float: right;" title="Nhập nhanh giá bán" data-toggle="modal" data-backdrop="static"><i class="fa fa-bolt"></i> Nhập nhanh giá bán</a>
                                     <a id="feeNewDynamic" href="#feeModal" class="btn link-btn" style="background-color: #607D8B; float: right;" title="Thêm phí khác vào đơn hàng" data-toggle="modal" data-backdrop='static'><i class="fa fa-plus"></i> Thêm phí khác</a>
                                     <a href="javascript:;" class="btn link-btn" style="background-color: #F44336; float: right;" title="Xóa tất cả sản phẩm" onclick="deleteProduct()"><i class="fa fa-times" aria-hidden="true"></i> Làm lại</a>
                                 </div>
@@ -495,6 +497,35 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Price Modal -->
+            <div class="modal fade" id="priceModal" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Nhập nhanh giá sản phẩm</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row form-group">
+                                <div class="col-12 col-sm-12 col-xl-12">
+                                    <button id="btnPrice10" type="button" class="btn btn-default" onclick="quicklyEnterPrice10()">Giá 10 cái</button>
+                                </div>
+                                <div class="col-12 col-sm-12 col-xl-12">
+                                    <button id="btnBestPrice" type="button" class="btn btn-default" onclick="quicklyEnterBestPrice()">Giá 50 cái</button>
+                                </div>
+                                <div class="col-12 col-sm-12 col-xl-12">
+                                    <button id="btnLastPrice" type="button" class="btn btn-default" onclick="quicklyEnterLastPrice()">Giá chót</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="closePriceModal" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
     </asp:Panel>
     <style>
@@ -568,6 +599,36 @@
             }
 
             // #region Private
+            // #region Validate
+            /* ============================================================
+             * Kiểm tra giá trị chiết khấu
+             *
+             * Date:   2023-11-10
+             * Author: Binh-TT
+             *
+             * Giá bán sau khi chiết khấu không đc nhỏ hơn giá vồn + 5K
+             * ============================================================
+             */
+            function _validateItemDiscount($item, discount) {
+                // Giá vốn sản phẩm
+                let costOfGoods = +$item.data("costOfGoods") || 0;
+                // Giá bán
+                let price = +$item.find(".gia-san-pham").data("price") || 0;
+                // Giá sau chiết khấu
+                let priceAfterDiscount = price - discount;
+                // Giá thấp nhất cho phép bán
+                let minPrice = costOfGoods + 5 * 1e3;
+
+                if (priceAfterDiscount < minPrice) {
+                    $item.attr("data-error-discount", true);
+                    $item.find('td').each(function () { $item.addClass('red'); });
+                }
+                else if (Boolean($item.attr("data-error-discount"))) {
+                    $item.removeAttr("data-error-discount");
+                    $item.find('td').each(function () { $item.removeClass('red'); });
+                }
+            }
+
             /* ============================================================
              * Kiểm tra hình thức "Lấy trực tiếp"
              *
@@ -867,6 +928,7 @@
 
                 return true;
             }
+            // #endregion
 
             function _updateDeliveryAddress() {
                 // Cập nhật thông tin địa chỉ giao hàng
@@ -1645,19 +1707,8 @@
                                 //    $discount.val(0);
                                 //#endregion
 
-                                //#region Kiểm tra chiết khấu
-                                let costOfGoods = $(this).data("costOfGoods");
-                                let price = +$(this).find(".gia-san-pham").data("price") || 0;
-
-                                if ((price - discount) < costOfGoods) {
-                                    $(this).attr("data-error-discount", true);
-                                    $(this).find('td').each(function () { $(this).addClass('red'); });
-                                }
-                                else if (Boolean($(this).attr("data-error-discount"))) {
-                                    $(this).removeAttr("data-error-discount");
-                                    $(this).find('td').each(function () { $(this).removeClass('red'); });
-                                }
-                                //#endregion
+                                // Kiểm tra chiết khấu
+                                _validateItemDiscount($(this), discount);
                             }
                             catch (err) {
                                 console.error(err.message);
@@ -2364,17 +2415,9 @@
                     $input.val(formatThousands(value, ','));
 
                     let $row = $input.closest('tr');
-                    let costOfGoods = +$row.data('costOfGoods') || 0;
-                    let price = +$row.find('.gia-san-pham').data('price') || 0;
 
-                    if ((price - value) < costOfGoods) {
-                        $row.attr("data-error-discount", true);
-                        $row.find('td').each(function () { $(this).addClass('red'); });
-                    }
-                    else if (Boolean($row.attr("data-error-discount"))) {
-                        $row.removeAttr("data-error-discount");
-                        $row.find('td').each(function () { $(this).removeClass('red'); });
-                    }
+                    // Kiểm tra chiết khấu
+                    _validateItemDiscount($row, value);
                 }
 
                 getAllPrice(true);
@@ -2480,19 +2523,8 @@
                                     $discount.val(0);
                                 //#endregion
 
-                                //#region Kiểm tra chiết khấu
-                                let costOfGoods = $(this).data("costOfGoods");
-                                let price = +$(this).find(".gia-san-pham").data("price") || 0;
-
-                                if ((price - discount) < costOfGoods) {
-                                    $(this).attr("data-error-discount", true);
-                                    $(this).find('td').each(function () { $(this).addClass('red'); });
-                                }
-                                else if (Boolean($(this).attr("data-error-discount"))) {
-                                    $(this).removeAttr("data-error-discount");
-                                    $(this).find('td').each(function () { $(this).removeClass('red'); });
-                                }
-                                //#endregion
+                                // Kiểm tra chiết khấu
+                                _validateItemDiscount($(this), discount);
                             }
                             catch (err) {
                                 console.error(err.message);
@@ -2509,6 +2541,161 @@
              * Đối ứng chiết khấu từng dòng (END)
              * ============================================================
              */
+
+            // #region Quickly Enter Price Modal
+            /* ============================================================
+             * Date:   2023-11-10
+             * Author: Binh-TT
+             *
+             * Đối ứng nhập nhanh giá mua trên 10 sản phẩm
+             * ============================================================
+             */
+            function quicklyEnterPrice10() {
+                let $trProducts = $(".product-result");
+
+                if ($trProducts.length == 0)
+                    return;
+
+                $trProducts.each(function () {
+                    try {
+                        // Giá bán sỉ
+                        let regularPrice = +$(this).data("giabansi") || 0;
+                        // Giá mua 10 sản phẩm trở lên
+                        let price10 = +$(this).data("price10") || 0;
+                        
+                        // Trường hợp sản phẩm không có giá 10
+                        if (price10 == 0 || price10 >= regularPrice)
+                            return;
+
+                        //#region Cài đặt chiết khấu
+                        // Giá bán
+                        let price = +$(this).find(".gia-san-pham").data("price") || 0;
+                        let discount = price - price10;
+                        let $textDiscount = $(this).find('.discount');
+
+                        if (discount > 0)
+                            $textDiscount.val(formatThousands(discount, ','));
+                        else
+                            $textDiscount.val(0);
+                        //#endregion
+
+                        // Kiểm tra chiết khấu
+                        _validateItemDiscount($(this), discount);
+                    }
+                    catch (err) {
+                        console.error(err.message);
+                    }
+                });
+
+                getAllPrice(true);
+            }
+            /* ============================================================
+             * END - Đối ứng nhập nhanh giá mua trên 10 sản phẩm
+             * ============================================================
+             */
+
+            /* ============================================================
+             * Date:   2023-11-10
+             * Author: Binh-TT
+             *
+             * Đối ứng nhập nhanh giá mua trên 50 sản phẩm
+             * ============================================================
+             */
+            function quicklyEnterPrice50() {
+                let $trProducts = $(".product-result");
+
+                if ($trProducts.length == 0)
+                    return;
+
+                $trProducts.each(function () {
+                    try {
+                        // Giá mua 10 sản phẩm trở lên
+                        let price10 = +$(this).data("price10") || 0;
+                        // Giá mua 50 sản phẩm trở lên
+                        let bestPrice = +$(this).data("bestprice") || 0;
+                        
+                        // Trường hợp sản phẩm không có giá 10
+                        if (bestPrice == 0 || bestPrice >= price10)
+                            return;
+
+                        //#region Cài đặt chiết khấu
+                        // Giá bán
+                        let price = +$(this).find(".gia-san-pham").data("price") || 0;
+                        let discount = price - bestPrice;
+                        let $textDiscount = $(this).find('.discount');
+
+                        if (discount > 0)
+                            $textDiscount.val(formatThousands(discount, ','));
+                        else
+                            $textDiscount.val(0);
+                        //#endregion
+
+                        // Kiểm tra chiết khấu
+                        _validateItemDiscount($(this), discount);
+                    }
+                    catch (err) {
+                        console.error(err.message);
+                    }
+                });
+
+                getAllPrice(true);
+            }
+            /* ============================================================
+             * END - Đối ứng nhập nhanh giá mua trên 10 sản phẩm
+             * ============================================================
+             */
+
+            /* ============================================================
+             * Date:   2023-11-10
+             * Author: Binh-TT
+             *
+             * Đối ứng nhập nhanh giá chót
+             * ============================================================
+             */
+            function quicklyEnterLastPrice() {
+                let $trProducts = $(".product-result");
+
+                if ($trProducts.length == 0)
+                    return;
+
+                $trProducts.each(function () {
+                    try {
+                        // Giá mua 50 sản phẩm trở lên
+                        let bestPrice = +$(this).data("bestprice") || 0;
+                        // Giá chót
+                        let lastPrice = +$(this).data("lastprice") || 0;
+                        
+                        // Trường hợp sản phẩm không có giá 10
+                        if (lastPrice == 0 || lastPrice >= bestPrice)
+                            return;
+
+                        //#region Cài đặt chiết khấu
+                        // Giá bán
+                        let price = +$(this).find(".gia-san-pham").data("price") || 0;
+                        let discount = price - lastPrice;
+                        let $textDiscount = $(this).find('.discount');
+
+                        if (discount > 0)
+                            $textDiscount.val(formatThousands(discount, ','));
+                        else
+                            $textDiscount.val(0);
+                        //#endregion
+
+                        // Kiểm tra chiết khấu
+                        _validateItemDiscount($(this), discount);
+                    }
+                    catch (err) {
+                        console.error(err.message);
+                    }
+                });
+
+                getAllPrice(true);
+            }
+            /* ============================================================
+             * END - Đối ứng nhập nhanh giá chót
+             * ============================================================
+             */
+            // #endregion
         </script>
     </telerik:RadScriptBlock>
 

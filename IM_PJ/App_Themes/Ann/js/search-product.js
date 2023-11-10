@@ -189,6 +189,7 @@ function addHtmlProductResult(item) {
     html += "    data-productvariablevalue ='" + ProductVariableValue + "' ";
     html += "    data-price10 ='" + item.Price10 + "' ";
     html += "    data-bestprice ='" + item.BestPrice + "' ";
+    html += "    data-lastprice ='" + item.LastPrice + "' ";
     html += "    data-productvariablesave ='" + ProductVariableSave + "'>";
 
     // for page them-moi-don-hang
@@ -199,7 +200,38 @@ function addHtmlProductResult(item) {
     else {
         html += "   <td class='image-item'><img onclick='openImage($(this))' src='/uploads/images/420x420/" + item.ProductImage + "'></td>";
     }
-    html += "   <td class='name-item'><a href='/xem-san-pham?id=" + item.ProductID + "&variableid=" + item.ProductVariableID + "' target='_blank'>" + (customerType == 2 && item.OldPrice > 0 ? "<span class='sale-icon'>SALE</span> " : "") + item.ProductTitle + "</a></td>";
+    html += "   <td class='name-item'>";
+    html += "     <a href='/xem-san-pham?id=" + item.ProductID + "&variableid=" + item.ProductVariableID + "' target='_blank'>";
+
+    // Trường hợp sản phẩm Sale
+    if (customerType == 2 && item.OldPrice > 0)
+        html += "     <span class='sale-icon'>SALE</span>";
+
+    html += "     " + item.ProductTitle;
+    html += "     </a>";
+
+    // Giá 10 sản phẩm
+    if (item.Price10 > 0 && item.Price10 < item.RegularPrice) {
+        html += "     <p class='item-price'>";
+        html += "       <strong>Giá 10 cái:</strong>" + formatThousands(item.Price10, ',');
+        html += "     </p>";
+    }
+
+    // Giá 50 sản phẩm
+    if (item.BestPrice > 0 && item.BestPrice < item.Price10) {
+        html += "     <p class='item-price'>";
+        html += "       <strong>Giá 50 cái:</strong>" + formatThousands(item.BestPrice, ',');
+        html += "     </p>";
+    }
+
+    // Giá chót
+    if (item.LastPrice > 0 && item.LastPrice < item.BestPrice) {
+        html += "     <p class='item-price'>";
+        html += "       <strong>Giá chót:</strong>" + formatThousands(item.LastPrice, ',');
+        html += "     </p>";
+    }
+
+    html += "   </td>";
     html += "   <td class='sku-item'>" + SKU + "</td>";
     html += "   <td class='variable-item'>" + item.VariableValue + "</td>";
 
