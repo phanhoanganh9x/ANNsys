@@ -56,7 +56,8 @@ namespace IM_PJ.Controllers
                                     RetailPrice = child != null ? child.RetailPrice.Value : parent.product.Retail_Price.Value,
                                     OldPrice = parent.product.Old_Price.Value > 0 ? parent.product.Old_Price.Value : 0,
                                     Price10 = parent.product.Price10.Value > 0 ? parent.product.Price10.Value : 0,
-                                    BestPrice = parent.product.BestPrice.Value > 0 ? parent.product.BestPrice.Value : 0
+                                    BestPrice = parent.product.BestPrice.Value > 0 ? parent.product.BestPrice.Value : 0,
+                                    LastPrice = parent.product.LastPrice.Value > 0 ? parent.product.LastPrice.Value : 0
                                 })
                     .Where(x => x.ParentSKU == SKU.Trim().ToUpper() || x.ChildSKU == SKU.Trim().ToUpper())
                     .OrderBy(x => x.ProductID)
@@ -100,7 +101,8 @@ namespace IM_PJ.Controllers
                             RetailPrice = x.RetailPrice,
                             OldPrice = x.OldPrice,
                             Price10 = x.Price10,
-                            BestPrice = x.BestPrice
+                            BestPrice = x.BestPrice,
+                            LastPrice = x.LastPrice,
                         };
                     })
                     .ToList();
@@ -177,7 +179,8 @@ namespace IM_PJ.Controllers
                                 QuantityCurrent = child != null ? child.Quantity : 0,
                                 OldPrice = parent.product.OldPrice,
                                 Price10 = parent.product.Price10,
-                                BestPrice = parent.product.BestPrice
+                                BestPrice = parent.product.BestPrice,
+                                LastPrice = parent.product.LastPrice
                             })
                         .ToList();
                 }

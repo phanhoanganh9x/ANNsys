@@ -23,5 +23,6 @@ namespace IM_PJ.Models
         public double OldPrice { get; set; }
         public double Price10 { get; set; }
         public double BestPrice { get; set; }
+        public double LastPrice { get; set; }
     }
 }

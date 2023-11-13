@@ -740,7 +740,7 @@ a.bg-button:hover {
 }
 .table-sale-order .discount-item {
     width: 9%;
-    text-align: left!important;
+    text-align: center!important;
 }
 .table-sale-order .quantity-item {
     width: 7%;

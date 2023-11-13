@@ -10,7 +10,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="robots" content="noindex, nofollow">
     <link rel="stylesheet" href="/App_Themes/Ann/css/style.css?v=20092023" media="all">
-    <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=20092023" media="all">
+    <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=202311140145" media="all">
     <link rel="stylesheet" href="/App_Themes/Ann/css/style-sp.css?v=20092023" media="all">
     <link href="/App_Themes/NewUI/js/sweet/sweet-alert.css" rel="stylesheet" />
     <script type="text/javascript" src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
