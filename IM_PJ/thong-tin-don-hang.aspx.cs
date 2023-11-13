@@ -432,6 +432,7 @@ namespace IM_PJ
                         double Giabanle = 0;
                         double Price10 = 0;
                         double BestPrice = 0;
+                        double LastPrice = 0;
                         double discount = 0;
                         string stringGiabansi = "";
                         string stringGiabanle = "";
@@ -487,6 +488,7 @@ namespace IM_PJ
                                 ProductVariableSave = item.ProductVariableDescrition;
                                 Price10 = product.Price10.HasValue ? product.Price10.Value : 0;
                                 BestPrice = product.BestPrice.HasValue ? product.BestPrice.Value : 0;
+                                LastPrice = product.LastPrice.HasValue ? product.LastPrice.Value : 0;
                                 ProductVariableName = variablename;
                                 ProductVariableValue = variablevalue;
                             }
@@ -551,6 +553,7 @@ namespace IM_PJ
                                     }
                                     Price10 = _product.Price10.HasValue ? _product.Price10.Value : 0;
                                     BestPrice = _product.BestPrice.HasValue ? _product.BestPrice.Value : 0;
+                                    LastPrice = _product.LastPrice.HasValue ? _product.LastPrice.Value : 0;
                                 }
 
                                 if (!string.IsNullOrEmpty(productvariable.Image))
@@ -602,6 +605,7 @@ namespace IM_PJ
                         html.AppendLine(String.Format("        data-productvariablesave ='{0}'", ProductVariableSave));
                         html.AppendLine(String.Format("        data-price10 ='{0}'", Price10));
                         html.AppendLine(String.Format("        data-bestprice ='{0}'", BestPrice));
+                        html.AppendLine(String.Format("        data-lastprice ='{0}'", LastPrice));
                         html.AppendLine(String.Format("        data-quantitymaininstock='{0}'>", QuantityMainInstock));
                         // Trường hợp đơn đang xử lý: chi tiết đơn sẽ từ mới nhất tới củ
                         if (excuteStatus == (int)ExcuteStatus.Doing)
@@ -609,7 +613,30 @@ namespace IM_PJ
                         else
                             html.AppendLine(String.Format("    <td class='order-item'>{0}</td>", index + 1));
                         html.AppendLine(String.Format("    <td class='image-item'>{0}</td>", ProductImage));
-                        html.AppendLine(String.Format("    <td class='name-item'>{0}</td>", "<a href='/xem-san-pham?id=" + item.ProductID + "&variableid=" + item.ProductVariableID + "' target='_blank'>" + (Giacu > 0 ? "<span class='sale-icon'>SALE</span> " : "") + ProductName + "</a>"));
+                        html.AppendLine("    <td class='name-item'>");
+                        html.AppendLine(String.Format("        <a href='/xem-san-pham?id='{0}'&variableid='{1}' target='_blank'>", item.ProductID, item.ProductVariableID));
+
+                        if (Giacu > 0)
+                            html.AppendLine("        <span class='sale-icon mr-1'>SALE</span>");
+
+                        html.AppendLine(ProductName);
+                        html.AppendLine("        </a>");
+
+                        // 2023-11-14: BinhTT
+                        // Giá 10 cái
+                        if (Price10 > 0 && Price10 < Giabansi)
+                            html.AppendLine(String.Format("        <p>Giá 10 cái: {0:N0}</p>", Price10 / 1e3));
+
+                        // Giá 50 cái
+                        if (BestPrice > 0 && BestPrice < Price10)
+                            html.AppendLine(String.Format("        <p>Giá 50 cái: {0:N0}</p>", BestPrice / 1e3));
+
+                        // Giá chót
+                        if (LastPrice > 0 && LastPrice < BestPrice)
+                            html.AppendLine(String.Format("        <p>Giá chót: {0:N0}</p>", LastPrice / 1e3));
+
+                        html.AppendLine("    </td>");
+
                         html.AppendLine(String.Format("    <td class='sku-item'>{0}</td>", SKU));
                         html.AppendLine(String.Format("    <td class='variable-item'>{0}</td>", ProductVariable));
                         html.AppendLine(String.Format("    <td class='price-item gia-san-pham' data-price='{0}'>{0:N0}</td>", ItemPrice));

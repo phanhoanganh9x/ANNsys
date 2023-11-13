@@ -3,7 +3,7 @@
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script src="/App_Themes/Ann/js/search-customer.js?v=202110131611"></script>
-    <script src="/App_Themes/Ann/js/search-product.js?v=20092023"></script>
+    <script src="/App_Themes/Ann/js/search-product.js?v=202311140206"></script>
     <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=20092023"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -14,6 +14,20 @@
 
         .red {
             background-color: #F44336!important;
+        }
+
+        .btn-price {
+            background-color: #73a724!important;
+            color: #fff!important;
+        }
+
+        .btn-price:hover {
+            background-color: #585858!important;
+            color: #fff!important;
+        }
+
+        .btn-price-10, .btn-best-price, .btn-last-price {
+            width: 100%;
         }
     </style>
     <asp:Panel ID="parent" runat="server">
@@ -146,7 +160,13 @@
                                                 <th class="sku-item">Mã</th>
                                                 <th class="variable-item">Thuộc tính</th>
                                                 <th class="price-item">Giá</th>
-                                                <th class="discount-item">Chiết khấu</th>
+                                                <th class="discount-item">
+                                                    Chiết khấu
+                                                    <br />
+                                                    <a href="#priceModal" class="btn btn-price" title="Nhập nhanh giá bán" data-toggle="modal" data-backdrop='static'>
+                                                        <i class="fa fa-bolt"></i> Giá bán
+                                                    </a>
+                                                </th>
                                                 <th class="quantity-item">Kho</th>
                                                 <th class="quantity-item">Số lượng</th>
                                                 <th class="total-item">Thành tiền</th>
@@ -500,7 +520,7 @@
 
             <!-- Price Modal -->
             <div class="modal fade" id="priceModal" role="dialog">
-                <div class="modal-dialog">
+                <div class="modal-dialog modal-sm">
                     <!-- Modal content-->
                     <div class="modal-content">
                         <div class="modal-header">
@@ -510,13 +530,17 @@
                         <div class="modal-body">
                             <div class="row form-group">
                                 <div class="col-12 col-sm-12 col-xl-12">
-                                    <button id="btnPrice10" type="button" class="btn btn-default" onclick="quicklyEnterPrice10()">Giá 10 cái</button>
+                                    <button id="btnPrice10" type="button" class="btn btn-info btn-price-10" onclick="quicklyEnterPrice10()">Giá 10 cái</button>
                                 </div>
+                            </div>
+                            <div class="row form-group">
                                 <div class="col-12 col-sm-12 col-xl-12">
-                                    <button id="btnBestPrice" type="button" class="btn btn-default" onclick="quicklyEnterBestPrice()">Giá 50 cái</button>
+                                    <button id="btnBestPrice" type="button" class="btn btn-info btn-best-price" onclick="quicklyEnterBestPrice()">Giá 50 cái</button>
                                 </div>
+                            </div>
+                            <div class="row form-group">
                                 <div class="col-12 col-sm-12 col-xl-12">
-                                    <button id="btnLastPrice" type="button" class="btn btn-default" onclick="quicklyEnterLastPrice()">Giá chót</button>
+                                    <button id="btnLastPrice" type="button" class="btn btn-info btn-last-price" onclick="quicklyEnterLastPrice()">Giá chót</button>
                                 </div>
                             </div>
                         </div>
@@ -2562,7 +2586,7 @@
                         let regularPrice = +$(this).data("giabansi") || 0;
                         // Giá mua 10 sản phẩm trở lên
                         let price10 = +$(this).data("price10") || 0;
-                        
+
                         // Trường hợp sản phẩm không có giá 10
                         if (price10 == 0 || price10 >= regularPrice)
                             return;
@@ -2587,6 +2611,7 @@
                     }
                 });
 
+                $('#closePriceModal').click();
                 getAllPrice(true);
             }
             /* ============================================================
@@ -2601,7 +2626,7 @@
              * Đối ứng nhập nhanh giá mua trên 50 sản phẩm
              * ============================================================
              */
-            function quicklyEnterPrice50() {
+            function quicklyEnterBestPrice() {
                 let $trProducts = $(".product-result");
 
                 if ($trProducts.length == 0)
@@ -2613,7 +2638,7 @@
                         let price10 = +$(this).data("price10") || 0;
                         // Giá mua 50 sản phẩm trở lên
                         let bestPrice = +$(this).data("bestprice") || 0;
-                        
+
                         // Trường hợp sản phẩm không có giá 10
                         if (bestPrice == 0 || bestPrice >= price10)
                             return;
@@ -2638,6 +2663,7 @@
                     }
                 });
 
+                $('#closePriceModal').click();
                 getAllPrice(true);
             }
             /* ============================================================
@@ -2664,7 +2690,7 @@
                         let bestPrice = +$(this).data("bestprice") || 0;
                         // Giá chót
                         let lastPrice = +$(this).data("lastprice") || 0;
-                        
+
                         // Trường hợp sản phẩm không có giá 10
                         if (lastPrice == 0 || lastPrice >= bestPrice)
                             return;
@@ -2689,6 +2715,7 @@
                     }
                 });
 
+                $('#closePriceModal').click();
                 getAllPrice(true);
             }
             /* ============================================================

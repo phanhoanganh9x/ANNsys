@@ -213,21 +213,21 @@ function addHtmlProductResult(item) {
     // Giá 10 sản phẩm
     if (item.Price10 > 0 && item.Price10 < item.RegularPrice) {
         html += "     <p class='item-price'>";
-        html += "       <strong>Giá 10 cái:</strong>" + formatThousands(item.Price10, ',');
+        html += "       <strong>Giá 10 cái:</strong> " + item.Price10 / 1e3 + "k";
         html += "     </p>";
     }
 
     // Giá 50 sản phẩm
     if (item.BestPrice > 0 && item.BestPrice < item.Price10) {
         html += "     <p class='item-price'>";
-        html += "       <strong>Giá 50 cái:</strong>" + formatThousands(item.BestPrice, ',');
+        html += "       <strong>Giá 50 cái:</strong> " + item.BestPrice / 1e3 + "k";
         html += "     </p>";
     }
 
     // Giá chót
     if (item.LastPrice > 0 && item.LastPrice < item.BestPrice) {
         html += "     <p class='item-price'>";
-        html += "       <strong>Giá chót:</strong>" + formatThousands(item.LastPrice, ',');
+        html += "       <strong>Giá chót:</strong> " + item.LastPrice / 1e3 + "k";
         html += "     </p>";
     }
 

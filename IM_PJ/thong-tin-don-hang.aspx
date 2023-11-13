@@ -3,7 +3,7 @@
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script type="text/javascript" src="/App_Themes/Ann/js/search-customer.js?v=202110012121"></script>
-    <script type="text/javascript" src="/App_Themes/Ann/js/search-product.js?v=20092023"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/search-product.js?v=202311140206"></script>
     <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=20092023"></script>
     <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=20092023"></script>
     <style>
@@ -54,6 +54,7 @@
             pointer-events: none;
             opacity: 0.7;
         }
+
         table.shop_table_responsive > tbody > tr:nth-of-type(2n+1) td {
             border-bottom: solid 1px #e1e1e1!important;
         }
@@ -68,6 +69,20 @@
 
         *.select2-container.select2-container--default.select2-container--open {
             z-index: 99991;
+        }
+
+        .btn-price {
+            background-color: #73a724!important;
+            color: #fff!important;
+        }
+
+        .btn-price:hover {
+            background-color: #585858!important;
+            color: #fff!important;
+        }
+
+        .btn-price-10, .btn-best-price, .btn-last-price {
+            width: 100%;
         }
 
         @media (max-width: 769px) {
@@ -421,7 +436,13 @@
                                                 <th class="sku-item">Mã</th>
                                                 <th class="variable-item">Thuộc tính</th>
                                                 <th class="price-item">Giá</th>
-                                                <th class="discount-item">Chiết khấu</th>
+                                                <th class="discount-item">
+                                                    Chiết khấu
+                                                    <br />
+                                                    <a href="#priceModal" class="btn btn-price" title="Nhập nhanh giá bán" data-toggle="modal" data-backdrop='static'>
+                                                        <i class="fa fa-bolt"></i> Giá bán
+                                                    </a>
+                                                </th>
                                                 <th class="quantity-item">Kho</th>
                                                 <th class="quantity-item">Số lượng</th>
                                                 <th class="total-item">Thành tiền</th>
@@ -643,7 +664,6 @@
                                         <a href="javascript:;" class="btn link-btn" id="payall" style="background-color: #f87703; float: right" title="Hoàn tất đơn hàng" onclick="payAll()"><i class="fa fa-floppy-o"></i> Xác nhận</a>
                                         <asp:Button ID="btnOrder" runat="server" OnClick="btnOrder_Click" Style="display: none" />
                                         <a href="javascript:;" class="btn link-btn" style="background-color: #ffad00; float: right;" title="Nhập đơn hàng đổi trả" onclick="searchReturnOrder()"><i class="fa fa-refresh"></i> Đổi trả</a>
-                                        <a href="#priceModal" class="btn link-btn" style="background-color: #5cb85c; float: right;" title="Nhập nhanh giá bán" data-toggle="modal" data-backdrop='static'><i class="fa fa-bolt"></i> Nhập nhanh giá bán</a>
                                         <a id="feeNewStatic" href="#feeModal" class="btn link-btn" style="background-color: #607D8B; float: right;" title="Thêm phí khác vào đơn hàng" data-toggle="modal" data-backdrop='static'><i class="fa fa-plus"></i> Thêm phí khác</a>
                                     </div>
                                     <div id="img-out"></div>
@@ -662,7 +682,6 @@
                                 <div class="post-table-links clear">
                                     <a href="javascript:;" class="btn link-btn" style="background-color: #f87703; float: right" title="Hoàn tất đơn hàng" onclick="payAll()"><i class="fa fa-floppy-o"></i> Xác nhận</a>
                                     <a href="javascript:;" class="btn link-btn" style="background-color: #ffad00; float: right;" title="Nhập đơn hàng đổi trả" onclick="searchReturnOrder()"><i class="fa fa-refresh"></i> Đổi trả</a>
-                                    <a href="#priceModal" class="btn link-btn" style="background-color: #5cb85c; float: right;" title="Nhập nhanh giá bán" data-toggle="modal" data-backdrop='static'><i class="fa fa-bolt"></i> Nhập nhanh giá bán</a>
                                     <a id="feeNewDynamic" href="#feeModal" class="btn link-btn" style="background-color: #607D8B; float: right;" title="Thêm phí khác vào đơn hàng" data-toggle="modal" data-backdrop='static'><i class="fa fa-plus"></i> Thêm phí khác</a>
                                 </div>
                             </div>
@@ -855,7 +874,7 @@
 
             <!-- Price Modal -->
             <div class="modal fade" id="priceModal" role="dialog">
-                <div class="modal-dialog">
+                <div class="modal-dialog modal-sm">
                     <!-- Modal content-->
                     <div class="modal-content">
                         <div class="modal-header">
@@ -865,13 +884,17 @@
                         <div class="modal-body">
                             <div class="row form-group">
                                 <div class="col-12 col-sm-12 col-xl-12">
-                                    <button id="btnPrice10" type="button" class="btn btn-default" onclick="quicklyEnterPrice10()">Giá 10 cái</button>
+                                    <button id="btnPrice10" type="button" class="btn btn-info btn-price-10" onclick="quicklyEnterPrice10()">Giá 10 cái</button>
                                 </div>
+                            </div>
+                            <div class="row form-group">
                                 <div class="col-12 col-sm-12 col-xl-12">
-                                    <button id="btnBestPrice" type="button" class="btn btn-default" onclick="quicklyEnterBestPrice()">Giá 50 cái</button>
+                                    <button id="btnBestPrice" type="button" class="btn btn-info btn-best-price" onclick="quicklyEnterBestPrice()">Giá 50 cái</button>
                                 </div>
+                            </div>
+                            <div class="row form-group">
                                 <div class="col-12 col-sm-12 col-xl-12">
-                                    <button id="btnLastPrice" type="button" class="btn btn-default" onclick="quicklyEnterLastPrice()">Giá chót</button>
+                                    <button id="btnLastPrice" type="button" class="btn btn-info btn-last-price" onclick="quicklyEnterLastPrice()">Giá chót</button>
                                 </div>
                             </div>
                         </div>
@@ -3699,7 +3722,7 @@
                         let regularPrice = +$(this).data("giabansi") || 0;
                         // Giá mua 10 sản phẩm trở lên
                         let price10 = +$(this).data("price10") || 0;
-                        
+
                         // Trường hợp sản phẩm không có giá 10
                         if (price10 == 0 || price10 >= regularPrice)
                             return;
@@ -3724,6 +3747,7 @@
                     }
                 });
 
+                $('#closePriceModal').click();
                 getAllPrice(true);
             }
             /* ============================================================
@@ -3738,7 +3762,7 @@
              * Đối ứng nhập nhanh giá mua trên 50 sản phẩm
              * ============================================================
              */
-            function quicklyEnterPrice50() {
+            function quicklyEnterBestPrice() {
                 let $trProducts = $(".product-result");
 
                 if ($trProducts.length == 0)
@@ -3750,7 +3774,7 @@
                         let price10 = +$(this).data("price10") || 0;
                         // Giá mua 50 sản phẩm trở lên
                         let bestPrice = +$(this).data("bestprice") || 0;
-                        
+
                         // Trường hợp sản phẩm không có giá 10
                         if (bestPrice == 0 || bestPrice >= price10)
                             return;
@@ -3775,6 +3799,7 @@
                     }
                 });
 
+                $('#closePriceModal').click();
                 getAllPrice(true);
             }
             /* ============================================================
@@ -3801,7 +3826,7 @@
                         let bestPrice = +$(this).data("bestprice") || 0;
                         // Giá chót
                         let lastPrice = +$(this).data("lastprice") || 0;
-                        
+
                         // Trường hợp sản phẩm không có giá 10
                         if (lastPrice == 0 || lastPrice >= bestPrice)
                             return;
@@ -3826,6 +3851,7 @@
                     }
                 });
 
+                $('#closePriceModal').click();
                 getAllPrice(true);
             }
             /* ============================================================
