@@ -614,7 +614,7 @@ namespace IM_PJ
                             html.AppendLine(String.Format("    <td class='order-item'>{0}</td>", index + 1));
                         html.AppendLine(String.Format("    <td class='image-item'>{0}</td>", ProductImage));
                         html.AppendLine("    <td class='name-item'>");
-                        html.AppendLine(String.Format("        <a href='/xem-san-pham?id={0}&variableid={1} target='_blank'>", item.ProductID, item.ProductVariableID));
+                        html.AppendLine(String.Format("        <a href='/xem-san-pham?id={0}&variableid={1}' target='_blank'>", item.ProductID, item.ProductVariableID));
 
                         if (Giacu > 0)
                             html.AppendLine("        <span class='sale-icon mr-1'>SALE</span>");
