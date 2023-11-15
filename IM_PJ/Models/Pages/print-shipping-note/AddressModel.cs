@@ -55,7 +55,7 @@ namespace IM_PJ.Models.Pages.print_shipping_note
                     var phone3 = source.Phone.Substring(7);
 
                     if (deliveryMethodId == (int)DeliveryType.DeliverySave)
-                        address.phone = String.Format("{0}***{2}", phone1, phone3);
+                        address.phone = String.Format("{0}***{1}", phone1, phone3);
                     else {
                         var phone2 = source.Phone.Substring(4, 3);
 
@@ -98,7 +98,7 @@ namespace IM_PJ.Models.Pages.print_shipping_note
                     var phone3 = source.CustomerPhone.Substring(7);
 
                     if (deliveryMethodId == (int)DeliveryType.DeliverySave)
-                        address.phone = String.Format("{0}***{2}", phone1, phone3);
+                        address.phone = String.Format("{0}***{1}", phone1, phone3);
                     else
                     {
                         var phone2 = source.CustomerPhone.Substring(4, 3);
@@ -118,7 +118,7 @@ namespace IM_PJ.Models.Pages.print_shipping_note
                     var phone3 = source.CustomerPhone2.Substring(7);
 
                     if (deliveryMethodId == (int)DeliveryType.DeliverySave)
-                        address.phone = String.Format("{0}***{2}", phone1, phone3);
+                        address.phone = String.Format("{0}***{1}", phone1, phone3);
                     else {
                         var phone2 = source.CustomerPhone2.Substring(4, 3);
 
