@@ -968,11 +968,11 @@
 
                 if (priceAfterDiscount < minPrice) {
                     $item.attr("data-error-discount", true);
-                    $item.find('td').each(function () { $item.addClass('red'); });
+                    $item.find('td').each(function () { $(this).addClass('red'); });
                 }
                 else if (Boolean($item.attr("data-error-discount"))) {
                     $item.removeAttr("data-error-discount");
-                    $item.find('td').each(function () { $item.removeClass('red'); });
+                    $item.find('td').each(function () { $(this).removeClass('red'); });
                 }
             }
 
