@@ -914,29 +914,55 @@ namespace IM_PJ
             html.AppendLine("    <td width='50%'>");
             html.AppendLine(String.Format("    <p class='destination'><strong>{0}</strong></p>", order.destination));
             html.AppendLine("    </td>");
+            // 2023-11-08: BinhTT
+            // GHTK yêu cầu barcode mã vận đơn nằm trên 1 dòng
             html.AppendLine("    <td width='50%'>");
-            html.AppendLine(String.Format("      <p class='delivery'><img src='{0}'></p>", _createBarcode(ghtkCode)));
-            html.AppendLine(String.Format("      <p class='delivery'>{0}</p>", ghtkCode));
+            // Mã vạch đơn shop
+            html.AppendLine(String.Format("      <p>MÃ ĐƠN KH: <strong>{0}</strong></p>", order.code));
+            // Thu hộ
+            if (order.paymentMethod == (int)PaymentType.CashCollection)
+                html.AppendLine(String.Format("    <p class='cod'>THU HỘ: {0:N0}đ</p>", order.cod));
+            else
+                html.AppendLine("    <p class='cod'>THU HỘ: Không</p>");
             html.AppendLine("    </td>");
+            // html.AppendLine("    <td width='50%'>");
+            // html.AppendLine(String.Format("      <p class='delivery'><img src='{0}'></p>", _createBarcode(ghtkCode)));
+            // html.AppendLine(String.Format("      <p class='delivery'>{0}</p>", ghtkCode));
+            // html.AppendLine("    </td>");
             html.AppendLine("    </tr>");
             #endregion
 
             html.AppendLine("    <tr>");
-            #region Mã vạch đơn shop
-            html.AppendLine("    <td width='50%'>");
-            html.AppendLine(String.Format("      <p>MÃ ĐƠN KH: <strong>{0}</strong></p>", order.code));
-            // 2023-11-03: BinhTT
-            // GHTK yêu cầu không tao barcode mã đơn hàng của shop
-            //html.AppendLine(String.Format("      <p><img src='{0}'></p>", _createBarcode(order.code)));
+
+            // 2023-11-08: BinhTT
+            // GHTK yêu cầu barcode mã vận đơn nằm trên 1 dòng
+            html.AppendLine("    <td colspan='2'>");
+            html.AppendLine(String.Format("      <p class='delivery'><img src='{0}'></p>", _createBarcode(ghtkCode)));
+            html.AppendLine(String.Format("      <p class='delivery'>{0}</p>", ghtkCode));
             html.AppendLine("    </td>");
+
+            #region Mã vạch đơn shop
+            // 2023-11-08: BinhTT
+            // GHTK yêu cầu barcode mã vận đơn nằm trên 1 dòng
+            // html.AppendLine("    <td width='50%'>");
+            // html.AppendLine(String.Format("      <p>MÃ ĐƠN KH: <strong>{0}</strong></p>", order.code));
+            // // 2023-11-03: BinhTT
+            // // GHTK yêu cầu không tao barcode mã đơn hàng của shop
+            // //html.AppendLine(String.Format("      <p><img src='{0}'></p>", _createBarcode(order.code)));
+            // html.AppendLine("    </td>");
             #endregion
+
             #region Thu hộ
-            html.AppendLine("    <td width='50%'>");
-            if (order.paymentMethod == (int)PaymentType.CashCollection)
-                html.AppendLine(String.Format("    <p class='cod'>THU HỘ: {0:N0}đ</p></td>", order.cod));
-            else
-                html.AppendLine("    <p class='cod'>THU HỘ: Không</p></td>");
+            // 2023-11-08: BinhTT
+            // GHTK yêu cầu barcode mã vận đơn nằm trên 1 dòng
+            // html.AppendLine("    <td width='50%'>");
+            // if (order.paymentMethod == (int)PaymentType.CashCollection)
+            //     html.AppendLine(String.Format("    <p class='cod'>THU HỘ: {0:N0}đ</p>", order.cod));
+            // else
+            //     html.AppendLine("    <p class='cod'>THU HỘ: Không</p>");
+            // html.AppendLine("    </td>");
             #endregion
+
             html.AppendLine("    </tr>");
             #endregion
 
