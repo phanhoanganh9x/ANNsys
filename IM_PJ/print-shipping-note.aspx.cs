@@ -1053,7 +1053,7 @@ namespace IM_PJ
             if (order.ShippingType == (int)DeliveryType.DeliverySave)
             {
                 sender.AgentLeader = "S5393076 - KHO SỈ ANN";
-                sender.AgentPhone = "0378.333.507";
+                sender.AgentPhone = "0942.734.111";
                 sender.AgentAddress = "2/23 Bis Đông Hưng Thuận 45, Tân Hưng Thuận, Quận 12, TP Hồ Chí Minh";
             }
 
